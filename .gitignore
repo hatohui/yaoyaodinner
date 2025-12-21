@@ -1,0 +1,48 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+coverage.out
+*.coverprofile
+
+# Build output directories and binaries (common for Lambda)
+/bin/
+/build/
+/dist/
+/out/
+bootstrap
+main
+*.zip
+
+# Dependency directories
+vendor/
+# If you vendor dependencies, remove the line above to track them
+
+# Go build cache
+.gocache
+.cache/go-build/
+
+# AWS Serverless / SAM / Serverless Framework
+.aws-sam/
+.serverless/
+
+# Environment / secrets
+.env
+.env.*.local
+.local.env
+
+# IDEs / editors
+.vscode/
+.idea/
+*.iml
+
+# Misc
+.DS_Store
+Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.terraform/
