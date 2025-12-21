@@ -3,18 +3,22 @@ package main
 import (
 	"context"
 	"fmt"
-	server "yaoyao-functions/cmd"
-	"yaoyao-functions/common"
-	"yaoyao-functions/config"
+	"log"
+	server "yaoyao-functions/src/cmd"
+	"yaoyao-functions/src/common"
+	"yaoyao-functions/src/config"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
+	"github.com/gin-gonic/gin"
 )
 
 var ginLambda *ginadapter.GinLambda
 
 func init() {
+	gin.SetMode(gin.ReleaseMode)
+
 	r := server.Start()
 	ginLambda = ginadapter.New(r)
 }
@@ -24,12 +28,12 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 }
 
 func main() {
-	if config.LoadEnv() != nil {
-		fmt.Errorf("[ENV] Failed to load environment variables.")
+	if err := config.LoadEnv(); err != nil {
+		log.Println("WARNING: Error loading .env file: %v", err)
 	}
 
 	if config.GetEnvOr(common.LAMBDA_NAME_ENV, "") != "" {
-		fmt.Println("[INIT] Starting lambda function...")
+		log.Println("[INIT] Starting lambda function...")
 		
 		lambda.Start(Handler)
 		return 
