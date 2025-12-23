@@ -1,15 +1,15 @@
 package cmd
 
-import "github.com/gin-gonic/gin"
+import (
+	"yaoyao-functions/src/config"
 
-func Start() *gin.Engine {
+	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
+)
+
+func Start(db *gorm.DB, redisClient *redis.Client) *gin.Engine {
 	router := gin.Default()
-	
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
+	config.RegisterModules(router, db, redisClient)
 	return router
 }

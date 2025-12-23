@@ -11,6 +11,7 @@ services:
       - .env
     depends_on:
       - yaoyaodb
+      - yaoyaoredis
     networks:
       - yaoyao-network
     volumes:
@@ -32,10 +33,25 @@ services:
       - ./data/db:/data/db
     networks:
       - yaoyao-network
+
+  yaoyaoredis:
+    image: redis:8.4-alpine
+    container_name: yaoyaoredis
+    restart: always
+    command: ["redis-server", "--requirepass", "pass"]
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+    networks:
+      - yaoyao-network
+
 networks:
   yaoyao-network:
     driver: bridge
+
 volumes:
+  redis-data:
   yaoyao-volume:
   go-build-cache:
   go-mod-cache:

@@ -25,10 +25,10 @@ func main() {
 	log.Println("🔄 Starting database migration...")
 
 	if err := MigrateAndSeed(db); err != nil {
-		log.Fatal("❌ Failed to migrate database:", err)
+		log.Fatal("[DATABASE] Failed to migrate database:", err)
 	}
 
-	log.Println("✅ Database migration completed successfully!")
+	log.Println("[DATABASE] Database migration completed successfully!")
 }
 
 

@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 func Connect(connectionString string) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 
@@ -29,4 +31,25 @@ func ConnectWithEnv() (*gorm.DB, error) {
 		host, port, user, password, dbname, sslmode)
 
 	return Connect(dsn)
+}
+
+func InitDatabase() error {
+	db, err := ConnectWithEnv()
+	if err != nil {
+		return err
+	}
+
+	DB = db
+	return nil
+}
+
+func CloseDatabase() error {
+	if DB != nil {
+		sqlDB, err := DB.DB()
+		if err != nil {
+			return err
+		}
+		return sqlDB.Close()
+	}
+	return nil
 }
