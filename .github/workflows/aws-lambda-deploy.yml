@@ -64,16 +64,22 @@ jobs:
         working-directory: ./infra
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          DOPPLER_PROJECT: ${{ secrets.DOPPLER_PROJECT }}
+          DOPPLER_CONFIG: ${{ secrets.DOPPLER_CONFIG }}
         run: doppler run -- terraform init
 
       - name: Terraform Plan
         working-directory: ./infra
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          DOPPLER_PROJECT: ${{ secrets.DOPPLER_PROJECT }}
+          DOPPLER_CONFIG: ${{ secrets.DOPPLER_CONFIG }}
         run: doppler run -- terraform plan
 
       - name: Terraform Apply
         working-directory: ./infra
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          DOPPLER_PROJECT: ${{ secrets.DOPPLER_PROJECT }}
+          DOPPLER_CONFIG: ${{ secrets.DOPPLER_CONFIG }}
         run: doppler run -- terraform apply -auto-approve
