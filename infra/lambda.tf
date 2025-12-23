@@ -50,3 +50,11 @@ resource "aws_lambda_function_url" "yaoyao_function_url" {
     max_age           = 86400
   }
 }
+
+resource "aws_lambda_permission" "allow_function_url" {
+  statement_id           = "AllowPublicFunctionURLInvoke"
+  action                 = "lambda:InvokeFunctionUrl"
+  function_name          = aws_lambda_function.yaoyao_function.function_name
+  principal              = "*"
+  function_url_auth_type = "NONE"
+}

@@ -81,17 +81,6 @@ jobs:
             --region ${{ env.AWS_REGION }} \
             --query 'Version' \
             --output text)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "✅ Published Lambda version: $VERSION"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Deployment summary
-        run: |
-          echo "### 🚀 Deployment Successful" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Function**: ${{ env.LAMBDA_FUNCTION_NAME }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: ${{ steps.publish.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Region**: ${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY

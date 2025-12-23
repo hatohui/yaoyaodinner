@@ -9,6 +9,10 @@ import (
 )
 
 func LoadEnv() error {
+	if os.Getenv("AWS_LAMBDA_FUNCTION_NAME") != "" {
+		return nil
+	}
+
 	envPaths := []string{
 		".env",
 		"../.env",
