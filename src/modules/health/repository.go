@@ -28,6 +28,7 @@ func (r *repository) GetDatabaseConnection() bool {
 		return false
 	}
 
+	
 	err = sqlDB.Ping()
 	
 	if err != nil {

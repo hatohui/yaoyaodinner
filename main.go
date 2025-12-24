@@ -37,7 +37,7 @@ func main() {
 	}
 
 	r := server.Start(config.DB, config.RedisClient)
-	
+
 	log.Printf("[INIT] Server starting on port %s", port)
 	if err := r.Run(fmt.Sprintf(":%s", port)); err != nil {
 		log.Fatalf("[INIT] Failed to start server: %v", err)

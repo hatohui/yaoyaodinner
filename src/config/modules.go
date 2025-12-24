@@ -2,6 +2,7 @@ package config
 
 import (
 	"yaoyao-functions/src/modules/health"
+	"yaoyao-functions/src/modules/language"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -16,4 +17,11 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	healthService := health.NewService(healthRepo)
 	healthHandler := health.NewHandler(healthService)
 	health.RegisterRoutes(api, healthHandler)
+
+	//language module
+	langRoute := api.Group("/language")
+	languageRepo := language.NewRepository(db, redisClient)
+	languageService := language.NewService(languageRepo)
+	languageHandler := language.NewHandler(languageService)
+	language.RegisterRoutes(langRoute, languageHandler)
 }	
