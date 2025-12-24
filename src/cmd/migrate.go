@@ -38,7 +38,7 @@ func main() {
 
 	log.Println("🔄 Starting database migration...")
 
-	if err := MigrateAndSeed(db); err != nil {
+	if err := AutoMigrate(db); err != nil {
 		log.Fatal("[DATABASE] Failed to migrate database:", err)
 	}
 
@@ -90,19 +90,5 @@ func AutoMigrate(db *gorm.DB) error {
 	log.Println("✓ Migrated: Order, PresetMenu, PresetMenuFood")
 
 	log.Println("✅ All tables migrated successfully!")
-	return nil
-}
-
-func MigrateAndSeed(db *gorm.DB) error {
-	// Run migrations
-	if err := AutoMigrate(db); err != nil {
-		return err
-	}
-
-	// Seed initial data
-	if err := SeedInitialData(db); err != nil {
-		return err
-	}
-
 	return nil
 }
