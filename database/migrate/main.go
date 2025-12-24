@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"yaoyao-functions/src/cmd"
 	"yaoyao-functions/src/config"
 )
 
@@ -22,7 +21,7 @@ func main() {
 
 	log.Println("🔄 Starting database migration...")
 
-	if err := cmd.AutoMigrate(db); err != nil {
+	if err := AutoMigrate(db); err != nil {
 		log.Fatal("[DATABASE] Failed to migrate database:", err)
 	}
 

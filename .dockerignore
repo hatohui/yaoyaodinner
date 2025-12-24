@@ -1,52 +1,18 @@
-# .dockerignore for Go (Gin) project using Air + Netlify
+# Exclude everything by default
+**
 
-# VCS
-.git
-.gitignore
+# Include only what's needed
+!go.mod
+!go.sum
+!main.go
+!src/
+!src/**
 
-# OS / Editor
-.DS_Store
-Thumbs.db
-*.swp
-*~
-.vscode/
-.idea/
-*.iml
-
-# Local env / secrets
+# Explicitly exclude these even if in src/
 .env
 .env.*
-.env.local
-.env.*.local
-
-# Build artifacts / binaries
-bin/
-build/
-dist/
-out/
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-coverage.out
-coverage/
-*.prof
 *.log
-
-# Go-specific
-vendor/
-Godeps/
-pkg/
-testdata/
-*/_workspace/
-# keep go.mod and go.sum to leverage Docker layer caching
-
-# Air (live-reload) / temp files
-tmp/
-tmp/*
+*.test
 
 # Netlify local state
 .netlify/
@@ -62,3 +28,7 @@ dist/
 # DB / dev artifacts
 *.sqlite
 *.db
+infra
+docs
+.vscode
+.github

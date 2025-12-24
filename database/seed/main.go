@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"yaoyao-functions/src/cmd"
+	"yaoyao-functions/database/seed/scripts"
 	"yaoyao-functions/src/config"
 )
 
@@ -22,7 +22,7 @@ func main() {
 
 	log.Println("🌱 Running seed command...")
 
-	if err := cmd.SeedInitialData(db); err != nil {
+	if err := scripts.SeedAll(db); err != nil {
 		log.Fatal("[SEED] Failed to seed database:", err)
 	}
 

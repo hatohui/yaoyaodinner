@@ -43,14 +43,15 @@ func (r *repository) FetchAllLanguages() ([]Language, error) {
 }
 
 func (r *repository) GetLanguageCodeList() ([]string, error) {
-	
 	codes, err := redisClient.Get[[]string](r.redisClient, common.REDIS_KEY_LANGUAGE_CODES)
 
 	if err == nil {
 			return codes, nil
 	}
 
-	if err := r.db.Table(common.TABLE_LANGUAGE).Pluck("code", &codes).Error; err != nil {
+	codes, err = database.FindByColumn[string](r.db, common.TABLE_LANGUAGE, "code")
+
+	if err != nil {
 		return nil, err
 	}
 

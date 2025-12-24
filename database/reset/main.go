@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"yaoyao-functions/src/cmd"
 	"yaoyao-functions/src/config"
 	"yaoyao-functions/src/modules/account"
 	"yaoyao-functions/src/modules/category"
@@ -79,7 +78,7 @@ func main() {
 	log.Println("✅ All tables dropped successfully!")
 	log.Println("🔄 Running migrations and seeding data...")
 	
-	if err := cmd.AutoMigrate(db); err != nil {
+	if err := AutoMigrate(db); err != nil {
 		log.Fatal("[DATABASE] Failed to migrate database:", err)
 	}
 
