@@ -15,7 +15,6 @@ tmp_dir = "build"
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
-  full_bin = ""
   include_dir = []
   include_ext = ["go", "tpl", "tmpl", "html"]
   include_file = []
