@@ -78,6 +78,7 @@ Table Order {
 Table PresetMenu {
   id string [pk, not null]
   price float [not null, default: 1, note: "price > 0"]
+  isActive boolean [not null, default: true]
 }
 
 Table PresetMenuFood {
