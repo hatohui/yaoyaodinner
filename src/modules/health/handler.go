@@ -15,22 +15,22 @@ func NewHandler(s Service) *Handler {
 	return &Handler{service: s}
 }
 
-func (h *Handler) GET(c *gin.Context) {
-	c.JSON(200, gin.H{
+func (h *Handler) GET(res *gin.Context) {
+	res.JSON(200, gin.H{
 		"status":  "running",
 		"version": "1.0.0",
 		"by":      "Hatohui",
 		"for":     "yaoyaodinner",
-		"message": "Welcome to the API service!",
+		"message": "Smh I spotted a stalking bean!",
 	})
 }
 
 
-func (h *Handler) CheckDatabaseConnection(c *gin.Context) {
+func (h *Handler) CheckDatabaseConnection(res *gin.Context) {
 	err := h.service.CheckDatabaseConnection()
 	
 	if err != nil {
-		c.JSON(http.StatusServiceUnavailable, gin.H{
+		res.JSON(http.StatusServiceUnavailable, gin.H{
 			"status":  status.ServiceUnavailable,
 			"message": err.Error(),
 		})
@@ -38,17 +38,17 @@ func (h *Handler) CheckDatabaseConnection(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	res.JSON(http.StatusOK, gin.H{
 		"status":  status.OK,
 		"message": "Database connection is healthy",
 	})
 }
 
-func (h *Handler) CheckRedisConnection(c *gin.Context) {
+func (h *Handler) CheckRedisConnection(res *gin.Context) {
 	err := h.service.CheckRedisConnection()
 	
 	if err != nil {
-		c.JSON(http.StatusServiceUnavailable, gin.H{
+		res.JSON(http.StatusServiceUnavailable, gin.H{
 			"status":  status.ServiceUnavailable,
 			"message": err.Error(),
 		})
@@ -56,7 +56,7 @@ func (h *Handler) CheckRedisConnection(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	res.JSON(http.StatusOK, gin.H{
 		"status":  status.OK,
 		"message": "Redis connection is healthy",
 	})
