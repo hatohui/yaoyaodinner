@@ -2,7 +2,7 @@ package health
 
 import (
 	"net/http"
-	"yaoyao-functions/src/status"
+	"yaoyao-functions/src/common/status"
 
 	"github.com/gin-gonic/gin"
 )

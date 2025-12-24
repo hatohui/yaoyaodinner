@@ -4,6 +4,7 @@
 
 ## General details
 
+- Endpoint for [yaoyaoapi](https://dzz5db3jeuxcl.cloudfront.net/api/)
 - API for [yaoyao-dinner]()
 - Runs on: Lambda serverless with gin http adapter
 - Region: `ap-southeast-1`

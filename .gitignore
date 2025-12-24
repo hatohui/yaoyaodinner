@@ -74,3 +74,5 @@ terraform.rc
 .doppler
 doppler.yaml
 .doppler.yaml
+# Database data
+data/db/

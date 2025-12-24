@@ -3,8 +3,8 @@ package language
 import (
 	"time"
 	"yaoyao-functions/src/common"
-	"yaoyao-functions/src/database"
-	redisClient "yaoyao-functions/src/redis-client"
+	"yaoyao-functions/src/common/database"
+	redisClient "yaoyao-functions/src/common/redis-client"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"

@@ -1,9 +1,11 @@
 package food
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
-	"yaoyao-functions/src/status"
+	"yaoyao-functions/src/common/message"
+	"yaoyao-functions/src/common/status"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +24,8 @@ func (h *FoodHandler) GetFoods(res *gin.Context) {
 	countStr := res.DefaultQuery("count", "10")
 	categoryID := res.DefaultQuery("category"	, "all")
 
+	fmt.Println("categoryID:", categoryID)
+
 	page, err := strconv.Atoi(pageStr)
 	if err != nil || page < 1 {
 		page = 1
@@ -33,6 +37,14 @@ func (h *FoodHandler) GetFoods(res *gin.Context) {
 	}
 
 	foods, total, err := h.foodService.GetFoodsByPageAndCount(languageCode, page, count, categoryID)
+
+	if len(foods) == 0 {
+		res.JSON(http.StatusNotFound, gin.H{
+			"status": status.NotFound,
+			"message": message.NoFoodsFound,
+		})
+		return
+	}
 
 	if err != nil {
 		res.JSON(http.StatusInternalServerError, gin.H{

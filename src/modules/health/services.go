@@ -1,6 +1,6 @@
 package health
 
-import "yaoyao-functions/src/status"
+import "yaoyao-functions/src/common/status"
 
 type Service interface {
 	CheckHealth() error

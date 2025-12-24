@@ -6,5 +6,8 @@ type ErrorResponse struct {
 }
 
 func (e *ErrorResponse) Error() string {
-	panic("unimplemented")
+	if e.Message != "" {
+		return e.Message
+	}
+	return string(e.Code)
 }

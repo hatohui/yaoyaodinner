@@ -13,12 +13,14 @@ func NewService(repo FoodRepository) FoodService {
 }
 
 func (s *service) GetFoodsByPageAndCount(languageCode string, pageNumber int, count int, categoryID string) ([]Food, int64, error) {
-	foods, err := s.repo.GetFoodsByPageAndCount(languageCode, pageNumber, count, categoryID)
+	total, err := s.repo.GetTotalFoodCount(categoryID)
+	
 	if err != nil {
 		return nil, 0, err
 	}
 
-	total, err := s.repo.GetTotalFoodCount(categoryID)
+	foods, err := s.repo.GetFoodsByPageAndCount(languageCode, pageNumber, count, categoryID)
+
 	if err != nil {
 		return nil, 0, err
 	}
