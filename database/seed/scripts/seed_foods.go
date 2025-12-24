@@ -30,7 +30,6 @@ func SeedFoods(db *gorm.DB, foodsDir string) error {
 			log.Printf("⚠️  Category not found for key: %s, skipping", categoryName)
 			continue
 		}
-
 		seeded := 0
 
 		for _, item := range dataset.Items {

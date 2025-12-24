@@ -1,6 +1,7 @@
 package config
 
 import (
+	"yaoyao-functions/src/modules/food"
 	"yaoyao-functions/src/modules/health"
 	"yaoyao-functions/src/modules/language"
 
@@ -19,9 +20,16 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	health.RegisterRoutes(api, healthHandler)
 
 	//language module
-	langRoute := api.Group("/language")
+	langRoute := api.Group("/languages")
 	languageRepo := language.NewRepository(db, redisClient)
 	languageService := language.NewService(languageRepo)
 	languageHandler := language.NewHandler(languageService)
 	language.RegisterRoutes(langRoute, languageHandler)
+
+	//food module
+	foodRoute := api.Group("/foods")
+	foodRepo := food.NewRepository(db, redisClient)
+	foodService := food.NewService(foodRepo)
+	foodHandler := food.NewHandler(foodService)
+	food.RegisterRoutes(foodRoute, foodHandler)
 }	

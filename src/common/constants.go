@@ -25,4 +25,7 @@ const (
 const (
 	REDIS_KEY_LANGUAGE_LIST  = "language:list"
 	REDIS_KEY_LANGUAGE_CODES = "language:codes"
+
+	REDIS_KEY_CATEGORY_LIST     = "category:list:%s"           // category:list:{language_code}
+	REDIS_KEY_FOOD_LIST_BY_PAGE = "food:list:page:%d:%s:%s:%d" // food:list:page:{page_number}:{language_code}:{category_id}:{count}
 )

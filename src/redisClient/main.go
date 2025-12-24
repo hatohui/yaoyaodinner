@@ -29,11 +29,17 @@ func Get[T any](client *redis.Client, key string) (T, error) {
 	return result, err
 }
 
-func Set(client *redis.Client, key string, value interface{}, expiration time.Duration) error {
+func Set(client *redis.Client, key string, value interface{}, expiration ...time.Duration) error {
 	ctx := context.Background()
 
+	exp := time.Duration(0)
+	
+	if len(expiration) > 0 {
+		exp = expiration[0]
+	}
+
 	if str, ok := value.(string); ok {
-		return client.Set(ctx, key, str, expiration).Err()
+		return client.Set(ctx, key, str, exp).Err()
 	}
 
 	data, err := utils.MarshalJSON(value)
@@ -41,5 +47,5 @@ func Set(client *redis.Client, key string, value interface{}, expiration time.Du
 		return err
 	}
 
-	return client.Set(ctx, key, data, expiration).Err()
+	return client.Set(ctx, key, data, exp).Err()
 }

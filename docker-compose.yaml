@@ -10,6 +10,9 @@ services:
       - 8080:8080
     env_file:
       - .env
+    environment:
+      - DB_HOST=yaoyaodb
+      - REDIS_URL=redis://:pass@yaoyaoredis:6379/0
     depends_on:
       - yaoyaodb
       - yaoyaoredis

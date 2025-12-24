@@ -22,7 +22,7 @@ func SeedCategories(db *gorm.DB, dataFilePath string) error {
 
 	// Seed each category
 	for i, catData := range data.Categories {
-		categoryID := generateCategoryID(catData.Name)
+		categoryID := fmt.Sprintf("%d", i+1)
 
 		cat := category.Category{
 			ID:          categoryID,
@@ -53,7 +53,6 @@ func SeedCategories(db *gorm.DB, dataFilePath string) error {
 				Description: translation.Description,
 			}
 
-			// Upsert translation (composite key: categoryId + language)
 			if err := db.Clauses(clause.OnConflict{
 				Columns:   []clause.Column{{Name: "category_id"}, {Name: "language"}},
 				DoUpdates: clause.AssignmentColumns([]string{"name", "description"}),

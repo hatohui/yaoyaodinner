@@ -25,3 +25,17 @@ func FindByColumn[T any](db *gorm.DB, table string, column string) ([]T, error) 
 
 	return models, nil
 }
+
+func FindByPageAndCountWhere[T any](db *gorm.DB, table string, pageNumber int, count int, where string, args ...interface{}) ([]T, error) {
+	var models []T
+
+	offset := (pageNumber - 1) * count
+
+	result := db.Table(table).Where(where, args...).Offset(offset).Limit(count).Find(&models)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return models, nil
+}
