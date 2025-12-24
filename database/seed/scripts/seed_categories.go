@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"yaoyao-functions/src/modules/category"
-	"yaoyao-functions/src/modules/category_translation"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -46,7 +45,7 @@ func SeedCategories(db *gorm.DB, dataFilePath string) error {
 			}
 
 			translation := translations[i]
-			catTranslation := category_translation.CategoryTranslation{
+			catTranslation := category.CategoryTranslation{
 				CategoryID:  cat.ID,
 				Language:    lang,
 				Name:        translation.Name,

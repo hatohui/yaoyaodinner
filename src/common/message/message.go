@@ -1,6 +1,6 @@
 package message
 
-const
-(
-	NoFoodsFound = "NO_FOODS_FOUND"
-) 
+const (
+	NoFoodsFound      = "NO_FOODS_FOUND"
+	NoCategoriesFound = "NO_CATEGORIES_FOUND"
+)

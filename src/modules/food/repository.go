@@ -59,14 +59,27 @@ func (r *repository) GetFoodsByPageAndCount(languageCode string, pageNumber int,
 }
 
 func (r *repository) GetTotalFoodCount(categoryID string) (int64, error) {
-	var total int64
+	key := fmt.Sprintf(common.REDIS_KEY_FOOD_COUNT, categoryID)
+
+	total, err := redisClient.Get[int64](r.redisClient, key)
+
+	if err == nil {
+		return total, nil
+	}
+
 	query := r.db.Table(common.TABLE_FOOD).Where("is_available = ?", true)
 
 	if categoryID != "all" && categoryID != "" {
 		query = query.Where("category_id = ?", categoryID)
 	}
 
-	err := query.Count(&total).Error
+	err = query.Count(&total).Error
+	if err != nil {
+		return 0, err
+	}
+
+	redisClient.Set(r.redisClient, key, total, 24*time.Hour)
+
 	return total, err
 }
 
@@ -76,8 +89,18 @@ func (r *repository) ClearFoodCache() error {
 	}
 
 	ctx := context.Background()
+	
+	// Clear food list cache
 	iter := r.redisClient.Scan(ctx, 0, "food:list:page:*", 0).Iterator()
+	for iter.Next(ctx) {
+		r.redisClient.Del(ctx, iter.Val())
+	}
+	if err := iter.Err(); err != nil {
+		return err
+	}
 
+	// Clear food count cache
+	iter = r.redisClient.Scan(ctx, 0, "food:count:*", 0).Iterator()
 	for iter.Next(ctx) {
 		r.redisClient.Del(ctx, iter.Val())
 	}

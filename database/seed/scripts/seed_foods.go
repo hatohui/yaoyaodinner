@@ -5,8 +5,6 @@ import (
 	"log"
 	"yaoyao-functions/src/modules/category"
 	"yaoyao-functions/src/modules/food"
-	"yaoyao-functions/src/modules/food_translation"
-	"yaoyao-functions/src/modules/food_variant"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -56,13 +54,13 @@ func SeedFoods(db *gorm.DB, foodsDir string) error {
 				}
 
 				if err := tx.Where("food_id = ?", foodID).
-					Delete(&food_variant.FoodVariant{}).Error; err != nil {
+					Delete(&food.FoodVariant{}).Error; err != nil {
 					return fmt.Errorf("failed to delete old variants for food %s: %w", item.Name, err)
 				}
 
 				for _, v := range item.Variants {
 					variantID := generateVariantID(foodID, v.Label)
-					variant := food_variant.FoodVariant{
+					variant := food.FoodVariant{
 						ID:          variantID,
 						FoodID:      foodID,
 						Label:       v.Label,
@@ -78,12 +76,12 @@ func SeedFoods(db *gorm.DB, foodsDir string) error {
 				}
 
 				if err := tx.Where("food_id = ?", foodID).
-					Delete(&food_translation.FoodTranslation{}).Error; err != nil {
+					Delete(&food.FoodTranslation{}).Error; err != nil {
 					return fmt.Errorf("failed to delete old translations for food %s: %w", item.Name, err)
 				}
 
 				for lang, trans := range item.Translations {
-					translation := food_translation.FoodTranslation{
+					translation := food.FoodTranslation{
 						FoodID:      foodID,
 						Language:    lang,
 						Name:        trans.Name,

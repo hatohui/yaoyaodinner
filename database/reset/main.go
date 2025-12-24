@@ -5,17 +5,13 @@ import (
 	"yaoyao-functions/src/config"
 	"yaoyao-functions/src/modules/account"
 	"yaoyao-functions/src/modules/category"
-	"yaoyao-functions/src/modules/category_translation"
 	"yaoyao-functions/src/modules/feedback"
 	"yaoyao-functions/src/modules/food"
-	"yaoyao-functions/src/modules/food_translation"
-	"yaoyao-functions/src/modules/food_variant"
 	"yaoyao-functions/src/modules/language"
 	"yaoyao-functions/src/modules/order"
 	"yaoyao-functions/src/modules/people"
 	"yaoyao-functions/src/modules/personal_note"
 	"yaoyao-functions/src/modules/preset_menu"
-	"yaoyao-functions/src/modules/preset_menu_food"
 	"yaoyao-functions/src/modules/table"
 )
 
@@ -37,7 +33,7 @@ func main() {
 	log.Println("Dropping all tables...")
 	
 	if err := db.Migrator().DropTable(
-		&preset_menu_food.PresetMenuFood{},
+		&preset_menu.PresetMenuFood{},
 		&preset_menu.PresetMenu{},
 		&order.Order{},
 	); err != nil {
@@ -48,9 +44,9 @@ func main() {
 	if err := db.Migrator().DropTable(
 		&feedback.Feedback{},
 		&personal_note.PersonalNote{},
-		&category_translation.CategoryTranslation{},
-		&food_translation.FoodTranslation{},
-		&food_variant.FoodVariant{},
+		&category.CategoryTranslation{},
+		&food.FoodTranslation{},
+		&food.FoodVariant{},
 		&account.Account{},
 	); err != nil {
 		log.Printf("Warning: Failed to drop some tables: %v", err)

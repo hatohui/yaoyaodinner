@@ -57,7 +57,7 @@ func (h *FoodHandler) GetFoods(res *gin.Context) {
 	res.JSON(http.StatusOK, gin.H{
 		"foods": foods,
 		"page":  page,
-		"count": count,
+		"count": len(foods),
 		"total": total,
 	})
 }
