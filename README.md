@@ -9,6 +9,28 @@
 - Runs on: Lambda serverless with gin http adapter
 - Region: `ap-southeast-1`
 
+## Project Architecture
+
+### System Architecture
+
+A serverless web app split into three layers: static frontend (SPA), API (edge + Lambda), and media delivery (Cloudinary).
+
+Components
+
+- Frontend: Static SPA on Cloudflare Pages; serves only static assets and calls APIs over HTTPS.
+- API: CloudFront (with AWS WAF) as API CDN -> forwards to AWS Lambda (Go + Gin) in `ap-southeast-1`.
+- Datastores: NeonDB (Postgres) for persistent relational data; Upstash Redis for cache/fast KV.
+- Media: Cloudinary for uploads and CDN; backend provides signed upload params and clients upload directly.
+
+Design principles
+
+- Clear separation of delivery networks (Cloudflare Pages for frontend, CloudFront+WAF for API, Cloudinary CDN for images) to minimize latency, reduce backend load, and simplify scaling.
+- Direct client uploads to Cloudinary (signed params) so media does not proxy through the backend.
+
+### Diagram
+
+![System Architecture](docs/architecture.png)
+
 ## Project Structure
 
 ```yaml
