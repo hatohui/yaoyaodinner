@@ -1,6 +1,6 @@
 import a from 'axios'
 
-const ApiUrl = import.meta.env.VITE_API_URL
+const ApiUrl = 'https://api.yaoyaodinner.party/'
 
 const axios = a.create({
 	baseURL: ApiUrl,
