@@ -31,7 +31,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./data/db:/data/db
+      - ./build/db:/data/db
     networks:
       - yaoyao-network
 

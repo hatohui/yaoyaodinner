@@ -4,6 +4,7 @@ import (
 	"yaoyao-functions/src/modules/category"
 	"yaoyao-functions/src/modules/food"
 	"yaoyao-functions/src/modules/health"
+	"yaoyao-functions/src/modules/images"
 	"yaoyao-functions/src/modules/language"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,12 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	healthService := health.NewService(healthRepo)
 	healthHandler := health.NewHandler(healthService)
 	health.RegisterRoutes(api, healthHandler)
+
+	//images module
+	imagesRoute := api.Group("/images")
+	imagesService := images.NewService()
+	imagesHandler := images.NewHandler(imagesService)
+	images.RegisterRoutes(imagesRoute, imagesHandler)
 
 	//language module
 	langRoute := api.Group("/languages")

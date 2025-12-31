@@ -39,6 +39,11 @@ resource "aws_lambda_function" "yaoyao_function" {
       DB_NAME     = local.doppler_db_name
       DB_SSLMODE  = local.doppler_db_sslmode
       REDIS_URL   = local.doppler_redis_url
+      BUCKET_NAME = var.bucket_name
+      CLOUDFLARE_ACCOUNT_ID        = local.doppler_cloudflare_account_id
+      CLOUDFLARE_ACCESS_KEY_ID     = local.doppler_cloudflare_access_key
+      CLOUDFLARE_SECRET_ACCESS_KEY = local.doppler_cloudflare_secret_key
+      
     }
   }
 

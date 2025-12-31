@@ -84,3 +84,8 @@ variable "cloudfront_url" {
   description = "CloudFront distribution URL"
   type        = string
 }
+
+variable "bucket_name" {
+  description = "S3 Bucket name for storing images"
+  type        = string
+}
