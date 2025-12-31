@@ -1,6 +1,6 @@
 # Yaoyao-functions
 
-[![Deployment](https://github.com/hatohui/yaoyao-functions/actions/workflows/deploy-lambda-code.yml/badge.svg)](https://github.com/hatohui/yaoyao-functions/actions/workflows/deploy-lambda-code.yml)
+[![backend-cd](https://github.com/hatohui/yaoyao-functions/actions/workflows/backend-cd.yml/badge.svg)](https://github.com/hatohui/yaoyao-functions/actions/workflows/backend-cd.yml)
 
 ## General details
 
