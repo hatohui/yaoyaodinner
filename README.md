@@ -4,8 +4,8 @@
 
 ## General details
 
-- Endpoint for [yaoyaoapi](https://dzz5db3jeuxcl.cloudfront.net/api/)
-- API for [yaoyao-dinner]()
+- Endpoint for [yaoyaoapi](https://api.yaoyaodinner.party)
+- API for [yaoyao-dinner](https://yaoyaodinner.party)
 - Runs on: Lambda serverless with gin http adapter
 - Region: `ap-southeast-1`
 
@@ -35,21 +35,62 @@ Design principles
 
 ```yaml
 .
-├── build/              # Compiled binaries
+├── backend/            # API (Go + Gin)
+│   ├── build/          # Compiled binaries
+│   ├── src/
+│   │   ├── cmd/        # CLI commands (migrate, seed, server)
+│   │   ├── common/     # Common constants and utilities
+│   │   ├── config/     # Configuration files (database, redis, modules)
+│   │   ├── modules/    # Feature modules
+│   │   │   └── health/ # Health check module
+│   │   └── status/     # HTTP status codes and responses
+│   ├── .air.toml       # Air configuration for hot-reload
+│   ├── docker-compose.yaml # Docker services configuration
+│   ├── Dockerfile      # Application container definition
+│   ├── go.mod          # Go module dependencies
+│   └── main.go         # Application entry point
+├── frontend/           # Vite + React + TypeScript SPA
+│   ├── src/            # Application source
+│   ├── public/         # Static assets
+│   ├── package.json    # Scripts & deps
+│   └── wrangler.toml   # Cloudflare Pages/Workers config
 ├── infra/              # Terraform infrastructure code
-├── src/
-│   ├── cmd/            # CLI commands (migrate, seed, server)
-│   ├── common/         # Common constants and utilities
-│   ├── config/         # Configuration files (database, redis, modules)
-│   ├── modules/        # Feature modules
-│   │   └── health/     # Health check module
-│   └── status/         # HTTP status codes and responses
-├── .air.toml           # Air configuration for hot-reload
-├── docker-compose.yaml # Docker services configuration
-├── Dockerfile          # Application container definition
-├── go.mod              # Go module dependencies
-└── main.go             # Application entry point
+├── docs/               # Design & architecture docs
+└── README.md           # This file
 ```
+
+## Frontend (Vite + React + TypeScript)
+
+The frontend is a Vite-powered React + TypeScript single-page application (uses Tailwind, GSAP, React Query, and i18n). It lives in the `frontend/` folder and is built into static assets (`dist/`) which are deployed to Cloudflare Pages/Workers (see `frontend/wrangler.toml`).
+
+Key files and notes:
+
+- `frontend/index.html` — SPA entry
+- `frontend/src/` — application source (React + TypeScript)
+- `frontend/package.json` — scripts and dependencies
+- `frontend/wrangler.toml` — Cloudflare Pages / Workers asset config (`assets.directory = "dist"`) and production env vars (e.g. `VITE_API_URL`).
+
+Useful scripts:
+
+- `npm install` — install dependencies
+- `npm run dev` — start Vite dev server (local development)
+- `npm run build` — TypeScript build + Vite production build (outputs `dist/`)
+- `npm run preview` — preview the production build locally
+
+Running locally:
+
+```bash
+cd frontend
+npm install
+npm run dev
+# To build and preview:
+npm run build
+npm run preview
+```
+
+Environment variables:
+
+- Use Vite env vars prefixed with `VITE_` for runtime configuration (for example `VITE_API_URL`). Production values are set in `frontend/wrangler.toml` or your CI/CD pipeline.
 
 ## Prerequisites
 
