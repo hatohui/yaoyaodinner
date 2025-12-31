@@ -1,6 +1,6 @@
 import a from 'axios'
 
-const ApiUrl = 'https://api.yaoyaodinner.party/'
+const ApiUrl = 'https://api.yaoyaodinner.party/api'
 
 const axios = a.create({
 	baseURL: ApiUrl,

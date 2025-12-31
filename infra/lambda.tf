@@ -56,15 +56,6 @@ resource "aws_lambda_function" "yaoyao_function" {
 resource "aws_lambda_function_url" "yaoyao_function_url" {
   function_name      = aws_lambda_function.yaoyao_function.function_name
   authorization_type = "AWS_IAM"
-
-  cors {
-    allow_credentials = false
-    allow_origins     = ["*"]
-    allow_methods     = ["*"]
-    allow_headers     = ["date", "keep-alive", "content-type"]
-    expose_headers    = ["keep-alive", "date"]
-    max_age           = 86400
-  }
 }
 
 resource "aws_lambda_permission" "allow_cloudfront" {
