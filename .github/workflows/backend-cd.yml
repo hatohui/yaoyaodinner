@@ -1,4 +1,4 @@
-name: Deploy Lambda Code Only
+name: backend-cd
 
 on:
   push:
@@ -41,10 +41,9 @@ jobs:
 
       - name: Upload Lambda artifact
         uses: actions/upload-artifact@v4
-
         with:
           name: lambda-zip-${{ github.sha }}
-          path: build/lambda.zip
+          path: backend/build/lambda.zip
           retention-days: 7
 
       - name: Update Lambda function code
