@@ -76,3 +76,4 @@ doppler.yaml
 .doppler.yaml
 # Database data
 data/db/
+build

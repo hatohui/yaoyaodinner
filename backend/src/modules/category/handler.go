@@ -41,3 +41,35 @@ func (h *CategoryHandler) GetAllCategories(res *gin.Context) {
 		"categories": categories,
 	})
 }
+
+func (h *CategoryHandler) GetCategoryByID(res *gin.Context) {
+	languageCode := res.DefaultQuery("lang", "en")
+	categoryId := res.Param("id")
+
+	category, err := h.categoryService.GetCategoryByID(categoryId, languageCode)
+
+	if err != nil {
+		res.JSON(http.StatusInternalServerError, gin.H{
+			"status":  status.InternalServer,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	if category == nil {
+		res.JSON(http.StatusNotFound, gin.H{
+			"status":  status.NotFound,
+			"message": message.NoCategoriesFound,
+		})
+		return
+	}
+
+	res.JSON(http.StatusOK, gin.H{
+		"id": 		 category.ID,
+		"name":       category.Name,
+		"description": category.Description,
+	})
+}
+
+func (h *CategoryHandler) PostCategory(res *gin.Context) {
+}

@@ -6,4 +6,5 @@ import (
 
 func RegisterRoutes(router *gin.RouterGroup, c *CategoryHandler) {
 	router.GET("", c.GetAllCategories)
+	router.GET("/:id", c.GetCategoryByID)
 }

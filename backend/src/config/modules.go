@@ -14,6 +14,7 @@ import (
 func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	api := router.Group("/api")
 	
+	//public modules
 	//health module
 	healthRepo := health.NewRepository(db, redisClient)
 	healthService := health.NewService(healthRepo)
