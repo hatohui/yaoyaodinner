@@ -1,8 +1,8 @@
-import axios from 'axios'
+import a from 'axios'
 
 const ApiUrl = import.meta.env.VITE_API_URL
 
-const axiosInstance = axios.create({
+const axios = a.create({
 	baseURL: ApiUrl,
 	timeout: 10000,
 	headers: {
@@ -10,4 +10,4 @@ const axiosInstance = axios.create({
 	},
 })
 
-export default axiosInstance
+export default axios
