@@ -14,21 +14,9 @@ func NewService(repo LanguageRepository) LanguageService {
 }
 
 func (s *languageService) GetAllLanguages() ([]Language, error) {
-	languages, err := s.languageRepo.FetchAllLanguages()
-	
-	if err != nil {
-		return nil, err
-	}
-
-	return languages, nil
+	return s.languageRepo.FetchAllLanguages()
 }
 
 func (s *languageService) GetLanguageCodeList() ([]string, error) {
-	languages, err := s.languageRepo.GetLanguageCodeList()
-	
-	if err != nil {
-		return nil, err
-	}
-
-	return languages, nil
-}
+	return s.languageRepo.GetLanguageCodeList()
+} 

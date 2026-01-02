@@ -30,15 +30,17 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 
 	//language module
 	langRoute := api.Group("/languages")
-	languageRepo := language.NewRepository(db, redisClient)
+	languageRepo := language.NewRepository(db)
 	languageService := language.NewService(languageRepo)
+	languageService = language.NewCachedService(languageService, redisClient)
 	languageHandler := language.NewHandler(languageService)
 	language.RegisterRoutes(langRoute, languageHandler)
 
 	//category module
 	categoryRoute := api.Group("/categories")
-	categoryRepo := category.NewRepository(db, redisClient)
+	categoryRepo := category.NewRepository(db)
 	categoryService := category.NewService(categoryRepo)
+	categoryService = category.NewCachedService(categoryService, redisClient)
 	categoryHandler := category.NewHandler(categoryService)
 	category.RegisterRoutes(categoryRoute, categoryHandler)
 

@@ -3,7 +3,6 @@ package category
 type CategoryService interface {
 	GetAllCategories(languageCode string) ([]Category, error)
 	GetCategoryByID(categoryID string, languageCode string) (*Category, error)
-	ClearCategoryCache() error
 }
 
 type service struct {
@@ -15,26 +14,9 @@ func NewService(repo CategoryRepository) CategoryService {
 }
 
 func (s *service) GetAllCategories(languageCode string) ([]Category, error) {
-	categories, err := s.repo.FetchAllCategories(languageCode)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return categories, nil
-}
-
-
-func (s *service) ClearCategoryCache() error {
-	return s.repo.ClearCategoryCache()
+	return s.repo.FetchAllCategories(languageCode)
 }
 
 func (s *service) GetCategoryByID(categoryID string, languageCode string) (*Category, error) {
-	category , err := s.repo.FetchCategoryByID(categoryID, languageCode)
-	
-	if err != nil {
-		return nil, err
-	}
-
-	return category, nil
-}
+	return s.repo.FetchCategoryByID(categoryID, languageCode)
+} 
