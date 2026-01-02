@@ -6,6 +6,7 @@ import (
 	"yaoyao-functions/src/modules/health"
 	"yaoyao-functions/src/modules/images"
 	"yaoyao-functions/src/modules/language"
+	"yaoyao-functions/src/modules/people"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -50,4 +51,11 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	foodService := food.NewService(foodRepo)
 	foodHandler := food.NewHandler(foodService)
 	food.RegisterRoutes(foodRoute, foodHandler)
+
+	//people module
+	peopleRoute := api.Group("/people")
+	peopleRepo := people.NewRepository(db)
+	peopleService := people.NewService(peopleRepo)
+	peopleHandler := people.NewHandler(peopleService)
+	people.RegisterRoutes(peopleRoute, peopleHandler)
 }	
