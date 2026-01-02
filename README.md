@@ -267,8 +267,6 @@ This command will:
 
 ### Reset Database (Destructive)
 
-⚠️ **WARNING: This will delete ALL data!** Use only in development.
-
 ```bash
 go run cmd/reset/main.go
 ```
