@@ -35,7 +35,6 @@ vendor/
 .local.env
 
 # IDEs / editors
-.vscode/
 .idea/
 *.iml
 
@@ -93,7 +92,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store

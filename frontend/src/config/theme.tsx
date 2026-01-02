@@ -27,8 +27,9 @@ const ThemeProvider = ({
 	}, [])
 
 	const toggleTheme = () => {
-		setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'))
-		localStorage.save(THEME_STORAGE_KEY, theme === 'light' ? 'dark' : 'light')
+		const newTheme = theme === 'light' ? 'dark' : 'light'
+		setTheme(newTheme)
+		localStorage.save(THEME_STORAGE_KEY, newTheme)
 	}
 
 	return (
@@ -38,7 +39,6 @@ const ThemeProvider = ({
 	)
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = (): ThemeContextType => {
 	const context = useContext(ThemeContext)
 	if (!context) {

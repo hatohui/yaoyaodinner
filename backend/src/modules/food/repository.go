@@ -1,40 +1,25 @@
 package food
 
 import (
-	"context"
-	"fmt"
-	"time"
 	"yaoyao-functions/src/common"
-	redisClient "yaoyao-functions/src/common/redis-client"
 
-	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
 type FoodRepository interface {
 	GetFoodsByPageAndCount(languageCode string, pageNumber int, count int, categoryID string) ([]Food, error)
 	GetTotalFoodCount(categoryID string) (int64, error)
-	ClearFoodCache() error
 }
 
 type repository struct {
-	db          *gorm.DB
-	redisClient *redis.Client
+	db *gorm.DB
 }
 
-func NewRepository(db *gorm.DB, redisClient *redis.Client) FoodRepository {
-	return &repository{db: db, redisClient: redisClient}
+func NewRepository(db *gorm.DB) FoodRepository {
+	return &repository{db: db}
 }
 
 func (r *repository) GetFoodsByPageAndCount(languageCode string, pageNumber int, count int, categoryID string) ([]Food, error) {
-	key := fmt.Sprintf(common.REDIS_KEY_FOOD_LIST_BY_PAGE, pageNumber, languageCode, categoryID, count)
-
-	foods, err := redisClient.Get[[]Food](r.redisClient, key)
-
-	if err == nil {
-			return foods, nil
-	}
-
 	offset := (pageNumber - 1) * count
 	var foodList []Food
 
@@ -47,25 +32,17 @@ func (r *repository) GetFoodsByPageAndCount(languageCode string, pageNumber int,
 		query = query.Where("food.category_id = ?", categoryID)
 	}
 
-	err = query.Offset(offset).Limit(count).Find(&foodList).Error
+	err := query.Offset(offset).Limit(count).Find(&foodList).Error
 
 	if err != nil {
 		return nil, err
 	}
 
-	redisClient.Set(r.redisClient, key, foodList, 24*time.Hour)
-
 	return foodList, nil
 }
 
 func (r *repository) GetTotalFoodCount(categoryID string) (int64, error) {
-	key := fmt.Sprintf(common.REDIS_KEY_FOOD_COUNT, categoryID)
-
-	total, err := redisClient.Get[int64](r.redisClient, key)
-
-	if err == nil {
-		return total, nil
-	}
+	var total int64
 
 	query := r.db.Table(common.TABLE_FOOD).Where("is_available = ?", true)
 
@@ -73,37 +50,11 @@ func (r *repository) GetTotalFoodCount(categoryID string) (int64, error) {
 		query = query.Where("category_id = ?", categoryID)
 	}
 
-	err = query.Count(&total).Error
+	err := query.Count(&total).Error
 	if err != nil {
 		return 0, err
 	}
 
-	redisClient.Set(r.redisClient, key, total, 24*time.Hour)
-
-	return total, err
+	return total, nil
 }
 
-func (r *repository) ClearFoodCache() error {
-	if r.redisClient == nil {
-		return nil
-	}
-
-	ctx := context.Background()
-	
-	// Clear food list cache
-	iter := r.redisClient.Scan(ctx, 0, "food:list:page:*", 0).Iterator()
-	for iter.Next(ctx) {
-		r.redisClient.Del(ctx, iter.Val())
-	}
-	if err := iter.Err(); err != nil {
-		return err
-	}
-
-	// Clear food count cache
-	iter = r.redisClient.Scan(ctx, 0, "food:count:*", 0).Iterator()
-	for iter.Next(ctx) {
-		r.redisClient.Del(ctx, iter.Val())
-	}
-
-	return iter.Err()
-}

@@ -47,8 +47,9 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 
 	//food module
 	foodRoute := api.Group("/foods")
-	foodRepo := food.NewRepository(db, redisClient)
+	foodRepo := food.NewRepository(db)
 	foodService := food.NewService(foodRepo)
+	foodService = food.NewCachedService(foodService, redisClient)
 	foodHandler := food.NewHandler(foodService)
 	food.RegisterRoutes(foodRoute, foodHandler)
 

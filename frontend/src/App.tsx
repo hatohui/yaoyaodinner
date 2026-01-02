@@ -2,7 +2,7 @@ import React from 'react'
 import registerGSAPPlugins from './config/registerGSAPPlugins'
 import { RouterProvider } from 'react-router'
 import router from './config/dynamicRouter'
-import './config/i18n'
+import LanguageProvider from './config/i18n'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ThemeProvider from './config/theme'
 
@@ -13,9 +13,11 @@ const App = (): React.ReactNode => {
 
 	return (
 		<QueryClientProvider client={client}>
-			<ThemeProvider>
-				<RouterProvider router={router} />
-			</ThemeProvider>
+			<LanguageProvider>
+				<ThemeProvider>
+					<RouterProvider router={router} />
+				</ThemeProvider>
+			</LanguageProvider>
 		</QueryClientProvider>
 	)
 }

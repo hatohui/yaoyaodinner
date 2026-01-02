@@ -1,0 +1,15 @@
+{
+	"welcome": "欢迎使用我们的应用程序！",
+	"login": "登录",
+	"logout": "登出",
+	"signup": "注册",
+	"username": "用户名",
+	"password": "密码",
+	"email": "邮箱",
+	"submit": "提交",
+	"cancel": "取消",
+	"profile": "个人资料",
+	"settings": "设置",
+	"home": "首页",
+	"select_language": "选择语言"
+}

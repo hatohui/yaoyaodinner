@@ -1,15 +1,15 @@
 import React from 'react'
-import { useTheme } from '../config/theme'
+import { LanguageSelector } from '@/components/common/LanguageSelector'
+import { ThemeToggle } from '@/components/common/ThemeToggle'
 
 const LandingPage = (): React.JSX.Element => {
-	const [theme, toggle] = useTheme()
-
 	return (
 		<div className='dark:bg-green-300'>
 			Landing page.
 			<div className=''>Normal mode I think</div>
-			<button onClick={toggle}>Current theme: {theme}</button>
 			<div className='dark:text-red-400'>Dark mode</div>
+			<ThemeToggle />
+			<LanguageSelector />
 		</div>
 	)
 }

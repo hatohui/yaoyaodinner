@@ -1,6 +1,8 @@
 import a from 'axios'
 
-const ApiUrl = 'https://api.yaoyaodinner.party/api'
+const ApiUrl = import.meta.env.DEV
+	? 'http://localhost:8080/api'
+	: 'https://api.yaoyaodinner.party/api'
 
 const axios = a.create({
 	baseURL: ApiUrl,
