@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/common/ThemeToggle'
 import VideoPlayer from '@/components/common/VideoPlayer'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
+import { ASSET_URL } from '@/common/app'
 
 const LandingPage = (): React.JSX.Element => {
 	return (
@@ -21,7 +22,7 @@ const LandingPage = (): React.JSX.Element => {
 			<div className='fixed h-screen w-screen inset-0 z-0'>
 				<VideoPlayer
 					className='absolute inset-0'
-					src='/videos/banner.mp4'
+					src={`${ASSET_URL}/banner.mp4`}
 					muted
 					autoPlay
 					loop
