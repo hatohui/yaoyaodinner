@@ -10,6 +10,9 @@ const LandingPage = (): React.JSX.Element => {
 	return (
 		<div className='dark:bg-green-300'>
 			<div className='absolute top-4 right-4 h-10 flex gap-2 z-10'>
+				<Link to='/menu'>
+					<Button variant='outline'>Menu</Button>
+				</Link>
 				<Link to='/health'>
 					<Button variant='outline'>Health</Button>
 				</Link>

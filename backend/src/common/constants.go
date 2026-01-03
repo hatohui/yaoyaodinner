@@ -30,4 +30,8 @@ const (
 	REDIS_KEY_CATEGORY_ID       = "category:id:%s:%s"          // category:id:{category_id}:{language_code}
 	REDIS_KEY_FOOD_LIST_BY_PAGE = "food:list:page:%d:%s:%s:%d" // food:list:page:{page_number}:{language_code}:{category_id}:{count}
 	REDIS_KEY_FOOD_COUNT        = "food:count:%s"              // food:count:{category_id}
+
+	// Cache invalidation patterns
+	REDIS_PATTERN_FOOD_BY_CATEGORY = "food:list:page:*:*:%s:*" // food:list:page:*:*:{category_id}:*
+	REDIS_PATTERN_FOOD_ALL         = "food:list:page:*"        // food:list:page:*
 )

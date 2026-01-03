@@ -3,22 +3,8 @@
   "items": [
     {
       "name": "Pickles with Bean Curd Soup",
-      "imageUrl": "https://trello.com/1/cards/68e68c423b1790b2d18ce922/attachments/68e68d4dfc45aba22fdc03fc/download/page27_img2.png",
       "description": "Homemade pickles with bean curd soup.",
-      "translations": {
-        "vi": {
-          "name": "Canh đậu phụ dưa muối",
-          "description": "Canh đậu phụ với dưa muối tự làm."
-        },
-        "th": {
-          "name": "ซุปเต้าหู้กับผักดอง",
-          "description": "ซุปเต้าหู้กับผักดองโฮมเมด"
-        },
-        "zh": {
-          "name": "咸菜豆腐汤",
-          "description": "自制咸菜豆腐汤。"
-        }
-      },
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/pickles-with-bean-curd-soup-1767402240.png",
       "variants": [
         {
           "label": "S",
@@ -32,26 +18,26 @@
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
+      ],
+      "translations": {
+        "th": {
+          "name": "ซุปเต้าหู้กับผักดอง",
+          "description": "ซุปเต้าหู้กับผักดองโฮมเมด"
+        },
+        "vi": {
+          "name": "Canh đậu phụ dưa muối",
+          "description": "Canh đậu phụ với dưa muối tự làm."
+        },
+        "zh": {
+          "name": "咸菜豆腐汤",
+          "description": "自制咸菜豆腐汤。"
+        }
+      }
     },
     {
       "name": "Hot Pepper Pig Stomach Soup",
-      "imageUrl": "https://trello.com/1/cards/68e68c423b1790b2d18ce922/attachments/68e68d4e27382d56716f6307/download/page27_img3.png",
       "description": "Peppery soup with tender pig stomach slices.",
-      "translations": {
-        "vi": {
-          "name": "Canh bao tử heo tiêu đen",
-          "description": "Canh bao tử heo với tiêu đen."
-        },
-        "th": {
-          "name": "ซุปกระเพาะหมูพริกไทยดำ",
-          "description": "ซุปกระเพาะหมูที่มีพริกไทยดำ."
-        },
-        "zh": {
-          "name": "胡椒猪肚汤",
-          "description": "胡椒猪肚汤。"
-        }
-      },
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/hot-pepper-pig-stomach-soup-1767402241.png",
       "variants": [
         {
           "label": "S",
@@ -65,26 +51,59 @@
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
+      ],
+      "translations": {
+        "th": {
+          "name": "ซุปกระเพาะหมูพริกไทยดำ",
+          "description": "ซุปกระเพาะหมูที่มีพริกไทยดำ."
+        },
+        "vi": {
+          "name": "Canh bao tử heo tiêu đen",
+          "description": "Canh bao tử heo với tiêu đen."
+        },
+        "zh": {
+          "name": "胡椒猪肚汤",
+          "description": "胡椒猪肚汤。"
+        }
+      }
     },
     {
       "name": "Tomato Egg Soup",
-      "imageUrl": "https://trello.com/1/cards/68e68c423b1790b2d18ce922/attachments/68e68d5129efdd00ae445470/download/page27_img4.png",
       "description": "Egg soup with tomatoes.",
-      "translations": {
-        "vi": {
-          "name": "Canh trứng cà chua",
-          "description": "Canh trứng với cà chua."
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/tomato-egg-soup-1767402243.png",
+      "variants": [
+        {
+          "label": "S",
+          "price": 22,
+          "currency": "RM",
+          "isSeasonal": false
         },
+        {
+          "label": "L",
+          "price": 34,
+          "currency": "RM",
+          "isSeasonal": false
+        }
+      ],
+      "translations": {
         "th": {
           "name": "ซุปไข่มะเขือเทศ",
           "description": "ซุปไข่กับมะเขือเทศ."
+        },
+        "vi": {
+          "name": "Canh trứng cà chua",
+          "description": "Canh trứng với cà chua."
         },
         "zh": {
           "name": "番茄蛋花汤",
           "description": "番茄蛋花汤。"
         }
-      },
+      }
+    },
+    {
+      "name": "Bitter Gourd Soup",
+      "description": "Bitter gourd soup.",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/bitter-gourd-soup-1767402244.png",
       "variants": [
         {
           "label": "S",
@@ -98,26 +117,26 @@
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
-    },
-    {
-      "name": "Bitter Gourd Soup",
-      "imageUrl": "https://trello.com/1/cards/68e68c423b1790b2d18ce922/attachments/68e68d4b2117ca50ab1cf16e/download/page27_img1.png",
-      "description": "Bitter gourd soup.",
+      ],
       "translations": {
-        "vi": {
-          "name": "Canh khổ qua",
-          "description": "Canh khổ qua."
-        },
         "th": {
           "name": "ซุปมะระ",
           "description": "ซุปมะระ."
+        },
+        "vi": {
+          "name": "Canh khổ qua",
+          "description": "Canh khổ qua."
         },
         "zh": {
           "name": "苦瓜汤",
           "description": "苦瓜汤。"
         }
-      },
+      }
+    },
+    {
+      "name": "Seaweed Soup",
+      "description": "Seaweed soup.",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/seaweed-soup-1767402245.png",
       "variants": [
         {
           "label": "S",
@@ -131,66 +150,48 @@
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
-    },
-    {
-      "name": "Seaweed Soup",
-      "imageUrl": "https://trello.com/1/cards/68e68c423b1790b2d18ce922/attachments/68e68d5272ab2b7a4771775e/download/page27_img5.png",
-      "description": "Seaweed soup.",
+      ],
       "translations": {
-        "vi": {
-          "name": "Canh rong biển",
-          "description": "Canh rong biển."
-        },
         "th": {
           "name": "ซุปสาหร่ายทะเล",
           "description": "ซุปสาหร่ายทะเล."
+        },
+        "vi": {
+          "name": "Canh rong biển",
+          "description": "Canh rong biển."
         },
         "zh": {
           "name": "紫菜汤",
           "description": "紫菜汤。"
         }
-      },
-      "variants": [
-        {
-          "label": "S",
-          "price": 22,
-          "currency": "RM",
-          "isSeasonal": false
-        },
-        {
-          "label": "L",
-          "price": 34,
-          "currency": "RM",
-          "isSeasonal": false
-        }
-      ]
+      }
     },
     {
       "name": "Double Boiled Soup",
-      "imageUrl": "https://trello.com/1/cards/68e68c423b1790b2d18ce922/attachments/68e68d536bce8c9f7f6321c2/download/page27_img6.png",
       "description": "Double boiled soup.",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/double-boiled-soup-1767402246.png",
+      "variants": [
+        {
+          "label": "",
+          "price": 14,
+          "currency": "RM",
+          "isSeasonal": false
+        }
+      ],
       "translations": {
-        "vi": {
-          "name": "Canh tiềm hầm",
-          "description": "Canh tiềm hầm."
-        },
         "th": {
           "name": "ซุปตุ๋นสองครั้ง",
           "description": "ซุปตุ๋นสองครั้ง."
+        },
+        "vi": {
+          "name": "Canh tiềm hầm",
+          "description": "Canh tiềm hầm."
         },
         "zh": {
           "name": "炖汤",
           "description": "炖汤。"
         }
-      },
-      "variants": [
-        {
-          "price": 14,
-          "currency": "RM",
-          "isSeasonal": false
-        }
-      ]
+      }
     }
   ]
 }

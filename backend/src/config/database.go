@@ -31,7 +31,7 @@ func Connect(connectionString string) (*gorm.DB, error) {
 
 
 func ConnectWithEnvForMigration() (*gorm.DB, error) {
-	host := "localhost"
+	host := GetEnvOr("DB_HOST", "localhost")
 	port := GetEnvOr("DB_PORT", "5432")
 	user := GetEnvOr("DB_USER", "admin")
 	password := GetEnvOr("DB_PASSWORD", "password")

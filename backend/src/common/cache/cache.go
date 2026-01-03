@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"context"
 	"time"
 	redisClient "yaoyao-functions/src/common/redis-client"
 
@@ -25,4 +26,12 @@ func GetOrSet[T any](client *redis.Client, key string, expiration time.Duration,
 
 	_ = redisClient.Set(client, key, val, expiration)
 	return val, nil
+}
+
+// Set stores a value in the cache with the given key and expiration
+func Set[T any](client *redis.Client, key string, value T, expiration time.Duration, ctx context.Context) error {
+	if client == nil {
+		return nil
+	}
+	return redisClient.Set(client, key, value, expiration)
 }

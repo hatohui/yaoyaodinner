@@ -4,120 +4,106 @@
     {
       "name": "Fried Squid",
       "description": "Crispy fried squid.",
-      "imageUrl": "https://trello.com/1/cards/68e68b373a2a72c68f4739e0/attachments/68e68b50e7c6c9d8fd5c2992/download/page15_img3.png",
-      "translations": {
-        "vi": {
-          "name": "Mực chiên giòn",
-          "description": "Mực chiên giòn."
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/fried-squid-1767402248.png",
+      "variants": [
+        {
+          "label": "S",
+          "price": 35,
+          "currency": "RM",
+          "isSeasonal": false
         },
+        {
+          "label": "L",
+          "price": 53,
+          "currency": "RM",
+          "isSeasonal": false
+        }
+      ],
+      "translations": {
         "th": {
           "name": "ปลาหมึกทอด",
           "description": "ปลาหมึกทอดกรอบ."
+        },
+        "vi": {
+          "name": "Mực chiên giòn",
+          "description": "Mực chiên giòn."
         },
         "zh": {
           "name": "炸苏东",
           "description": "炸苏东."
         }
-      },
+      }
+    },
+    {
+      "name": "Fried Squid with Garlic",
+      "description": "Crispy fried squid with garlic.",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/fried-squid-with-garlic-1767402249.png",
       "variants": [
         {
           "label": "S",
-          "price": 35,
+          "price": 38,
           "currency": "RM",
           "isSeasonal": false
         },
         {
           "label": "L",
-          "price": 53,
+          "price": 58,
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
-    },
-    {
-      "name": "Fried Squid with Garlic",
-      "description": "Crispy fried squid with garlic.",
-      "imageUrl": "https://trello.com/1/cards/68e68b373a2a72c68f4739e0/attachments/68e68b511f804f1535ec4b08/download/page15_img4.png",
+      ],
       "translations": {
-        "vi": {
-          "name": "Mực chiên tỏi",
-          "description": "Mực chiên giòn với tỏi."
-        },
         "th": {
           "name": "ปลาหมึกทอดกระเทียม",
           "description": "ปลาหมึกทอดกรอบกับกระเทียม."
+        },
+        "vi": {
+          "name": "Mực chiên tỏi",
+          "description": "Mực chiên giòn với tỏi."
         },
         "zh": {
           "name": "蒜香苏东",
           "description": "蒜香炸苏东."
         }
-      },
+      }
+    },
+    {
+      "name": "Assam Squid",
+      "description": "Stir-fried squid in tangy assam sauce.",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/assam-squid-1767402250.png",
       "variants": [
         {
           "label": "S",
-          "price": 38,
+          "price": 35,
           "currency": "RM",
           "isSeasonal": false
         },
         {
           "label": "L",
-          "price": 58,
+          "price": 53,
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
-    },
-    {
-      "name": "Assam Squid",
-      "description": "Stir-fried squid in tangy assam sauce.",
-      "imageUrl": "https://trello.com/1/cards/68e68b373a2a72c68f4739e0/attachments/68e68b4ed716eb23bc2b6f8d/download/page15_img2.png",
+      ],
       "translations": {
-        "vi": {
-          "name": "Mực nấu me (Assam)",
-          "description": "Mực xào với sốt me chua."
-        },
         "th": {
           "name": "ปลาหมึกอาซัม",
           "description": "ปลาหมึกผัดซอสอาซัม."
+        },
+        "vi": {
+          "name": "Mực nấu me (Assam)",
+          "description": "Mực xào với sốt me chua."
         },
         "zh": {
           "name": "亚参苏东",
           "description": "亚参炒苏东."
         }
-      },
-      "variants": [
-        {
-          "label": "S",
-          "price": 35,
-          "currency": "RM",
-          "isSeasonal": false
-        },
-        {
-          "label": "L",
-          "price": 53,
-          "currency": "RM",
-          "isSeasonal": false
-        }
-      ]
+      }
     },
     {
       "name": "Stir-Fried Squid with Creamy Butter Salted Egg",
       "description": "Squid stir-fried with creamy butter salted egg sauce.",
-      "imageUrl": "https://trello.com/1/cards/68e68b373a2a72c68f4739e0/attachments/68e68b4be1ff371a913b9d0e/download/page15_img5.png",
-      "translations": {
-        "vi": {
-          "name": "Mực xào trứng muối bơ sữa",
-          "description": "Mực xào với sốt trứng muối bơ sữa."
-        },
-        "th": {
-          "name": "ปลาหมึกผัดไข่เค็มครีมบัตเตอร์",
-          "description": "ปลาหมึกผัดกับซอสไข่เค็มครีมบัตเตอร์."
-        },
-        "zh": {
-          "name": "咸蛋湿奶油苏东",
-          "description": "咸蛋奶油炒苏东."
-        }
-      },
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/stir-fried-squid-with-creamy-butter-salted-egg-1767402253.png",
       "variants": [
         {
           "label": "S",
@@ -131,26 +117,26 @@
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
+      ],
+      "translations": {
+        "th": {
+          "name": "ปลาหมึกผัดไข่เค็มครีมบัตเตอร์",
+          "description": "ปลาหมึกผัดกับซอสไข่เค็มครีมบัตเตอร์."
+        },
+        "vi": {
+          "name": "Mực xào trứng muối bơ sữa",
+          "description": "Mực xào với sốt trứng muối bơ sữa."
+        },
+        "zh": {
+          "name": "咸蛋湿奶油苏东",
+          "description": "咸蛋奶油炒苏东."
+        }
+      }
     },
     {
       "name": "Stir-Fried Squid 'Gong-Bo' Style",
       "description": "Spicy stir-fried squid with dried chili.",
-      "imageUrl": "https://trello.com/1/cards/68e68b373a2a72c68f4739e0/attachments/68e68b4d7caeef264c199d5b/download/page15_img1.png",
-      "translations": {
-        "vi": {
-          "name": "Mực xào kiểu Cung Bảo (Gong-Bo)",
-          "description": "Mực xào cay với ớt khô."
-        },
-        "th": {
-          "name": "ปลาหมึกผัดสไตล์กงเปา",
-          "description": "ปลาหมึกผัดเผ็ดกับพริกแห้ง."
-        },
-        "zh": {
-          "name": "宫保苏东",
-          "description": "宫保炒苏东."
-        }
-      },
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/stir-fried-squid-'gong-bo'-style-1767402255.png",
       "variants": [
         {
           "label": "S",
@@ -164,7 +150,21 @@
           "currency": "RM",
           "isSeasonal": false
         }
-      ]
+      ],
+      "translations": {
+        "th": {
+          "name": "ปลาหมึกผัดสไตล์กงเปา",
+          "description": "ปลาหมึกผัดเผ็ดกับพริกแห้ง."
+        },
+        "vi": {
+          "name": "Mực xào kiểu Cung Bảo (Gong-Bo)",
+          "description": "Mực xào cay với ớt khô."
+        },
+        "zh": {
+          "name": "宫保苏东",
+          "description": "宫保炒苏东."
+        }
+      }
     }
   ]
 }

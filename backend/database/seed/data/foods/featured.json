@@ -4,7 +4,7 @@
     {
       "name": "Braised Stuffed Bean Curd",
       "description": "Soft tofu stuffed with minced meat, braised in savory golden sauce.",
-      "imageUrl": "https://trello.com/1/cards/68e688204f3ccac1bc5f631c/attachments/68e68826b126493664759f3c/download/page1_img2.png",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/braised-stuffed-bean-curd-1767402118.png",
       "variants": [
         {
           "label": "6 pcs",
@@ -20,13 +20,13 @@
         }
       ],
       "translations": {
-        "vi": {
-          "name": "Đậu hũ nhồi thịt kho vàng",
-          "description": "Đậu hũ mềm nhồi thịt băm, om trong nước sốt vàng thơm đậm đà."
-        },
         "th": {
           "name": "เต้าหู้ยัดไส้ตุ๋นซอสทอง",
           "description": "เต้าหู้เนื้อนุ่มยัดไส้หมูสับ ตุ๋นในซอสทองรสเข้มข้น"
+        },
+        "vi": {
+          "name": "Đậu hũ nhồi thịt kho vàng",
+          "description": "Đậu hũ mềm nhồi thịt băm, om trong nước sốt vàng thơm đậm đà."
         },
         "zh": {
           "name": "高州黄金卜",
@@ -37,7 +37,7 @@
     {
       "name": "Braised Fried Pork Belly with Yam",
       "description": "Crispy fried pork belly layered with yam and braised till tender.",
-      "imageUrl": "https://trello.com/1/cards/68e688204f3ccac1bc5f631c/attachments/68e68824e1e301296659b38b/download/page1_img1.png",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/braised-fried-pork-belly-with-yam-1767402120.png",
       "variants": [
         {
           "label": "4 pairs",
@@ -53,13 +53,13 @@
         }
       ],
       "translations": {
-        "vi": {
-          "name": "Thịt ba chỉ kho khoai môn",
-          "description": "Thịt ba chỉ chiên giòn kho cùng khoai môn mềm thơm vị quê nhà."
-        },
         "th": {
           "name": "หมูสามชั้นตุ๋นเผือก",
           "description": "หมูสามชั้นทอดกรอบแล้วตุ๋นกับเผือก หอมหวานกลมกล่อม"
+        },
+        "vi": {
+          "name": "Thịt ba chỉ kho khoai môn",
+          "description": "Thịt ba chỉ chiên giòn kho cùng khoai môn mềm thơm vị quê nhà."
         },
         "zh": {
           "name": "家乡扣肉",
@@ -70,19 +70,29 @@
     {
       "name": "Homemade Salted Chicken",
       "description": "Traditional salted chicken steamed to juicy perfection.",
-      "imageUrl": "https://trello.com/1/cards/68e688204f3ccac1bc5f631c/attachments/68e6882ab7bfad18ecde07b1/download/page2_img2.png",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/homemade-salted-chicken-1767402121.png",
       "variants": [
-        { "label": "half", "price": 45, "currency": "RM", "isSeasonal": false },
-        { "label": "whole", "price": 90, "currency": "RM", "isSeasonal": false }
+        {
+          "label": "half",
+          "price": 45,
+          "currency": "RM",
+          "isSeasonal": false
+        },
+        {
+          "label": "whole",
+          "price": 90,
+          "currency": "RM",
+          "isSeasonal": false
+        }
       ],
       "translations": {
-        "vi": {
-          "name": "Gà muối quê nhà",
-          "description": "Gà muối đậm vị, hấp chín giữ nguyên hương thơm tự nhiên."
-        },
         "th": {
           "name": "ไก่เค็มโฮมเมด",
           "description": "ไก่หมักเกลือสูตรบ้านๆ นึ่งให้เนื้อนุ่มชุ่มฉ่ำ"
+        },
+        "vi": {
+          "name": "Gà muối quê nhà",
+          "description": "Gà muối đậm vị, hấp chín giữ nguyên hương thơm tự nhiên."
         },
         "zh": {
           "name": "家乡咸鸡",
@@ -93,7 +103,7 @@
     {
       "name": "Braised Stuffed Bitter Gourd",
       "description": "Bitter gourd stuffed with minced meat, braised until soft and flavorful.",
-      "imageUrl": "https://trello.com/1/cards/68e688204f3ccac1bc5f631c/attachments/68e6882807d031c944e3a5c7/download/page2_img1.png",
+      "imageUrl": "https://assets.yaoyaodinner.party/menu/braised-stuffed-bitter-gourd-1767402123.png",
       "variants": [
         {
           "label": "4 pcs",
@@ -101,16 +111,21 @@
           "currency": "RM",
           "isSeasonal": false
         },
-        { "label": "6 pcs", "price": 42, "currency": "RM", "isSeasonal": false }
+        {
+          "label": "6 pcs",
+          "price": 42,
+          "currency": "RM",
+          "isSeasonal": false
+        }
       ],
       "translations": {
-        "vi": {
-          "name": "Khổ qua nhồi thịt kho",
-          "description": "Khổ qua nhồi thịt băm, om mềm trong nước tương đậm đà."
-        },
         "th": {
           "name": "มะระยัดไส้ตุ๋น",
           "description": "มะระยัดไส้หมูสับตุ๋นในซอสรสเข้ม"
+        },
+        "vi": {
+          "name": "Khổ qua nhồi thịt kho",
+          "description": "Khổ qua nhồi thịt băm, om mềm trong nước tương đậm đà."
         },
         "zh": {
           "name": "高州酿苦瓜",
