@@ -89,16 +89,22 @@ export const useLanguage = () => useContext(LanguageContext)
 
 const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
 	const [lang, setLang] = useState('en')
+	const [isInitialized, setIsInitialized] = useState(false)
 
 	useEffect(() => {
 		initI18n().then(detectedLang => {
 			setLang(detectedLang)
+			setIsInitialized(true)
 		})
 	}, [])
 
 	const setLanguage = async (newLang: string) => {
 		await changeLanguage(newLang)
 		setLang(newLang)
+	}
+
+	if (!isInitialized) {
+		return null
 	}
 
 	return (

@@ -1,15 +1,76 @@
 {
-	"welcome": "ยินดีต้อนรับสู่แอปพลิเคชันของเรา!",
-	"login": "เข้าสู่ระบบ",
-	"logout": "ออกจากระบบ",
-	"signup": "สมัครสมาชิก",
-	"username": "ชื่อผู้ใช้",
-	"password": "รหัสผ่าน",
-	"email": "อีเมล",
-	"submit": "ส่ง",
-	"cancel": "ยกเลิก",
-	"profile": "โปรไฟล์",
-	"settings": "การตั้งค่า",
-	"home": "หน้าแรก",
-	"select_language": "เลือกภาษา"
+	"config": {
+		"select_language": "เลือกภาษา"
+	},
+	"errors": {
+		"title": "ข้อผิดพลาด",
+		"browser_video_tag": "เบราว์เซอร์ของคุณไม่รองรับแท็กวิดีโอ",
+		"NO_FOODS_FOUND": "ไม่พบอาหาร",
+		"NO_CATEGORIES_FOUND": "ไม่พบหมวดหมู่",
+		"NO_PEOPLE_FOUND": "ไม่พบคน",
+		"ROUTE_NOT_FOUND": "ไม่พบเส้นทาง",
+		"UNKNOWN_ERROR": "เกิดข้อผิดพลาด",
+		"internal_server_error": "ข้อผิดพลาดภายในเซิร์ฟเวอร์",
+		"not_found": "ไม่พบ",
+		"unauthorized": "ไม่ได้รับอนุญาต",
+		"forbidden": "ถูกห้าม",
+		"validation_error": "ข้อผิดพลาดการตรวจสอบ",
+		"timeout": "หมดเวลา"
+	},
+	"common": {
+		"back": "ย้อนกลับ",
+		"confirm": "ยืนยัน",
+		"cancel": "ยกเลิก"
+	},
+	"dev": {
+		"title": "การทดสอบการพัฒนา",
+		"subtitle": "ทดสอบคอมโพเนนต์และยูทิลิตี้ต่างๆ",
+		"lorem": "สุนัขจิ้งจอกสีน้ำตาลที่รวดเร็วกระโดดข้ามสุนัขที่ขี้เกียจ นี่คือข้อความตัวอย่างเพื่อแสดงให้เห็นว่าระบบการแปลทำงานได้อย่างถูกต้องในหลายภาษา",
+		"language_test": {
+			"title": "ทดสอบภาษา",
+			"description": "ทดสอบการสลับภาษาและการแปล",
+			"select_language": "เลือกภาษา",
+			"current_language": "ภาษาปัจจุบัน",
+			"translation_test": "ทดสอบการแปล"
+		},
+		"theme_test": {
+			"title": "ทดสอบธีม",
+			"description": "ทดสอบการทำงานของการสลับธีม",
+			"select_theme": "เลือกธีม",
+			"current_theme": "ธีมปัจจุบัน",
+			"light": "สว่าง",
+			"dark": "มืด"
+		},
+		"storage_test": {
+			"title": "ทดสอบ LocalStorage",
+			"description": "ดูคีย์ทั้งหมดที่เก็บไว้ใน localStorage",
+			"total_keys": "จำนวนคีย์ทั้งหมด",
+			"no_keys": "ไม่มีคีย์ใน localStorage"
+		},
+		"toast_test": {
+			"title": "ทดสอบ Toast (Sonner)",
+			"description": "ทดสอบการแจ้งเตือนแบบ toast ประเภทต่างๆ",
+			"success": "สำเร็จ",
+			"success_message": "สำเร็จ!",
+			"success_description": "ดำเนินการเสร็จสมบูรณ์",
+			"error": "ข้อผิดพลาด",
+			"error_message": "ข้อผิดพลาด!",
+			"error_description": "เกิดข้อผิดพลาดบางอย่าง",
+			"info": "ข้อมูล",
+			"info_message": "ข้อมูล",
+			"info_description": "นี่คือข้อมูลบางอย่าง",
+			"warning": "คำเตือน",
+			"warning_message": "คำเตือน!",
+			"warning_description": "โปรดระวัง",
+			"promise": "Promise",
+			"promise_loading": "กำลังโหลด...",
+			"promise_success": "โหลดข้อมูลแล้ว!",
+			"promise_error": "โหลดไม่สำเร็จ",
+			"with_action": "พร้อมการกระทำ",
+			"event_created": "สร้างเหตุการณ์แล้ว",
+			"undo_description": "คุณสามารถยกเลิกการกระทำนี้ได้",
+			"undo": "ยกเลิก",
+			"action_undone": "ยกเลิกการกระทำแล้ว"
+		}
+	}
 }

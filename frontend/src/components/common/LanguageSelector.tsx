@@ -22,7 +22,7 @@ export const LanguageSelector = () => {
 	return (
 		<Select value={lang} onValueChange={setLanguage}>
 			<SelectTrigger className='w-[180px]'>
-				<SelectValue placeholder={t('select_language')} />
+				<SelectValue placeholder={t('config.select_language')} />
 			</SelectTrigger>
 			<SelectContent>
 				{languages.map(language => (

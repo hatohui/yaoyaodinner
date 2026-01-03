@@ -1,15 +1,76 @@
 {
-	"welcome": "欢迎使用我们的应用程序！",
-	"login": "登录",
-	"logout": "登出",
-	"signup": "注册",
-	"username": "用户名",
-	"password": "密码",
-	"email": "邮箱",
-	"submit": "提交",
-	"cancel": "取消",
-	"profile": "个人资料",
-	"settings": "设置",
-	"home": "首页",
-	"select_language": "选择语言"
+	"config": {
+		"select_language": "选择语言"
+	},
+	"errors": {
+		"title": "错误",
+		"browser_video_tag": "您的浏览器不支持视频标签。",
+		"NO_FOODS_FOUND": "未找到食物",
+		"NO_CATEGORIES_FOUND": "未找到类别",
+		"NO_PEOPLE_FOUND": "未找到人员",
+		"ROUTE_NOT_FOUND": "未找到路由",
+		"UNKNOWN_ERROR": "发生错误",
+		"internal_server_error": "内部服务器错误",
+		"not_found": "未找到",
+		"unauthorized": "未授权",
+		"forbidden": "禁止访问",
+		"validation_error": "验证错误",
+		"timeout": "请求超时"
+	},
+	"common": {
+		"back": "返回",
+		"confirm": "确认",
+		"cancel": "取消"
+	},
+	"dev": {
+		"title": "开发测试",
+		"subtitle": "测试各种组件和实用工具",
+		"lorem": "敏捷的棕色狐狸跳过懒狗。这是一个示例文本，用于演示翻译系统在多种语言中正常工作。",
+		"language_test": {
+			"title": "语言测试",
+			"description": "测试语言切换和翻译",
+			"select_language": "选择语言",
+			"current_language": "当前语言",
+			"translation_test": "翻译测试"
+		},
+		"theme_test": {
+			"title": "主题测试",
+			"description": "测试主题切换功能",
+			"select_theme": "选择主题",
+			"current_theme": "当前主题",
+			"light": "浅色",
+			"dark": "深色"
+		},
+		"storage_test": {
+			"title": "本地存储测试",
+			"description": "查看localStorage中存储的所有键",
+			"total_keys": "总键数",
+			"no_keys": "localStorage中没有键"
+		},
+		"toast_test": {
+			"title": "Toast测试 (Sonner)",
+			"description": "测试不同类型的toast通知",
+			"success": "成功",
+			"success_message": "成功！",
+			"success_description": "操作成功完成",
+			"error": "错误",
+			"error_message": "错误！",
+			"error_description": "出现问题",
+			"info": "信息",
+			"info_message": "信息",
+			"info_description": "这是一些信息",
+			"warning": "警告",
+			"warning_message": "警告！",
+			"warning_description": "请小心",
+			"promise": "Promise",
+			"promise_loading": "加载中...",
+			"promise_success": "数据已加载！",
+			"promise_error": "加载失败",
+			"with_action": "带操作",
+			"event_created": "事件已创建",
+			"undo_description": "您可以撤消此操作",
+			"undo": "撤消",
+			"action_undone": "操作已撤消"
+		}
+	}
 }

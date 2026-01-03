@@ -1,15 +1,76 @@
 {
-	"welcome": "Chào mừng đến với ứng dụng của chúng tôi!",
-	"login": "Đăng nhập",
-	"logout": "Đăng xuất",
-	"signup": "Đăng ký",
-	"username": "Tên người dùng",
-	"password": "Mật khẩu",
-	"email": "Email",
-	"submit": "Gửi",
-	"cancel": "Hủy",
-	"profile": "Hồ sơ",
-	"settings": "Cài đặt",
-	"home": "Trang chủ",
-	"select_language": "Chọn ngôn ngữ"
+	"config": {
+		"select_language": "Chọn ngôn ngữ"
+	},
+	"errors": {
+		"title": "Lỗi",
+		"browser_video_tag": "Trình duyệt của bạn không hỗ trợ thẻ video.",
+		"NO_FOODS_FOUND": "Không tìm thấy món ăn",
+		"NO_CATEGORIES_FOUND": "Không tìm thấy danh mục",
+		"NO_PEOPLE_FOUND": "Không tìm thấy người",
+		"ROUTE_NOT_FOUND": "Không tìm thấy tuyến đường",
+		"UNKNOWN_ERROR": "Đã xảy ra lỗi",
+		"internal_server_error": "Lỗi máy chủ nội bộ",
+		"not_found": "Không tìm thấy",
+		"unauthorized": "Không được phép",
+		"forbidden": "Bị cấm",
+		"validation_error": "Lỗi xác thực",
+		"timeout": "Hết thời gian chờ"
+	},
+	"common": {
+		"back": "Quay lại",
+		"confirm": "Xác nhận",
+		"cancel": "Hủy"
+	},
+	"dev": {
+		"title": "Kiểm Tra Phát Triển",
+		"subtitle": "Kiểm tra các thành phần và tiện ích khác nhau",
+		"lorem": "Con cáo nâu nhanh nhảy qua con chó lười. Đây là văn bản mẫu để chứng minh hệ thống dịch thuật hoạt động chính xác trên nhiều ngôn ngữ.",
+		"language_test": {
+			"title": "Kiểm Tra Ngôn Ngữ",
+			"description": "Kiểm tra chuyển đổi ngôn ngữ và bản dịch",
+			"select_language": "Chọn Ngôn Ngữ",
+			"current_language": "Ngôn Ngữ Hiện Tại",
+			"translation_test": "Kiểm tra bản dịch"
+		},
+		"theme_test": {
+			"title": "Kiểm Tra Chủ Đề",
+			"description": "Kiểm tra chức năng chuyển đổi chủ đề",
+			"select_theme": "Chọn Chủ Đề",
+			"current_theme": "Chủ Đề Hiện Tại",
+			"light": "Sáng",
+			"dark": "Tối"
+		},
+		"storage_test": {
+			"title": "Kiểm Tra LocalStorage",
+			"description": "Xem tất cả các khóa được lưu trữ trong localStorage",
+			"total_keys": "Tổng Số Khóa",
+			"no_keys": "Không có khóa trong localStorage"
+		},
+		"toast_test": {
+			"title": "Kiểm Tra Toast (Sonner)",
+			"description": "Kiểm tra các loại thông báo toast khác nhau",
+			"success": "Thành Công",
+			"success_message": "Thành công!",
+			"success_description": "Hoàn thành thao tác thành công",
+			"error": "Lỗi",
+			"error_message": "Lỗi!",
+			"error_description": "Đã xảy ra sự cố",
+			"info": "Thông Tin",
+			"info_message": "Thông tin",
+			"info_description": "Đây là một số thông tin",
+			"warning": "Cảnh Báo",
+			"warning_message": "Cảnh báo!",
+			"warning_description": "Vui lòng cẩn thận",
+			"promise": "Promise",
+			"promise_loading": "Đang tải...",
+			"promise_success": "Đã tải dữ liệu!",
+			"promise_error": "Không tải được",
+			"with_action": "Với Hành Động",
+			"event_created": "Sự Kiện Đã Tạo",
+			"undo_description": "Bạn có thể hoàn tác hành động này",
+			"undo": "Hoàn tác",
+			"action_undone": "Đã hoàn tác"
+		}
+	}
 }
