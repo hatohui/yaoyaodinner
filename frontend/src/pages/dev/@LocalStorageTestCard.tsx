@@ -31,14 +31,12 @@ const LocalStorageTestCard = () => {
 	useEffect(() => {
 		loadStorageKeys()
 
-		// Listen for storage changes
 		const handleStorageChange = () => {
 			loadStorageKeys()
 		}
 
 		window.addEventListener('storage', handleStorageChange)
 
-		// Also check periodically in case changes happen in same window
 		const interval = setInterval(loadStorageKeys, 1000)
 
 		return () => {

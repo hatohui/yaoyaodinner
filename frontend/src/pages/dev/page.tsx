@@ -1,10 +1,10 @@
 import { Separator } from '@/components/ui/separator'
 import { BackButton } from '@/components/common/BackButton'
 import { useTranslation } from 'react-i18next'
-import LanguageTestCard from './LanguageTestCard'
-import LocalStorageTestCard from './LocalStorageTestCard'
-import ThemeTestCard from './ThemeTestCard'
-import ToastTestCard from './ToastTestCard'
+import LanguageTestCard from './@LanguageTestCard'
+import LocalStorageTestCard from './@LocalStorageTestCard'
+import ThemeTestCard from './@ThemeTestCard'
+import ToastTestCard from './@ToastTestCard'
 
 const DevPage = () => {
 	const { t } = useTranslation()
@@ -16,7 +16,7 @@ const DevPage = () => {
 				<div className='flex items-center justify-between'>
 					<div>
 						<BackButton />
-						<h1 className='text-4xl font-bold tracking-tight mt-2'>
+						<h1 className='text-4xl font-bold text-primary tracking-tight mt-2'>
 							{t('dev.title')}
 						</h1>
 						<p className='mt-2 text-muted-foreground'>{t('dev.subtitle')}</p>

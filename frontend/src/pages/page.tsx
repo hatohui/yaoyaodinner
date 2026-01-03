@@ -18,7 +18,17 @@ const LandingPage = (): React.JSX.Element => {
 				<ThemeToggle />
 				<LanguageSelector />
 			</div>
-			<VideoPlayer src='/videos/banner.mp4' muted autoPlay loop playsInline />
+			<div className='fixed h-screen w-screen inset-0 z-0'>
+				<VideoPlayer
+					className='absolute inset-0'
+					src='/videos/banner.mp4'
+					muted
+					autoPlay
+					loop
+					playsInline
+				/>
+				<div className='absolute inset-0 bg-black/40 dark:bg-black/60' />
+			</div>
 		</div>
 	)
 }

@@ -1,3 +1,4 @@
+import { cn } from '@/utils/cn'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -7,6 +8,7 @@ interface VideoPlayerProps {
 	autoPlay?: boolean
 	loop?: boolean
 	playsInline?: boolean
+	className?: string
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -14,6 +16,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 	muted = false,
 	autoPlay = true,
 	loop = true,
+	className,
 	playsInline = true,
 }): React.JSX.Element => {
 	const { t } = useTranslation()
@@ -25,7 +28,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 				autoPlay={autoPlay}
 				loop={loop}
 				playsInline={playsInline}
-				className='w-full h-full object-cover'
+				className={cn(className, 'w-full h-full object-cover')}
 			>
 				<source src={src} type='video/mp4' />
 				{t('errors.browser_video_tag')}
