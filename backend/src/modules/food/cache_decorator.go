@@ -53,3 +53,7 @@ func (s *cachedFoodService) GetFoodsByPageAndCount(languageCode string, pageNumb
 
 	return foods, total, nil
 }
+
+func (s *cachedFoodService) AddNewFood(food Food) error {
+	return s.inner.AddNewFood(food)
+}

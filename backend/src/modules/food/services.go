@@ -2,6 +2,7 @@ package food
 
 type FoodService interface {
 	GetFoodsByPageAndCount(languageCode string, pageNumber int, count int, categoryID string) ([]Food, int64, error)
+	AddNewFood(food Food) error
 }
 
 type service struct {
@@ -26,4 +27,14 @@ func (s *service) GetFoodsByPageAndCount(languageCode string, pageNumber int, co
 	}
 
 	return foods, total, nil
+}
+
+func (s *service) AddNewFood(food Food) error {
+	err := s.repo.AddNewFood(food)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

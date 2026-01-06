@@ -7,6 +7,7 @@ import (
 	"yaoyao-functions/src/modules/images"
 	"yaoyao-functions/src/modules/language"
 	"yaoyao-functions/src/modules/people"
+	"yaoyao-functions/src/modules/table"
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
@@ -59,4 +60,11 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	peopleService := people.NewService(peopleRepo)
 	peopleHandler := people.NewHandler(peopleService)
 	people.RegisterRoutes(peopleRoute, peopleHandler)
+
+	//tables module
+	tableRoute := api.Group("/tables")
+	tableRepo := table.NewRepository(db)
+	tableService := table.NewService(tableRepo)
+	tableHandler := table.NewHandler(tableService)
+	table.RegisterRoutes(tableRoute, tableHandler)
 }	

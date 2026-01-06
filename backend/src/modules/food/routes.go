@@ -6,4 +6,5 @@ import (
 
 func RegisterRoutes(router *gin.RouterGroup, c *FoodHandler) {
 	router.GET("", c.GetFoods)
+	router.POST("", c.AddFood)
 }

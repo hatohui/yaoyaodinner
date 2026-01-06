@@ -61,3 +61,8 @@ func (h *FoodHandler) GetFoods(res *gin.Context) {
 		"total": total,
 	})
 }
+
+func (h *FoodHandler) AddFood(res *gin.Context) {
+	body := res.Request.Body
+	fmt.Println(body)
+}

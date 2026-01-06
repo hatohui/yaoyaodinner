@@ -9,6 +9,7 @@ import (
 type FoodRepository interface {
 	GetFoodsByPageAndCount(languageCode string, pageNumber int, count int, categoryID string) ([]Food, error)
 	GetTotalFoodCount(categoryID string) (int64, error)
+	AddNewFood(food Food) error
 }
 
 type repository struct {
@@ -58,3 +59,6 @@ func (r *repository) GetTotalFoodCount(categoryID string) (int64, error) {
 	return total, nil
 }
 
+func (r *repository) AddNewFood(food Food) error {
+	return r.db.Create(&food).Error
+}

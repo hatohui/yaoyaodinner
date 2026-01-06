@@ -5,4 +5,5 @@ const (
 	NoCategoriesFound = "NO_CATEGORIES_FOUND"
 	NoPeopleFound     = "NO_PEOPLE_FOUND"
 	RouteNotFound     = "ROUTE_NOT_FOUND"
+	NoTablesFound 	 = "NO_TABLES_FOUND"
 )
