@@ -1,6 +1,8 @@
 package config
 
 import (
+	"yaoyao-functions/src/middlewares"
+	"yaoyao-functions/src/modules/account"
 	"yaoyao-functions/src/modules/category"
 	"yaoyao-functions/src/modules/food"
 	"yaoyao-functions/src/modules/health"
@@ -68,4 +70,18 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	tableService = table.NewCachedService(tableService, redisClient)
 	tableHandler := table.NewHandler(tableService, peopleService)
 	table.RegisterRoutes(tableRoute, tableHandler)
+
+	//protected modules
+	RegisterProtectedModules(api, db, redisClient)
 }	
+
+func RegisterProtectedModules(api *gin.RouterGroup, db *gorm.DB, redisClient *redis.Client) {
+	api.Use(middlewares.ExtractUserMiddleware())
+
+	//account module
+	accountRoute := api.Group("/account")
+	accountRepo := account.NewRepository(db)
+	accountService := account.NewService(accountRepo)
+	accountHandler := account.NewHandler(accountService)
+	account.RegisterRoutes(accountRoute, accountHandler)
+}
