@@ -7,6 +7,7 @@ import (
 
 type TableService interface {
 	GetTables() ([]Table, error)
+	GetTableByID(id string) (*Table, error)
 }
 
 type service struct {
@@ -25,4 +26,14 @@ func (s *service) GetTables() ([]Table, error) {
 	}
 
 	return tables, nil
+}
+
+func (s *service) GetTableByID(id string) (*Table, error) {
+	table := s.repo.GetTableByID(id);
+
+	if table == nil {
+		return nil, errors.New(message.TableNotFound)
+	}
+
+	return table, nil
 }

@@ -65,6 +65,7 @@ func RegisterModules(router *gin.Engine, db *gorm.DB, redisClient *redis.Client)
 	tableRoute := api.Group("/tables")
 	tableRepo := table.NewRepository(db)
 	tableService := table.NewService(tableRepo)
-	tableHandler := table.NewHandler(tableService)
+	tableService = table.NewCachedService(tableService, redisClient)
+	tableHandler := table.NewHandler(tableService, peopleService)
 	table.RegisterRoutes(tableRoute, tableHandler)
 }	

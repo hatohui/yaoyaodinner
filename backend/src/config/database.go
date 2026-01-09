@@ -38,6 +38,14 @@ func ConnectWithEnvForMigration() (*gorm.DB, error) {
 	dbname := GetEnvOr("DB_NAME", "authorizationdb")
 	sslmode := GetEnvOr("DB_SSLMODE", "disable")
 
+	if (host == "yaoyaodb") {
+		host = "localhost"
+	}
+
+	if (host != "localhost" && host != "") {
+		sslmode = "require"
+	}
+
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		host, port, user, password, dbname, sslmode)
 

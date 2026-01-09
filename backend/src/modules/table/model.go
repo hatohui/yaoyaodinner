@@ -6,6 +6,7 @@ type Table struct {
 	Capacity      int     `gorm:"default:1;not null" json:"capacity"`
 	TableLeaderID *string `gorm:"type:varchar(255);uniqueIndex" json:"tableLeaderId"`
 	IsStaging     bool    `gorm:"default:false;not null" json:"isStaging"`
+	No            int     `gorm:"type:int;default:-1;not null" json:"no"`
 }
 
 func (Table) TableName() string {

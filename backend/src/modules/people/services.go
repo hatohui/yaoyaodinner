@@ -7,6 +7,7 @@ import (
 
 type PeopleService interface {
 	GetAllPeople() ([]People, error)
+	GetPeopleByTableID(tableID string) ([]People, error)
 }
 
 type service struct {
@@ -29,4 +30,14 @@ func (s *service) GetAllPeople() ([]People, error) {
 	}
 
 	return peopleList, nil
+}
+
+func (s *service) GetPeopleByTableID(tableID string) ([]People, error) {
+	people, err := s.peopleRepo.GetPeopleByTableID(tableID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return people, nil
 }

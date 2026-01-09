@@ -34,4 +34,7 @@ const (
 	// Cache invalidation patterns
 	REDIS_PATTERN_FOOD_BY_CATEGORY = "food:list:page:*:*:%s:*" // food:list:page:*:*:{category_id}:*
 	REDIS_PATTERN_FOOD_ALL         = "food:list:page:*"        // food:list:page:*
+
+	// Table
+	REDIS_KEY_TABLE_LIST = "table:list"
 )
