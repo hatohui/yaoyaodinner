@@ -79,7 +79,7 @@ export function AddPresetItemDialog({
 						{t('admin.food.empty')}
 					</p>
 				) : (
-					<div className='flex flex-col gap-0.5 overflow-y-auto pr-1'>
+					<div className='scrollbar-thin flex flex-col gap-0.5 overflow-y-auto pr-1'>
 						{allVariants.map(v => {
 							const already = existingVariantIds.has(v.variantId)
 							return (

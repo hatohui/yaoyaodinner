@@ -110,6 +110,7 @@ declare module 'react-i18next' {
           details_body_2: string
         }
         food_detail: {
+          title: string
           back_to_menu: string
           variants: string
           add_to_order: string

@@ -18,6 +18,7 @@ interface FoodDetailViewProps {
 		variantId: string,
 		patch: { label?: string; price?: number }
 	) => void
+	hideBackLink?: boolean
 }
 
 export function FoodDetailView({
@@ -26,6 +27,7 @@ export function FoodDetailView({
 	onAdd,
 	onUpdateFood,
 	onUpdateVariant,
+	hideBackLink,
 }: FoodDetailViewProps) {
 	const { t } = useTranslation()
 	const [imgError, setImgError] = useState(false)
@@ -41,13 +43,17 @@ export function FoodDetailView({
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
 			<div className='flex items-center justify-between'>
-				<Link
-					to='/menu'
-					className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
-				>
-					<ArrowLeft className='size-4' />
-					{t('food_detail.back_to_menu')}
-				</Link>
+				{hideBackLink ? (
+					<span />
+				) : (
+					<Link
+						to='/menu'
+						className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
+					>
+						<ArrowLeft className='size-4' />
+						{t('food_detail.back_to_menu')}
+					</Link>
+				)}
 				<button
 					onClick={() => {
 						navigator.clipboard.writeText(window.location.href)

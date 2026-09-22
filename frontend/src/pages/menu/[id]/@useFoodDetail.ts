@@ -12,8 +12,9 @@ import { STALE_TIME_STATIC } from '@/common/constants'
 import type { FoodDetailDto, UpdateFoodDto } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
 
-export function useFoodDetail() {
-	const { id = '' } = useParams()
+export function useFoodDetail(idOverride?: string) {
+	const { id: idParam = '' } = useParams()
+	const id = idOverride ?? idParam
 	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
@@ -28,7 +29,13 @@ export function useFoodDetail() {
 	} = useGetFoodById<FoodDetailDto>(
 		id,
 		{ lang: i18n.language },
-		{ query: { staleTime: STALE_TIME_STATIC, refetchOnWindowFocus: false } }
+		{
+			query: {
+				staleTime: STALE_TIME_STATIC,
+				refetchOnWindowFocus: false,
+				enabled: Boolean(id),
+			},
+		}
 	)
 
 	const availableVariants = (food?.variants ?? []).filter(v => v.isAvailable)

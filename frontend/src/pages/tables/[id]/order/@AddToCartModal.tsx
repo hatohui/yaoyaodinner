@@ -127,7 +127,7 @@ export function AddToCartModal({
 					<div className='relative h-12 w-full shrink-0' />
 				)}
 
-				<div className='flex flex-col gap-4 overflow-y-auto px-6 pb-2 pt-2'>
+				<div className='scrollbar-thin flex flex-col gap-4 overflow-y-auto px-6 pb-2 pt-2'>
 					<DialogHeader className='text-left'>
 						<DialogTitle className='text-2xl'>{food?.name}</DialogTitle>
 						{detail?.description && (

@@ -10,6 +10,7 @@ import { FoodCard } from './@FoodCard'
 import { SelectionBar } from './@SelectionBar'
 import { TablePickerModal } from './@TablePickerModal'
 import { OrderConfigModal } from './@OrderConfigModal'
+import { FoodDetailModal } from './[id]/@FoodDetailModal'
 import { useMenuSelection } from './@useMenuSelection'
 import { LoadingView, LoadingSpinner } from './@LoadingView'
 import { ErrorView } from './@ErrorView'
@@ -26,6 +27,7 @@ export default function MenuPage() {
 	const { t, i18n } = useTranslation()
 	const [search, setSearch] = useState('')
 	const [total, setTotal] = useState(0)
+	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 
 	const {
 		page: urlPage,
@@ -138,6 +140,7 @@ export default function MenuPage() {
 										food={food}
 										selected={selection.selected.has(food.id)}
 										onToggleSelect={() => selection.toggle(food.id)}
+										onQuickView={setQuickViewId}
 									/>
 								))}
 							</div>
@@ -179,6 +182,11 @@ export default function MenuPage() {
 					defaultVariantId: f.defaultVariantId,
 				}))}
 				onSuccess={selection.handleDone}
+			/>
+
+			<FoodDetailModal
+				id={quickViewId}
+				onOpenChange={open => !open && setQuickViewId(null)}
 			/>
 		</div>
 	)

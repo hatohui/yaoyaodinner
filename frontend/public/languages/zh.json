@@ -146,6 +146,7 @@
 		"details_body_2": "他被称为喜欢芒果的蓝莓派，欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。"
 	},
 	"food_detail": {
+		"title": "菜品详情",
 		"back_to_menu": "返回菜单",
 		"variants": "选项",
 		"add_to_order": "加入订单",

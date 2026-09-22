@@ -185,7 +185,7 @@ export function OrderConfigModal({
 						<Spinner />
 					</div>
 				) : (
-					<div className='flex flex-col gap-4 overflow-y-auto'>
+					<div className='scrollbar-thin flex flex-col gap-4 overflow-y-auto'>
 						{foods.map(f => {
 							const cfg = configs[f.id]
 							if (!cfg) return null

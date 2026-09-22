@@ -146,6 +146,7 @@
 		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes fellow furs to gather for a great night of food and hanging out in Malaysia."
 	},
 	"food_detail": {
+		"title": "Food details",
 		"back_to_menu": "Back to menu",
 		"variants": "Options",
 		"add_to_order": "Add to order",

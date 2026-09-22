@@ -57,7 +57,7 @@ export function TablePickerModal({
 						{t('tables.none_found')}
 					</p>
 				) : (
-					<ul className='flex max-h-80 flex-col gap-2 overflow-y-auto'>
+					<ul className='scrollbar-thin flex max-h-80 flex-col gap-2 overflow-y-auto'>
 						{tables.map(table => {
 							const full = table.seated >= table.capacity
 							// orders belong to whoever is seated, so an empty table can't take one

@@ -186,7 +186,7 @@ export default function TableOrderPage() {
 					</SheetTrigger>
 					<SheetContent
 						side='bottom'
-						className='max-h-[85vh] overflow-y-auto rounded-t-3xl'
+						className='scrollbar-thin max-h-[85vh] overflow-y-auto rounded-t-3xl'
 					>
 						<SheetHeader>
 							<SheetTitle>{t('orders.cart')}</SheetTitle>
