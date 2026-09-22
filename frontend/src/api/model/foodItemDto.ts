@@ -17,6 +17,8 @@ export interface FoodItemDto {
   categoryId: string | null;
   isAvailable: boolean;
   isPopular: boolean;
+  /** Staff pick: admins flag this food as recommended so the menu shows a recommended tag. */
+  isRecommended: boolean;
   /** @nullable */
   defaultVariantId: string | null;
   /** @nullable */

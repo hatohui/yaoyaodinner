@@ -96,6 +96,16 @@ export function FoodTable({
 				},
 			},
 			{
+				id: 'isRecommended',
+				accessorKey: 'isRecommended',
+				header: t('admin.food.recommended'),
+				size: 130,
+				meta: {
+					label: t('admin.food.recommended'),
+					cell: { variant: 'checkbox' },
+				},
+			},
+			{
 				id: 'shouldCalculate',
 				accessorKey: 'shouldCalculate',
 				header: t('admin.food.calculated'),

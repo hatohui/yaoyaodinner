@@ -2,6 +2,9 @@
 	"config": {
 		"select_language": "选择语言"
 	},
+	"quotes": {
+		"offer_socks": "送我袜子吧!!"
+	},
 	"errors": {
 		"title": "错误",
 		"browser_video_tag": "您的浏览器不支持视频标签。",
@@ -114,6 +117,7 @@
 		"showing": "显示第 {{from}}–{{to}} 项，共 {{total}} 道菜",
 		"unavailable": "暂不可用",
 		"popular": "热门",
+		"recommended": "推荐",
 		"variant": "选项",
 		"sort_name": "名称（A–Z）",
 		"sort_price": "价格（从低到高）",
@@ -394,6 +398,7 @@
 			"category": "分类",
 			"price": "价格",
 			"available": "可购买",
+			"recommended": "推荐",
 			"calculated": "计入账单",
 			"variants": "规格",
 			"variants_count": "{{count}} 个规格",

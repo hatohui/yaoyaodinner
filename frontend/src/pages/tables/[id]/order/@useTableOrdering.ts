@@ -23,6 +23,7 @@ export function useTableOrdering() {
 	const [category, setCategory] = useState('all')
 	const [sort, setSort] = useState<MenuSort>('name')
 	const [popular, setPopular] = useState(false)
+	const [recommended, setRecommended] = useState(false)
 	const [total, setTotal] = useState(0)
 	const [selected, setSelected] = useState<Set<string>>(new Set())
 	const [configOpen, setConfigOpen] = useState(false)
@@ -33,7 +34,7 @@ export function useTableOrdering() {
 
 	useEffect(() => {
 		setPage(1)
-	}, [debouncedSearch, category, sort, popular, setPage])
+	}, [debouncedSearch, category, sort, popular, recommended, setPage])
 
 	const { data: table } = useGetTableById<TableDto>(id)
 
@@ -51,6 +52,7 @@ export function useTableOrdering() {
 			sortBy: sort === 'price_desc' ? 'price' : sort,
 			sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
 			popular: popular || undefined,
+			recommended: recommended || undefined,
 		},
 		{ query: { staleTime: STALE_TIME_STATIC } }
 	)
@@ -94,6 +96,8 @@ export function useTableOrdering() {
 		setSort,
 		popular,
 		setPopular,
+		recommended,
+		setRecommended,
 		categories,
 		foods,
 		isLoading,

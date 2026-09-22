@@ -61,6 +61,16 @@ export class CreateFoodDto {
 
   @ApiProperty({
     required: false,
+    default: false,
+    description:
+      'Staff pick: shows a recommended tag next to this food across the menu.',
+  })
+  @IsBoolean()
+  @IsOptional()
+  isRecommended?: boolean;
+
+  @ApiProperty({
+    required: false,
     default: 'en',
     description: 'Locale the name/description/variant labels are written in',
   })

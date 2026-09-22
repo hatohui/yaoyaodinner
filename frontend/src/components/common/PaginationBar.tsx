@@ -68,20 +68,36 @@ export function PaginationBar({
 								>
 									<PaginationEllipsis />
 								</PaginationItem>
+							) : pageNum === page ? (
+								<PaginationItem key={pageNum}>
+									<Select
+										value={page.toString()}
+										onValueChange={val => handlePageChange(Number(val))}
+									>
+										<SelectTrigger
+											className={cn(
+												'h-9 w-9 justify-center gap-0 rounded-full border-primary bg-primary p-0 text-sm font-medium text-primary-foreground [&>svg]:hidden',
+												'cursor-pointer transition-colors hover:bg-primary/90'
+											)}
+										>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{Array.from({ length: totalPages }, (_, i) => i + 1).map(
+												n => (
+													<SelectItem key={n} value={n.toString()}>
+														{n}
+													</SelectItem>
+												)
+											)}
+										</SelectContent>
+									</Select>
+								</PaginationItem>
 							) : (
-								<PaginationItem
-									key={pageNum}
-									className={cn(page !== pageNum && 'hidden sm:block')}
-								>
+								<PaginationItem key={pageNum} className='hidden sm:block'>
 									<PaginationLink
 										onClick={() => handlePageChange(pageNum)}
-										isActive={page === pageNum}
-										className={cn(
-											'cursor-pointer rounded-full transition-colors',
-											page === pageNum
-												? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
-												: 'bg-muted/60 hover:bg-muted'
-										)}
+										className='cursor-pointer rounded-full bg-muted/60 transition-colors hover:bg-muted'
 									>
 										{pageNum}
 									</PaginationLink>

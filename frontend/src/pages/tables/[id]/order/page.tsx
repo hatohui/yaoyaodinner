@@ -35,6 +35,8 @@ export default function TableOrderPage() {
 		setSort,
 		popular,
 		setPopular,
+		recommended,
+		setRecommended,
 		categories,
 		foods,
 		isLoading,
@@ -123,6 +125,8 @@ export default function TableOrderPage() {
 								onSortChange={setSort}
 								popular={popular}
 								onPopularChange={setPopular}
+								recommended={recommended}
+								onRecommendedChange={setRecommended}
 							/>
 						</div>
 

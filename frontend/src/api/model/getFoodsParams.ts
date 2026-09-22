@@ -12,6 +12,7 @@ export type GetFoodsParams = {
 sortBy?: GetFoodsSortBy;
 sortOrder?: GetFoodsSortOrder;
 popular?: boolean;
+recommended?: boolean;
 category?: string;
 count?: number;
 page?: number;

@@ -2,6 +2,9 @@
 	"config": {
 		"select_language": "เลือกภาษา"
 	},
+	"quotes": {
+		"offer_socks": "ขอถุงเท้าให้ฉันหน่อย!!"
+	},
 	"errors": {
 		"title": "ข้อผิดพลาด",
 		"browser_video_tag": "เบราว์เซอร์ของคุณไม่รองรับแท็กวิดีโอ",
@@ -114,6 +117,7 @@
 		"showing": "แสดง {{from}}–{{to}} จาก {{total}} เมนู",
 		"unavailable": "ไม่พร้อมให้บริการ",
 		"popular": "ยอดนิยม",
+		"recommended": "แนะนำ",
 		"variant": "ตัวเลือก",
 		"sort_name": "ชื่อ (A–Z)",
 		"sort_price": "ราคา (ต่ำไปสูง)",
@@ -394,6 +398,7 @@
 			"category": "หมวดหมู่",
 			"price": "ราคา",
 			"available": "พร้อมขาย",
+			"recommended": "แนะนำ",
 			"calculated": "นับรวมในบิล",
 			"variants": "ตัวเลือก",
 			"variants_count": "{{count}} ตัวเลือก",

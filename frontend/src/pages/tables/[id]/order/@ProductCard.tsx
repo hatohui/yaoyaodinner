@@ -3,6 +3,7 @@ import { Minus, Plus } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { ASSET_URL } from '@/common/app'
 import { Button } from '@/components/ui/button'
+import { FoodTags } from '@/components/common/FoodTags'
 
 interface ProductCardProps {
 	food: FoodItemDto
@@ -27,7 +28,7 @@ export function ProductCard({
 
 	return (
 		<div className='flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-md'>
-			<div className='aspect-[4/3] w-full overflow-hidden bg-muted'>
+			<div className='relative aspect-[4/3] w-full overflow-hidden bg-muted'>
 				{src ? (
 					<img src={src} alt={food.name} className='size-full object-cover' />
 				) : (
@@ -35,6 +36,12 @@ export function ProductCard({
 						🍽️
 					</div>
 				)}
+
+				<FoodTags
+					isPopular={food.isPopular}
+					isRecommended={food.isRecommended}
+					className='absolute left-2 top-2 max-w-[calc(100%-1rem)]'
+				/>
 			</div>
 
 			<div className='flex flex-1 flex-col gap-2 p-3'>

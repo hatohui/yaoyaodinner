@@ -3,6 +3,7 @@ import { ASSET_URL } from '@/common/app'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import VideoPlayer from '@/components/common/VideoPlayer'
+import QuoteSection from '@/config/quotes'
 
 const LandingPage = (): React.JSX.Element => {
 	const { t } = useTranslation()
@@ -21,17 +22,15 @@ const LandingPage = (): React.JSX.Element => {
 			</div>
 
 			<div className='relative z-10 flex min-h-[calc(100dvh-3.5rem)] flex-col items-center justify-center px-4 text-center'>
-				<img 
-					src='/images/logo.png' 
-					className='mb-6 h-12 w-auto object-contain invert drop-shadow-lg sm:h-16' 
-					alt='Logo' 
+				<img
+					src='/images/logo.png'
+					className='mb-6 h-12 w-auto object-contain invert drop-shadow-lg sm:h-16'
+					alt='Logo'
 				/>
 				<h1 className='mb-4 text-4xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-6xl lg:text-7xl'>
 					{t('menu.restaurant_name')}
 				</h1>
-				<p className='mx-auto max-w-2xl text-lg font-medium text-white/90 drop-shadow-sm sm:text-xl'>
-					A furry dinner night
-				</p>
+				<QuoteSection />
 				<div className='mt-8 flex flex-wrap items-center justify-center gap-4'>
 					<Link
 						to='/menu'

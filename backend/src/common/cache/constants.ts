@@ -9,8 +9,9 @@ export const CacheSettings = {
         sortBy: string,
         sortOrder: string,
         popular: string,
+        recommended: string,
       ) =>
-        `foods:${lang}:${page}:${count}:${categoryId}:${sortBy}:${sortOrder}:${popular}`,
+        `foods:${lang}:${page}:${count}:${categoryId}:${sortBy}:${sortOrder}:${popular}:${recommended}`,
       ttl: 1800,
     },
     popular: {

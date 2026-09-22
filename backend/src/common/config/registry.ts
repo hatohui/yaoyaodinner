@@ -16,6 +16,8 @@ export const CONFIG_KEYS = {
   suggestedReactions: "feedback.suggestedReactions",
   featureFeedbackWall: "feature.feedbackWall",
   featureFloorPlan: "feature.floorPlan",
+  featureOrdering: "feature.ordering",
+  featureTables: "feature.tables",
 } as const;
 
 export const CONFIG_DEFAULTS: ConfigDefault[] = [
@@ -65,6 +67,22 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     isPublic: true,
     category: "features",
     label: "Floor-plan map",
+    value: true,
+  },
+  {
+    key: CONFIG_KEYS.featureOrdering,
+    type: "boolean",
+    isPublic: true,
+    category: "features",
+    label: "Ordering",
+    value: true,
+  },
+  {
+    key: CONFIG_KEYS.featureTables,
+    type: "boolean",
+    isPublic: true,
+    category: "features",
+    label: "Tables",
     value: true,
   },
 ];

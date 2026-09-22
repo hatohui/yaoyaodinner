@@ -14,6 +14,8 @@ const FALLBACK: GetPublicConfig200 = {
 	'feedback.suggestedReactions': DEFAULT_REACTIONS,
 	'feature.feedbackWall': true,
 	'feature.floorPlan': true,
+	'feature.ordering': true,
+	'feature.tables': true,
 }
 
 export function useConfig() {
@@ -32,5 +34,7 @@ export function useConfig() {
 			DEFAULT_REACTIONS,
 		feedbackWall: cfg['feature.feedbackWall'] !== false,
 		floorPlan: cfg['feature.floorPlan'] !== false,
+		ordering: cfg['feature.ordering'] !== false,
+		tables: cfg['feature.tables'] !== false,
 	}
 }

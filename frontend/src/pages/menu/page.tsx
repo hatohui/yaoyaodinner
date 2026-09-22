@@ -33,11 +33,13 @@ export default function MenuPage() {
 		category,
 		sort,
 		popular,
+		recommended,
 		setPage: setUrlPage,
 		setCount: setUrlCount,
 		setCategory,
 		setSort,
 		setPopular,
+		setRecommended,
 		resetParams,
 	} = useMenuSearchParams()
 
@@ -49,7 +51,7 @@ export default function MenuPage() {
 		onCountChange: setUrlCount,
 	})
 	
-	const { page, count, setCount } = pagination
+	const { page, count } = pagination
 
 	const { data, isLoading, isError, error, refetch } =
 		useGetFoods<GetFoodsResponseDto>(
@@ -61,6 +63,7 @@ export default function MenuPage() {
 				sortBy: sort === 'price_desc' ? 'price' : sort,
 				sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
 				popular: popular || undefined,
+				recommended: recommended || undefined,
 			},
 			{ query: { staleTime: STALE_TIME_STATIC, refetchOnWindowFocus: false } }
 		)
@@ -90,7 +93,8 @@ export default function MenuPage() {
 		)
 	}, [data?.foods, search])
 
-	const hasFilters = category !== 'all' || search.trim() !== '' || popular
+	const hasFilters =
+		category !== 'all' || search.trim() !== '' || popular || recommended
 
 	const handleReset = () => {
 		resetParams()
@@ -105,8 +109,6 @@ export default function MenuPage() {
 				<FilterBar
 					search={search}
 					onSearchChange={setSearch}
-					count={count}
-					onCountChange={setCount}
 					activeCategory={category}
 					onCategoryChange={setCategory}
 					categories={categories}
@@ -114,6 +116,8 @@ export default function MenuPage() {
 					onSortChange={setSort}
 					popular={popular}
 					onPopularChange={setPopular}
+					recommended={recommended}
+					onRecommendedChange={setRecommended}
 				/>
 
 				<div className='py-8'>
@@ -127,11 +131,7 @@ export default function MenuPage() {
 						<EmptyView hasFilters={hasFilters} onReset={handleReset} />
 					) : (
 						<>
-							<div className='mb-6 flex justify-center sm:hidden'>
-								<PaginationBar pagination={pagination} showPageSize />
-							</div>
-
-							<div className='grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
+							<div className='grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
 								{filteredFoods.map((food: FoodItemDto) => (
 									<FoodCard
 										key={food.id}
@@ -143,7 +143,7 @@ export default function MenuPage() {
 							</div>
 
 							<div className='mt-10 flex flex-col items-center gap-3'>
-								<PaginationBar pagination={pagination} showPageSize />
+								<PaginationBar pagination={pagination} />
 								<p className='text-xs text-muted-foreground'>
 									{t('menu.showing', {
 										from: (page - 1) * count + 1,

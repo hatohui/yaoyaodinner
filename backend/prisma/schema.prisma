@@ -49,6 +49,7 @@ model Food {
   categoryId      String  @map("category_id") @db.VarChar(255)
   isAvailable     Boolean @default(true) @map("is_available")
   shouldCalculate Boolean @default(true) @map("should_calculate")
+  isRecommended   Boolean @default(false) @map("is_recommended")
 
   category     Category          @relation(fields: [categoryId], references: [id])
   variants     FoodVariant[]

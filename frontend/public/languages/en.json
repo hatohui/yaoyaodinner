@@ -2,6 +2,9 @@
 	"config": {
 		"select_language": "Select language"
 	},
+	"quotes": {
+		"offer_socks": "Offer me socks!!"
+	},
 	"errors": {
 		"title": "Error",
 		"browser_video_tag": "Your browser does not support the video tag.",
@@ -114,6 +117,7 @@
 		"showing": "Showing {{from}}–{{to}} of {{total}} dishes",
 		"unavailable": "Unavailable",
 		"popular": "Popular",
+		"recommended": "Recommended",
 		"variant": "Variation",
 		"sort_name": "Name (A–Z)",
 		"sort_price": "Price (low to high)",
@@ -394,6 +398,7 @@
 			"category": "Category",
 			"price": "Price",
 			"available": "Available",
+			"recommended": "Recommended",
 			"calculated": "Counts toward bill",
 			"variants": "Variants",
 			"variants_count": "{{count}} variants",

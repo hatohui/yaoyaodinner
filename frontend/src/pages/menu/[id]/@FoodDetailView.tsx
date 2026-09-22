@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ASSET_URL } from '@/common/app'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
+import { FoodTags } from '@/components/common/FoodTags'
 
 interface FoodDetailViewProps {
 	food: FoodDetailDto
@@ -75,6 +76,10 @@ export function FoodDetailView({
 			</div>
 
 			<div className='space-y-1.5'>
+				<FoodTags
+					isPopular={food.isPopular}
+					isRecommended={food.isRecommended}
+				/>
 				<h1 className='text-2xl font-bold text-foreground'>
 					<InlineEdit
 						value={food.name}

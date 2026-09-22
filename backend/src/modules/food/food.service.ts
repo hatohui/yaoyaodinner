@@ -61,6 +61,7 @@ export class FoodService {
     sortBy: "name" | "price" | "popular" = "name",
     sortOrder: "asc" | "desc" = "asc",
     popularOnly = false,
+    recommendedOnly = false,
   ) {
     const offset = (page - 1) * count;
 
@@ -72,6 +73,7 @@ export class FoodService {
       sortBy,
       sortOrder,
       popularOnly ? "1" : "0",
+      recommendedOnly ? "1" : "0",
     );
 
     const cachedFoods = await CacheService.get(cacheKey);
@@ -83,6 +85,7 @@ export class FoodService {
       isAvailable: true,
       ...(categoryId !== "all" && categoryId !== "" ? { categoryId } : {}),
       ...(popularOnly ? { id: { in: [...popularityMap.keys()] } } : {}),
+      ...(recommendedOnly ? { isRecommended: true } : {}),
     };
 
     const rawFoods = await prisma.food.findMany({
@@ -104,6 +107,7 @@ export class FoodService {
         categoryId: f.categoryId,
         isAvailable: f.isAvailable,
         isPopular: popularityMap.has(f.id),
+        isRecommended: f.isRecommended,
         defaultVariantId: defaultVariant?.id ?? null,
         price: defaultVariant?.price ? Number(defaultVariant.price) : null,
         currency: defaultVariant?.currency ?? null,
@@ -151,6 +155,7 @@ export class FoodService {
     categoryId: string;
     isAvailable: boolean;
     shouldCalculate: boolean;
+    isRecommended: boolean;
     translations: { name: string; description: string | null }[];
     variants: {
       id: string;
@@ -160,7 +165,7 @@ export class FoodService {
       isAvailable: boolean;
       translations: { label: string }[];
     }[];
-  }) {
+  }, isPopular = false) {
     const t = food.translations[0];
     return {
       id: food.id,
@@ -170,6 +175,8 @@ export class FoodService {
       categoryId: food.categoryId,
       isAvailable: food.isAvailable,
       shouldCalculate: food.shouldCalculate,
+      isPopular,
+      isRecommended: food.isRecommended,
       variants: food.variants.map((v) => this.toVariantDto(v)),
     };
   }
@@ -198,7 +205,8 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     if (!food) throw new NotFoundException("Food not found");
-    return this.toDetailDto(food);
+    const popularityMap = await this.getPopularityMap();
+    return this.toDetailDto(food, popularityMap.has(food.id));
   }
 
   async findAllForAdmin(
@@ -220,7 +228,7 @@ export class FoodService {
         : {}),
     };
 
-    const [rawFoods, total] = await Promise.all([
+    const [rawFoods, total, popularityMap] = await Promise.all([
       prisma.food.findMany({
         where,
         skip: offset,
@@ -229,10 +237,11 @@ export class FoodService {
         include: this.foodDetailInclude(lang),
       }),
       prisma.food.count({ where }),
+      this.getPopularityMap(),
     ]);
 
     return {
-      foods: rawFoods.map((f) => this.toDetailDto(f)),
+      foods: rawFoods.map((f) => this.toDetailDto(f, popularityMap.has(f.id))),
       page,
       count: rawFoods.length,
       total,
@@ -248,6 +257,7 @@ export class FoodService {
         imageUrl: dto.imageUrl,
         categoryId: dto.categoryId,
         shouldCalculate: dto.shouldCalculate ?? true,
+        isRecommended: dto.isRecommended ?? false,
         translations: {
           create: [
             {
@@ -303,6 +313,7 @@ export class FoodService {
         categoryId: dto.categoryId,
         isAvailable: dto.isAvailable,
         shouldCalculate: dto.shouldCalculate,
+        isRecommended: dto.isRecommended,
         translations:
           dto.name !== undefined || dto.description !== undefined
             ? {
@@ -325,7 +336,8 @@ export class FoodService {
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
 
-    return this.toDetailDto(food);
+    const popularityMap = await this.getPopularityMap();
+    return this.toDetailDto(food, popularityMap.has(food.id));
   }
 
   async remove(id: string) {

@@ -17,6 +17,8 @@ export interface CreateFoodDto {
   variants?: VariantDto[];
   /** Set to false for joke/gag menu items: guests can still order them and see a price, but they are excluded from table/split totals. */
   shouldCalculate?: boolean;
+  /** Staff pick: shows a recommended tag next to this food across the menu. */
+  isRecommended?: boolean;
   /** Locale the name/description/variant labels are written in */
   lang?: string;
 }

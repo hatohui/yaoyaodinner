@@ -22,7 +22,7 @@ export function Navbar() {
 	const { pathname } = useLocation()
 	const navigate = useNavigate()
 	const { isAdmin } = useIsAdmin()
-	const { feedbackWall } = useConfig()
+	const { feedbackWall, ordering, tables } = useConfig()
 	const tapCount = useRef(0)
 	const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const [mobileOpen, setMobileOpen] = useState(false)
@@ -45,8 +45,8 @@ export function Navbar() {
 
 	const navLinks = [
 		{ to: '/about', label: t('nav.about'), show: true },
-		{ to: '/menu', label: t('nav.menu'), show: true },
-		{ to: '/tables', label: t('nav.tables'), show: true },
+		{ to: '/menu', label: t('nav.menu'), show: ordering },
+		{ to: '/tables', label: t('nav.tables'), show: tables },
 		{ to: '/feedback', label: t('nav.feedback'), show: feedbackWall },
 		{
 			to: '/dev',

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Flame, Check } from 'lucide-react'
+import { Check } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
+import { FoodTags } from '@/components/common/FoodTags'
 import { cn } from '@/utils/shadcn'
 import { ASSET_URL } from '@/common/app'
 
@@ -61,12 +62,11 @@ export function FoodCard({
 
 				<div className='absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
 
-				{food.isPopular && (
-					<div className='absolute left-2 top-2 flex items-center gap-1 rounded-full bg-primary/90 px-2.5 py-0.5 text-xs font-semibold text-primary-foreground shadow backdrop-blur-sm'>
-						<Flame className='size-3.5' />
-						{t('menu.popular')}
-					</div>
-				)}
+				<FoodTags
+					isPopular={food.isPopular}
+					isRecommended={food.isRecommended}
+					className='absolute left-2 top-2 max-w-[calc(100%-3.5rem)]'
+				/>
 
 				{!food.isAvailable && (
 					<div className='absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]'>
@@ -101,15 +101,12 @@ export function FoodCard({
 				)}
 			</Link>
 
-			<Link
-				to={`/menu/${food.id}`}
-				className='flex flex-1 flex-col gap-1.5 p-4'
-			>
+			<Link to={`/menu/${food.id}`} className='flex flex-1 flex-col gap-1 p-4'>
 				<h3 className='line-clamp-2 text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary'>
 					{food.name}
 				</h3>
 				{food.description && (
-					<p className='line-clamp-2 text-sm leading-relaxed text-muted-foreground'>
+					<p className='hidden line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:block'>
 						{food.description}
 					</p>
 				)}

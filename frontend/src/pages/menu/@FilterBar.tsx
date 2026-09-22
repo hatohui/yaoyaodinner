@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArrowUpDown, Flame, Search } from 'lucide-react'
+import { ArrowUpDown, Flame, Search, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
 	Select,
@@ -9,15 +9,12 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/utils/shadcn'
-import { MENU_PAGE_SIZE_ALL, MENU_PAGE_SIZE_OPTIONS } from '@/common/constants'
 import type { CategoryItemDto } from '@/api/model'
 import type { MenuSort } from '@/utils/searchParams'
 
 interface FilterBarProps {
 	search: string
 	onSearchChange: (value: string) => void
-	count: number
-	onCountChange: (value: number) => void
 	activeCategory: string
 	onCategoryChange: (id: string) => void
 	categories: CategoryItemDto[]
@@ -25,13 +22,13 @@ interface FilterBarProps {
 	onSortChange: (value: MenuSort) => void
 	popular: boolean
 	onPopularChange: (value: boolean) => void
+	recommended: boolean
+	onRecommendedChange: (value: boolean) => void
 }
 
 export function FilterBar({
 	search,
 	onSearchChange,
-	count,
-	onCountChange,
 	activeCategory,
 	onCategoryChange,
 	categories,
@@ -39,6 +36,8 @@ export function FilterBar({
 	onSortChange,
 	popular,
 	onPopularChange,
+	recommended,
+	onRecommendedChange,
 }: FilterBarProps) {
 	const { t } = useTranslation()
 
@@ -55,7 +54,7 @@ export function FilterBar({
 					/>
 				</div>
 
-				<div className='flex shrink-0 items-center gap-2'>
+				<div className='hidden shrink-0 items-center gap-2 sm:flex'>
 					<ArrowUpDown className='h-4 w-4 text-muted-foreground' />
 					<Select
 						value={sort}
@@ -67,38 +66,27 @@ export function FilterBar({
 						<SelectContent>
 							<SelectItem value='name'>{t('menu.sort_name')}</SelectItem>
 							<SelectItem value='price'>{t('menu.sort_price')}</SelectItem>
-							<SelectItem value='price_desc'>{t('menu.sort_price_desc')}</SelectItem>
-							<SelectItem value='popular'>{t('menu.sort_popular')}</SelectItem>
-						</SelectContent>
-					</Select>
-
-					<Select
-						value={count.toString()}
-						onValueChange={val => onCountChange(Number(val))}
-					>
-						<SelectTrigger className='h-9 w-20 rounded-full border-transparent bg-muted/50 text-sm'>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							{MENU_PAGE_SIZE_OPTIONS.map(n => (
-								<SelectItem key={n} value={n.toString()}>
-									{n}
-								</SelectItem>
-							))}
-							<SelectItem value={MENU_PAGE_SIZE_ALL.toString()}>
-								{t('menu.count_all')}
+							<SelectItem value='price_desc'>
+								{t('menu.sort_price_desc')}
 							</SelectItem>
+							<SelectItem value='popular'>{t('menu.sort_popular')}</SelectItem>
 						</SelectContent>
 					</Select>
 				</div>
 			</div>
 
-			<div className='mt-3 flex flex-wrap gap-2 pt-1'>
+			<div className='mt-3 hidden flex-wrap gap-2 pt-1 sm:flex'>
 				<CategoryPill
 					label={t('menu.popular')}
 					icon={Flame}
 					active={popular}
 					onClick={() => onPopularChange(!popular)}
+				/>
+				<CategoryPill
+					label={t('menu.recommended')}
+					icon={Sparkles}
+					active={recommended}
+					onClick={() => onRecommendedChange(!recommended)}
 				/>
 				<CategoryPill
 					label={t('menu.all_categories')}
@@ -113,6 +101,65 @@ export function FilterBar({
 						onClick={() => onCategoryChange(cat.id)}
 					/>
 				))}
+			</div>
+
+			<div className='mt-3 grid grid-cols-2 gap-2 pt-1 sm:hidden'>
+				<Select
+					value={sort}
+					onValueChange={val => onSortChange(val as MenuSort)}
+				>
+					<SelectTrigger className='h-9 w-full rounded-full border-transparent bg-muted/50 text-sm'>
+						<ArrowUpDown className='h-3.5 w-3.5 shrink-0 text-muted-foreground' />
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value='name'>{t('menu.sort_name')}</SelectItem>
+						<SelectItem value='price'>{t('menu.sort_price')}</SelectItem>
+						<SelectItem value='price_desc'>
+							{t('menu.sort_price_desc')}
+						</SelectItem>
+						<SelectItem value='popular'>{t('menu.sort_popular')}</SelectItem>
+					</SelectContent>
+				</Select>
+
+				<Select
+					value={
+						popular ? 'popular' : recommended ? 'recommended' : activeCategory
+					}
+					onValueChange={val => {
+						onPopularChange(val === 'popular')
+						onRecommendedChange(val === 'recommended')
+						if (val !== 'popular' && val !== 'recommended') {
+							onCategoryChange(val)
+						} else {
+							onCategoryChange('all')
+						}
+					}}
+				>
+					<SelectTrigger className='h-9 w-full rounded-full border-transparent bg-muted/50 text-sm'>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value='popular'>
+							<span className='flex items-center gap-1.5'>
+								<Flame className='size-3.5' />
+								{t('menu.popular')}
+							</span>
+						</SelectItem>
+						<SelectItem value='recommended'>
+							<span className='flex items-center gap-1.5'>
+								<Sparkles className='size-3.5' />
+								{t('menu.recommended')}
+							</span>
+						</SelectItem>
+						<SelectItem value='all'>{t('menu.all_categories')}</SelectItem>
+						{categories.map(cat => (
+							<SelectItem key={cat.id} value={cat.id}>
+								{cat.name ?? cat.key}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</div>
 		</div>
 	)

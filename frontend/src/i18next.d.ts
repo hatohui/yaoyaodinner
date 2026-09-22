@@ -6,6 +6,9 @@ declare module 'react-i18next' {
     resources: {
       translation: {
         config: { select_language: string }
+        quotes: {
+          offer_socks: string
+        }
         errors: Record<string, string>
         common: {
           rename: string
@@ -79,6 +82,7 @@ declare module 'react-i18next' {
           showing: string
           unavailable: string
           popular: string
+          recommended: string
           sort_name: string
           sort_price: string
           sort_price_desc: string

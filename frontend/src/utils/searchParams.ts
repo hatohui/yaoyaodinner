@@ -9,6 +9,7 @@ export interface MenuSearchParams {
 	category?: string
 	sort?: MenuSort
 	popular?: boolean
+	recommended?: boolean
 	lang?: string
 }
 
@@ -28,6 +29,7 @@ export function useMenuSearchParams() {
 		? (searchParams.get('sort') as MenuSort)
 		: 'name'
 	const popular = searchParams.get('popular') === 'true'
+	const recommended = searchParams.get('recommended') === 'true'
 	const lang = searchParams.get('lang') || undefined
 
 	const updateParams = useCallback(
@@ -81,6 +83,13 @@ export function useMenuSearchParams() {
 		[updateParams]
 	)
 
+	const setRecommended = useCallback(
+		(newRecommended: boolean) => {
+			updateParams({ recommended: newRecommended, page: 1 })
+		},
+		[updateParams]
+	)
+
 	const setLang = useCallback(
 		(newLang: string | undefined) => {
 			updateParams({ lang: newLang })
@@ -98,12 +107,14 @@ export function useMenuSearchParams() {
 		category,
 		sort,
 		popular,
+		recommended,
 		lang,
 		setPage,
 		setCount,
 		setCategory,
 		setSort,
 		setPopular,
+		setRecommended,
 		setLang,
 		updateParams,
 		resetParams,
@@ -136,6 +147,7 @@ export function parseMenuSearchParams(
 			? (searchParams.get('sort') as MenuSort)
 			: 'name',
 		popular: searchParams.get('popular') === 'true',
+		recommended: searchParams.get('recommended') === 'true',
 		lang: searchParams.get('lang') || undefined,
 	}
 }

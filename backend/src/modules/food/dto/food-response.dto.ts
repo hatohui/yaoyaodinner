@@ -8,6 +8,11 @@ export class FoodItemDto {
   @ApiProperty({ nullable: true, type: String }) categoryId: string | null;
   @ApiProperty() isAvailable: boolean;
   @ApiProperty() isPopular: boolean;
+  @ApiProperty({
+    description:
+      'Staff pick: admins flag this food as recommended so the menu shows a recommended tag.',
+  })
+  isRecommended: boolean;
   @ApiProperty({ nullable: true, type: String }) defaultVariantId: string | null;
   @ApiProperty({ nullable: true, type: Number }) price: number | null;
   @ApiProperty({ nullable: true, type: String }) currency: string | null;
@@ -48,6 +53,12 @@ export class FoodDetailDto {
       'Whether orders of this food count toward table/split totals. False for joke/gag menu items that still show a price and can be ordered, but are free.',
   })
   shouldCalculate: boolean;
+  @ApiProperty() isPopular: boolean;
+  @ApiProperty({
+    description:
+      'Staff pick: admins flag this food as recommended so the menu shows a recommended tag.',
+  })
+  isRecommended: boolean;
   @ApiProperty({ type: [FoodVariantDto] }) variants: FoodVariantDto[];
   @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }

@@ -261,6 +261,8 @@ export function useFoodCatalog() {
 					patch.isAvailable = next.isAvailable
 				if (prev.shouldCalculate !== next.shouldCalculate)
 					patch.shouldCalculate = next.shouldCalculate
+				if (prev.isRecommended !== next.isRecommended)
+					patch.isRecommended = next.isRecommended
 				if (Object.keys(patch).length > 0)
 					updateFoodMutate({
 						id: next.id,

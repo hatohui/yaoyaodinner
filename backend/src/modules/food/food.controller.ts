@@ -49,6 +49,7 @@ export class FoodController {
     example: 'asc',
   })
   @ApiQuery({ name: 'popular', required: false, type: Boolean })
+  @ApiQuery({ name: 'recommended', required: false, type: Boolean })
   @ApiResponse({ status: 200, type: GetFoodsResponseDto })
   findAll(
     @Query('lang') lang = 'en',
@@ -58,6 +59,7 @@ export class FoodController {
     @Query('sortBy') sortBy: 'name' | 'price' | 'popular' = 'name',
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
     @Query('popular') popular?: string,
+    @Query('recommended') recommended?: string,
   ) {
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const countNum = Math.min(500, Math.max(1, parseInt(count, 10) || 20));
@@ -70,6 +72,7 @@ export class FoodController {
       sortBy,
       order,
       popular === 'true',
+      recommended === 'true',
     );
   }
 

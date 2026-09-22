@@ -19,6 +19,9 @@ export interface FoodDetailDto {
   isAvailable: boolean;
   /** Whether orders of this food count toward table/split totals. False for joke/gag menu items that still show a price and can be ordered, but are free. */
   shouldCalculate: boolean;
+  isPopular: boolean;
+  /** Staff pick: admins flag this food as recommended so the menu shows a recommended tag. */
+  isRecommended: boolean;
   variants: FoodVariantDto[];
   aiTranslationFailed?: boolean;
 }

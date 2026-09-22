@@ -36,6 +36,14 @@ export class UpdateFoodDto {
   shouldCalculate?: boolean;
 
   @ApiPropertyOptional({
+    description:
+      'Staff pick: shows a recommended tag next to this food across the menu.',
+  })
+  @IsBoolean()
+  @IsOptional()
+  isRecommended?: boolean;
+
+  @ApiPropertyOptional({
     description: 'Locale the name/description are written in',
     default: 'en',
   })
