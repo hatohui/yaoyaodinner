@@ -4,6 +4,8 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
 
+export const thumbKeyOf = (key: string) => `${key}_thumb`;
+
 @Injectable()
 export class ImagesService {
   constructor(private config: ConfigService) {}
@@ -32,23 +34,28 @@ export class ImagesService {
     return { client, bucket };
   }
 
-  async signUrl(folder: string): Promise<{ url: string; key: string }> {
+  async signUrl(folder: string): Promise<{ url: string; key: string; thumbUrl: string; thumbKey: string }> {
     const { client, bucket } = this.client();
 
     const key = `${folder}/${uuidv4()}`;
-    const command = new PutObjectCommand({ Bucket: bucket, Key: key });
-    const url = await getSignedUrl(client, command, { expiresIn: 900 });
+    const thumbKey = thumbKeyOf(key);
+    const [url, thumbUrl] = await Promise.all(
+      [key, thumbKey].map((Key) => getSignedUrl(client, new PutObjectCommand({ Bucket: bucket, Key }), { expiresIn: 900 })),
+    );
 
-    return { url, key };
+    return { url, key, thumbUrl, thumbKey };
   }
 
-  /** Best-effort delete — swallows errors so a missing/already-gone object never blocks an update. */
+  /** Best-effort delete of an image and its thumbnail — swallows errors so a missing object never blocks an update. */
   async deleteKey(key: string): Promise<void> {
+    if (key.startsWith('http')) return;
     const { client, bucket } = this.client();
-    try {
-      await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
-    } catch {
-      // storage cleanup is not critical enough to fail the caller's request
-    }
+    await Promise.all(
+      [key, thumbKeyOf(key)].map((Key) =>
+        client.send(new DeleteObjectCommand({ Bucket: bucket, Key })).catch(() => {
+          // storage cleanup is not critical enough to fail the caller's request
+        }),
+      ),
+    );
   }
 }

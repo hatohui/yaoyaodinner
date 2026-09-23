@@ -25,6 +25,7 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 		setConfigOpen,
 		tableId,
 		selectTable,
+		changeTable,
 		handleDone,
 		updateFood,
 		updateVariant,
@@ -33,7 +34,7 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 	return (
 		<>
 			<Dialog open={Boolean(id)} onOpenChange={onOpenChange}>
-				<DialogContent className='scrollbar-thin max-h-[85vh] max-w-2xl overflow-y-auto rounded-3xl p-0'>
+				<DialogContent className='scrollbar-thin max-h-[85vh] gap-0 overflow-y-auto rounded-3xl p-0 sm:max-w-3xl md:overflow-hidden'>
 					<DialogTitle className='sr-only'>
 						{food?.name ?? t('food_detail.title')}
 					</DialogTitle>
@@ -52,7 +53,7 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 							onAdd={openPicker}
 							onUpdateFood={updateFood}
 							onUpdateVariant={updateVariant}
-							hideBackLink
+							variant='modal'
 						/>
 					)}
 				</DialogContent>
@@ -81,6 +82,7 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 						: []
 				}
 				onSuccess={handleDone}
+				onChangeTable={changeTable}
 			/>
 		</>
 	)

@@ -3,6 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { getSignedUrl } from '@/api/images/images'
 import { useToast } from '@/hooks/useToast'
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE_BYTES } from '@/common/constants'
+import { createThumbnail } from '@/utils/cropImage'
+
+async function put(url: string, body: Blob) {
+	const res = await fetch(url, {
+		method: 'PUT',
+		body,
+		headers: { 'Content-Type': body.type },
+	})
+	if (!res.ok) throw new Error('Upload failed')
+}
 
 export function useImageUpload(folder: string) {
 	const { t } = useTranslation()
@@ -25,13 +35,11 @@ export function useImageUpload(folder: string) {
 		if (!validate(file)) return null
 		setIsUploading(true)
 		try {
-			const { url, key } = await getSignedUrl({ folder })
-			const res = await fetch(url, {
-				method: 'PUT',
-				body: file,
-				headers: { 'Content-Type': file.type },
-			})
-			if (!res.ok) throw new Error('Upload failed')
+			const [{ url, key, thumbUrl }, thumbnail] = await Promise.all([
+				getSignedUrl({ folder }),
+				createThumbnail(file),
+			])
+			await Promise.all([put(url, file), put(thumbUrl, thumbnail)])
 			return key
 		} catch {
 			toast.error(t('common.upload_failed'))

@@ -15,7 +15,6 @@ import { useMenuSelection } from './@useMenuSelection'
 import { LoadingView, LoadingSpinner } from './@LoadingView'
 import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
-import { cn } from '@/utils/shadcn'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
@@ -87,6 +86,11 @@ export default function MenuPage() {
 		[categoriesRaw]
 	)
 
+	const categoryNames = useMemo(
+		() => new Map(categories.map(c => [c.id, c.name ?? c.key])),
+		[categories]
+	)
+
 	const filteredFoods = useMemo(() => {
 		if (!data?.foods) return []
 		if (!search.trim()) return data.foods
@@ -139,6 +143,11 @@ export default function MenuPage() {
 									<FoodCard
 										key={food.id}
 										food={food}
+										categoryName={
+											food.categoryId
+												? categoryNames.get(food.categoryId)
+												: undefined
+										}
 										selected={selection.selected.has(food.id)}
 										onToggleSelect={
 											canOrder ? () => selection.toggle(food.id) : undefined
@@ -185,6 +194,7 @@ export default function MenuPage() {
 					defaultVariantId: f.defaultVariantId,
 				}))}
 				onSuccess={selection.handleDone}
+				onChangeTable={selection.changeTable}
 			/>
 
 			<FoodDetailModal

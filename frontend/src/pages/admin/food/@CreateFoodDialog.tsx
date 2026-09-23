@@ -5,6 +5,7 @@ import type { CategoryItemDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import {
 	Select,
 	SelectContent,
@@ -24,7 +25,12 @@ import {
 interface CreateFoodDialogProps {
 	categories: CategoryItemDto[]
 	pending: boolean
-	onCreate: (name: string, categoryId: string, price: number) => void
+	onCreate: (
+		name: string,
+		categoryId: string,
+		price: number,
+		imageUrl?: string
+	) => void
 }
 
 export function CreateFoodDialog({
@@ -37,11 +43,13 @@ export function CreateFoodDialog({
 	const [name, setName] = useState('')
 	const [categoryId, setCategoryId] = useState<string | undefined>(undefined)
 	const [price, setPrice] = useState('')
+	const [imageKey, setImageKey] = useState<string | null>(null)
 
 	const reset = () => {
 		setName('')
 		setCategoryId(undefined)
 		setPrice('')
+		setImageKey(null)
 	}
 
 	const canCreate = name.trim() && categoryId
@@ -66,6 +74,17 @@ export function CreateFoodDialog({
 				</DialogHeader>
 
 				<div className='flex flex-col gap-4'>
+					<div className='flex flex-col gap-1.5'>
+						<Label>{t('admin.food.image')}</Label>
+						<ImageUploadSlot
+							shape='banner'
+							folder='foods'
+							aspect={4 / 3}
+							imageKey={imageKey}
+							onChange={setImageKey}
+						/>
+					</div>
+
 					<div className='flex flex-col gap-1.5'>
 						<Label htmlFor='food-name'>{t('admin.food.name')}</Label>
 						<Input
@@ -110,7 +129,12 @@ export function CreateFoodDialog({
 						disabled={!canCreate || pending}
 						onClick={() => {
 							if (!categoryId) return
-							onCreate(name.trim(), categoryId, Number(price) || 0)
+							onCreate(
+								name.trim(),
+								categoryId,
+								Number(price) || 0,
+								imageKey ?? undefined
+							)
 							setOpen(false)
 							reset()
 						}}

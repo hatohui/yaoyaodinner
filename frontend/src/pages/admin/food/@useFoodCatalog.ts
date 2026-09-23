@@ -199,11 +199,17 @@ export function useFoodCatalog() {
 		failedTranslationFood,
 		setFailedTranslationFood,
 		handleSaveTranslations,
-		createFood: (name: string, catId: string, price: number) =>
+		createFood: (
+			name: string,
+			catId: string,
+			price: number,
+			imageUrl?: string
+		) =>
 			createFoodMutate({
 				data: {
 					name,
 					categoryId: catId,
+					imageUrl,
 					lang: i18n.language,
 					variants: [{ label: t('admin.food.default_variant_label'), price }],
 				},

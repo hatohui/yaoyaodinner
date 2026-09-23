@@ -27,6 +27,8 @@
 		"save": "บันทึก",
 		"loading": "กำลังโหลด…",
 		"rename": "เปลี่ยนชื่อ",
+		"edit": "แก้ไข",
+		"done": "เสร็จ",
 		"upload_image": "อัปโหลดรูปภาพ",
 		"change_image": "เปลี่ยนรูปภาพ",
 		"remove_image": "ลบรูปภาพ",
@@ -38,8 +40,18 @@
 		"crop_image": "ปรับรูปภาพ",
 		"crop_zoom": "ซูม",
 		"crop_confirm": "ใช้รูปนี้",
+		"crop_hint": "ลากเพื่อย้าย · เลื่อนหรือถ่างนิ้วเพื่อซูม",
+		"crop_aspect": "อัตราส่วนภาพ",
+		"crop_aspect_original": "ต้นฉบับ",
+		"crop_zoom_in": "ซูมเข้า",
+		"crop_zoom_out": "ซูมออก",
+		"crop_rotate_left": "หมุนซ้าย",
+		"crop_rotate_right": "หมุนขวา",
+		"crop_reset": "รีเซ็ต",
 		"invalid_file_type": "โปรดเลือกรูปภาพ JPEG, PNG, WebP หรือ GIF",
-		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 5 MB"
+		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 5 MB",
+		"view_image": "ดูรูปภาพ",
+		"close": "ปิด"
 	},
 	"health": {
 		"title": "สุขภาพระบบ",
@@ -92,9 +104,13 @@
 		"load_error": "โหลดโต๊ะไม่สำเร็จ กรุณารีเฟรช",
 		"none_found": "ไม่พบโต๊ะ",
 		"no_host": "ยังไม่มีเจ้าภาพ",
+		"your_table": "คุณอยู่ที่นี่",
+		"seats_taken": "นั่งแล้ว {{seated}} จาก {{capacity}} ที่",
 		"filter_all": "ทุกโต๊ะ",
 		"filter_free": "ยังมีที่ว่าง",
-		"filter_full": "เต็ม"
+		"filter_full": "เต็ม",
+		"view_card": "มุมมองการ์ด",
+		"view_compact": "มุมมองกะทัดรัด"
 	},
 	"roster": {
 		"people_here": "คนที่โต๊ะนี้",
@@ -111,7 +127,11 @@
 		"remove_failed": "ลบไม่สำเร็จ กรุณาลองใหม่",
 		"update_failed": "อัปเดตโต๊ะไม่สำเร็จ",
 		"set_host": "ตั้งเป็นเจ้าภาพ",
-		"unset_host": "ยกเลิกเจ้าภาพ"
+		"unset_host": "ยกเลิกเจ้าภาพ",
+		"this_is_me": "นี่คือฉัน",
+		"not_me": "ไม่ใช่ฉัน",
+		"you": "คุณ",
+		"pick_yourself": "คุณคือใคร? แตะ \"นี่คือฉัน\" ข้างชื่อของคุณ"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -142,6 +162,8 @@
 		"clear_selection": "ล้างการเลือก",
 		"add_to_order": "เพิ่มลงออเดอร์",
 		"configure_title": "ปรับแต่งออเดอร์ของคุณ",
+		"ordering_for": "สำหรับโต๊ะ {{table}}",
+		"change_table": "เปลี่ยนโต๊ะ",
 		"adding": "กำลังเพิ่ม…",
 		"choose_table_title": "เลือกโต๊ะ",
 		"added_to_order": "เพิ่มลงออเดอร์แล้ว",
@@ -430,7 +452,8 @@
 			"variant_price_placeholder": "ราคา",
 			"default_variant_label": "ปกติ",
 			"description": "คำอธิบาย",
-			"currency": "หน่วย"
+			"currency": "หน่วย",
+			"image": "รูปภาพ"
 		},
 		"presets": {
 			"title": "เมนูชุดสำเร็จรูป",

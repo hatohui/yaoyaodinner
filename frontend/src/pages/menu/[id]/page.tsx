@@ -19,6 +19,7 @@ export default function FoodDetailPage() {
 		setConfigOpen,
 		tableId,
 		selectTable,
+		changeTable,
 		handleDone,
 		updateFood,
 		updateVariant,
@@ -73,6 +74,7 @@ export default function FoodDetailPage() {
 						: []
 				}
 				onSuccess={handleDone}
+				onChangeTable={changeTable}
 			/>
 		</>
 	)

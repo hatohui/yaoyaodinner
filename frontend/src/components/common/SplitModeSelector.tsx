@@ -56,7 +56,7 @@ export function SplitModeSelector({
 								'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
 								chosen.has(person.id)
 									? 'border-primary bg-primary text-primary-foreground'
-									: 'border-border/60 bg-card text-foreground hover:bg-muted'
+									: 'border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 							)}
 						>
 							{person.name}

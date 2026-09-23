@@ -4,7 +4,6 @@ import { Minus, Plus, Trash2, Users2 } from 'lucide-react'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { OrderThumb } from './@OrderThumb'
-import { ASSET_URL } from '@/common/app'
 import { cn } from '@/utils/shadcn'
 
 const MIN_QUANTITY = 1
@@ -63,12 +62,6 @@ export function OrderListItem({
 		commitQuantity(next)
 	}
 
-	const imageSrc = order.foodImageUrl
-		? order.foodImageUrl.startsWith('http')
-			? order.foodImageUrl
-			: `${ASSET_URL}/${order.foodImageUrl}`
-		: null
-
 	const splitNames = order.splits.map(
 		s => people.find(p => p.id === s.personId)?.name ?? t('orders.unknown_person')
 	)
@@ -82,7 +75,7 @@ export function OrderListItem({
 		<li className='flex flex-col gap-2 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-sm'>
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex items-start gap-3'>
-					<OrderThumb src={imageSrc} alt={order.foodName} />
+					<OrderThumb imageKey={order.foodImageUrl} alt={order.foodName} />
 					<div className='flex flex-col gap-1'>
 						<span
 							className={cn(

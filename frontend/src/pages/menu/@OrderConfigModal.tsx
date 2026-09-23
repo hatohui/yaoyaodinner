@@ -3,14 +3,20 @@ import { useTranslation } from 'react-i18next'
 import { useQueries, useQueryClient } from '@tanstack/react-query'
 import { Minus, Plus } from 'lucide-react'
 import { getGetFoodByIdQueryOptions } from '@/api/foods/foods'
-import { useGetTablePeople } from '@/api/tables/tables'
+import { useGetTableById, useGetTablePeople } from '@/api/tables/tables'
 import { useCreateOrder, getGetOrdersQueryKey } from '@/api/orders/orders'
-import type { FoodDetailDto, FoodVariantDto, PersonDto } from '@/api/model'
+import type {
+	FoodDetailDto,
+	FoodVariantDto,
+	PersonDto,
+	TableDto,
+} from '@/api/model'
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
+	DialogDescription,
 	DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
@@ -44,6 +50,7 @@ interface OrderConfigModalProps {
 	tableId: string | null
 	foods: ConfigFoodInput[]
 	onSuccess: () => void
+	onChangeTable?: () => void
 }
 
 export function OrderConfigModal({
@@ -52,6 +59,7 @@ export function OrderConfigModal({
 	tableId,
 	foods,
 	onSuccess,
+	onChangeTable,
 }: OrderConfigModalProps) {
 	const { t, i18n } = useTranslation()
 	const toast = useToast()
@@ -61,6 +69,9 @@ export function OrderConfigModal({
 	const { data: people = [], isLoading: peopleLoading } = useGetTablePeople<
 		PersonDto[]
 	>(tableId ?? '', {
+		query: { enabled: open && !!tableId },
+	})
+	const { data: table } = useGetTableById<TableDto>(tableId ?? '', {
 		query: { enabled: open && !!tableId },
 	})
 	const { personId: myPersonId } = useWhoAmI(tableId ?? '')
@@ -178,6 +189,20 @@ export function OrderConfigModal({
 			<DialogContent className='flex max-h-[85vh] flex-col rounded-3xl'>
 				<DialogHeader>
 					<DialogTitle>{t('menu.configure_title')}</DialogTitle>
+					{table && (
+						<DialogDescription className='flex flex-wrap items-center gap-x-2'>
+							{t('menu.ordering_for', { table: `${table.no}. ${table.name}` })}
+							{onChangeTable && (
+								<button
+									type='button'
+									onClick={onChangeTable}
+									className='font-medium text-primary underline-offset-4 hover:underline'
+								>
+									{t('menu.change_table')}
+								</button>
+							)}
+						</DialogDescription>
+					)}
 				</DialogHeader>
 
 				{loading ? (
@@ -194,7 +219,7 @@ export function OrderConfigModal({
 							return (
 								<div
 									key={f.id}
-									className='flex flex-col gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3'
+									className='flex flex-col gap-3 rounded-2xl border border-border bg-card px-4 py-3 shadow-sm'
 								>
 									<span className='font-medium text-foreground'>{f.name}</span>
 
@@ -211,7 +236,7 @@ export function OrderConfigModal({
 															'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
 															cfg.variantId === v.id
 																? 'border-primary bg-primary text-primary-foreground'
-																: 'border-border/60 bg-card text-foreground hover:bg-muted'
+																: 'border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 														)}
 													>
 														{v.label ? `${v.label} - ` : ''}
@@ -230,7 +255,7 @@ export function OrderConfigModal({
 												})
 											}
 											disabled={cfg.quantity <= 1}
-											className='flex size-7 items-center justify-center rounded-full border border-border/60 text-foreground transition-colors hover:bg-muted disabled:opacity-40'
+											className='flex size-7 items-center justify-center rounded-full border border-border bg-control text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
 										>
 											<Minus className='size-3.5' />
 										</button>
@@ -242,7 +267,7 @@ export function OrderConfigModal({
 											onClick={() =>
 												update(f.id, { quantity: cfg.quantity + 1 })
 											}
-											className='flex size-7 items-center justify-center rounded-full border border-border/60 text-foreground transition-colors hover:bg-muted'
+											className='flex size-7 items-center justify-center rounded-full border border-border bg-control text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 										>
 											<Plus className='size-3.5' />
 										</button>

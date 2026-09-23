@@ -1,15 +1,16 @@
-import { useState, type MouseEvent } from 'react'
+import type { MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Check } from 'lucide-react'
+import { Check, Plus } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { FoodTags } from '@/components/common/FoodTags'
 import { cn } from '@/utils/shadcn'
-import { ASSET_URL } from '@/common/app'
+import { StoredImage } from '@/components/common/StoredImage'
 
 interface FoodCardProps {
 	food: FoodItemDto
+	categoryName?: string
 	selected?: boolean
 	onToggleSelect?: () => void
 	onQuickView?: (id: string) => void
@@ -17,12 +18,12 @@ interface FoodCardProps {
 
 export function FoodCard({
 	food,
+	categoryName,
 	selected = false,
 	onToggleSelect,
 	onQuickView,
 }: FoodCardProps) {
 	const { t } = useTranslation()
-	const [imgError, setImgError] = useState(false)
 
 	const handleLinkClick = (e: MouseEvent) => {
 		if (!onQuickView) return
@@ -32,12 +33,7 @@ export function FoodCard({
 		onQuickView(food.id)
 	}
 
-	const imageSrc =
-		food.imageUrl && !imgError
-			? food.imageUrl.startsWith('http')
-				? food.imageUrl
-				: `${ASSET_URL}/${food.imageUrl}`
-			: null
+	const hasPrice = food.price !== null && food.price !== undefined
 
 	const canSelect =
 		Boolean(onToggleSelect) &&
@@ -58,18 +54,16 @@ export function FoodCard({
 				onClick={handleLinkClick}
 				className='relative aspect-[4/3] overflow-hidden bg-muted'
 			>
-				{imageSrc ? (
-					<img
-						src={imageSrc}
-						alt={food.name}
-						className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
-						onError={() => setImgError(true)}
-					/>
-				) : (
-					<div className='flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-muted to-muted'>
-						<span className='text-5xl'>🍽️</span>
-					</div>
-				)}
+				<StoredImage
+					imageKey={food.imageUrl}
+					alt={food.name}
+					className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
+					fallback={
+						<div className='flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/30 to-primary/10'>
+							<span className='text-5xl'>🍽️</span>
+						</div>
+					}
+				/>
 
 				<div className='absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
 
@@ -90,6 +84,15 @@ export function FoodCard({
 					</div>
 				)}
 
+				{hasPrice && (
+					<span className='absolute bottom-2 right-2 rounded-full bg-card/90 px-2.5 py-1 text-sm font-bold tabular-nums text-foreground shadow-md backdrop-blur-sm'>
+						{food.price}{' '}
+						<span className='text-xs font-semibold text-primary'>
+							{food.currency}
+						</span>
+					</span>
+				)}
+
 				{canSelect && (
 					<button
 						type='button'
@@ -101,13 +104,17 @@ export function FoodCard({
 							onToggleSelect?.()
 						}}
 						className={cn(
-							'absolute right-2 top-2 flex size-7 items-center justify-center rounded-md border shadow-md shadow-black/30 backdrop-blur-sm transition-all hover:border-2',
+							'absolute right-2 top-2 flex size-8 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all hover:scale-110',
 							selected
-								? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
-								: 'border-border/60 bg-background/80 text-transparent hover:border-primary hover:bg-primary/20'
+								? 'bg-primary text-primary-foreground'
+								: 'bg-card/90 text-primary hover:bg-primary hover:text-primary-foreground'
 						)}
 					>
-						<Check className='size-4' />
+						{selected ? (
+							<Check className='size-4' strokeWidth={3} />
+						) : (
+							<Plus className='size-4' strokeWidth={3} />
+						)}
 					</button>
 				)}
 			</Link>
@@ -115,21 +122,19 @@ export function FoodCard({
 			<Link
 				to={`/menu/${food.id}`}
 				onClick={handleLinkClick}
-				className='flex flex-1 flex-col gap-1 p-4'
+				className='flex flex-1 flex-col gap-1 px-3.5 pb-3.5 pt-3'
 			>
-				<h3 className='line-clamp-2 text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary'>
+				{categoryName && (
+					<span className='truncate text-[11px] font-semibold uppercase tracking-wide text-primary'>
+						{categoryName}
+					</span>
+				)}
+				<h3 className='line-clamp-2 min-h-[2lh] text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base'>
 					{food.name}
 				</h3>
-				{food.description && (
-					<p className='hidden line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:block'>
-						{food.description}
-					</p>
-				)}
-				{food.price !== null && food.price !== undefined && (
-					<p className='mt-auto text-sm font-medium text-primary'>
-						{food.price} {food.currency}
-					</p>
-				)}
+				<p className='hidden min-h-[2lh] text-sm leading-snug text-muted-foreground sm:line-clamp-2'>
+					{food.description}
+				</p>
 			</Link>
 		</div>
 	)

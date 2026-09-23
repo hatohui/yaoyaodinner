@@ -35,7 +35,7 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 	return (
 		<div className='flex flex-col gap-3'>
 			{people.length === 0 ? (
-				<p className='rounded-2xl border border-dashed border-border/60 px-4 py-3 text-sm text-muted-foreground'>
+				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
 					{t('orders.needs_people_body')}
 				</p>
 			) : (

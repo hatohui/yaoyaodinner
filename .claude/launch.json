@@ -4,8 +4,25 @@
     {
       "name": "frontend",
       "runtimeExecutable": "frontend/node_modules/.bin/vite.exe",
-      "runtimeArgs": ["frontend", "--config", "frontend/vite.config.ts"],
+      "runtimeArgs": [
+        "frontend",
+        "--config",
+        "frontend/vite.config.ts"
+      ],
       "port": 5173
+    },
+    {
+      "name": "frontend-alt",
+      "runtimeExecutable": "frontend/node_modules/.bin/vite.exe",
+      "runtimeArgs": [
+        "frontend",
+        "--config",
+        "frontend/vite.config.ts",
+        "--port",
+        "5174",
+        "--strictPort"
+      ],
+      "port": 5174
     }
   ]
 }

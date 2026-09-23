@@ -8,11 +8,14 @@ import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
 import { CacheSettings } from "@common/cache/constants";
 import { AiService } from "@libs/gemini";
+import { ImagesService } from "@modules/images/images.service";
 
 const FOOD_CACHE_PREFIX = "foods:";
 
 @Injectable()
 export class FoodService {
+  constructor(private images: ImagesService) {}
+
   private async getPopularityMap(): Promise<Map<string, number>> {
     const cacheKey = CacheSettings.food.popular.key;
     const cached = await CacheService.get<[string, number][]>(cacheKey);
@@ -336,6 +339,10 @@ export class FoodService {
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
 
+    if (dto.imageUrl !== undefined && existing.imageUrl && dto.imageUrl !== existing.imageUrl) {
+      await this.images.deleteKey(existing.imageUrl);
+    }
+
     const popularityMap = await this.getPopularityMap();
     return this.toDetailDto(food, popularityMap.has(food.id));
   }
@@ -355,6 +362,7 @@ export class FoodService {
 
     await prisma.food.delete({ where: { id } });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    if (existing.imageUrl) await this.images.deleteKey(existing.imageUrl);
     return { id };
   }
 

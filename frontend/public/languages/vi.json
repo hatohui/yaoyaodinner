@@ -27,6 +27,8 @@
 		"save": "Lưu",
 		"loading": "Đang tải…",
 		"rename": "Đổi tên",
+		"edit": "Sửa",
+		"done": "Xong",
 		"upload_image": "Tải ảnh lên",
 		"change_image": "Đổi ảnh",
 		"remove_image": "Xóa ảnh",
@@ -38,8 +40,18 @@
 		"crop_image": "Chỉnh ảnh",
 		"crop_zoom": "Thu phóng",
 		"crop_confirm": "Dùng ảnh này",
+		"crop_hint": "Kéo để di chuyển · cuộn hoặc chụm để thu phóng",
+		"crop_aspect": "Tỉ lệ khung hình",
+		"crop_aspect_original": "Gốc",
+		"crop_zoom_in": "Phóng to",
+		"crop_zoom_out": "Thu nhỏ",
+		"crop_rotate_left": "Xoay trái",
+		"crop_rotate_right": "Xoay phải",
+		"crop_reset": "Đặt lại",
 		"invalid_file_type": "Vui lòng chọn ảnh JPEG, PNG, WebP hoặc GIF",
-		"file_too_large": "Ảnh phải nhỏ hơn 5 MB"
+		"file_too_large": "Ảnh phải nhỏ hơn 5 MB",
+		"view_image": "Xem ảnh",
+		"close": "Đóng"
 	},
 	"health": {
 		"title": "Sức Khỏe Hệ Thống",
@@ -92,9 +104,13 @@
 		"load_error": "Không tải được bàn. Hãy làm mới.",
 		"none_found": "Không tìm thấy bàn nào",
 		"no_host": "Chưa có chủ bàn",
+		"your_table": "Bàn của bạn",
+		"seats_taken": "Đã có {{seated}}/{{capacity}} chỗ",
 		"filter_all": "Tất cả bàn",
 		"filter_free": "Còn chỗ",
-		"filter_full": "Đã đầy"
+		"filter_full": "Đã đầy",
+		"view_card": "Xem dạng thẻ",
+		"view_compact": "Xem gọn"
 	},
 	"roster": {
 		"people_here": "Mọi người tại bàn này",
@@ -111,7 +127,11 @@
 		"remove_failed": "Không xóa được, vui lòng thử lại",
 		"update_failed": "Không thể cập nhật bàn",
 		"set_host": "Đặt làm chủ bàn",
-		"unset_host": "Bỏ chủ bàn"
+		"unset_host": "Bỏ chủ bàn",
+		"this_is_me": "Là tôi",
+		"not_me": "Không phải tôi",
+		"you": "Bạn",
+		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn."
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -142,6 +162,8 @@
 		"clear_selection": "Bỏ chọn",
 		"add_to_order": "Thêm vào đơn",
 		"configure_title": "Tùy chỉnh đơn hàng",
+		"ordering_for": "Cho bàn {{table}}",
+		"change_table": "Đổi bàn",
 		"adding": "Đang thêm…",
 		"choose_table_title": "Chọn một bàn",
 		"added_to_order": "Đã thêm vào đơn",
@@ -430,7 +452,8 @@
 			"variant_price_placeholder": "Giá",
 			"default_variant_label": "Thường",
 			"description": "Mô tả",
-			"currency": "Đơn vị"
+			"currency": "Đơn vị",
+			"image": "Ảnh"
 		},
 		"presets": {
 			"title": "Thực đơn cố định",

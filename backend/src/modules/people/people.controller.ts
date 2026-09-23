@@ -50,8 +50,8 @@ export class PeopleController {
     return this.people.bulkRemove(dto.ids);
   }
 
+  // Open like create/delete: guests fix their own names on the roster
   @Patch(':id')
-  @UseGuards(AdminGuard)
   @ApiOperation({ operationId: 'updatePerson' })
   @ApiResponse({ status: 200, type: PersonDto })
   update(@Param('id') id: string, @Body() dto: UpdatePersonDto) {

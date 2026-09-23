@@ -1,33 +1,8 @@
-import { useCallback, useState } from 'react'
-import { localStorage } from '@/utils/localstorage'
-import { WHOAMI_STORAGE_KEY } from '@/common/constants'
+import { useGuest } from '@/hooks/useGuest'
 
-type WhoAmIMap = Record<string, string>
-
-const readMap = (): WhoAmIMap => {
-	const raw = localStorage.load(WHOAMI_STORAGE_KEY)
-	if (!raw) return {}
-	try {
-		return JSON.parse(raw) as WhoAmIMap
-	} catch {
-		return {}
-	}
-}
-
+/** Your person id at this table, if the identity you picked sits here. */
 export function useWhoAmI(tableId: string) {
-	const [personId, setPersonIdState] = useState<string | null>(
-		() => readMap()[tableId] ?? null
-	)
-
-	const setPersonId = useCallback(
-		(id: string) => {
-			const map = readMap()
-			map[tableId] = id
-			localStorage.save(WHOAMI_STORAGE_KEY, JSON.stringify(map))
-			setPersonIdState(id)
-		},
-		[tableId]
-	)
-
-	return { personId, setPersonId }
+	const me = useGuest(s => s.me)
+	const personId = me && me.tableId === tableId ? me.id : null
+	return { personId }
 }

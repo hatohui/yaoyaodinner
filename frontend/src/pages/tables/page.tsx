@@ -14,6 +14,8 @@ import {
 import { TableList } from './@TableList'
 import { useTableSearch } from './@useTableSearch'
 import { useConfig } from '@/hooks/useConfig'
+import { ViewToggle, useListView } from '@/components/common/ViewToggle'
+import { TABLE_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 
 export default function TablesPage() {
 	const { t } = useTranslation()
@@ -23,11 +25,13 @@ export default function TablesPage() {
 		filter,
 		setFilter,
 		tables,
+		pagedTables,
 		isLoading,
 		isError,
 		pagination,
 	} = useTableSearch()
 	const { floorPlan } = useConfig()
+	const { view, setView } = useListView(TABLE_LIST_VIEW_STORAGE_KEY)
 
 	return (
 		<div className='mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-6'>
@@ -68,9 +72,12 @@ export default function TablesPage() {
 				</Select>
 			</div>
 
-			<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-				{t('tables.all_tables')}
-			</p>
+			<div className='flex items-center justify-between'>
+				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+					{t('tables.all_tables')}
+				</p>
+				<ViewToggle view={view} onChange={setView} />
+			</div>
 
 			{isLoading ? (
 				<div className='flex justify-center py-16'>
@@ -84,12 +91,11 @@ export default function TablesPage() {
 				<p className='py-16 text-center text-sm text-muted-foreground'>
 					{t('tables.none_found')}
 				</p>
+			) : view === 'compact' ? (
+				<TableList tables={tables} compact />
 			) : (
 				<>
-					<div className='mb-4 flex justify-center sm:hidden'>
-						<PaginationBar pagination={pagination} showPageSize />
-					</div>
-					<TableList tables={tables} />
+					<TableList tables={pagedTables} />
 					<div className='mt-4 flex justify-center'>
 						<PaginationBar pagination={pagination} showPageSize />
 					</div>

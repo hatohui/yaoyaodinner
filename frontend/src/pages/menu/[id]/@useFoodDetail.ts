@@ -11,6 +11,7 @@ import {
 import { STALE_TIME_STATIC } from '@/common/constants'
 import type { FoodDetailDto, UpdateFoodDto } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
+import { useGuest } from '@/hooks/useGuest'
 
 export function useFoodDetail(idOverride?: string) {
 	const { id: idParam = '' } = useParams()
@@ -21,6 +22,7 @@ export function useFoodDetail(idOverride?: string) {
 	const [pickerOpen, setPickerOpen] = useState(false)
 	const [configOpen, setConfigOpen] = useState(false)
 	const [tableId, setTableId] = useState<string | null>(null)
+	const myTableId = useGuest(s => s.me?.tableId ?? null)
 
 	const {
 		data: food,
@@ -53,15 +55,21 @@ export function useFoodDetail(idOverride?: string) {
 		mutation: { onSuccess: invalidate, onError },
 	})
 
-	const openPicker = () => {
-		if (availableVariants.length === 0) return
-		setPickerOpen(true)
-	}
-
 	const selectTable = (id: string) => {
 		setTableId(id)
 		setPickerOpen(false)
 		setConfigOpen(true)
+	}
+
+	const openPicker = () => {
+		if (availableVariants.length === 0) return
+		if (myTableId) selectTable(myTableId)
+		else setPickerOpen(true)
+	}
+
+	const changeTable = () => {
+		setConfigOpen(false)
+		setPickerOpen(true)
 	}
 
 	const handleDone = () => setConfigOpen(false)
@@ -79,6 +87,7 @@ export function useFoodDetail(idOverride?: string) {
 		setConfigOpen,
 		tableId,
 		selectTable,
+		changeTable,
 		handleDone,
 		updateFood: (patch: UpdateFoodDto) =>
 			updateFoodMutate({ id, data: { ...patch, lang: i18n.language } }),

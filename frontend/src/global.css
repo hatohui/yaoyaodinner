@@ -55,6 +55,7 @@
 	--color-brand: var(--primary);
 	--color-brand-foreground: var(--primary-foreground);
 	--color-brand-muted: color-mix(in oklch, var(--primary) 15%, transparent);
+	--color-control: var(--control);
 }
 
 @theme inline {
@@ -160,6 +161,9 @@
 	--muted: oklch(0.86 0.02 310);
 	--muted-foreground: oklch(0.4 0.035 305);
 
+	/* Surface for inputs, selects and filter pills */
+	--control: oklch(1 0 0);
+
 	--accent: oklch(0.82 0.03 310);
 	/* Stronger hover state */
 
@@ -215,6 +219,8 @@
 	--muted: oklch(0.3 0.1 305);
 
 	--muted-foreground: oklch(0.78 0.02 305);
+
+	--control: oklch(0.3 0.1 305);
 
 	--accent: oklch(0.5 0.12 305);
 	/* Mid-range accent */

@@ -2,16 +2,16 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-} from '@nestjs/common';
-import { prisma } from '../../libs/prisma';
-import { v4 as uuidv4 } from 'uuid';
-import { EventService } from '@modules/event/event.service';
-import { ImagesService } from '@modules/images/images.service';
-import { TableSlotService } from './table-slot.service';
-import { CreateTableDto } from './dto/create-table.dto';
-import { BulkCreateTableDto } from './dto/bulk-create-table.dto';
-import { UpdateTableDto } from './dto/update-table.dto';
-import { UpdateTableDetailsDto } from './dto/update-table-details.dto';
+} from "@nestjs/common";
+import { prisma } from "../../libs/prisma";
+import { v4 as uuidv4 } from "uuid";
+import { EventService } from "@modules/event/event.service";
+import { ImagesService } from "@modules/images/images.service";
+import { TableSlotService } from "./table-slot.service";
+import { CreateTableDto } from "./dto/create-table.dto";
+import { BulkCreateTableDto } from "./dto/bulk-create-table.dto";
+import { UpdateTableDto } from "./dto/update-table.dto";
+import { UpdateTableDetailsDto } from "./dto/update-table-details.dto";
 
 const withSlot = {
   slot: true,
@@ -54,7 +54,7 @@ export class TableService {
       id: t.id,
       slotId: t.slotId,
       no: t.slot?.no ?? -1,
-      name: t.slot?.name ?? '',
+      name: t.slot?.name ?? "",
       x: t.slot?.x ?? null,
       y: t.slot?.y ?? null,
       capacity: t.capacity,
@@ -80,7 +80,7 @@ export class TableService {
     const people = await prisma.people.findMany({
       where: {
         tableId: { in: rows.map((r) => r.id) },
-        name: { contains: search, mode: 'insensitive' },
+        name: { contains: search, mode: "insensitive" },
       },
       select: { tableId: true, name: true },
     });
@@ -117,22 +117,25 @@ export class TableService {
     if (!eventId) return { tables: [], total: 0 };
 
     // Guests look for "where am I sitting" as often as for a table number, so a
-    // search hits the slot name or anyone seated at it.
+    // search hits the slot number, slot name or anyone seated at it.
+    const searchNo =
+      search && /^\d+$/.test(search.trim()) ? Number(search) : null;
     const where = {
       eventId,
       isStaging: false,
       ...(search
         ? {
             OR: [
+              ...(searchNo !== null ? [{ slot: { no: searchNo } }] : []),
               {
                 slot: {
-                  name: { contains: search, mode: 'insensitive' as const },
+                  name: { contains: search, mode: "insensitive" as const },
                 },
               },
               {
                 people: {
                   some: {
-                    name: { contains: search, mode: 'insensitive' as const },
+                    name: { contains: search, mode: "insensitive" as const },
                   },
                 },
               },
@@ -144,7 +147,7 @@ export class TableService {
     const [rows, total] = await Promise.all([
       prisma.table.findMany({
         where,
-        orderBy: { slot: { no: 'asc' } },
+        orderBy: { slot: { no: "asc" } },
         skip: (page - 1) * count,
         take: count,
         include: withSlot,
@@ -165,7 +168,7 @@ export class TableService {
   async findStaged() {
     const rows = await prisma.table.findMany({
       where: { isStaging: true },
-      orderBy: { slot: { no: 'asc' } },
+      orderBy: { slot: { no: "asc" } },
       include: withSlot,
     });
     const names = await this.leaderNames(rows);
@@ -177,7 +180,7 @@ export class TableService {
       where: { id },
       include: withSlot,
     });
-    if (!table) throw new NotFoundException('Table not found');
+    if (!table) throw new NotFoundException("Table not found");
     return this.toDto(table, await this.leaderNames([table]));
   }
 
@@ -247,7 +250,10 @@ export class TableService {
       })),
     });
 
-    return { created: reuse.length, reused: reuse.length - Math.max(0, missing) };
+    return {
+      created: reuse.length,
+      reused: reuse.length - Math.max(0, missing),
+    };
   }
 
   async update(id: string, dto: UpdateTableDto) {
@@ -277,7 +283,9 @@ export class TableService {
         select: { tableId: true },
       });
       if (!person || person.tableId !== id) {
-        throw new BadRequestException('That person is not seated at this table');
+        throw new BadRequestException(
+          "That person is not seated at this table",
+        );
       }
     }
 
@@ -306,7 +314,7 @@ export class TableService {
   /** Positions live on the slot, so the floor plan survives publishing. */
   async updatePosition(id: string, x: number, y: number) {
     const table = await this.findOne(id);
-    if (!table.slotId) throw new BadRequestException('Table has no slot');
+    if (!table.slotId) throw new BadRequestException("Table has no slot");
     await this.slots.updatePosition(table.slotId, x, y);
     return this.findOne(id);
   }
@@ -325,7 +333,7 @@ export class TableService {
   async bulkReassign(ids: string[], eventId: string | null) {
     if (eventId) {
       const event = await prisma.event.findUnique({ where: { id: eventId } });
-      if (!event) throw new BadRequestException('Target event not found');
+      if (!event) throw new BadRequestException("Target event not found");
     }
     await prisma.table.updateMany({
       where: { id: { in: ids } },

@@ -12,6 +12,8 @@ declare module 'react-i18next' {
         errors: Record<string, string>
         common: {
           rename: string
+          edit: string
+          done: string
           back: string
           confirm: string
           cancel: string
@@ -28,8 +30,18 @@ declare module 'react-i18next' {
           crop_image: string
           crop_zoom: string
           crop_confirm: string
+          crop_hint: string
+          crop_aspect: string
+          crop_aspect_original: string
+          crop_zoom_in: string
+          crop_zoom_out: string
+          crop_rotate_left: string
+          crop_rotate_right: string
+          crop_reset: string
           invalid_file_type: string
           file_too_large: string
+          view_image: string
+          close: string
         }
         nav: {
           menu: string
@@ -51,9 +63,13 @@ declare module 'react-i18next' {
         }
         tables: {
           no_host: string
+          your_table: string
+          seats_taken: string
           filter_all: string
           filter_free: string
           filter_full: string
+          view_card: string
+          view_compact: string
           find_title: string
           search_placeholder: string
           all_tables: string
@@ -77,6 +93,10 @@ declare module 'react-i18next' {
           update_failed: string
           set_host: string
           unset_host: string
+          this_is_me: string
+          not_me: string
+          you: string
+          pick_yourself: string
         }
         menu: {
           restaurant_name: string
@@ -106,6 +126,8 @@ declare module 'react-i18next' {
           clear_selection: string
           add_to_order: string
           configure_title: string
+          ordering_for: string
+          change_table: string
           adding: string
           choose_table_title: string
           added_to_order: string

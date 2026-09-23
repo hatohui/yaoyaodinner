@@ -9,4 +9,6 @@
 export interface SignUrlResponseDto {
   url: string;
   key: string;
+  thumbUrl: string;
+  thumbKey: string;
 }

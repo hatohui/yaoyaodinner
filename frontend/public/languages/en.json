@@ -27,6 +27,8 @@
 		"save": "Save",
 		"loading": "Loading…",
 		"rename": "Rename",
+		"edit": "Edit",
+		"done": "Done",
 		"upload_image": "Upload image",
 		"change_image": "Change image",
 		"remove_image": "Remove image",
@@ -38,8 +40,18 @@
 		"crop_image": "Adjust image",
 		"crop_zoom": "Zoom",
 		"crop_confirm": "Use this",
+		"crop_hint": "Drag to move · scroll or pinch to zoom",
+		"crop_aspect": "Aspect ratio",
+		"crop_aspect_original": "Original",
+		"crop_zoom_in": "Zoom in",
+		"crop_zoom_out": "Zoom out",
+		"crop_rotate_left": "Rotate left",
+		"crop_rotate_right": "Rotate right",
+		"crop_reset": "Reset",
 		"invalid_file_type": "Please choose a JPEG, PNG, WebP, or GIF image",
-		"file_too_large": "Image must be under 5 MB"
+		"file_too_large": "Image must be under 5 MB",
+		"view_image": "View image",
+		"close": "Close"
 	},
 	"health": {
 		"title": "System Health",
@@ -92,9 +104,13 @@
 		"load_error": "Couldn't load tables. Pull to refresh.",
 		"none_found": "No tables found",
 		"no_host": "No host",
+		"your_table": "You're here",
+		"seats_taken": "{{seated}} of {{capacity}} seats taken",
 		"filter_all": "All tables",
 		"filter_free": "Has space",
-		"filter_full": "Full"
+		"filter_full": "Full",
+		"view_card": "Card view",
+		"view_compact": "Compact view"
 	},
 	"roster": {
 		"people_here": "People at this table",
@@ -111,7 +127,11 @@
 		"remove_failed": "Couldn't remove, please try again",
 		"update_failed": "Could not update the table",
 		"set_host": "Mark as host",
-		"unset_host": "Remove host"
+		"unset_host": "Remove host",
+		"this_is_me": "That's me",
+		"not_me": "Not me",
+		"you": "You",
+		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name."
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -142,6 +162,8 @@
 		"clear_selection": "Clear selection",
 		"add_to_order": "Add to order",
 		"configure_title": "Configure your order",
+		"ordering_for": "For {{table}}",
+		"change_table": "Change table",
 		"adding": "Adding…",
 		"choose_table_title": "Choose a table",
 		"added_to_order": "Added to order",
@@ -430,7 +452,8 @@
 			"variant_price_placeholder": "Price",
 			"default_variant_label": "Regular",
 			"description": "Description",
-			"currency": "Unit"
+			"currency": "Unit",
+			"image": "Photo"
 		},
 		"presets": {
 			"title": "Preset menus",

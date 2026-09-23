@@ -3,31 +3,19 @@ import { useGetTables } from '@/api/tables/tables'
 import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
 import type { TableListDto } from '@/api/model'
+import { TABLE_FETCH_ALL_COUNT } from '@/common/constants'
 
 export type TableFilter = 'all' | 'free' | 'full' | 'hosted'
 
 export function useTableSearch() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<TableFilter>('all')
-  const [total, setTotal] = useState(0)
   const debouncedSearch = useDebounce(search, 300)
 
-  const pagination = usePagination({ total, initialCount: 12 })
-  const { page, count, setPage } = pagination
-
-  useEffect(() => {
-    setPage(1)
-  }, [debouncedSearch, setPage])
-
   const { data, isLoading, isError, refetch } = useGetTables<TableListDto>({
-    page,
-    count,
+    count: TABLE_FETCH_ALL_COUNT,
     search: debouncedSearch || undefined,
   })
-
-  useEffect(() => {
-    if (data?.total !== undefined) setTotal(data.total)
-  }, [data?.total])
 
   const tables = useMemo(() => {
     const rows = data?.tables ?? []
@@ -41,16 +29,28 @@ export function useTableSearch() {
     }
   }, [data?.tables, filter])
 
+  const pagination = usePagination({ total: tables.length, initialCount: 12 })
+  const { page, count, setPage } = pagination
+
+  useEffect(() => {
+    setPage(1)
+  }, [debouncedSearch, filter, setPage])
+
+  const pagedTables = useMemo(
+    () => tables.slice((page - 1) * count, page * count),
+    [tables, page, count]
+  )
+
   return {
     search,
     setSearch,
     filter,
     setFilter,
     tables,
+    pagedTables,
     isLoading,
     isError,
     refetch,
     pagination,
-    total,
   }
 }

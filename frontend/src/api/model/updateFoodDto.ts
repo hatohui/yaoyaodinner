@@ -10,7 +10,10 @@ export interface UpdateFoodDto {
   name?: string;
   /** @nullable */
   description?: string | null;
-  /** @nullable */
+  /**
+     * Storage key of the image, or null to clear
+     * @nullable
+     */
   imageUrl?: string | null;
   categoryId?: string;
   isAvailable?: boolean;

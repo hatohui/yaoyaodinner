@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Camera, ImagePlus, Loader2, X } from 'lucide-react'
-import { ASSET_URL } from '@/common/app'
+import { Camera, Expand, ImagePlus, Loader2, X } from 'lucide-react'
 import { useImageUpload } from '@/hooks/useImageUpload'
 import { ImageCropDialog } from '@/components/common/ImageCropDialog'
+import { ImageViewer } from '@/components/common/ImageViewer'
+import { StoredImage } from '@/components/common/StoredImage'
 import { cn } from '@/utils/shadcn'
 
 interface ImageUploadSlotProps {
@@ -14,6 +15,8 @@ interface ImageUploadSlotProps {
 	className?: string
 	/** Renders the banner shape as a small pill/thumbnail for optional, low-emphasis uploads. */
 	compact?: boolean
+	/** Crop aspect ratio for the banner shape */
+	aspect?: number
 }
 
 export function ImageUploadSlot({
@@ -23,6 +26,7 @@ export function ImageUploadSlot({
 	onChange,
 	className,
 	compact,
+	aspect = 3,
 }: ImageUploadSlotProps) {
 	const { t } = useTranslation()
 	const { upload, validate, isUploading } = useImageUpload(folder)
@@ -30,8 +34,9 @@ export function ImageUploadSlot({
 	const [pending, setPending] = useState<{ src: string; type: string } | null>(
 		null
 	)
+	const [viewing, setViewing] = useState(false)
 
-	const src = imageKey ? `${ASSET_URL}/${imageKey}` : null
+	const src = imageKey || null
 
 	const resetInput = () => {
 		if (inputRef.current) inputRef.current.value = ''
@@ -54,7 +59,7 @@ export function ImageUploadSlot({
 
 	const confirmCrop = async (blob: Blob) => {
 		if (!pending) return
-		const cropped = new File([blob], 'image', { type: pending.type })
+		const cropped = new File([blob], 'image', { type: blob.type })
 		closeCrop()
 		const key = await upload(cropped)
 		if (key) onChange(key)
@@ -70,11 +75,7 @@ export function ImageUploadSlot({
 					className='relative flex size-10 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-muted transition-colors hover:border-primary'
 				>
 					{src ? (
-						<img
-							src={src}
-							alt=''
-							className='size-full object-cover'
-						/>
+						<StoredImage imageKey={src} className='size-full object-cover' />
 					) : (
 						<Camera className='size-4 text-muted-foreground' />
 					)}
@@ -128,11 +129,7 @@ export function ImageUploadSlot({
 						aria-label={t('common.change_image')}
 						className='relative size-16 overflow-hidden rounded-xl border border-border/60'
 					>
-						<img
-							src={src}
-							alt=''
-							className='size-full object-cover'
-						/>
+						<StoredImage imageKey={src} className='size-full object-cover' />
 						<div className='absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100'>
 							{isUploading ? (
 								<Loader2 className='size-4 animate-spin text-white' />
@@ -165,6 +162,16 @@ export function ImageUploadSlot({
 						<X className='size-2.5' />
 					</button>
 				)}
+				{src && (
+					<button
+						type='button'
+						onClick={() => setViewing(true)}
+						aria-label={t('common.view_image')}
+						className='absolute -bottom-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full bg-background text-foreground shadow'
+					>
+						<Expand className='size-3' />
+					</button>
+				)}
 				<input
 					ref={inputRef}
 					type='file'
@@ -177,10 +184,16 @@ export function ImageUploadSlot({
 					<ImageCropDialog
 						imageSrc={pending.src}
 						mimeType={pending.type}
-						aspect={3}
 						shape='rect'
 						onConfirm={confirmCrop}
 						onCancel={closeCrop}
+					/>
+				)}
+				{src && (
+					<ImageViewer
+						imageKey={src}
+						open={viewing}
+						onOpenChange={setViewing}
 					/>
 				)}
 			</div>
@@ -190,14 +203,13 @@ export function ImageUploadSlot({
 	return (
 		<div
 			className={cn(
-				'group relative flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-border/60 bg-muted transition-colors hover:border-primary',
+				'group relative flex h-32 w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-primary/40 bg-primary/10 transition-colors hover:border-primary hover:bg-primary/15',
 				className
 			)}
 		>
 			{src && (
-				<img
-					src={src}
-					alt=''
+				<StoredImage
+					imageKey={src}
 					className='absolute inset-0 size-full object-cover'
 				/>
 			)}
@@ -208,7 +220,7 @@ export function ImageUploadSlot({
 					'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
 					src
 						? 'bg-black/50 text-white opacity-0 group-hover:opacity-100'
-						: 'text-muted-foreground'
+						: 'text-primary'
 				)}
 			>
 				{isUploading ? (
@@ -228,6 +240,16 @@ export function ImageUploadSlot({
 					<X className='size-3.5' />
 				</button>
 			)}
+			{src && (
+				<button
+					type='button'
+					onClick={() => setViewing(true)}
+					aria-label={t('common.view_image')}
+					className='absolute bottom-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white transition-opacity sm:opacity-0 sm:group-hover:opacity-100'
+				>
+					<Expand className='size-3.5' />
+				</button>
+			)}
 			<input
 				ref={inputRef}
 				type='file'
@@ -240,11 +262,14 @@ export function ImageUploadSlot({
 				<ImageCropDialog
 					imageSrc={pending.src}
 					mimeType={pending.type}
-					aspect={3}
+					aspect={aspect}
 					shape='rect'
 					onConfirm={confirmCrop}
 					onCancel={closeCrop}
 				/>
+			)}
+			{src && (
+				<ImageViewer imageKey={src} open={viewing} onOpenChange={setViewing} />
 			)}
 		</div>
 	)

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import {
 	useCreatePerson,
 	useDeletePerson,
+	useUpdatePerson,
 	useUpdatePersonPfp,
 } from '@/api/people/people'
 import {
@@ -93,6 +94,26 @@ export function useRoster(tableId: string) {
 		},
 	})
 
+	const renameMutation = useUpdatePerson({
+		mutation: {
+			onMutate: async ({ id, data: body }) => {
+				await qc.cancelQueries({ queryKey: peopleKey })
+				const prev = qc.getQueryData<PersonDto[]>(peopleKey)
+				qc.setQueryData<PersonDto[]>(peopleKey, old =>
+					(old ?? []).map(p =>
+						p.id === id ? { ...p, name: body.name ?? p.name } : p
+					)
+				)
+				return { prev }
+			},
+			onError: (_e, _v, ctx) => {
+				qc.setQueryData(peopleKey, ctx?.prev)
+				toast.error(t('roster.update_failed'))
+			},
+			onSettled: invalidate,
+		},
+	})
+
 	const add = (name: string) => {
 		const trimmed = name.trim()
 		if (!trimmed) return
@@ -104,5 +125,8 @@ export function useRoster(tableId: string) {
 	const updatePfp = (id: string, pfpUrl: string | null) =>
 		pfpMutation.mutate({ id, data: { pfpUrl } })
 
-	return { people: data ?? [], isLoading, add, remove, updatePfp }
+	const rename = (id: string, name: string) =>
+		renameMutation.mutate({ id, data: { name } })
+
+	return { people: data ?? [], isLoading, add, remove, updatePfp, rename }
 }

@@ -44,7 +44,7 @@ export function FilterBar({
 	const { t } = useTranslation()
 
 	return (
-		<div className='sticky top-14 z-20 -mx-4 border-b border-border/40 bg-background/95 px-4 py-3 shadow-sm backdrop-blur-sm sm:py-4'>
+		<div className='sticky top-14 z-20 -mx-4 border-b border-border bg-background/95 px-4 py-3 shadow-sm backdrop-blur-sm sm:py-4'>
 			<div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
 				<div className='relative flex-1'>
 					<Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
@@ -52,7 +52,7 @@ export function FilterBar({
 						placeholder={t('menu.search_placeholder')}
 						value={search}
 						onChange={e => onSearchChange(e.target.value)}
-						className='pl-9 rounded-full border-border/60 bg-muted focus-visible:border-primary focus-visible:ring-primary/20'
+						className='pl-9 rounded-full border-border bg-control focus-visible:border-primary focus-visible:ring-primary/20'
 					/>
 				</div>
 
@@ -62,7 +62,7 @@ export function FilterBar({
 						value={sort}
 						onValueChange={val => onSortChange(val as MenuSort)}
 					>
-						<SelectTrigger className='h-9 w-40 rounded-full border-border/60 bg-muted text-sm'>
+						<SelectTrigger className='h-9 w-40 rounded-full border-border bg-control text-sm'>
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -122,7 +122,7 @@ export function FilterBar({
 					value={sort}
 					onValueChange={val => onSortChange(val as MenuSort)}
 				>
-					<SelectTrigger className='h-9 w-full rounded-full border-border/60 bg-muted text-sm'>
+					<SelectTrigger className='h-9 w-full rounded-full border-border bg-control text-sm'>
 						<ArrowUpDown className='h-3.5 w-3.5 shrink-0 text-muted-foreground' />
 						<SelectValue />
 					</SelectTrigger>
@@ -148,7 +148,7 @@ export function FilterBar({
 						})
 					}
 				>
-					<SelectTrigger className='h-9 w-full rounded-full border-border/60 bg-muted text-sm'>
+					<SelectTrigger className='h-9 w-full rounded-full border-border bg-control text-sm'>
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -195,7 +195,7 @@ function CategoryPill({
 				'flex shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200',
 				active
 					? 'bg-primary text-primary-foreground shadow-sm shadow-primary/20'
-					: 'border border-border/60 bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+					: 'border border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 			)}
 		>
 			{Icon && <Icon className='size-3.5' />}

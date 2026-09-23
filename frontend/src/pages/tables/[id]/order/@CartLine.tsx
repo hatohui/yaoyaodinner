@@ -5,7 +5,7 @@ import { useGetFoodById } from '@/api/foods/foods'
 import type { FoodDetailDto, PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { SplitModeSelector } from '@/components/common/SplitModeSelector'
-import { ASSET_URL } from '@/common/app'
+import { StoredImage } from '@/components/common/StoredImage'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { cn } from '@/utils/shadcn'
 import type { CartLine as CartLineData } from './@useOrderCart'
@@ -41,12 +41,6 @@ export function CartLine({
 	)
 	const variants = detail?.variants ?? []
 
-	const src = line.imageUrl
-		? line.imageUrl.startsWith('http')
-			? line.imageUrl
-			: `${ASSET_URL}/${line.imageUrl}`
-		: null
-
 	const splitLabel =
 		line.mode === 'me'
 			? t('split.just_me')
@@ -58,13 +52,16 @@ export function CartLine({
 		<li className='flex flex-col gap-2 rounded-2xl border border-border/60 bg-card p-3'>
 			<div className='flex gap-3'>
 				<div className='size-14 shrink-0 overflow-hidden rounded-xl bg-muted'>
-					{src ? (
-						<img src={src} alt={line.name} className='size-full object-cover' />
-					) : (
-						<div className='flex size-full items-center justify-center text-xl'>
-							🍽️
-						</div>
-					)}
+					<StoredImage
+						imageKey={line.imageUrl}
+						alt={line.name}
+						className='size-full object-cover'
+						fallback={
+							<div className='flex size-full items-center justify-center text-xl'>
+								🍽️
+							</div>
+						}
+					/>
 				</div>
 
 				<div className='flex min-w-0 flex-1 flex-col gap-1'>

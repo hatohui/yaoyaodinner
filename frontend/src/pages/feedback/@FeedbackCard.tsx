@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { FeedbackItemDto } from '@/api/model'
 import { useConfig } from '@/hooks/useConfig'
-import { ASSET_URL } from '@/common/app'
+import { ViewableImage } from '@/components/common/ViewableImage'
 import { cn } from '@/utils/shadcn'
 
 interface FeedbackCardProps {
@@ -47,13 +47,11 @@ export function FeedbackCard({ item, onReact }: FeedbackCardProps) {
 				</div>
 			)}
 
-			{item.imageUrl && (
-				<img
-					src={`${ASSET_URL}/${item.imageUrl}`}
-					alt=''
-					className='max-h-72 w-full rounded-xl object-cover'
-				/>
-			)}
+			<ViewableImage
+				imageKey={item.imageUrl}
+				className='w-full'
+				imgClassName='max-h-72 w-full rounded-xl object-cover'
+			/>
 
 			<div className='flex flex-wrap items-center gap-1.5 pt-1'>
 				{suggestedReactions.map(emoji => {

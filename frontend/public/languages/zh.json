@@ -27,6 +27,8 @@
 		"save": "保存",
 		"loading": "加载中…",
 		"rename": "重命名",
+		"edit": "编辑",
+		"done": "完成",
 		"upload_image": "上传图片",
 		"change_image": "更换图片",
 		"remove_image": "移除图片",
@@ -38,8 +40,18 @@
 		"crop_image": "调整图片",
 		"crop_zoom": "缩放",
 		"crop_confirm": "使用此图",
+		"crop_hint": "拖动以移动 · 滚动或双指缩放",
+		"crop_aspect": "宽高比",
+		"crop_aspect_original": "原图",
+		"crop_zoom_in": "放大",
+		"crop_zoom_out": "缩小",
+		"crop_rotate_left": "向左旋转",
+		"crop_rotate_right": "向右旋转",
+		"crop_reset": "重置",
 		"invalid_file_type": "请选择 JPEG、PNG、WebP 或 GIF 格式的图片",
-		"file_too_large": "图片需小于 5 MB"
+		"file_too_large": "图片需小于 5 MB",
+		"view_image": "查看图片",
+		"close": "关闭"
 	},
 	"health": {
 		"title": "系统健康",
@@ -92,9 +104,13 @@
 		"load_error": "无法加载餐桌，请刷新。",
 		"none_found": "未找到餐桌",
 		"no_host": "暂无主人",
+		"your_table": "你在这里",
+		"seats_taken": "已坐 {{seated}}/{{capacity}} 个座位",
 		"filter_all": "全部餐桌",
 		"filter_free": "有空位",
-		"filter_full": "已满"
+		"filter_full": "已满",
+		"view_card": "卡片视图",
+		"view_compact": "紧凑视图"
 	},
 	"roster": {
 		"people_here": "这桌的人",
@@ -111,7 +127,11 @@
 		"remove_failed": "移除失败，请重试",
 		"update_failed": "无法更新餐桌",
 		"set_host": "设为主人",
-		"unset_host": "取消主人"
+		"unset_host": "取消主人",
+		"this_is_me": "这是我",
+		"not_me": "不是我",
+		"you": "你",
+		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -142,6 +162,8 @@
 		"clear_selection": "清除选择",
 		"add_to_order": "加入订单",
 		"configure_title": "配置你的订单",
+		"ordering_for": "桌子：{{table}}",
+		"change_table": "换桌",
 		"adding": "添加中…",
 		"choose_table_title": "选择餐桌",
 		"added_to_order": "已加入订单",
@@ -430,7 +452,8 @@
 			"variant_price_placeholder": "价格",
 			"default_variant_label": "标准",
 			"description": "描述",
-			"currency": "单位"
+			"currency": "单位",
+			"image": "图片"
 		},
 		"presets": {
 			"title": "固定套餐",

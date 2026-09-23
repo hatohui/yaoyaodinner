@@ -14,20 +14,12 @@ import {
 } from '@/components/ui/dialog'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { cn } from '@/utils/shadcn'
-import { ASSET_URL } from '@/common/app'
 import { OrderThumb } from './@OrderThumb'
 
 interface SplitsTabProps {
 	table: TableDto
 	people: PersonDto[]
 }
-
-const getImageSrc = (order: OrderResponseDto) =>
-	order.foodImageUrl
-		? order.foodImageUrl.startsWith('http')
-			? order.foodImageUrl
-			: `${ASSET_URL}/${order.foodImageUrl}`
-		: null
 
 export function SplitsTab({ table, people }: SplitsTabProps) {
 	const { t, i18n } = useTranslation()
@@ -124,7 +116,7 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 												onClick={() => setSelectedOrder(o)}
 												className='flex w-full items-center gap-2.5 rounded-xl px-1.5 py-1.5 text-left transition-colors hover:bg-muted/60'
 											>
-												<OrderThumb src={getImageSrc(o)} alt={o.foodName} />
+												<OrderThumb imageKey={o.foodImageUrl} alt={o.foodName} />
 												<span
 													className={cn(
 														'flex min-w-0 flex-1 flex-col',
@@ -183,7 +175,7 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 							<DialogHeader>
 								<div className='flex items-center gap-3'>
 									<OrderThumb
-										src={getImageSrc(selectedOrder)}
+										imageKey={selectedOrder.foodImageUrl}
 										alt={selectedOrder.foodName}
 									/>
 									<div className='flex min-w-0 flex-col'>

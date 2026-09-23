@@ -4,7 +4,7 @@ import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector'
 import { createContext, useContext, useState, useEffect } from 'react'
 
 const loadLanguage = async (lng: string) => {
-	const response = await fetch(`/languages/${lng}.json`)
+	const response = await fetch(`/languages/${lng}.json`, { cache: 'no-cache' })
 	return response.json()
 }
 

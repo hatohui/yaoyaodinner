@@ -12,10 +12,10 @@ export class UpdateFoodDto {
   @IsOptional()
   description?: string;
 
-  @ApiPropertyOptional({ nullable: true })
+  @ApiPropertyOptional({ nullable: true, type: String, description: 'Storage key of the image, or null to clear' })
   @IsString()
   @IsOptional()
-  imageUrl?: string;
+  imageUrl?: string | null;
 
   @ApiPropertyOptional()
   @IsString()

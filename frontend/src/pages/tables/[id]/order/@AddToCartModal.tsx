@@ -20,7 +20,7 @@ import {
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { cn } from '@/utils/shadcn'
 import { STALE_TIME_STATIC } from '@/common/constants'
-import { ASSET_URL } from '@/common/app'
+import { StoredImage } from '@/components/common/StoredImage'
 
 interface AddToCartModalProps {
 	open: boolean
@@ -109,18 +109,16 @@ export function AddToCartModal({
 
 	const loading = peopleLoading || foodLoading
 
-	const src = food?.imageUrl
-		? food.imageUrl.startsWith('http')
-			? food.imageUrl
-			: `${ASSET_URL}/${food.imageUrl}`
-		: null
-
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className='flex max-h-[85vh] flex-col rounded-3xl p-0 sm:max-w-md overflow-hidden'>
-				{food && src ? (
+				{food?.imageUrl ? (
 					<div className='relative h-48 w-full bg-muted shrink-0'>
-						<img src={src} alt={food.name} className='size-full object-cover' />
+						<StoredImage
+							imageKey={food.imageUrl}
+							alt={food.name}
+							className='size-full object-cover'
+						/>
 						<div className='absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent' />
 					</div>
 				) : (

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Minus, Plus } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
-import { ASSET_URL } from '@/common/app'
+import { StoredImage } from '@/components/common/StoredImage'
 import { Button } from '@/components/ui/button'
 import { FoodTags } from '@/components/common/FoodTags'
 
@@ -20,22 +20,19 @@ export function ProductCard({
 }: ProductCardProps) {
 	const { t } = useTranslation()
 
-	const src = food.imageUrl
-		? food.imageUrl.startsWith('http')
-			? food.imageUrl
-			: `${ASSET_URL}/${food.imageUrl}`
-		: null
-
 	return (
 		<div className='flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-md'>
 			<div className='relative aspect-[4/3] w-full overflow-hidden bg-muted'>
-				{src ? (
-					<img src={src} alt={food.name} className='size-full object-cover' />
-				) : (
-					<div className='flex size-full items-center justify-center bg-gradient-to-br from-brand-muted to-muted text-4xl'>
-						🍽️
-					</div>
-				)}
+				<StoredImage
+					imageKey={food.imageUrl}
+					alt={food.name}
+					className='size-full object-cover'
+					fallback={
+						<div className='flex size-full items-center justify-center bg-gradient-to-br from-brand-muted to-muted text-4xl'>
+							🍽️
+						</div>
+					}
+				/>
 
 				<FoodTags
 					isPopular={food.isPopular}
