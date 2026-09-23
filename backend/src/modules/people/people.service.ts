@@ -7,9 +7,13 @@ import { prisma } from '../../libs/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
+import { UpdatePersonPfpDto } from './dto/update-person-pfp.dto';
+import { ImagesService } from '@modules/images/images.service';
 
 @Injectable()
 export class PeopleService {
+  constructor(private images: ImagesService) {}
+
   findAll() {
     return prisma.people.findMany();
   }
@@ -50,6 +54,18 @@ export class PeopleService {
     const person = await prisma.people.findUnique({ where: { id } });
     if (!person) throw new NotFoundException('Person not found');
     return prisma.people.update({ where: { id }, data: dto });
+  }
+
+  async updatePfp(id: string, dto: UpdatePersonPfpDto) {
+    const person = await prisma.people.findUnique({ where: { id } });
+    if (!person) throw new NotFoundException('Person not found');
+
+    const pfpUrl = dto.pfpUrl ?? null;
+    if (pfpUrl !== person.pfpUrl) {
+      if (person.pfpUrl) await this.images.deleteKey(person.pfpUrl);
+      return prisma.people.update({ where: { id }, data: { pfpUrl } });
+    }
+    return person;
   }
 
   async remove(id: string) {

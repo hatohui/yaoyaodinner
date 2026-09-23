@@ -12,6 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PeopleService } from './people.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
+import { UpdatePersonPfpDto } from './dto/update-person-pfp.dto';
 import { MovePeopleDto } from './dto/move-people.dto';
 import { PersonDto } from './dto/person-response.dto';
 import { IdsDto } from '@common/dto/ids.dto';
@@ -55,6 +56,13 @@ export class PeopleController {
   @ApiResponse({ status: 200, type: PersonDto })
   update(@Param('id') id: string, @Body() dto: UpdatePersonDto) {
     return this.people.update(id, dto);
+  }
+
+  @Patch(':id/pfp')
+  @ApiOperation({ operationId: 'updatePersonPfp' })
+  @ApiResponse({ status: 200, type: PersonDto })
+  updatePfp(@Param('id') id: string, @Body() dto: UpdatePersonPfpDto) {
+    return this.people.updatePfp(id, dto);
   }
 
   @Delete(':id')

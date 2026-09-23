@@ -22,6 +22,8 @@ export class TableDto {
   matchedPeople?: string[];
   @ApiPropertyOptional({ nullable: true, type: String })
   eventId: string | null;
+  @ApiPropertyOptional({ nullable: true, type: String })
+  bannerUrl: string | null;
 }
 
 export class TableListDto {

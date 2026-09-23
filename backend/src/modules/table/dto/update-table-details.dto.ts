@@ -20,4 +20,13 @@ export class UpdateTableDetailsDto {
   @IsString()
   @IsOptional()
   tableLeaderId?: string | null;
+
+  @ApiPropertyOptional({
+    nullable: true,
+    type: String,
+    description: 'Storage key of the table banner image, or null to clear',
+  })
+  @IsString()
+  @IsOptional()
+  bannerUrl?: string | null;
 }

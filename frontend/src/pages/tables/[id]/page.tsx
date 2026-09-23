@@ -11,6 +11,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useTableTab } from '@/hooks/useTableTab'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { EditableName } from '@/components/common/EditableName'
+import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { Roster } from './@Roster'
 import { OrdersTab } from './@OrdersTab'
 import { SplitsTab } from './@SplitsTab'
@@ -61,6 +62,13 @@ export default function TableDetailPage() {
 				<ArrowLeft className='size-4' />
 				{t('tables.all_tables')}
 			</Link>
+
+			<ImageUploadSlot
+				shape='banner'
+				folder='table-banners'
+				imageKey={table.bannerUrl}
+				onChange={bannerUrl => updateTable({ bannerUrl })}
+			/>
 
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-2'>

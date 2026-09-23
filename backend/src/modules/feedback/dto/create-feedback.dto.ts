@@ -11,4 +11,11 @@ export class CreateFeedbackDto {
   @IsString()
   @IsOptional()
   content?: string;
+
+  @ApiPropertyOptional({
+    description: 'Storage key of an attached image',
+  })
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
 }

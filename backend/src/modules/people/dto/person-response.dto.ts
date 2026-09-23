@@ -8,6 +8,8 @@ export class PersonDto {
   tableId: string | null;
   @ApiPropertyOptional({ nullable: true, type: String })
   eventId: string | null;
+  @ApiPropertyOptional({ nullable: true, type: String })
+  pfpUrl: string | null;
   @ApiPropertyOptional({ type: [NoteResponseDto] })
   personalNotes?: NoteResponseDto[];
 }

@@ -26,7 +26,20 @@
 		"cancel": "Cancel",
 		"save": "Save",
 		"loading": "Loading…",
-		"rename": "Rename"
+		"rename": "Rename",
+		"upload_image": "Upload image",
+		"change_image": "Change image",
+		"remove_image": "Remove image",
+		"upload_failed": "Couldn't upload image, please try again",
+		"markdown_bold": "Bold",
+		"markdown_italic": "Italic",
+		"markdown_list": "List",
+		"markdown_link": "Link",
+		"crop_image": "Adjust image",
+		"crop_zoom": "Zoom",
+		"crop_confirm": "Use this",
+		"invalid_file_type": "Please choose a JPEG, PNG, WebP, or GIF image",
+		"file_too_large": "Image must be under 5 MB"
 	},
 	"health": {
 		"title": "System Health",
@@ -132,7 +145,8 @@
 		"adding": "Adding…",
 		"choose_table_title": "Choose a table",
 		"added_to_order": "Added to order",
-		"add_failed": "Couldn't add, please try again"
+		"add_failed": "Couldn't add, please try again",
+		"pin_required": "Enter the event PIN to order"
 	},
 	"about": {
 		"hero_tag": "🐾 A furry dinner night",

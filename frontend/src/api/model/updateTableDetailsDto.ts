@@ -13,4 +13,9 @@ export interface UpdateTableDetailsDto {
      * @nullable
      */
   tableLeaderId?: string | null;
+  /**
+     * Storage key of the table banner image, or null to clear
+     * @nullable
+     */
+  bannerUrl?: string | null;
 }

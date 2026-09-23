@@ -26,7 +26,20 @@
 		"cancel": "ยกเลิก",
 		"save": "บันทึก",
 		"loading": "กำลังโหลด…",
-		"rename": "เปลี่ยนชื่อ"
+		"rename": "เปลี่ยนชื่อ",
+		"upload_image": "อัปโหลดรูปภาพ",
+		"change_image": "เปลี่ยนรูปภาพ",
+		"remove_image": "ลบรูปภาพ",
+		"upload_failed": "อัปโหลดรูปภาพไม่สำเร็จ โปรดลองอีกครั้ง",
+		"markdown_bold": "ตัวหนา",
+		"markdown_italic": "ตัวเอียง",
+		"markdown_list": "รายการ",
+		"markdown_link": "ลิงก์",
+		"crop_image": "ปรับรูปภาพ",
+		"crop_zoom": "ซูม",
+		"crop_confirm": "ใช้รูปนี้",
+		"invalid_file_type": "โปรดเลือกรูปภาพ JPEG, PNG, WebP หรือ GIF",
+		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 5 MB"
 	},
 	"health": {
 		"title": "สุขภาพระบบ",
@@ -132,7 +145,8 @@
 		"adding": "กำลังเพิ่ม…",
 		"choose_table_title": "เลือกโต๊ะ",
 		"added_to_order": "เพิ่มลงออเดอร์แล้ว",
-		"add_failed": "เพิ่มไม่สำเร็จ โปรดลองอีกครั้ง"
+		"add_failed": "เพิ่มไม่สำเร็จ โปรดลองอีกครั้ง",
+		"pin_required": "กรอกรหัส PIN ของงานเพื่อสั่งอาหาร"
 	},
 	"about": {
 		"hero_tag": "🐾 คืนดินเนอร์สายเฟอร์รี่",

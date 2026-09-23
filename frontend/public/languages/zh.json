@@ -26,7 +26,20 @@
 		"cancel": "取消",
 		"save": "保存",
 		"loading": "加载中…",
-		"rename": "重命名"
+		"rename": "重命名",
+		"upload_image": "上传图片",
+		"change_image": "更换图片",
+		"remove_image": "移除图片",
+		"upload_failed": "图片上传失败，请重试",
+		"markdown_bold": "加粗",
+		"markdown_italic": "斜体",
+		"markdown_list": "列表",
+		"markdown_link": "链接",
+		"crop_image": "调整图片",
+		"crop_zoom": "缩放",
+		"crop_confirm": "使用此图",
+		"invalid_file_type": "请选择 JPEG、PNG、WebP 或 GIF 格式的图片",
+		"file_too_large": "图片需小于 5 MB"
 	},
 	"health": {
 		"title": "系统健康",
@@ -132,7 +145,8 @@
 		"adding": "添加中…",
 		"choose_table_title": "选择餐桌",
 		"added_to_order": "已加入订单",
-		"add_failed": "添加失败，请重试"
+		"add_failed": "添加失败，请重试",
+		"pin_required": "请输入活动PIN码以下单"
 	},
 	"about": {
 		"hero_tag": "🐾 一场兽迷聚餐之夜",

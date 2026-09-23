@@ -14,6 +14,8 @@ export interface FeedbackItemDto {
   /** @nullable */
   content: string | null;
   /** @nullable */
+  imageUrl: string | null;
+  /** @nullable */
   eventId: string | null;
   reactions: FeedbackReactionDto[];
   reactionTotal: number;

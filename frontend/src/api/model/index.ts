@@ -102,6 +102,7 @@ export * from './updateFoodVariantDto';
 export * from './updateOrderDto';
 export * from './updateOrderParams';
 export * from './updatePersonDto';
+export * from './updatePersonPfpDto';
 export * from './updatePresetDto';
 export * from './updatePresetItemDto';
 export * from './updateTableDetailsDto';

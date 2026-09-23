@@ -44,6 +44,7 @@ export function useFeedback() {
 					id: `temp-${Date.now()}`,
 					by: body.by ?? null,
 					content: body.content ?? null,
+					imageUrl: body.imageUrl ?? null,
 					eventId: null,
 					reactions: [],
 					reactionTotal: 0,
@@ -76,11 +77,15 @@ export function useFeedback() {
 		},
 	})
 
-	const post = (by: string, content: string) => {
+	const post = (by: string, content: string, imageUrl: string | null) => {
 		const trimmed = content.trim()
 		if (!trimmed) return
 		createMutation.mutate({
-			data: { by: by.trim() || undefined, content: trimmed },
+			data: {
+				by: by.trim() || undefined,
+				content: trimmed,
+				imageUrl: imageUrl ?? undefined,
+			},
 		})
 	}
 

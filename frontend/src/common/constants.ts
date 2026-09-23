@@ -16,5 +16,13 @@ export const ADMIN_GATE_WINDOW_MS = 1500
 
 export const STALE_TIME_STATIC = 1000 * 60 * 30
 
-export const MENU_PAGE_SIZE_OPTIONS = [8, 16, 24] as const
+export const MENU_PAGE_SIZE_OPTIONS = [8, 12, 16, 24] as const
 export const MENU_PAGE_SIZE_ALL = 500
+
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024
+export const ACCEPTED_IMAGE_TYPES = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/gif',
+]

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { X, NotebookText, Crown } from 'lucide-react'
 import type { PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { cn } from '@/utils/shadcn'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useRoster } from './@useRoster'
@@ -15,7 +16,7 @@ interface RosterProps {
 
 export function Roster({ table, onSetHost }: RosterProps) {
 	const { t } = useTranslation()
-	const { people, add, remove } = useRoster(table.id)
+	const { people, add, remove, updatePfp } = useRoster(table.id)
 	const { personId: myPersonId } = useWhoAmI(table.id)
 	const [pending, setPending] = useState<PersonDto | null>(null)
 	const [noteFor, setNoteFor] = useState<PersonDto | null>(null)
@@ -49,6 +50,7 @@ export function Roster({ table, onSetHost }: RosterProps) {
 							onSetHost={onSetHost}
 							onNote={() => setNoteFor(person)}
 							onRemove={() => setPending(person)}
+							onPfpChange={pfpUrl => updatePfp(person.id, pfpUrl)}
 						/>
 					))}
 				</ul>
@@ -90,12 +92,14 @@ function RosterItem({
 	onSetHost,
 	onNote,
 	onRemove,
+	onPfpChange,
 }: {
 	person: PersonDto
 	table: TableDto
 	onSetHost: (id: string | null) => void
 	onNote: () => void
 	onRemove: () => void
+	onPfpChange: (pfpUrl: string | null) => void
 }) {
 	const { t } = useTranslation()
 	const note = person.personalNotes?.[0]
@@ -103,14 +107,22 @@ function RosterItem({
 	return (
 		<li className='flex flex-col gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-sm'>
 			<div className='flex items-center justify-between'>
-				<span className='font-medium text-foreground'>
-					{person.name}
-					{person.id === table.tableLeaderId && (
-						<span className='ml-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground'>
-							{t('roster.host')}
-						</span>
-					)}
-				</span>
+				<div className='flex items-center gap-2'>
+					<ImageUploadSlot
+						shape='circle'
+						folder='person-pfps'
+						imageKey={person.pfpUrl}
+						onChange={onPfpChange}
+					/>
+					<span className='font-medium text-foreground'>
+						{person.name}
+						{person.id === table.tableLeaderId && (
+							<span className='ml-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground'>
+								{t('roster.host')}
+							</span>
+						)}
+					</span>
+				</div>
 				<div className='flex items-center gap-1'>
 					<button
 						type='button'

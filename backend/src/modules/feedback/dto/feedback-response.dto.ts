@@ -9,6 +9,7 @@ export class FeedbackItemDto {
   @ApiProperty() id: string;
   @ApiProperty({ nullable: true, type: String }) by: string | null;
   @ApiProperty({ nullable: true, type: String }) content: string | null;
+  @ApiProperty({ nullable: true, type: String }) imageUrl: string | null;
   @ApiProperty({ nullable: true, type: String }) eventId: string | null;
   @ApiProperty({ type: [FeedbackReactionDto] }) reactions: FeedbackReactionDto[];
   @ApiProperty() reactionTotal: number;

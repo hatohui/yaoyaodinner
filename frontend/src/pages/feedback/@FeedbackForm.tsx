@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { Send } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { MarkdownEditor } from '@/components/common/MarkdownEditor'
+import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { useGuest } from '@/hooks/useGuest'
 
 interface FeedbackFormProps {
-	onPost: (by: string, content: string) => void
+	onPost: (by: string, content: string, imageUrl: string | null) => void
 	isPosting: boolean
 }
 
@@ -15,11 +17,13 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 	const guestName = useGuest(s => s.name)
 	const [by, setBy] = useState(guestName ?? '')
 	const [content, setContent] = useState('')
+	const [imageUrl, setImageUrl] = useState<string | null>(null)
 
 	const submit = () => {
 		if (!content.trim()) return
-		onPost(by, content)
+		onPost(by, content, imageUrl)
 		setContent('')
+		setImageUrl(null)
 	}
 
 	return (
@@ -30,12 +34,17 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 				placeholder={t('feedback.name_placeholder')}
 				className='rounded-full'
 			/>
-			<textarea
+			<MarkdownEditor
 				value={content}
-				onChange={e => setContent(e.target.value)}
+				onChange={setContent}
 				placeholder={t('feedback.content_placeholder')}
-				rows={3}
-				className='rounded-2xl border border-border/60 bg-transparent px-4 py-3 text-sm text-foreground outline-none focus:border-primary'
+			/>
+			<ImageUploadSlot
+				shape='banner'
+				folder='feedback-images'
+				imageKey={imageUrl}
+				onChange={setImageUrl}
+				className='h-24'
 			/>
 			<Button
 				className='w-fit gap-1.5 self-end rounded-full'

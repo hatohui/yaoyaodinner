@@ -17,6 +17,19 @@ declare module 'react-i18next' {
           cancel: string
           save: string
           loading: string
+          upload_image: string
+          change_image: string
+          remove_image: string
+          upload_failed: string
+          markdown_bold: string
+          markdown_italic: string
+          markdown_list: string
+          markdown_link: string
+          crop_image: string
+          crop_zoom: string
+          crop_confirm: string
+          invalid_file_type: string
+          file_too_large: string
         }
         nav: {
           menu: string
@@ -97,6 +110,7 @@ declare module 'react-i18next' {
           choose_table_title: string
           added_to_order: string
           add_failed: string
+          pin_required: string
         }
         about: {
           hero_tag: string

@@ -27,4 +27,6 @@ export interface TableDto {
   matchedPeople?: string[];
   /** @nullable */
   eventId?: string | null;
+  /** @nullable */
+  bannerUrl?: string | null;
 }

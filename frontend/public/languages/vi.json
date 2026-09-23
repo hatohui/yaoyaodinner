@@ -26,7 +26,20 @@
 		"cancel": "Hủy",
 		"save": "Lưu",
 		"loading": "Đang tải…",
-		"rename": "Đổi tên"
+		"rename": "Đổi tên",
+		"upload_image": "Tải ảnh lên",
+		"change_image": "Đổi ảnh",
+		"remove_image": "Xóa ảnh",
+		"upload_failed": "Không tải được ảnh, vui lòng thử lại",
+		"markdown_bold": "Đậm",
+		"markdown_italic": "Nghiêng",
+		"markdown_list": "Danh sách",
+		"markdown_link": "Liên kết",
+		"crop_image": "Chỉnh ảnh",
+		"crop_zoom": "Thu phóng",
+		"crop_confirm": "Dùng ảnh này",
+		"invalid_file_type": "Vui lòng chọn ảnh JPEG, PNG, WebP hoặc GIF",
+		"file_too_large": "Ảnh phải nhỏ hơn 5 MB"
 	},
 	"health": {
 		"title": "Sức Khỏe Hệ Thống",
@@ -132,7 +145,8 @@
 		"adding": "Đang thêm…",
 		"choose_table_title": "Chọn một bàn",
 		"added_to_order": "Đã thêm vào đơn",
-		"add_failed": "Không thêm được, vui lòng thử lại"
+		"add_failed": "Không thêm được, vui lòng thử lại",
+		"pin_required": "Nhập mã PIN sự kiện để đặt món"
 	},
 	"about": {
 		"hero_tag": "🐾 Một đêm tiệc furry",

@@ -1,6 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useCreatePerson, useDeletePerson } from '@/api/people/people'
+import {
+	useCreatePerson,
+	useDeletePerson,
+	useUpdatePersonPfp,
+} from '@/api/people/people'
 import {
 	useGetTablePeople,
 	getGetTablePeopleQueryKey,
@@ -69,6 +73,26 @@ export function useRoster(tableId: string) {
 		},
 	})
 
+	const pfpMutation = useUpdatePersonPfp({
+		mutation: {
+			onMutate: async ({ id, data: body }) => {
+				await qc.cancelQueries({ queryKey: peopleKey })
+				const prev = qc.getQueryData<PersonDto[]>(peopleKey)
+				qc.setQueryData<PersonDto[]>(peopleKey, old =>
+					(old ?? []).map(p =>
+						p.id === id ? { ...p, pfpUrl: body.pfpUrl ?? null } : p
+					)
+				)
+				return { prev }
+			},
+			onError: (_e, _v, ctx) => {
+				qc.setQueryData(peopleKey, ctx?.prev)
+				toast.error(t('roster.update_failed'))
+			},
+			onSettled: invalidate,
+		},
+	})
+
 	const add = (name: string) => {
 		const trimmed = name.trim()
 		if (!trimmed) return
@@ -77,5 +101,8 @@ export function useRoster(tableId: string) {
 
 	const remove = (id: string) => removeMutation.mutate({ id })
 
-	return { people: data ?? [], isLoading, add, remove }
+	const updatePfp = (id: string, pfpUrl: string | null) =>
+		pfpMutation.mutate({ id, data: { pfpUrl } })
+
+	return { people: data ?? [], isLoading, add, remove, updatePfp }
 }

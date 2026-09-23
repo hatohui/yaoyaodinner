@@ -29,7 +29,8 @@ import type {
   IdsDto,
   MovePeopleDto,
   PersonDto,
-  UpdatePersonDto
+  UpdatePersonDto,
+  UpdatePersonPfpDto
 } from '../model';
 
 import { customInstance } from '../../common/axios';
@@ -406,4 +407,62 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getDeletePersonMutationOptions(options), queryClient);
+    }
+    export const updatePersonPfp = (
+    id: string,
+    updatePersonPfpDto: UpdatePersonPfpDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<PersonDto>(
+      {url: `/api/people/${id}/pfp`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: updatePersonPfpDto, signal
+    },
+      );
+    }
+
+
+
+export const getUpdatePersonPfpMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePersonPfp>>, TError,{id: string;data: UpdatePersonPfpDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updatePersonPfp>>, TError,{id: string;data: UpdatePersonPfpDto}, TContext> => {
+
+const mutationKey = ['updatePersonPfp'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePersonPfp>>, {id: string;data: UpdatePersonPfpDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updatePersonPfp(id,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePersonPfpMutationResult = NonNullable<Awaited<ReturnType<typeof updatePersonPfp>>>
+    export type UpdatePersonPfpMutationBody = UpdatePersonPfpDto
+    export type UpdatePersonPfpMutationError = unknown
+
+    export const useUpdatePersonPfp = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePersonPfp>>, TError,{id: string;data: UpdatePersonPfpDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updatePersonPfp>>,
+        TError,
+        {id: string;data: UpdatePersonPfpDto},
+        TContext
+      > => {
+      return useMutation(getUpdatePersonPfpMutationOptions(options), queryClient);
     }

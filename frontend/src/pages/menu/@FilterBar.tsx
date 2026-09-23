@@ -50,7 +50,7 @@ export function FilterBar({
 						placeholder={t('menu.search_placeholder')}
 						value={search}
 						onChange={e => onSearchChange(e.target.value)}
-						className='pl-9 rounded-full bg-muted/50 border-transparent focus-visible:border-primary focus-visible:ring-primary/20'
+						className='pl-9 rounded-full border-border/60 bg-muted focus-visible:border-primary focus-visible:ring-primary/20'
 					/>
 				</div>
 
@@ -60,7 +60,7 @@ export function FilterBar({
 						value={sort}
 						onValueChange={val => onSortChange(val as MenuSort)}
 					>
-						<SelectTrigger className='h-9 w-40 rounded-full border-transparent bg-muted/50 text-sm'>
+						<SelectTrigger className='h-9 w-40 rounded-full border-border/60 bg-muted text-sm'>
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -108,7 +108,7 @@ export function FilterBar({
 					value={sort}
 					onValueChange={val => onSortChange(val as MenuSort)}
 				>
-					<SelectTrigger className='h-9 w-full rounded-full border-transparent bg-muted/50 text-sm'>
+					<SelectTrigger className='h-9 w-full rounded-full border-border/60 bg-muted text-sm'>
 						<ArrowUpDown className='h-3.5 w-3.5 shrink-0 text-muted-foreground' />
 						<SelectValue />
 					</SelectTrigger>
@@ -136,7 +136,7 @@ export function FilterBar({
 						}
 					}}
 				>
-					<SelectTrigger className='h-9 w-full rounded-full border-transparent bg-muted/50 text-sm'>
+					<SelectTrigger className='h-9 w-full rounded-full border-border/60 bg-muted text-sm'>
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -183,7 +183,7 @@ function CategoryPill({
 				'flex shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200',
 				active
 					? 'bg-primary text-primary-foreground shadow-sm shadow-primary/20'
-					: 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+					: 'border border-border/60 bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
 			)}
 		>
 			{Icon && <Icon className='size-3.5' />}

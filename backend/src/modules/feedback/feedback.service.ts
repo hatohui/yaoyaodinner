@@ -73,6 +73,7 @@ export class FeedbackService {
         id: uuidv4(),
         by: dto.by || null,
         content: dto.content || null,
+        imageUrl: dto.imageUrl || null,
         eventId,
       },
       include: { reactions: true },

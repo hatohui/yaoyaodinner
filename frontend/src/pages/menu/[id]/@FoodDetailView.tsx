@@ -8,6 +8,8 @@ import { ASSET_URL } from '@/common/app'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
 import { FoodTags } from '@/components/common/FoodTags'
+import { useGuest } from '@/hooks/useGuest'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 
 interface FoodDetailViewProps {
 	food: FoodDetailDto
@@ -32,6 +34,9 @@ export function FoodDetailView({
 	const { t } = useTranslation()
 	const [imgError, setImgError] = useState(false)
 	const toast = useToast()
+	const pin = useGuest(s => s.pin)
+	const { isAdmin } = useIsAdmin()
+	const canOrder = Boolean(pin) || isAdmin
 
 	const imageSrc =
 		food.imageUrl && !imgError
@@ -143,11 +148,16 @@ export function FoodDetailView({
 			<Button
 				size='lg'
 				className='rounded-full'
-				disabled={availableVariants.length === 0}
+				disabled={availableVariants.length === 0 || !canOrder}
 				onClick={onAdd}
 			>
 				{t('food_detail.add_to_order')}
 			</Button>
+			{!canOrder && (
+				<p className='text-center text-xs text-muted-foreground'>
+					{t('menu.pin_required')}
+				</p>
+			)}
 		</div>
 	)
 }

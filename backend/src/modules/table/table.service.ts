@@ -6,6 +6,7 @@ import {
 import { prisma } from '../../libs/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import { EventService } from '@modules/event/event.service';
+import { ImagesService } from '@modules/images/images.service';
 import { TableSlotService } from './table-slot.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { BulkCreateTableDto } from './dto/bulk-create-table.dto';
@@ -24,6 +25,7 @@ type TableRow = {
   tableLeaderId: string | null;
   eventId: string | null;
   slotId: string | null;
+  bannerUrl: string | null;
   slot: {
     id: string;
     no: number;
@@ -39,6 +41,7 @@ export class TableService {
   constructor(
     private events: EventService,
     private slots: TableSlotService,
+    private images: ImagesService,
   ) {}
 
   /** Flattens the slot onto the table so callers see one table-shaped object. */
@@ -58,6 +61,7 @@ export class TableService {
       seated: t._count.people,
       isStaging: t.isStaging,
       eventId: t.eventId,
+      bannerUrl: t.bannerUrl,
       tableLeaderId: t.tableLeaderId,
       tableLeaderName: t.tableLeaderId
         ? (leaderNames?.get(t.tableLeaderId) ?? null)
@@ -285,6 +289,14 @@ export class TableService {
       await prisma.table.update({
         where: { id },
         data: { tableLeaderId: dto.tableLeaderId },
+      });
+    }
+
+    if (dto.bannerUrl !== undefined && dto.bannerUrl !== table.bannerUrl) {
+      if (table.bannerUrl) await this.images.deleteKey(table.bannerUrl);
+      await prisma.table.update({
+        where: { id },
+        data: { bannerUrl: dto.bannerUrl },
       });
     }
 

@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import type { FeedbackItemDto } from '@/api/model'
 import { useConfig } from '@/hooks/useConfig'
+import { ASSET_URL } from '@/common/app'
 import { cn } from '@/utils/shadcn'
 
 interface FeedbackCardProps {
@@ -26,7 +29,30 @@ export function FeedbackCard({ item, onReact }: FeedbackCardProps) {
 				</span>
 			</div>
 			{item.content && (
-				<p className='text-sm text-foreground'>{item.content}</p>
+				<div
+					className={cn(
+						'text-sm text-foreground',
+						'[&_p]:mb-2 [&_p:last-child]:mb-0',
+						'[&_strong]:font-semibold [&_em]:italic',
+						'[&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5',
+						'[&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5',
+						'[&_li]:mb-0.5',
+						'[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2',
+						'[&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs'
+					)}
+				>
+					<ReactMarkdown remarkPlugins={[remarkGfm]}>
+						{item.content}
+					</ReactMarkdown>
+				</div>
+			)}
+
+			{item.imageUrl && (
+				<img
+					src={`${ASSET_URL}/${item.imageUrl}`}
+					alt=''
+					className='max-h-72 w-full rounded-xl object-cover'
+				/>
 			)}
 
 			<div className='flex flex-wrap items-center gap-1.5 pt-1'>

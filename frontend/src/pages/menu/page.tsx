@@ -17,6 +17,8 @@ import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
 import { cn } from '@/utils/shadcn'
 import { STALE_TIME_STATIC } from '@/common/constants'
+import { useGuest } from '@/hooks/useGuest'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import type {
 	FoodItemDto,
 	CategoryItemDto,
@@ -28,6 +30,9 @@ export default function MenuPage() {
 	const [search, setSearch] = useState('')
 	const [total, setTotal] = useState(0)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
+	const pin = useGuest(s => s.pin)
+	const { isAdmin } = useIsAdmin()
+	const canOrder = Boolean(pin) || isAdmin
 
 	const {
 		page: urlPage,
@@ -139,7 +144,9 @@ export default function MenuPage() {
 										key={food.id}
 										food={food}
 										selected={selection.selected.has(food.id)}
-										onToggleSelect={() => selection.toggle(food.id)}
+										onToggleSelect={
+											canOrder ? () => selection.toggle(food.id) : undefined
+										}
 										onQuickView={setQuickViewId}
 									/>
 								))}

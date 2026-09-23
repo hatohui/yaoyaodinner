@@ -118,29 +118,6 @@ export function PaginationBar({
 					</PaginationContent>
 				</Pagination>
 			)}
-
-			{showPageSize && (
-				<div className='flex items-center gap-2'>
-					<Select
-						value={count.toString()}
-						onValueChange={val => setCount(Number(val))}
-					>
-						<SelectTrigger className='h-8 w-[110px] bg-background'>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							{MENU_PAGE_SIZE_OPTIONS.map(n => (
-								<SelectItem key={n} value={n.toString()}>
-									{n}
-								</SelectItem>
-							))}
-							<SelectItem value={MENU_PAGE_SIZE_ALL.toString()}>
-								{t('menu.count_all')}
-							</SelectItem>
-						</SelectContent>
-					</Select>
-				</div>
-			)}
 		</div>
 	)
 }

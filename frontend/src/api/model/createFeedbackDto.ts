@@ -9,4 +9,6 @@
 export interface CreateFeedbackDto {
   by?: string;
   content?: string;
+  /** Storage key of an attached image */
+  imageUrl?: string;
 }

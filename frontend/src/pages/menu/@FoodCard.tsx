@@ -101,10 +101,10 @@ export function FoodCard({
 							onToggleSelect?.()
 						}}
 						className={cn(
-							'absolute right-2 top-2 flex size-7 items-center justify-center rounded-full border shadow backdrop-blur-sm transition-all',
+							'absolute right-2 top-2 flex size-7 items-center justify-center rounded-md border shadow-md shadow-black/30 backdrop-blur-sm transition-all hover:border-2',
 							selected
-								? 'border-primary bg-primary text-primary-foreground opacity-100'
-								: 'border-border/60 bg-background/80 text-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100'
+								? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
+								: 'border-border/60 bg-background/80 text-transparent hover:border-primary hover:bg-primary/20'
 						)}
 					>
 						<Check className='size-4' />

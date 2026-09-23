@@ -14,5 +14,7 @@ export interface PersonDto {
   tableId?: string | null;
   /** @nullable */
   eventId?: string | null;
+  /** @nullable */
+  pfpUrl?: string | null;
   personalNotes?: NoteResponseDto[];
 }
