@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Users, Crown, UserSearch } from 'lucide-react'
+import { Users, Crown, UserSearch, Image as ImageIcon } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { ASSET_URL } from '@/common/app'
 import { cn } from '@/utils/shadcn'
@@ -26,12 +26,16 @@ export function TableList({ tables }: TableListProps) {
 							to={`/tables/${table.id}`}
 							className='flex h-full flex-col gap-2 overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md'
 						>
-							{table.bannerUrl && (
+							{table.bannerUrl ? (
 								<img
 									src={`${ASSET_URL}/${table.bannerUrl}`}
 									alt=''
 									className='h-20 w-full object-cover'
 								/>
+							) : (
+								<div className='flex h-20 w-full items-center justify-center bg-gradient-to-br from-brand-muted to-muted'>
+									<ImageIcon className='size-6 text-muted-foreground/50' />
+								</div>
 							)}
 
 							<div className='flex flex-1 flex-col gap-2 px-4 pb-3.5 pt-3.5'>

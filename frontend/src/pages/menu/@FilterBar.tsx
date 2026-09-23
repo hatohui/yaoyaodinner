@@ -12,32 +12,34 @@ import { cn } from '@/utils/shadcn'
 import type { CategoryItemDto } from '@/api/model'
 import type { MenuSort } from '@/utils/searchParams'
 
+interface MenuFilter {
+	category: string
+	popular: boolean
+	recommended: boolean
+}
+
 interface FilterBarProps {
 	search: string
 	onSearchChange: (value: string) => void
 	activeCategory: string
-	onCategoryChange: (id: string) => void
 	categories: CategoryItemDto[]
 	sort: MenuSort
 	onSortChange: (value: MenuSort) => void
 	popular: boolean
-	onPopularChange: (value: boolean) => void
 	recommended: boolean
-	onRecommendedChange: (value: boolean) => void
+	onFilterChange: (filter: MenuFilter) => void
 }
 
 export function FilterBar({
 	search,
 	onSearchChange,
 	activeCategory,
-	onCategoryChange,
 	categories,
 	sort,
 	onSortChange,
 	popular,
-	onPopularChange,
 	recommended,
-	onRecommendedChange,
+	onFilterChange,
 }: FilterBarProps) {
 	const { t } = useTranslation()
 
@@ -80,25 +82,37 @@ export function FilterBar({
 					label={t('menu.popular')}
 					icon={Flame}
 					active={popular}
-					onClick={() => onPopularChange(!popular)}
+					onClick={() =>
+						onFilterChange({ category: 'all', popular: true, recommended: false })
+					}
 				/>
 				<CategoryPill
 					label={t('menu.recommended')}
 					icon={Sparkles}
 					active={recommended}
-					onClick={() => onRecommendedChange(!recommended)}
+					onClick={() =>
+						onFilterChange({ category: 'all', popular: false, recommended: true })
+					}
 				/>
 				<CategoryPill
 					label={t('menu.all_categories')}
-					active={activeCategory === 'all'}
-					onClick={() => onCategoryChange('all')}
+					active={activeCategory === 'all' && !popular && !recommended}
+					onClick={() =>
+						onFilterChange({ category: 'all', popular: false, recommended: false })
+					}
 				/>
 				{categories.map(cat => (
 					<CategoryPill
 						key={cat.id}
 						label={cat.name ?? cat.key}
-						active={activeCategory === cat.id}
-						onClick={() => onCategoryChange(cat.id)}
+						active={activeCategory === cat.id && !popular && !recommended}
+						onClick={() =>
+							onFilterChange({
+								category: cat.id,
+								popular: false,
+								recommended: false,
+							})
+						}
 					/>
 				))}
 			</div>
@@ -126,15 +140,13 @@ export function FilterBar({
 					value={
 						popular ? 'popular' : recommended ? 'recommended' : activeCategory
 					}
-					onValueChange={val => {
-						onPopularChange(val === 'popular')
-						onRecommendedChange(val === 'recommended')
-						if (val !== 'popular' && val !== 'recommended') {
-							onCategoryChange(val)
-						} else {
-							onCategoryChange('all')
-						}
-					}}
+					onValueChange={val =>
+						onFilterChange({
+							category: val === 'popular' || val === 'recommended' ? 'all' : val,
+							popular: val === 'popular',
+							recommended: val === 'recommended',
+						})
+					}
 				>
 					<SelectTrigger className='h-9 w-full rounded-full border-border/60 bg-muted text-sm'>
 						<SelectValue />

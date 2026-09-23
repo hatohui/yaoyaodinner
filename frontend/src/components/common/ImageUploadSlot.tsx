@@ -12,6 +12,8 @@ interface ImageUploadSlotProps {
 	imageKey?: string | null
 	onChange: (key: string | null) => void
 	className?: string
+	/** Renders the banner shape as a small pill/thumbnail for optional, low-emphasis uploads. */
+	compact?: boolean
 }
 
 export function ImageUploadSlot({
@@ -20,6 +22,7 @@ export function ImageUploadSlot({
 	imageKey,
 	onChange,
 	className,
+	compact,
 }: ImageUploadSlotProps) {
 	const { t } = useTranslation()
 	const { upload, validate, isUploading } = useImageUpload(folder)
@@ -107,6 +110,75 @@ export function ImageUploadSlot({
 						mimeType={pending.type}
 						aspect={1}
 						shape='round'
+						onConfirm={confirmCrop}
+						onCancel={closeCrop}
+					/>
+				)}
+			</div>
+		)
+	}
+
+	if (compact) {
+		return (
+			<div className={cn('group relative inline-flex shrink-0', className)}>
+				{src ? (
+					<button
+						type='button'
+						onClick={() => inputRef.current?.click()}
+						aria-label={t('common.change_image')}
+						className='relative size-16 overflow-hidden rounded-xl border border-border/60'
+					>
+						<img
+							src={src}
+							alt=''
+							className='size-full object-cover'
+						/>
+						<div className='absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100'>
+							{isUploading ? (
+								<Loader2 className='size-4 animate-spin text-white' />
+							) : (
+								<ImagePlus className='size-4 text-white' />
+							)}
+						</div>
+					</button>
+				) : (
+					<button
+						type='button'
+						onClick={() => inputRef.current?.click()}
+						className='flex items-center gap-1.5 rounded-full border border-dashed border-border/60 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground'
+					>
+						{isUploading ? (
+							<Loader2 className='size-3.5 animate-spin' />
+						) : (
+							<ImagePlus className='size-3.5' />
+						)}
+						{t('common.upload_image')}
+					</button>
+				)}
+				{src && (
+					<button
+						type='button'
+						onClick={() => onChange(null)}
+						aria-label={t('common.remove_image')}
+						className='absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow'
+					>
+						<X className='size-2.5' />
+					</button>
+				)}
+				<input
+					ref={inputRef}
+					type='file'
+					accept='image/*'
+					className='hidden'
+					onChange={e => handleFile(e.target.files?.[0])}
+				/>
+
+				{pending && (
+					<ImageCropDialog
+						imageSrc={pending.src}
+						mimeType={pending.type}
+						aspect={3}
+						shape='rect'
 						onConfirm={confirmCrop}
 						onCancel={closeCrop}
 					/>

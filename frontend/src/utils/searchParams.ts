@@ -90,6 +90,24 @@ export function useMenuSearchParams() {
 		[updateParams]
 	)
 
+	/**
+	 * Category/popular/recommended are mutually exclusive in the UI, so they
+	 * must be written in a single updateParams call - three separate set*
+	 * calls in the same click handler would each start from the same stale
+	 * searchParams snapshot and only the last one would stick.
+	 */
+	const setFilter = useCallback(
+		(next: { category: string; popular: boolean; recommended: boolean }) => {
+			updateParams({
+				category: next.category,
+				popular: next.popular,
+				recommended: next.recommended,
+				page: 1,
+			})
+		},
+		[updateParams]
+	)
+
 	const setLang = useCallback(
 		(newLang: string | undefined) => {
 			updateParams({ lang: newLang })
@@ -115,6 +133,7 @@ export function useMenuSearchParams() {
 		setSort,
 		setPopular,
 		setRecommended,
+		setFilter,
 		setLang,
 		updateParams,
 		resetParams,

@@ -39,21 +39,23 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 				onChange={setContent}
 				placeholder={t('feedback.content_placeholder')}
 			/>
-			<ImageUploadSlot
-				shape='banner'
-				folder='feedback-images'
-				imageKey={imageUrl}
-				onChange={setImageUrl}
-				className='h-24'
-			/>
-			<Button
-				className='w-fit gap-1.5 self-end rounded-full'
-				disabled={!content.trim() || isPosting}
-				onClick={submit}
-			>
-				<Send className='size-4' />
-				{t('feedback.post')}
-			</Button>
+			<div className='flex items-center justify-between gap-2'>
+				<ImageUploadSlot
+					shape='banner'
+					folder='feedback-images'
+					imageKey={imageUrl}
+					onChange={setImageUrl}
+					compact
+				/>
+				<Button
+					className='w-fit shrink-0 gap-1.5 rounded-full'
+					disabled={!content.trim() || isPosting}
+					onClick={submit}
+				>
+					<Send className='size-4' />
+					{t('feedback.post')}
+				</Button>
+			</div>
 		</div>
 	)
 }

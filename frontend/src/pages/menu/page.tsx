@@ -43,10 +43,8 @@ export default function MenuPage() {
 		recommended,
 		setPage: setUrlPage,
 		setCount: setUrlCount,
-		setCategory,
 		setSort,
-		setPopular,
-		setRecommended,
+		setFilter,
 		resetParams,
 	} = useMenuSearchParams()
 
@@ -117,14 +115,12 @@ export default function MenuPage() {
 					search={search}
 					onSearchChange={setSearch}
 					activeCategory={category}
-					onCategoryChange={setCategory}
 					categories={categories}
 					sort={sort}
 					onSortChange={setSort}
 					popular={popular}
-					onPopularChange={setPopular}
 					recommended={recommended}
-					onRecommendedChange={setRecommended}
+					onFilterChange={setFilter}
 				/>
 
 				<div className='py-8'>
