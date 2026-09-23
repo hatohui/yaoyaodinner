@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { IsString } from "class-validator";
 
 export class AppConfigDto {
   @ApiProperty()
@@ -25,5 +26,6 @@ export class AppConfigDto {
 
 export class UpdateConfigDto {
   @ApiProperty({ description: "Raw value, stored as-is and parsed by the row's type" })
+  @IsString()
   value: string;
 }

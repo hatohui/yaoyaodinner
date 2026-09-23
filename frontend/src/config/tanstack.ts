@@ -10,29 +10,22 @@ const useTanstackConfig = (
 ): QueryClientConfig => {
 	const { t } = translation
 
+	const handleError = (error: Error) => {
+		const errorMessage =
+			typeof error.message === 'string' && error.message
+				? error.message
+				: 'UNKNOWN_ERROR'
+		const translatedMessage = t(`errors.${errorMessage}`, {
+			defaultValue: errorMessage.toLowerCase().replace(/_/g, ' '),
+		})
+		toast.error(t('errors.title'), {
+			description: translatedMessage,
+		})
+	}
+
 	return {
-		queryCache: new QueryCache({
-			onError: error => {
-				const errorMessage = error.message || 'UNKNOWN_ERROR'
-				const translatedMessage = t(`errors.${errorMessage}`, {
-					defaultValue: errorMessage.toLowerCase().replace(/_/g, ' '),
-				})
-				toast.error(t('errors.title'), {
-					description: translatedMessage,
-				})
-			},
-		}),
-		mutationCache: new MutationCache({
-			onError: error => {
-				const errorMessage = error.message || 'UNKNOWN_ERROR'
-				const translatedMessage = t(`errors.${errorMessage}`, {
-					defaultValue: errorMessage.toLowerCase().replace(/_/g, ' '),
-				})
-				toast.error(t('errors.title'), {
-					description: translatedMessage,
-				})
-			},
-		}),
+		queryCache: new QueryCache({ onError: handleError }),
+		mutationCache: new MutationCache({ onError: handleError }),
 		defaultOptions: {
 			queries: {
 				retry: 1,

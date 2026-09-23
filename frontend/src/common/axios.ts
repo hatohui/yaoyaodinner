@@ -22,8 +22,11 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(
 	response => response,
 	error => {
-		if (error.response?.data?.message) {
-			error.message = error.response.data.message
+		const data = error.response?.data?.message
+		if (typeof data === 'string') {
+			error.message = data
+		} else if (Array.isArray(data)) {
+			error.message = data.join(', ')
 		}
 		return Promise.reject(error)
 	}
