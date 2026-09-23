@@ -46,17 +46,17 @@ export function AddToCartModal({
 }: AddToCartModalProps) {
 	const { t, i18n } = useTranslation()
 
-	const { data: people = [], isLoading: peopleLoading } = useGetTablePeople<PersonDto[]>(
-		tableId,
-		{ query: { enabled: open } }
-	)
+	const { data: people = [], isLoading: peopleLoading } = useGetTablePeople<
+		PersonDto[]
+	>(tableId, { query: { enabled: open } })
 	const { personId: myPersonId } = useWhoAmI(tableId)
 
-	const { data: detail, isLoading: foodLoading } = useGetFoodById<FoodDetailDto>(
-		food?.id ?? '',
-		{ lang: i18n.language },
-		{ query: { enabled: open && !!food, staleTime: STALE_TIME_STATIC } }
-	)
+	const { data: detail, isLoading: foodLoading } =
+		useGetFoodById<FoodDetailDto>(
+			food?.id ?? '',
+			{ lang: i18n.language },
+			{ query: { enabled: open && !!food, staleTime: STALE_TIME_STATIC } }
+		)
 
 	const [variantId, setVariantId] = useState('')
 	const [quantity, setQuantity] = useState(1)
@@ -77,7 +77,11 @@ export function AddToCartModal({
 	}, [open, food])
 
 	useEffect(() => {
-		if (open && variants.length > 0 && !variants.some(v => v.id === variantId)) {
+		if (
+			open &&
+			variants.length > 0 &&
+			!variants.some(v => v.id === variantId)
+		) {
 			const firstAvailable = variants.find(v => v.isAvailable) ?? variants[0]
 			if (firstAvailable) setVariantId(firstAvailable.id)
 		}
@@ -143,7 +147,9 @@ export function AddToCartModal({
 						<div className='flex flex-col gap-5'>
 							{variants.length > 1 && (
 								<div className='flex flex-col gap-2'>
-									<span className='text-sm font-medium'>{t('menu.variant')}</span>
+									<span className='text-sm font-medium'>
+										{t('menu.variant')}
+									</span>
 									<div className='flex flex-wrap gap-2'>
 										{variants
 											.filter(v => v.isAvailable)
@@ -168,7 +174,9 @@ export function AddToCartModal({
 							)}
 
 							<div className='flex flex-col gap-2'>
-								<span className='text-sm font-medium'>{t('orders.quantity')}</span>
+								<span className='text-sm font-medium'>
+									{t('orders.quantity')}
+								</span>
 								<div className='flex items-center gap-2'>
 									<button
 										type='button'
@@ -192,7 +200,9 @@ export function AddToCartModal({
 							</div>
 
 							<div className='flex flex-col gap-2'>
-								<span className='text-sm font-medium'>{t('orders.split_as')}</span>
+								<span className='text-sm font-medium'>
+									{t('orders.split_as')}
+								</span>
 								<SplitModeSelector
 									people={people}
 									mode={mode}

@@ -173,6 +173,12 @@ declare module 'react-i18next' {
           needs_people_title: string
           needs_people_body: string
           seat_someone: string
+          ordered: string
+          view_ordered: string
+          back_to_table: string
+          ordering_for: string
+          in_cart_count: string
+          ordered_count: string
           shared: string
           personal: string
           unknown_person: string

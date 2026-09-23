@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCreateOrderBatch, getGetOrdersQueryKey } from '@/api/orders/orders'
@@ -7,6 +7,8 @@ import type { FoodItemDto, PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useToast } from '@/hooks/useToast'
+import { localStorage } from '@/utils/localstorage'
+import { ORDER_CART_STORAGE_KEY } from '@/common/constants'
 
 export interface CartLine {
 	foodId: string
@@ -21,6 +23,39 @@ export interface CartLine {
 	chosen: Set<string>
 }
 
+type StoredLine = Omit<CartLine, 'chosen'> & { chosen: string[] }
+type StoredCarts = Record<string, StoredLine[]>
+
+const readCarts = (): StoredCarts => {
+	const raw = localStorage.load(ORDER_CART_STORAGE_KEY)
+	if (!raw) return {}
+	try {
+		return JSON.parse(raw) as StoredCarts
+	} catch {
+		return {}
+	}
+}
+
+const loadCart = (tableId: string) =>
+	new Map(
+		(readCarts()[tableId] ?? []).map(line => [
+			line.foodId,
+			{ ...line, chosen: new Set(line.chosen) },
+		])
+	)
+
+// the cart outlives the page so browsing the table or menu doesn't lose it
+const saveCart = (tableId: string, lines: Map<string, CartLine>) => {
+	const carts = readCarts()
+	if (lines.size === 0) delete carts[tableId]
+	else
+		carts[tableId] = [...lines.values()].map(line => ({
+			...line,
+			chosen: [...line.chosen],
+		}))
+	localStorage.save(ORDER_CART_STORAGE_KEY, JSON.stringify(carts))
+}
+
 export function useOrderCart(tableId: string) {
 	const { t } = useTranslation()
 	const toast = useToast()
@@ -29,7 +64,13 @@ export function useOrderCart(tableId: string) {
 	const { personId: myPersonId } = useWhoAmI(tableId)
 	const { data: people = [] } = useGetTablePeople<PersonDto[]>(tableId)
 
-	const [lines, setLines] = useState<Map<string, CartLine>>(new Map())
+	const [lines, setLines] = useState<Map<string, CartLine>>(() =>
+		loadCart(tableId)
+	)
+
+	useEffect(() => {
+		saveCart(tableId, lines)
+	}, [tableId, lines])
 
 	const mutate = (foodId: string, apply: (line: CartLine) => CartLine | null) =>
 		setLines(prev => {
@@ -77,6 +118,17 @@ export function useOrderCart(tableId: string) {
 	) => {
 		setLines(prev => {
 			const next = new Map(prev)
+			const existing = next.get(food.id)
+			const sameSplit =
+				existing?.mode === mode &&
+				(mode !== 'choose' ||
+					(existing.chosen.size === chosen.size &&
+						[...chosen].every(id => existing.chosen.has(id))))
+			// adding the same option and split again tops up the line
+			const total =
+				existing && existing.variantId === variantId && sameSplit
+					? existing.quantity + quantity
+					: quantity
 			next.set(food.id, {
 				foodId: food.id,
 				variantId,
@@ -85,7 +137,7 @@ export function useOrderCart(tableId: string) {
 				price,
 				currency: food.currency ?? '',
 				shouldCalculate: food.shouldCalculate,
-				quantity,
+				quantity: total,
 				mode,
 				chosen,
 			})

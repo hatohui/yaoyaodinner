@@ -11,6 +11,7 @@ export interface OrderResponseDto {
   id: string;
   tableId: string;
   variantId: string;
+  foodId: string;
   /** @nullable */
   eventId: string | null;
   quantity: number;

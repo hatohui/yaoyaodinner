@@ -70,16 +70,23 @@ export function useOrders(tableId: string) {
 		},
 	})
 
-	const setQuantity = (id: string, quantity: number) => {
-		if (quantity < 1) return
-		updateMutation.mutate({ id, data: { quantity } })
-	}
-
-	const setSplit = (id: string, splitAll: boolean, personIds: string[]) => {
-		updateMutation.mutate({ id, data: { splitAll, personIds } })
-	}
-
 	const remove = (id: string) => removeMutation.mutate({ id })
+
+	/**
+	 * Edits a grouped line: the change lands on its first order and any
+	 * duplicates are deleted, so older repeat rows fold into one as people edit.
+	 */
+	const updateLine = (
+		ids: string[],
+		data: { quantity: number; splitAll?: boolean; personIds?: string[] }
+	) => {
+		if (data.quantity < 1) return
+		const [primary, ...duplicates] = ids
+		updateMutation.mutate({ id: primary, data })
+		duplicates.forEach(remove)
+	}
+
+	const removeLine = (ids: string[]) => ids.forEach(remove)
 
 	const orders = data ?? []
 	const total = orders.reduce(
@@ -87,5 +94,5 @@ export function useOrders(tableId: string) {
 		0
 	)
 
-	return { orders, isLoading, total, setQuantity, setSplit, remove }
+	return { orders, isLoading, total, updateLine, removeLine }
 }

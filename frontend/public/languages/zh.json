@@ -224,7 +224,13 @@
 		"view_cart": "购物车（{{count}}）",
 		"needs_people_title": "这桌还没有人",
 		"needs_people_body": "点单前请先把人加到这桌 — 点单属于坐在那里的人。",
-		"seat_someone": "添加人员"
+		"seat_someone": "添加人员",
+		"ordered": "已点",
+		"view_ordered": "已点 ({{count}})",
+		"back_to_table": "返回桌子",
+		"ordering_for": "为 {{table}} 点单",
+		"in_cart_count": "购物车 {{count}}",
+		"ordered_count": "已点 {{count}}"
 	},
 	"split": {
 		"title": "分摊此项",

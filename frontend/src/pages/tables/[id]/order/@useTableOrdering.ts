@@ -25,8 +25,6 @@ export function useTableOrdering() {
 	const [popular, setPopular] = useState(false)
 	const [recommended, setRecommended] = useState(false)
 	const [total, setTotal] = useState(0)
-	const [selected, setSelected] = useState<Set<string>>(new Set())
-	const [configOpen, setConfigOpen] = useState(false)
 
 	const debouncedSearch = useDebounce(search, 300)
 	const pagination = usePagination({ total, initialCount: 12 })
@@ -72,18 +70,15 @@ export function useTableOrdering() {
 		)
 	}, [data?.foods, debouncedSearch])
 
-	const selectedFoods = useMemo(
-		() => (data?.foods ?? []).filter(f => selected.has(f.id)),
-		[data?.foods, selected]
-	)
-
-	const toggle = (foodId: string) =>
-		setSelected(prev => {
-			const next = new Set(prev)
-			if (next.has(foodId)) next.delete(foodId)
-			else next.add(foodId)
-			return next
-		})
+	const setFilter = (filter: {
+		category: string
+		popular: boolean
+		recommended: boolean
+	}) => {
+		setCategory(filter.category)
+		setPopular(filter.popular)
+		setRecommended(filter.recommended)
+	}
 
 	return {
 		tableId: id,
@@ -91,28 +86,15 @@ export function useTableOrdering() {
 		search,
 		setSearch,
 		category,
-		setCategory,
 		sort,
 		setSort,
 		popular,
-		setPopular,
 		recommended,
-		setRecommended,
+		setFilter,
 		categories,
 		foods,
 		isLoading,
 		isError,
 		pagination,
-		selected,
-		toggle,
-		clear: () => setSelected(new Set()),
-		selectedFoods,
-		configOpen,
-		setConfigOpen,
-		openConfig: () => selected.size > 0 && setConfigOpen(true),
-		handleDone: () => {
-			setConfigOpen(false)
-			setSelected(new Set())
-		},
 	}
 }

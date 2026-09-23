@@ -224,7 +224,13 @@
 		"view_cart": "Cart ({{count}})",
 		"needs_people_title": "Nobody is seated here yet",
 		"needs_people_body": "Add someone to this table before ordering — orders belong to the people sitting there.",
-		"seat_someone": "Add someone"
+		"seat_someone": "Add someone",
+		"ordered": "Ordered",
+		"view_ordered": "Ordered ({{count}})",
+		"back_to_table": "Back to table",
+		"ordering_for": "Ordering for {{table}}",
+		"in_cart_count": "{{count}} in cart",
+		"ordered_count": "{{count}} ordered"
 	},
 	"split": {
 		"title": "Split this item",

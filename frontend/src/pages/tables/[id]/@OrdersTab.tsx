@@ -1,14 +1,17 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
+import type { PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useOrders } from './@useOrders'
 import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
+import { groupOrders, type OrderedLine } from './@groupOrders'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
+import { useListView, ViewToggle } from '@/components/common/ViewToggle'
+import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 
 interface OrdersTabProps {
 	table: TableDto
@@ -17,12 +20,15 @@ interface OrdersTabProps {
 
 export function OrdersTab({ table, people }: OrdersTabProps) {
 	const { t } = useTranslation()
-	const { orders, isLoading, total, setQuantity, setSplit, remove } = useOrders(
+	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
 		table.id
 	)
+	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
+	const compact = view === 'compact'
+	const lines = useMemo(() => groupOrders(orders), [orders])
 	const { personId: myPersonId } = useWhoAmI(table.id)
-	const [editing, setEditing] = useState<OrderResponseDto | null>(null)
-	const [removing, setRemoving] = useState<OrderResponseDto | null>(null)
+	const [editing, setEditing] = useState<OrderedLine | null>(null)
+	const [removing, setRemoving] = useState<OrderedLine | null>(null)
 
 	if (isLoading) {
 		return (
@@ -39,12 +45,16 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 					{t('orders.needs_people_body')}
 				</p>
 			) : (
-				<Button asChild className='gap-1.5 self-start rounded-full'>
-					<Link to={`/tables/${table.id}/order`}>
-						<Plus className='size-4' />
-						{t('orders.add_order')}
-					</Link>
-				</Button>
+				<div className='flex items-center justify-between gap-2'>
+					<Button asChild className='gap-1.5 self-start rounded-full'>
+						<Link to={`/tables/${table.id}/order`}>
+							<Plus className='size-4' />
+							{t('orders.add_order')}
+						</Link>
+					</Button>
+
+					<ViewToggle view={view} onChange={setView} />
+				</div>
 			)}
 
 			{orders.length === 0 ? (
@@ -53,21 +63,22 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 				</p>
 			) : (
 				<ul className='flex flex-col gap-2'>
-					{orders.map(order => (
+					{lines.map(line => (
 						<OrderListItem
-							key={order.id}
-							order={order}
+							key={line.key}
+							order={line}
 							people={people}
-							onEditSplit={() => setEditing(order)}
-							onRemove={() => setRemoving(order)}
-							onQuantityChange={quantity => setQuantity(order.id, quantity)}
+							onEditSplit={() => setEditing(line)}
+							onRemove={() => setRemoving(line)}
+							onQuantityChange={quantity => updateLine(line.ids, { quantity })}
+							compact={compact}
 						/>
 					))}
 				</ul>
 			)}
 
 			{orders.length > 0 && (
-				<div className='flex items-center justify-between border-t border-border/60 pt-3 text-sm font-semibold text-foreground'>
+				<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
 					<span>{t('orders.total')}</span>
 					<span>
 						{total.toFixed(2)} {orders[0]?.currency}
@@ -83,7 +94,12 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 				initialSplitAll={editing?.splitAll ?? true}
 				myPersonId={myPersonId}
 				onConfirm={(splitAll, personIds) => {
-					if (editing) setSplit(editing.id, splitAll, personIds)
+					if (editing)
+						updateLine(editing.ids, {
+							quantity: editing.quantity,
+							splitAll,
+							personIds,
+						})
 					setEditing(null)
 				}}
 			/>
@@ -95,7 +111,7 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 				description={t('orders.remove_desc')}
 				confirmLabel={t('orders.remove')}
 				onConfirm={() => {
-					if (removing) remove(removing.id)
+					if (removing) removeLine(removing.ids)
 					setRemoving(null)
 				}}
 			/>

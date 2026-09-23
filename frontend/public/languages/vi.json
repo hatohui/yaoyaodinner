@@ -224,7 +224,13 @@
 		"view_cart": "Giỏ ({{count}})",
 		"needs_people_title": "Chưa có ai ngồi ở đây",
 		"needs_people_body": "Hãy thêm người vào bàn trước khi gọi món — món ăn thuộc về những người ngồi ở đó.",
-		"seat_someone": "Thêm người"
+		"seat_someone": "Thêm người",
+		"ordered": "Đã gọi",
+		"view_ordered": "Đã gọi ({{count}})",
+		"back_to_table": "Quay lại bàn",
+		"ordering_for": "Gọi món cho {{table}}",
+		"in_cart_count": "{{count}} trong giỏ",
+		"ordered_count": "Đã gọi {{count}}"
 	},
 	"split": {
 		"title": "Chia món này",

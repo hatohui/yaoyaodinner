@@ -33,7 +33,6 @@ export function Roster({ table, editing, onSetHost }: RosterProps) {
 
 	const mine = people.find(p => p.id === me?.id)
 	useEffect(() => {
-		// keep the saved identity in step with renames, photo changes and moves
 		if (
 			mine &&
 			(mine.name !== me?.name ||

@@ -8,6 +8,7 @@ export class OrderResponseDto {
   @ApiProperty() id: string;
   @ApiProperty() tableId: string;
   @ApiProperty() variantId: string;
+  @ApiProperty() foodId: string;
   @ApiProperty({ nullable: true, type: String }) eventId: string | null;
   @ApiProperty() quantity: number;
   @ApiProperty() price: number;

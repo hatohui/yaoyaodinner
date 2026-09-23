@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { ShoppingCart } from 'lucide-react'
 import type { PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { Button } from '@/components/ui/button'
@@ -12,7 +11,6 @@ interface CartPanelProps {
 	myPersonId: string | null
 	total: number
 	currency: string
-	itemCount: number
 	isPlacing: boolean
 	onQuantityChange: (foodId: string, quantity: number) => void
 	onModeChange: (foodId: string, mode: SplitMode) => void
@@ -29,7 +27,6 @@ export function CartPanel({
 	myPersonId,
 	total,
 	currency,
-	itemCount,
 	isPlacing,
 	onQuantityChange,
 	onModeChange,
@@ -47,29 +44,18 @@ export function CartPanel({
 
 	return (
 		<div className='flex h-full flex-col gap-3'>
-			<div className='flex items-center justify-between gap-2'>
-				<h2 className='flex items-center gap-2 text-sm font-semibold text-foreground'>
-					<ShoppingCart className='size-4' />
-					{t('orders.cart')}
-					{itemCount > 0 && (
-						<span className='rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground'>
-							{itemCount}
-						</span>
-					)}
-				</h2>
-				{lines.length > 0 && (
-					<button
-						type='button'
-						onClick={onClear}
-						className='text-xs text-muted-foreground transition-colors hover:text-destructive'
-					>
-						{t('orders.clear_cart')}
-					</button>
-				)}
-			</div>
+			{lines.length > 0 && (
+				<button
+					type='button'
+					onClick={onClear}
+					className='self-end text-xs text-muted-foreground transition-colors hover:text-destructive'
+				>
+					{t('orders.clear_cart')}
+				</button>
+			)}
 
 			{lines.length === 0 ? (
-				<p className='rounded-2xl border border-dashed border-border/60 px-4 py-10 text-center text-sm text-muted-foreground'>
+				<p className='rounded-2xl border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground'>
 					{t('orders.cart_empty')}
 				</p>
 			) : (
@@ -91,7 +77,7 @@ export function CartPanel({
 			)}
 
 			{lines.length > 0 && (
-				<div className='mt-auto flex flex-col gap-3 border-t border-border/60 pt-3'>
+				<div className='mt-auto flex flex-col gap-3 border-t border-border pt-3'>
 					<div className='flex items-center justify-between text-sm font-semibold text-foreground'>
 						<span>{t('orders.total')}</span>
 						<span>

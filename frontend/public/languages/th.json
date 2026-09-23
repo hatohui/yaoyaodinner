@@ -224,7 +224,13 @@
 		"view_cart": "ตะกร้า ({{count}})",
 		"needs_people_title": "ยังไม่มีใครนั่งที่นี่",
 		"needs_people_body": "เพิ่มคนเข้าโต๊ะนี้ก่อนสั่งอาหาร — รายการสั่งเป็นของคนที่นั่งอยู่",
-		"seat_someone": "เพิ่มคน"
+		"seat_someone": "เพิ่มคน",
+		"ordered": "สั่งแล้ว",
+		"view_ordered": "สั่งแล้ว ({{count}})",
+		"back_to_table": "กลับไปที่โต๊ะ",
+		"ordering_for": "สั่งอาหารให้ {{table}}",
+		"in_cart_count": "ในตะกร้า {{count}}",
+		"ordered_count": "สั่งแล้ว {{count}}"
 	},
 	"split": {
 		"title": "แบ่งรายการนี้",
