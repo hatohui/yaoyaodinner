@@ -181,7 +181,13 @@
 		"details_tag": "🐾 内幕消息",
 		"details_title": "认识一下 Chee Yao (Yao Yao)",
 		"details_body_1": "他在兽圈里也被称为 Aster（归星）@AsterTheDragon。正是 Chee Yao 邀请大家参加这次特别的聚会！",
-		"details_body_2": "他被称为喜欢芒果的蓝莓派，欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。"
+		"details_body_2": "他被称为喜欢芒果的蓝莓派，欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。",
+		"tagline": "回家吃饭的感觉",
+		"cta_menu": "浏览菜单",
+		"cta_tables": "找到你的餐桌",
+		"persona_yaoyao": "Yao Yao",
+		"persona_aster": "Aster（归星）",
+		"social_label": "{{name}} 的 {{platform}}"
 	},
 	"food_detail": {
 		"title": "菜品详情",

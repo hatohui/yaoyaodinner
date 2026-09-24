@@ -181,7 +181,13 @@
 		"details_tag": "🐾 The tea",
 		"details_title": "Meet Chee Yao (Yao Yao)",
 		"details_body_1": "Also known in the fandom as Aster (归星) @AsterTheDragon, Chee Yao is the one inviting everyone to this special event!",
-		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes fellow furs to gather for a great night of food and hanging out in Malaysia."
+		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes fellow furs to gather for a great night of food and hanging out in Malaysia.",
+		"tagline": "That coming-home-for-dinner feeling",
+		"cta_menu": "Browse the menu",
+		"cta_tables": "Find your table",
+		"persona_yaoyao": "Yao Yao",
+		"persona_aster": "Aster (归星)",
+		"social_label": "{{name}} on {{platform}}"
 	},
 	"food_detail": {
 		"title": "Food details",

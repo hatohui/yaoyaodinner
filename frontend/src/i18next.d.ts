@@ -146,6 +146,12 @@ declare module 'react-i18next' {
           details_title: string
           details_body_1: string
           details_body_2: string
+          tagline: string
+          cta_menu: string
+          cta_tables: string
+          persona_yaoyao: string
+          persona_aster: string
+          social_label: string
         }
         food_detail: {
           title: string

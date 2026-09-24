@@ -181,7 +181,13 @@
 		"details_tag": "🐾 Chuyện hậu trường",
 		"details_title": "Gặp gỡ Chee Yao (Yao Yao)",
 		"details_body_1": "Còn được biết đến trong fandom với tên Aster (归星) @AsterTheDragon, Chee Yao là người mời mọi người đến sự kiện đặc biệt này!",
-		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón những người bạn furry cùng tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia."
+		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón những người bạn furry cùng tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia.",
+		"tagline": "Cảm giác về nhà ăn cơm",
+		"cta_menu": "Xem thực đơn",
+		"cta_tables": "Tìm bàn của bạn",
+		"persona_yaoyao": "Yao Yao",
+		"persona_aster": "Aster (归星)",
+		"social_label": "{{name}} trên {{platform}}"
 	},
 	"food_detail": {
 		"title": "Chi tiết món ăn",
