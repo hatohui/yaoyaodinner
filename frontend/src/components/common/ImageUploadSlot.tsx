@@ -87,16 +87,6 @@ export function ImageUploadSlot({
 						)}
 					</div>
 				</button>
-				{src && (
-					<button
-						type='button'
-						onClick={() => onChange(null)}
-						aria-label={t('common.remove_image')}
-						className='absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow'
-					>
-						<X className='size-2.5' />
-					</button>
-				)}
 				<input
 					ref={inputRef}
 					type='file'
@@ -245,7 +235,7 @@ export function ImageUploadSlot({
 					type='button'
 					onClick={() => setViewing(true)}
 					aria-label={t('common.view_image')}
-					className='absolute bottom-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white transition-opacity sm:opacity-0 sm:group-hover:opacity-100'
+					className='absolute bottom-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70'
 				>
 					<Expand className='size-3.5' />
 				</button>

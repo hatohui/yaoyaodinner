@@ -131,7 +131,9 @@
 		"this_is_me": "这是我",
 		"not_me": "不是我",
 		"you": "你",
-		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。"
+		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。",
+		"edit_note": "编辑备注",
+		"more_actions": "更多操作"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",

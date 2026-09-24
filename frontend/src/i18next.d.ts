@@ -97,6 +97,8 @@ declare module 'react-i18next' {
           not_me: string
           you: string
           pick_yourself: string
+          edit_note: string
+          more_actions: string
         }
         menu: {
           restaurant_name: string

@@ -131,7 +131,9 @@
 		"this_is_me": "Là tôi",
 		"not_me": "Không phải tôi",
 		"you": "Bạn",
-		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn."
+		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn.",
+		"edit_note": "Sửa ghi chú",
+		"more_actions": "Thêm tùy chọn"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",

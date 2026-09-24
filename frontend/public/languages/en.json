@@ -131,7 +131,9 @@
 		"this_is_me": "That's me",
 		"not_me": "Not me",
 		"you": "You",
-		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name."
+		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name.",
+		"edit_note": "Edit note",
+		"more_actions": "More actions"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",

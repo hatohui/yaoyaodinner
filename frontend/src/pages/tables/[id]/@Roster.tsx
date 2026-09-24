@@ -1,7 +1,22 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { X, NotebookText, Crown, UserCheck } from 'lucide-react'
+import {
+	Crown,
+	EllipsisVertical,
+	ImageOff,
+	NotebookText,
+	Trash2,
+	UserCheck,
+	UserX,
+} from 'lucide-react'
 import type { PersonDto, TableDto } from '@/api/model'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { EditableName } from '@/components/common/EditableName'
@@ -94,6 +109,7 @@ export function Roster({ table, editing, onSetHost }: RosterProps) {
 							person={person}
 							table={table}
 							isMe={person.id === me?.id}
+							hasMe={Boolean(mine)}
 							editing={editing}
 							compact={compact}
 							onToggleMe={() => toggleMe(person)}
@@ -144,6 +160,7 @@ function RosterItem({
 	person,
 	table,
 	isMe,
+	hasMe,
 	editing,
 	compact,
 	onToggleMe,
@@ -156,6 +173,7 @@ function RosterItem({
 	person: PersonDto
 	table: TableDto
 	isMe: boolean
+	hasMe: boolean
 	editing: boolean
 	compact: boolean
 	onToggleMe: () => void
@@ -167,6 +185,9 @@ function RosterItem({
 }) {
 	const { t } = useTranslation()
 	const note = person.personalNotes?.[0]
+	const isHost = person.id === table.tableLeaderId
+	const canToggleMe = !person.id.startsWith('temp-')
+	const menuToggleMe = canToggleMe && hasMe
 
 	return (
 		<li
@@ -202,7 +223,7 @@ function RosterItem({
 					<span
 						className={cn(
 							'flex min-w-0 items-center gap-1.5 font-medium text-foreground',
-							compact ? 'shrink-0 text-sm' : 'flex-wrap'
+							compact && 'shrink-0 text-sm'
 						)}
 					>
 						{editing ? (
@@ -211,13 +232,17 @@ function RosterItem({
 							<span className='truncate'>{person.name}</span>
 						)}
 						{isMe && (
-							<span className='rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-inset ring-primary/30'>
+							<span className='shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-inset ring-primary/30'>
 								{t('roster.you')}
 							</span>
 						)}
-						{person.id === table.tableLeaderId && (
-							<span className='rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground'>
-								{t('roster.host')}
+						{isHost && (
+							<span
+								title={t('roster.host')}
+								aria-label={t('roster.host')}
+								className='flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground'
+							>
+								<Crown className='size-3' />
 							</span>
 						)}
 					</span>
@@ -232,7 +257,7 @@ function RosterItem({
 					)}
 				</div>
 				<div className='flex shrink-0 items-center gap-1'>
-					{!person.id.startsWith('temp-') && (
+					{canToggleMe && !hasMe && (
 						<button
 							type='button'
 							onClick={onToggleMe}
@@ -240,48 +265,61 @@ function RosterItem({
 							className={cn(
 								'mr-1 inline-flex items-center gap-1 rounded-full font-medium transition-colors',
 								compact ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs',
-								isMe
-									? 'border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20'
-									: 'border border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+								'border border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 							)}
 						>
-							{!isMe && !compact && <UserCheck className='size-3.5' />}
-							{t(isMe ? 'roster.not_me' : 'roster.this_is_me')}
+							{!compact && <UserCheck className='size-3.5' />}
+							{t('roster.this_is_me')}
 						</button>
 					)}
-					{editing && (
-						<>
-							<button
-								type='button'
-								onClick={() =>
-									onSetHost(
-										person.id === table.tableLeaderId ? null : person.id
-									)
-								}
-								className={cn(
-									'rounded-full p-1 transition-colors',
-									person.id === table.tableLeaderId
-										? 'text-primary hover:bg-accent'
-										: 'text-muted-foreground hover:bg-muted hover:text-foreground'
+					{(editing || menuToggleMe) && (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<button
+									type='button'
+									aria-label={t('roster.more_actions')}
+									className='rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+								>
+									<EllipsisVertical className='size-4' />
+								</button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='end'>
+								{menuToggleMe && (
+									<DropdownMenuItem onSelect={onToggleMe}>
+										{isMe ? <UserX /> : <UserCheck />}
+										{t(isMe ? 'roster.not_me' : 'roster.this_is_me')}
+									</DropdownMenuItem>
 								)}
-							>
-								<Crown className='size-4' />
-							</button>
-							<button
-								type='button'
-								onClick={onNote}
-								className='rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-							>
-								<NotebookText className='size-4' />
-							</button>
-							<button
-								type='button'
-								onClick={onRemove}
-								className='rounded-full p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive'
-							>
-								<X className='size-4' />
-							</button>
-						</>
+								{editing && (
+									<>
+										<DropdownMenuItem
+											onSelect={() => onSetHost(isHost ? null : person.id)}
+										>
+											<Crown />
+											{t(isHost ? 'roster.unset_host' : 'roster.set_host')}
+										</DropdownMenuItem>
+										<DropdownMenuItem onSelect={onNote}>
+											<NotebookText />
+											{t('roster.edit_note')}
+										</DropdownMenuItem>
+										{person.pfpUrl && (
+											<DropdownMenuItem onSelect={() => onPfpChange(null)}>
+												<ImageOff />
+												{t('common.remove_image')}
+											</DropdownMenuItem>
+										)}
+										<DropdownMenuSeparator />
+										<DropdownMenuItem
+											variant='destructive'
+											onSelect={onRemove}
+										>
+											<Trash2 />
+											{t('roster.remove')}
+										</DropdownMenuItem>
+									</>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
 					)}
 				</div>
 			</div>
