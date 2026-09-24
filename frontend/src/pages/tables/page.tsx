@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Map } from 'lucide-react'
-import { Spinner } from '@/components/ui/spinner'
 import { SearchBar } from '@/components/common/SearchBar'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import {
@@ -12,6 +11,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { TableList } from './@TableList'
+import { TableListSkeleton } from './@TableListSkeleton'
 import { useTableSearch } from './@useTableSearch'
 import { useConfig } from '@/hooks/useConfig'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
@@ -80,9 +80,7 @@ export default function TablesPage() {
 			</div>
 
 			{isLoading ? (
-				<div className='flex justify-center py-16'>
-					<Spinner />
-				</div>
+				<TableListSkeleton compact={view === 'compact'} />
 			) : isError ? (
 				<p className='py-16 text-center text-sm text-muted-foreground'>
 					{t('tables.load_error')}
