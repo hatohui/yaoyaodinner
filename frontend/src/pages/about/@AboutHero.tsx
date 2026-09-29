@@ -1,12 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import {
-	ArrowRight,
-	MapPin,
-	PawPrint,
-	Sparkles,
-	UtensilsCrossed,
-} from 'lucide-react'
+import { ArrowRight, MapPin, PawPrint, UtensilsCrossed } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useConfig } from '@/hooks/useConfig'
 
@@ -27,7 +21,7 @@ export function AboutHero() {
 			<div className='mx-auto max-w-5xl px-4 pb-14 pt-32 sm:py-24'>
 				<div className='max-w-md'>
 					<span className='inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary backdrop-blur-sm'>
-						<Sparkles className='size-3.5' />
+						<PawPrint className='size-3.5' />
 						{t('about.hero_tag')}
 					</span>
 

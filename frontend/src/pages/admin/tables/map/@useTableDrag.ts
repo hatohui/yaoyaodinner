@@ -60,7 +60,7 @@ const pointerPercent = (
 
 export function useTableDrag(
 	tables: TableDto[],
-	band: Band,
+	band: Band | null,
 	onPlace: (id: string, x: number, y: number) => void,
 	onRemove: (id: string) => void
 ) {
@@ -68,6 +68,7 @@ export function useTableDrag(
 	const viewportRef = useRef<HTMLDivElement>(null)
 	const trayRef = useRef<HTMLDivElement>(null)
 	const [drag, setDragState] = useState<DragState | null>(null)
+	const [tappedId, setTappedId] = useState<string | null>(null)
 	const dragRef = useRef<DragState | null>(null)
 	const callbacksRef = useRef({ onPlace, onRemove, band })
 
@@ -113,6 +114,7 @@ export function useTableDrag(
 			const pointer = pointerPercent(canvasRef.current, e.clientX, e.clientY)
 			if (!current || !pointer) return
 			const { band } = callbacksRef.current
+			if (!band) return
 			const target: DropTarget = contains(
 				viewportRef.current,
 				e.clientX,
@@ -152,6 +154,10 @@ export function useTableDrag(
 			}
 			if (current?.moved && current.target === 'tray' && current.fromMap) {
 				onRemove(current.id)
+			}
+			if (current) {
+				const tapped = current.id
+				setTappedId(prev => (!current.moved && prev !== tapped ? tapped : null))
 			}
 			setDrag(null)
 		}
@@ -196,6 +202,8 @@ export function useTableDrag(
 		placed,
 		unplaced,
 		draggingId: drag?.id ?? null,
+		tappedId: drag ? null : tappedId,
+		clearTap: () => setTappedId(null),
 		draggingFromMap: !!drag?.moved && drag.fromMap,
 		overTray: drag?.target === 'tray',
 		startDrag,

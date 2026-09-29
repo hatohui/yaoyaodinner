@@ -22,7 +22,6 @@ export function FloorPlanBackdrop({
 	onToggleFloor,
 }: FloorPlanBackdropProps) {
 	const { t } = useTranslation()
-	const openCount = open ? FLOORS.filter(floor => open[floor.id]).length : 0
 
 	return (
 		<>
@@ -35,7 +34,6 @@ export function FloorPlanBackdrop({
 						<FloorHeader
 							floor={floor}
 							tables={tables}
-							disabled={openCount === 1}
 							onToggle={onToggleFloor && (() => onToggleFloor(floor.id))}
 							className='size-full'
 						/>

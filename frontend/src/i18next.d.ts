@@ -235,6 +235,9 @@ declare module 'react-i18next' {
           kitchen: string
           fish_tank: string
           vip_room: string
+          open_table: string
+          legend_open: string
+          legend_full: string
         }
         health: Record<string, string>
         dev: Record<string, unknown>

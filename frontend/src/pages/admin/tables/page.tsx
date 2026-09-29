@@ -35,10 +35,10 @@ export default function AdminTablesPage() {
 				<h1 className='text-xl font-bold text-foreground'>
 					{t('admin.tables.title')}
 				</h1>
-				<div className='flex items-center gap-2'>
+				<div className='flex flex-wrap items-center gap-2'>
 					<Link
 						to='/admin/tables/map'
-						className='inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
+						className='inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground'
 					>
 						<Map className='size-4' />
 						{t('floor_plan.title')}

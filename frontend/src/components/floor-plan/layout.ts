@@ -74,6 +74,7 @@ export const visibleBand = (open: OpenFloors) => {
 	const bands = FLOORS.filter(floor => open[floor.id]).map(
 		floor => FLOOR_BANDS[floor.id]
 	)
+	if (bands.length === 0) return null
 	const top = Math.min(...bands.map(band => band.top))
 	const bottom = Math.max(...bands.map(band => band.bottom))
 	return { top, height: bottom - top }

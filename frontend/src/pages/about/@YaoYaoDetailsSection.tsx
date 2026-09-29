@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Facebook, PartyPopper, Twitch, Twitter } from 'lucide-react'
+import { Facebook, PawPrint, Twitch, Twitter } from 'lucide-react'
 import { PersonaCard } from './@PersonaCard'
 
 export function YaoYaoDetailsSection() {
@@ -9,7 +9,7 @@ export function YaoYaoDetailsSection() {
 		<section className='grid items-center gap-8 md:grid-cols-[1fr_1.15fr] md:gap-12'>
 			<div>
 				<span className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary'>
-					<PartyPopper className='size-3.5' />
+					<PawPrint className='size-3.5' />
 					{t('about.details_tag')}
 				</span>
 

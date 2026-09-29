@@ -173,12 +173,12 @@
 		"pin_required": "กรอกรหัส PIN ของงานเพื่อสั่งอาหาร"
 	},
 	"about": {
-		"hero_tag": "🐾 คืนดินเนอร์สายเฟอร์รี่",
+		"hero_tag": "คืนดินเนอร์สายเฟอร์รี่",
 		"location_title": "หาเราเจอได้ที่นี่",
 		"address_label": "ที่อยู่",
 		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "นำทาง",
-		"details_tag": "🐾 เรื่องวงใน",
+		"details_tag": "เรื่องวงใน",
 		"details_title": "ทำความรู้จักกับ Chee Yao (Yao Yao)",
 		"details_body_1": "หรือที่รู้จักกันในกลุ่มแฟนคลับว่า Aster (归星) @AsterTheDragon โดย Chee Yao เป็นผู้ชวนทุกคนมางานพิเศษนี้!",
 		"details_body_2": "เขาเปรียบเสมือนพายบลูเบอร์รี่ที่ชื่นชอบมะม่วง เป็นผู้ต้อนรับเพื่อนๆ furry ให้มารวมตัวกันเพื่อทานอาหารและสังสรรค์ในมาเลเซีย",
@@ -278,7 +278,10 @@
 		"bar": "บาร์",
 		"kitchen": "ครัว",
 		"fish_tank": "ตู้ปลา",
-		"vip_room": "V4"
+		"vip_room": "V4",
+		"open_table": "เปิดโต๊ะ",
+		"legend_open": "มีที่ว่าง",
+		"legend_full": "เต็มแล้ว"
 	},
 	"dev": {
 		"title": "การทดสอบการพัฒนา",

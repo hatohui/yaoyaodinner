@@ -11,17 +11,20 @@ import {
 	LABEL_H,
 	type FloorId,
 	type OpenFloors,
+	tableDiameter,
 } from '@/components/floor-plan/layout'
 import { cn } from '@/utils/shadcn'
 
 interface AdminFloorPlanCanvasProps {
 	viewportRef: RefObject<HTMLDivElement | null>
 	canvasRef: RefObject<HTMLDivElement | null>
-	band: { top: number; height: number }
+	band: { top: number; height: number } | null
 	open: OpenFloors
 	onToggleFloor: (floor: FloorId) => void
 	tables: TableDto[]
 	draggingId: string | null
+	tappedId: string | null
+	onClearTap: () => void
 	onDragStart: (table: TableDto, e: React.PointerEvent) => void
 }
 
@@ -33,9 +36,12 @@ export function AdminFloorPlanCanvas({
 	onToggleFloor,
 	tables,
 	draggingId,
+	tappedId,
+	onClearTap,
 	onDragStart,
 }: AdminFloorPlanCanvasProps) {
 	const { t } = useTranslation()
+	const tapped = tables.find(table => table.id === tappedId)
 
 	const collapsedBar = (floorId: FloorId) => {
 		const floor = FLOORS.find(f => f.id === floorId)
@@ -55,46 +61,63 @@ export function AdminFloorPlanCanvas({
 	return (
 		<div className='@container mx-auto w-full max-w-3xl'>
 			{collapsedBar('first')}
-			<div
-				ref={viewportRef}
-				style={{ aspectRatio: `${CANVAS_W} / ${band.height}` }}
-				className='relative w-full overflow-hidden'
-			>
+			{band && (
 				<div
-					ref={canvasRef}
-					style={{
-						top: `${(-band.top / band.height) * 100}%`,
-						height: `${(CANVAS_H / band.height) * 100}%`,
-					}}
-					className='absolute inset-x-0 touch-none select-none'
+					ref={viewportRef}
+					style={{ aspectRatio: `${CANVAS_W} / ${band.height}` }}
+					className='relative w-full overflow-hidden'
 				>
-					<FloorPlanBackdrop
-						tables={tables}
-						open={open}
-						onToggleFloor={onToggleFloor}
-					/>
-
-					{tables.map(table => (
-						<FloorPlanTable
-							key={table.id}
-							table={table}
-							onPointerDown={e => onDragStart(table, e)}
-							className={cn(
-								'cursor-grab touch-none',
-								draggingId === table.id
-									? 'z-10 scale-110 cursor-grabbing border-primary shadow-lg'
-									: 'border-primary/40'
-							)}
+					<div
+						ref={canvasRef}
+						style={{
+							top: `${(-band.top / band.height) * 100}%`,
+							height: `${(CANVAS_H / band.height) * 100}%`,
+						}}
+						onPointerDown={e => {
+							if (!(e.target as HTMLElement).closest('button')) onClearTap()
+						}}
+						className='absolute inset-x-0 touch-none select-none'
+					>
+						<FloorPlanBackdrop
+							tables={tables}
+							open={open}
+							onToggleFloor={onToggleFloor}
 						/>
-					))}
-				</div>
 
-				{tables.length === 0 && (
-					<p className='absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-muted-foreground'>
-						{t('floor_plan.empty')}
-					</p>
-				)}
-			</div>
+						{tables.map(table => (
+							<FloorPlanTable
+								key={table.id}
+								table={table}
+								onPointerDown={e => onDragStart(table, e)}
+								className={cn(
+									'cursor-grab touch-none',
+									draggingId === table.id
+										? 'z-10 scale-110 cursor-grabbing border-primary shadow-lg'
+										: 'border-primary/40'
+								)}
+							/>
+						))}
+
+						{tapped && (
+							<span
+								style={{
+									left: `${tapped.x}%`,
+									top: `calc(${tapped.y}% - ${tableDiameter(tapped.capacity) / 2}cqw)`,
+								}}
+								className='pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-2 py-1 text-xs font-semibold whitespace-nowrap text-background shadow'
+							>
+								{tapped.name}
+							</span>
+						)}
+					</div>
+
+					{tables.length === 0 && (
+						<p className='absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-muted-foreground'>
+							{t('floor_plan.empty')}
+						</p>
+					)}
+				</div>
+			)}
 			{collapsedBar('ground')}
 		</div>
 	)

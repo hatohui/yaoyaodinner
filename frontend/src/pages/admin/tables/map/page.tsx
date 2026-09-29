@@ -38,7 +38,7 @@ export default function AdminFloorPlanPage() {
 				{t('admin.tables.title')}
 			</Link>
 
-			<div className='flex items-start justify-between gap-3'>
+			<div className='flex flex-col items-start gap-3 sm:flex-row sm:justify-between'>
 				<div>
 					<h1 className='text-xl font-bold text-foreground'>
 						{t('floor_plan.title')}
@@ -70,6 +70,8 @@ export default function AdminFloorPlanPage() {
 						}
 						tables={drag.placed}
 						draggingId={drag.draggingId}
+						tappedId={drag.tappedId}
+						onClearTap={drag.clearTap}
 						onDragStart={drag.startDrag}
 					/>
 					<UnplacedTray

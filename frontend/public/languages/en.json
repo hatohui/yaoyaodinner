@@ -173,12 +173,12 @@
 		"pin_required": "Enter the event PIN to order"
 	},
 	"about": {
-		"hero_tag": "🐾 A furry dinner night",
+		"hero_tag": "A furry dinner night",
 		"location_title": "Where to find us",
 		"address_label": "Address",
 		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "Get directions",
-		"details_tag": "🐾 The tea",
+		"details_tag": "The tea",
 		"details_title": "Meet Chee Yao (Yao Yao)",
 		"details_body_1": "Also known in the fandom as Aster (归星) @AsterTheDragon, Chee Yao is the one inviting everyone to this special event!",
 		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes fellow furs to gather for a great night of food and hanging out in Malaysia.",
@@ -278,7 +278,10 @@
 		"bar": "Bar",
 		"kitchen": "Kitchen",
 		"fish_tank": "Fish tank",
-		"vip_room": "V4"
+		"vip_room": "V4",
+		"open_table": "Open table",
+		"legend_open": "Seats available",
+		"legend_full": "Full"
 	},
 	"dev": {
 		"title": "Development Testing",

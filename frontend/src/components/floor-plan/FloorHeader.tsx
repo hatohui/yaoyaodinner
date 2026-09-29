@@ -9,7 +9,6 @@ interface FloorHeaderProps {
 	floor: Floor
 	tables: TableDto[]
 	open?: boolean
-	disabled?: boolean
 	onToggle?: () => void
 	className?: string
 	style?: CSSProperties
@@ -19,7 +18,6 @@ export function FloorHeader({
 	floor,
 	tables,
 	open = true,
-	disabled = false,
 	onToggle,
 	className,
 	style,
@@ -57,13 +55,9 @@ export function FloorHeader({
 		<button
 			type='button'
 			aria-expanded={open}
-			disabled={disabled}
 			onClick={onToggle}
 			style={style}
-			className={cn(
-				base,
-				'rounded-[1cqw] transition-colors hover:bg-muted/60 disabled:cursor-default disabled:hover:bg-transparent'
-			)}
+			className={cn(base, 'rounded-[1cqw] transition-colors hover:bg-muted/60')}
 		>
 			{content}
 		</button>

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { TableDto } from '@/api/model'
 import { FloorPlanBackdrop } from '@/components/floor-plan/FloorPlanBackdrop'
 import { FloorPlanTable } from '@/components/floor-plan/FloorPlanTable'
+import { useCanHover } from '@/hooks/useCanHover'
 import { useGuest } from '@/hooks/useGuest'
 import { cn } from '@/utils/shadcn'
 import { TableHoverDetails } from './@TableHoverDetails'
@@ -15,6 +16,7 @@ export function FloorPlanCanvas({ tables }: FloorPlanCanvasProps) {
 	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const myTableId = useGuest(s => s.me?.tableId)
+	const canHover = useCanHover()
 
 	return (
 		<div className='@container relative aspect-[872/1000] w-full overflow-hidden'>
@@ -27,7 +29,9 @@ export function FloorPlanCanvas({ tables }: FloorPlanCanvasProps) {
 						<FloorPlanTable
 							table={table}
 							isMine={isMine}
-							onClick={() => navigate(`/tables/${table.id}`)}
+							onClick={
+								canHover ? () => navigate(`/tables/${table.id}`) : undefined
+							}
 							className={cn(
 								'hover:z-10 hover:scale-105',
 								table.seated >= table.capacity
