@@ -173,12 +173,12 @@
 		"pin_required": "Nhập mã PIN sự kiện để đặt món"
 	},
 	"about": {
-		"hero_tag": "🐾 Một đêm tiệc furry",
+		"hero_tag": "Một đêm tiệc furry",
 		"location_title": "Tìm chúng tôi ở đâu",
 		"address_label": "Địa chỉ",
 		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "Chỉ đường",
-		"details_tag": "🐾 Chuyện hậu trường",
+		"details_tag": "Chuyện hậu trường",
 		"details_title": "Gặp gỡ Chee Yao (Yao Yao)",
 		"details_body_1": "Còn được biết đến trong fandom với tên Aster (归星) @AsterTheDragon, Chee Yao là người mời mọi người đến sự kiện đặc biệt này!",
 		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón những người bạn furry cùng tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia.",
@@ -266,12 +266,27 @@
 		"anonymous": "Ẩn danh",
 		"sort_recent": "Mới nhất",
 		"sort_top": "Nổi bật",
-		"empty": "Chưa có góp ý nào - hãy là người đầu tiên"
+		"empty": "Chưa có góp ý nào - hãy là người đầu tiên",
+		"delete": "Xoá",
+		"delete_title": "Xoá góp ý này?",
+		"delete_desc": "Góp ý sẽ bị gỡ khỏi bảng cho mọi người. Không thể hoàn tác.",
+		"deleted": "Đã xoá góp ý",
+		"delete_failed": "Không xoá được góp ý, vui lòng thử lại"
 	},
 	"floor_plan": {
 		"title": "Sơ đồ bàn",
 		"view_map": "Xem sơ đồ",
-		"empty": "Chưa có bàn nào được đặt trên sơ đồ"
+		"empty": "Chưa có bàn nào được đặt trên sơ đồ",
+		"first_floor": "Tầng 1",
+		"ground_floor": "Tầng trệt",
+		"floor_summary": "{{tables}} bàn · {{pax}} khách",
+		"bar": "Quầy bar",
+		"kitchen": "Bếp",
+		"fish_tank": "Bể cá",
+		"vip_room": "V4",
+		"open_table": "Mở bàn",
+		"legend_open": "Còn chỗ",
+		"legend_full": "Đã đầy"
 	},
 	"dev": {
 		"title": "Kiểm Tra Phát Triển",
@@ -400,7 +415,11 @@
 			"rename_failed": "Không thể đổi tên bàn"
 		},
 		"floor_plan": {
-			"drag_hint": "Kéo bàn vào đúng vị trí trên sơ đồ - vị trí sẽ tự lưu khi bạn thả."
+			"drag_hint": "Kéo bàn vào đúng vị trí trên sơ đồ - vị trí sẽ tự lưu khi bạn thả.",
+			"save_error": "Không lưu được vị trí của {{name}} - đã đưa về chỗ cũ",
+			"unplaced": "Chưa có trên sơ đồ",
+			"unplaced_hint": "Kéo các bàn này vào sơ đồ",
+			"drop_to_remove": "Thả vào đây để gỡ bàn khỏi sơ đồ"
 		},
 		"people": {
 			"title": "Mọi người",

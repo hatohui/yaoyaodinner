@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { prisma } from '../../libs/prisma';
 import { v4 as uuidv4 } from 'uuid';
@@ -93,5 +97,12 @@ export class FeedbackService {
       create: { feedbackId, emoji: value, count: amount },
     });
     return reaction;
+  }
+
+  async remove(id: string) {
+    const existing = await prisma.feedback.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Feedback not found');
+    await prisma.feedback.delete({ where: { id } });
+    return { id };
   }
 }

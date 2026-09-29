@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Spinner } from '@/components/ui/spinner'
 import { PaginationBar } from '@/components/common/PaginationBar'
+import { useDeleteFeedback } from '@/hooks/useDeleteFeedback'
 import { cn } from '@/utils/shadcn'
 import { AdminFeedbackCard } from './@AdminFeedbackCard'
 import { useAdminFeedback } from './@useAdminFeedback'
@@ -8,6 +9,7 @@ import { useAdminFeedback } from './@useAdminFeedback'
 export default function AdminFeedbackPage() {
 	const { t } = useTranslation()
 	const { sort, setSort, pagination, feedback, isLoading } = useAdminFeedback()
+	const { deleteFeedback } = useDeleteFeedback()
 
 	return (
 		<div className='flex flex-col gap-4'>
@@ -48,7 +50,11 @@ export default function AdminFeedbackPage() {
 			) : (
 				<div className='grid gap-3 sm:grid-cols-2'>
 					{feedback.map(item => (
-						<AdminFeedbackCard key={item.id} item={item} />
+						<AdminFeedbackCard
+							key={item.id}
+							item={item}
+							onDelete={() => deleteFeedback(item.id)}
+						/>
 					))}
 				</div>
 			)}

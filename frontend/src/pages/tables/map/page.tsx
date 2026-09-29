@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { ArrowLeft } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { FloorPlanCanvas } from './@FloorPlanCanvas'
+import { FloorPlanLegend } from './@FloorPlanLegend'
 import { useFloorPlan } from './@useFloorPlan'
 
 export default function FloorPlanPage() {
@@ -32,7 +33,10 @@ export default function FloorPlanPage() {
 					{t('tables.load_error')}
 				</p>
 			) : (
-				<FloorPlanCanvas tables={tables} />
+				<>
+					<FloorPlanCanvas tables={tables} />
+					<FloorPlanLegend />
+				</>
 			)}
 		</div>
 	)

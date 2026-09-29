@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import type { FeedbackItemDto } from '@/api/model'
+import { DeleteFeedbackButton } from '@/components/common/DeleteFeedbackButton'
 
 interface AdminFeedbackCardProps {
 	item: FeedbackItemDto
+	onDelete: () => void
 }
 
-export function AdminFeedbackCard({ item }: AdminFeedbackCardProps) {
+export function AdminFeedbackCard({ item, onDelete }: AdminFeedbackCardProps) {
 	const { t } = useTranslation()
 
 	return (
@@ -14,11 +16,16 @@ export function AdminFeedbackCard({ item }: AdminFeedbackCardProps) {
 				<span className='text-sm font-semibold text-foreground'>
 					{item.by || t('feedback.anonymous')}
 				</span>
-				{item.reactionTotal > 0 && (
-					<span className='text-xs text-muted-foreground'>
-						{t('admin.feedback.reaction_count', { count: item.reactionTotal })}
-					</span>
-				)}
+				<div className='flex items-center gap-1'>
+					{item.reactionTotal > 0 && (
+						<span className='text-xs text-muted-foreground'>
+							{t('admin.feedback.reaction_count', {
+								count: item.reactionTotal,
+							})}
+						</span>
+					)}
+					<DeleteFeedbackButton onDelete={onDelete} />
+				</div>
 			</div>
 			{item.content && (
 				<p className='text-sm text-foreground'>{item.content}</p>

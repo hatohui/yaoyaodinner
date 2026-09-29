@@ -223,8 +223,27 @@ declare module 'react-i18next' {
           sort_recent: string
           sort_top: string
           empty: string
+          delete: string
+          delete_title: string
+          delete_desc: string
+          deleted: string
+          delete_failed: string
         }
-        floor_plan: { title: string; view_map: string; empty: string }
+        floor_plan: {
+          title: string
+          view_map: string
+          empty: string
+          first_floor: string
+          ground_floor: string
+          floor_summary: string
+          bar: string
+          kitchen: string
+          fish_tank: string
+          vip_room: string
+          open_table: string
+          legend_open: string
+          legend_full: string
+        }
         health: Record<string, string>
         dev: Record<string, unknown>
         admin: {
@@ -326,7 +345,13 @@ declare module 'react-i18next' {
             move_to_staging: string
             moved_to_staging: string
           }
-          floor_plan: { drag_hint: string }
+          floor_plan: {
+            drag_hint: string
+            save_error: string
+            unplaced: string
+            unplaced_hint: string
+            drop_to_remove: string
+          }
           people: {
             title: string
             search_placeholder: string

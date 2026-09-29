@@ -328,3 +328,58 @@ const {mutation: mutationOptions} = options ?
       > => {
       return useMutation(getReactToFeedbackMutationOptions(options), queryClient);
     }
+    export const deleteFeedback = (
+    id: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/feedback/${id}`, method: 'DELETE', signal
+    },
+      );
+    }
+
+
+
+export const getDeleteFeedbackMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFeedback>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteFeedback>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteFeedback'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteFeedback>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteFeedback(id,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteFeedbackMutationResult = NonNullable<Awaited<ReturnType<typeof deleteFeedback>>>
+
+    export type DeleteFeedbackMutationError = unknown
+
+    export const useDeleteFeedback = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFeedback>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteFeedback>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteFeedbackMutationOptions(options), queryClient);
+    }

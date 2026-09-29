@@ -7,6 +7,8 @@
  */
 
 export interface TablePositionDto {
-  x: number;
-  y: number;
+  /** @nullable */
+  x: number | null;
+  /** @nullable */
+  y: number | null;
 }

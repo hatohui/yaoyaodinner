@@ -3,15 +3,17 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { FeedbackItemDto } from '@/api/model'
 import { useConfig } from '@/hooks/useConfig'
+import { DeleteFeedbackButton } from '@/components/common/DeleteFeedbackButton'
 import { ViewableImage } from '@/components/common/ViewableImage'
 import { cn } from '@/utils/shadcn'
 
 interface FeedbackCardProps {
 	item: FeedbackItemDto
 	onReact: (emoji: string) => void
+	onDelete?: () => void
 }
 
-export function FeedbackCard({ item, onReact }: FeedbackCardProps) {
+export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
 	const { t, i18n } = useTranslation()
 	const { suggestedReactions } = useConfig()
 
@@ -21,12 +23,15 @@ export function FeedbackCard({ item, onReact }: FeedbackCardProps) {
 				<span className='text-sm font-semibold text-foreground'>
 					{item.by || t('feedback.anonymous')}
 				</span>
-				<span className='text-xs text-muted-foreground'>
-					{new Intl.DateTimeFormat(i18n.language, {
-						dateStyle: 'medium',
-						timeStyle: 'short',
-					}).format(new Date(item.createdAt))}
-				</span>
+				<div className='flex items-center gap-1'>
+					<span className='text-xs text-muted-foreground'>
+						{new Intl.DateTimeFormat(i18n.language, {
+							dateStyle: 'medium',
+							timeStyle: 'short',
+						}).format(new Date(item.createdAt))}
+					</span>
+					{onDelete && <DeleteFeedbackButton onDelete={onDelete} />}
+				</div>
 			</div>
 			{item.content && (
 				<div

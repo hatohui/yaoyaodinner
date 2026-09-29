@@ -312,7 +312,7 @@ export class TableService {
   }
 
   /** Positions live on the slot, so the floor plan survives publishing. */
-  async updatePosition(id: string, x: number, y: number) {
+  async updatePosition(id: string, x: number | null, y: number | null) {
     const table = await this.findOne(id);
     if (!table.slotId) throw new BadRequestException("Table has no slot");
     await this.slots.updatePosition(table.slotId, x, y);

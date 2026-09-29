@@ -4,6 +4,8 @@ import { PaginationBar } from '@/components/common/PaginationBar'
 import { FeedbackForm } from './@FeedbackForm'
 import { FeedbackCard } from './@FeedbackCard'
 import { useFeedback } from './@useFeedback'
+import { useDeleteFeedback } from '@/hooks/useDeleteFeedback'
+import { useEditMode } from '@/hooks/useEditMode'
 import { cn } from '@/utils/shadcn'
 
 export default function FeedbackPage() {
@@ -18,6 +20,8 @@ export default function FeedbackPage() {
 		react,
 		isPosting,
 	} = useFeedback()
+	const { editing } = useEditMode()
+	const { deleteFeedback } = useDeleteFeedback()
 
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
@@ -64,6 +68,7 @@ export default function FeedbackPage() {
 								key={item.id}
 								item={item}
 								onReact={emoji => react(item.id, emoji)}
+								onDelete={editing ? () => deleteFeedback(item.id) : undefined}
 							/>
 						))}
 					</div>

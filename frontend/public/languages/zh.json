@@ -173,12 +173,12 @@
 		"pin_required": "请输入活动PIN码以下单"
 	},
 	"about": {
-		"hero_tag": "🐾 一场兽迷聚餐之夜",
+		"hero_tag": "一场兽迷聚餐之夜",
 		"location_title": "我们在这里",
 		"address_label": "地址",
 		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "获取路线",
-		"details_tag": "🐾 内幕消息",
+		"details_tag": "内幕消息",
 		"details_title": "认识一下 Chee Yao (Yao Yao)",
 		"details_body_1": "他在兽圈里也被称为 Aster（归星）@AsterTheDragon。正是 Chee Yao 邀请大家参加这次特别的聚会！",
 		"details_body_2": "他被称为喜欢芒果的蓝莓派，欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。",
@@ -266,12 +266,27 @@
 		"anonymous": "匿名",
 		"sort_recent": "最新",
 		"sort_top": "最热",
-		"empty": "还没有反馈 - 来做第一个吧"
+		"empty": "还没有反馈 - 来做第一个吧",
+		"delete": "删除",
+		"delete_title": "删除这条留言？",
+		"delete_desc": "它将从留言墙上对所有人移除，且无法撤销。",
+		"deleted": "留言已删除",
+		"delete_failed": "删除失败，请重试"
 	},
 	"floor_plan": {
 		"title": "平面图",
 		"view_map": "查看平面图",
-		"empty": "平面图上还没有餐桌"
+		"empty": "平面图上还没有餐桌",
+		"first_floor": "一楼",
+		"ground_floor": "地面层",
+		"floor_summary": "{{tables}} 桌 · {{pax}} 位",
+		"bar": "吧台",
+		"kitchen": "厨房",
+		"fish_tank": "鱼缸",
+		"vip_room": "V4",
+		"open_table": "打开餐桌",
+		"legend_open": "有空位",
+		"legend_full": "已满"
 	},
 	"dev": {
 		"title": "开发测试",
@@ -400,7 +415,11 @@
 			"rename_failed": "无法重命名餐桌"
 		},
 		"floor_plan": {
-			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。"
+			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。",
+			"save_error": "无法保存 {{name}} 的位置 - 已移回原处",
+			"unplaced": "尚未放置在平面图上",
+			"unplaced_hint": "将这些餐桌拖到平面图上",
+			"drop_to_remove": "拖到这里即可从平面图移除"
 		},
 		"people": {
 			"title": "人员",

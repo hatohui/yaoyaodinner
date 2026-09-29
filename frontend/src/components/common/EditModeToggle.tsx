@@ -16,7 +16,7 @@ export function EditModeToggle({ className }: { className?: string }) {
 			aria-pressed={editing}
 			title={t('admin.edit_mode.label')}
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+				'inline-flex items-center gap-1.5 rounded-full border p-2 text-xs font-medium whitespace-nowrap transition-colors sm:px-3 sm:py-1.5',
 				editing
 					? 'border-primary bg-primary text-primary-foreground'
 					: 'border-border/60 text-muted-foreground hover:text-foreground',
@@ -24,7 +24,9 @@ export function EditModeToggle({ className }: { className?: string }) {
 			)}
 		>
 			<PencilLine className='size-3.5' />
-			{editing ? t('admin.edit_mode.on') : t('admin.edit_mode.label')}
+			<span className='sr-only sm:not-sr-only'>
+				{editing ? t('admin.edit_mode.on') : t('admin.edit_mode.label')}
+			</span>
 		</button>
 	)
 }
