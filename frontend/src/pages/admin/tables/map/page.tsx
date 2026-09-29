@@ -6,7 +6,6 @@ import { Spinner } from '@/components/ui/spinner'
 import { type OpenFloors, visibleBand } from '@/components/floor-plan/layout'
 import { CreateTableDialog } from '../@CreateTableDialog'
 import { AdminFloorPlanCanvas } from './@AdminFloorPlanCanvas'
-import { FloorToggles } from './@FloorToggles'
 import { UnplacedTray } from './@UnplacedTray'
 import { useAdminFloorPlan } from './@useAdminFloorPlan'
 import { useTableDrag } from './@useTableDrag'
@@ -61,16 +60,14 @@ export default function AdminFloorPlanPage() {
 				</p>
 			) : (
 				<>
-					<FloorToggles
-						open={openFloors}
-						onToggle={floor =>
-							setOpenFloors(prev => ({ ...prev, [floor]: !prev[floor] }))
-						}
-					/>
 					<AdminFloorPlanCanvas
 						viewportRef={drag.viewportRef}
 						canvasRef={drag.canvasRef}
 						band={band}
+						open={openFloors}
+						onToggleFloor={floor =>
+							setOpenFloors(prev => ({ ...prev, [floor]: !prev[floor] }))
+						}
 						tables={drag.placed}
 						draggingId={drag.draggingId}
 						onDragStart={drag.startDrag}
