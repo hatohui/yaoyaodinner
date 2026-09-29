@@ -164,9 +164,8 @@ async function seedEvent() {
 }
 
 async function seedTables() {
-  const tables: { name: string; capacity: number }[] = readJson(
-    path.join(DATA_DIR, 'tables.json'),
-  );
+  const tables: { name: string; capacity: number; x: number; y: number }[] =
+    readJson(path.join(DATA_DIR, 'tables.json'));
 
   // Slots are the permanent floor plan; a Table is this event's seating at one.
   for (let i = 0; i < tables.length; i++) {
@@ -176,8 +175,15 @@ async function seedTables() {
 
     await prisma.tableSlot.upsert({
       where: { id: slotId },
-      update: { no, name: t.name, defaultCapacity: t.capacity },
-      create: { id: slotId, no, name: t.name, defaultCapacity: t.capacity },
+      update: { no, name: t.name, defaultCapacity: t.capacity, x: t.x, y: t.y },
+      create: {
+        id: slotId,
+        no,
+        name: t.name,
+        defaultCapacity: t.capacity,
+        x: t.x,
+        y: t.y,
+      },
     });
 
     const id = `${SEED_EVENT_ID}-table-${no}`;

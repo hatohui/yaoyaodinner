@@ -93,7 +93,7 @@ export class TableSlotService {
     });
   }
 
-  async updatePosition(id: string, x: number, y: number) {
+  async updatePosition(id: string, x: number | null, y: number | null) {
     await this.findOne(id);
     return prisma.tableSlot.update({ where: { id }, data: { x, y } });
   }

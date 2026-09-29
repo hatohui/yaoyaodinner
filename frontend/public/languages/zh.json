@@ -271,7 +271,14 @@
 	"floor_plan": {
 		"title": "平面图",
 		"view_map": "查看平面图",
-		"empty": "平面图上还没有餐桌"
+		"empty": "平面图上还没有餐桌",
+		"first_floor": "一楼",
+		"ground_floor": "地面层",
+		"floor_summary": "{{tables}} 桌 · {{pax}} 位",
+		"bar": "吧台",
+		"kitchen": "厨房",
+		"fish_tank": "鱼缸",
+		"vip_room": "V4"
 	},
 	"dev": {
 		"title": "开发测试",
@@ -400,7 +407,11 @@
 			"rename_failed": "无法重命名餐桌"
 		},
 		"floor_plan": {
-			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。"
+			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。",
+			"save_error": "无法保存 {{name}} 的位置 - 已移回原处",
+			"unplaced": "尚未放置在平面图上",
+			"unplaced_hint": "将这些餐桌拖到平面图上",
+			"drop_to_remove": "拖到这里即可从平面图移除"
 		},
 		"people": {
 			"title": "人员",

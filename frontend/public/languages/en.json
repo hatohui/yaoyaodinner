@@ -271,7 +271,14 @@
 	"floor_plan": {
 		"title": "Floor plan",
 		"view_map": "Map view",
-		"empty": "No tables placed on the map yet"
+		"empty": "No tables placed on the map yet",
+		"first_floor": "First floor",
+		"ground_floor": "Ground floor",
+		"floor_summary": "{{tables}} tables · {{pax}} pax",
+		"bar": "Bar",
+		"kitchen": "Kitchen",
+		"fish_tank": "Fish tank",
+		"vip_room": "V4"
 	},
 	"dev": {
 		"title": "Development Testing",
@@ -400,7 +407,11 @@
 			"rename_failed": "Could not rename the table"
 		},
 		"floor_plan": {
-			"drag_hint": "Drag a table onto its spot on the floor - positions save as you drop them."
+			"drag_hint": "Drag a table onto its spot on the floor - positions save as you drop them.",
+			"save_error": "Couldn't save {{name}}'s position - moved it back",
+			"unplaced": "Not on the map yet",
+			"unplaced_hint": "Drag these onto the floor plan",
+			"drop_to_remove": "Drop here to take it off the map"
 		},
 		"people": {
 			"title": "People",
