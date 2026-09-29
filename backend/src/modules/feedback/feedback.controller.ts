@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Post,
   Body,
@@ -77,5 +78,12 @@ export class FeedbackController {
   @ApiResponse({ status: 201, type: FeedbackReactionDto })
   react(@Param('id') id: string, @Body() dto: ReactDto) {
     return this.feedback.react(id, dto.emoji, dto.count);
+  }
+
+  @Delete(':id')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'deleteFeedback' })
+  remove(@Param('id') id: string) {
+    return this.feedback.remove(id);
   }
 }

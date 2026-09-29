@@ -223,6 +223,11 @@ declare module 'react-i18next' {
           sort_recent: string
           sort_top: string
           empty: string
+          delete: string
+          delete_title: string
+          delete_desc: string
+          deleted: string
+          delete_failed: string
         }
         floor_plan: {
           title: string

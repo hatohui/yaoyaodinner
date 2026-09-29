@@ -266,7 +266,12 @@
 		"anonymous": "匿名",
 		"sort_recent": "最新",
 		"sort_top": "最热",
-		"empty": "还没有反馈 - 来做第一个吧"
+		"empty": "还没有反馈 - 来做第一个吧",
+		"delete": "删除",
+		"delete_title": "删除这条留言？",
+		"delete_desc": "它将从留言墙上对所有人移除，且无法撤销。",
+		"deleted": "留言已删除",
+		"delete_failed": "删除失败，请重试"
 	},
 	"floor_plan": {
 		"title": "平面图",

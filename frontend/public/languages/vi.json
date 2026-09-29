@@ -266,7 +266,12 @@
 		"anonymous": "Ẩn danh",
 		"sort_recent": "Mới nhất",
 		"sort_top": "Nổi bật",
-		"empty": "Chưa có góp ý nào - hãy là người đầu tiên"
+		"empty": "Chưa có góp ý nào - hãy là người đầu tiên",
+		"delete": "Xoá",
+		"delete_title": "Xoá góp ý này?",
+		"delete_desc": "Góp ý sẽ bị gỡ khỏi bảng cho mọi người. Không thể hoàn tác.",
+		"deleted": "Đã xoá góp ý",
+		"delete_failed": "Không xoá được góp ý, vui lòng thử lại"
 	},
 	"floor_plan": {
 		"title": "Sơ đồ bàn",

@@ -266,7 +266,12 @@
 		"anonymous": "Anonymous",
 		"sort_recent": "Recent",
 		"sort_top": "Top",
-		"empty": "No feedback yet - be the first to post"
+		"empty": "No feedback yet - be the first to post",
+		"delete": "Delete",
+		"delete_title": "Delete this feedback?",
+		"delete_desc": "It will be removed from the wall for everyone. This can't be undone.",
+		"deleted": "Feedback deleted",
+		"delete_failed": "Couldn't delete feedback, please try again"
 	},
 	"floor_plan": {
 		"title": "Floor plan",
