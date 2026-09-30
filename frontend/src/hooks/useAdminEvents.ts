@@ -7,6 +7,7 @@ import {
 	useUpdateEvent,
 	useRerollEventPin,
 	useActivateEvent,
+	useDeleteEvent,
 	getGetActiveEventQueryKey,
 	getGetPastEventsQueryKey,
 } from '@/api/events/events'
@@ -77,6 +78,17 @@ export function useAdminEvents() {
 		},
 	})
 
+	const { mutate: deleteMutate, isPending: deleting } = useDeleteEvent({
+		mutation: {
+			onSuccess: () => {
+				setEventId(null)
+				qc.invalidateQueries()
+				toast.success(t('admin.event.deleted'))
+			},
+			onError,
+		},
+	})
+
 	return {
 		events,
 		activeEvent: activeEvent ?? null,
@@ -96,5 +108,7 @@ export function useAdminEvents() {
 		rerolling,
 		activate: (id: string) => activateMutate({ id }),
 		activating,
+		remove: (id: string) => deleteMutate({ id }),
+		deleting,
 	}
 }

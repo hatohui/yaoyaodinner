@@ -353,6 +353,61 @@ const {mutation: mutationOptions} = options ?
       > => {
       return useMutation(getUpdateEventMutationOptions(options), queryClient);
     }
+    export const deleteEvent = (
+    id: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/events/${id}`, method: 'DELETE', signal
+    },
+      );
+    }
+
+
+
+export const getDeleteEventMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteEvent'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteEvent>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteEvent(id,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteEventMutationResult = NonNullable<Awaited<ReturnType<typeof deleteEvent>>>
+
+    export type DeleteEventMutationError = unknown
+
+    export const useDeleteEvent = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteEvent>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteEventMutationOptions(options), queryClient);
+    }
     export const publishEvent = (
     publishEventDto: PublishEventDto,
  signal?: AbortSignal

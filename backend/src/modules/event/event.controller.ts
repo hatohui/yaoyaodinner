@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   UseGuards,
@@ -78,5 +79,11 @@ export class EventController {
   @ApiResponse({ status: 201, type: EventDto })
   activate(@Param('id') id: string) {
     return this.events.activate(id);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ operationId: 'deleteEvent' })
+  remove(@Param('id') id: string) {
+    return this.events.remove(id);
   }
 }

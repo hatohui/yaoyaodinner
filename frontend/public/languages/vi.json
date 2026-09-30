@@ -89,8 +89,8 @@
 	},
 	"access": {
 		"back": "Quay lại",
-		"enter_pin": "Nhập mã PIN sự kiện",
-		"subtitle": "Mở khóa bàn & đặt món tối nay",
+		"enter_pin": "Nhập mã PIN để truy cập",
+		"subtitle": "Nhập đúng mã PIN để tiếp tục",
 		"unlock": "Mở khóa",
 		"unlocking": "Đang mở khóa…",
 		"invalid_pin": "Mã PIN không đúng",
@@ -528,7 +528,11 @@
 			"reroll_confirm_title": "Tạo mã PIN mới?",
 			"reroll_confirm_body": "Mã PIN {{pin}} sẽ ngừng hoạt động. Khách đã lưu mã cũ phải nhập mã mới.",
 			"activate_confirm_title": "Chuyển sự kiện này sang đang diễn ra?",
-			"activate_confirm_body": "Khách sẽ thấy các bàn của \"{{name}}\" và cần mã PIN {{pin}}. Sự kiện đang diễn ra hiện tại sẽ thành sự kiện đã qua."
+			"activate_confirm_body": "Khách sẽ thấy các bàn của \"{{name}}\" và cần mã PIN {{pin}}. Sự kiện đang diễn ra hiện tại sẽ thành sự kiện đã qua.",
+			"delete": "Xóa sự kiện",
+			"delete_confirm_title": "Xóa sự kiện này?",
+			"delete_confirm_body": "\"{{name}}\" cùng toàn bộ bàn, người, đơn hàng và phản hồi sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"deleted": "Đã xóa sự kiện"
 		},
 		"edit_mode": {
 			"label": "Chế độ chỉnh sửa",

@@ -266,6 +266,10 @@ declare module 'react-i18next' {
             reroll_confirm_body: string
             activate_confirm_title: string
             activate_confirm_body: string
+            delete: string
+            delete_confirm_title: string
+            delete_confirm_body: string
+            deleted: string
           }
           edit_mode: {
             label: string
