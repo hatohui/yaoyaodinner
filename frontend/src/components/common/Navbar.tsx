@@ -1,7 +1,15 @@
 import { useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { FlaskConical, Menu, PawPrint, ShieldCheck } from 'lucide-react'
+import {
+	Armchair,
+	FlaskConical,
+	Info,
+	Menu,
+	MessageSquareHeart,
+	ShieldCheck,
+	UtensilsCrossed,
+} from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageSelector } from './LanguageSelector'
 import { EditModeToggle } from './EditModeToggle'
@@ -44,10 +52,20 @@ export function Navbar() {
 	}
 
 	const navLinks = [
-		{ to: '/about', label: t('nav.about'), show: true },
-		{ to: '/menu', label: t('nav.menu'), show: ordering },
-		{ to: '/tables', label: t('nav.tables'), show: tables },
-		{ to: '/feedback', label: t('nav.feedback'), show: feedbackWall },
+		{ to: '/about', label: t('nav.about'), icon: Info, show: true },
+		{
+			to: '/menu',
+			label: t('nav.menu'),
+			icon: UtensilsCrossed,
+			show: ordering,
+		},
+		{ to: '/tables', label: t('nav.tables'), icon: Armchair, show: tables },
+		{
+			to: '/feedback',
+			label: t('nav.feedback'),
+			icon: MessageSquareHeart,
+			show: feedbackWall,
+		},
 		{
 			to: '/dev',
 			label: t('nav.dev'),
@@ -96,7 +114,7 @@ export function Navbar() {
 									: 'text-muted-foreground hover:bg-accent hover:text-foreground'
 							)}
 						>
-							{link.icon && <link.icon className='size-3.5' />}
+							<link.icon className='size-3.5' />
 							{link.label}
 						</Link>
 					))}
@@ -141,7 +159,7 @@ export function Navbar() {
 												: 'text-muted-foreground hover:bg-accent hover:text-foreground'
 										)}
 									>
-										{link.icon && <link.icon className='size-4' />}
+										<link.icon className='size-4' />
 										{link.label}
 									</Link>
 								))}
