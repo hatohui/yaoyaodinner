@@ -89,8 +89,8 @@
 	},
 	"access": {
 		"back": "返回",
-		"enter_pin": "输入活动 PIN 码",
-		"subtitle": "解锁今晚的餐桌与点餐",
+		"enter_pin": "输入 PIN 码以访问",
+		"subtitle": "请输入正确的 PIN 码以继续",
 		"unlock": "解锁",
 		"unlocking": "解锁中…",
 		"invalid_pin": "PIN 码不正确",
@@ -528,7 +528,11 @@
 			"reroll_confirm_title": "生成新的 PIN 码？",
 			"reroll_confirm_body": "PIN 码 {{pin}} 将失效。已保存该码的客人需要输入新的 PIN 码。",
 			"activate_confirm_title": "将此活动设为进行中？",
-			"activate_confirm_body": "客人将看到“{{name}}”的餐桌，并需要 PIN 码 {{pin}}。当前进行中的活动将变为过往活动。"
+			"activate_confirm_body": "客人将看到“{{name}}”的餐桌，并需要 PIN 码 {{pin}}。当前进行中的活动将变为过往活动。",
+			"delete": "删除活动",
+			"delete_confirm_title": "删除此活动？",
+			"delete_confirm_body": "“{{name}}”及其所有餐桌、人员、订单和反馈将被永久删除，此操作无法撤销。",
+			"deleted": "活动已删除"
 		},
 		"edit_mode": {
 			"label": "编辑模式",

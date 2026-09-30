@@ -157,6 +157,14 @@ export class EventService {
     return updated;
   }
 
+  async remove(id: string) {
+    const event = await prisma.event.findUnique({ where: { id } });
+    if (!event) throw new NotFoundException('Event not found');
+
+    await prisma.event.delete({ where: { id } });
+    if (event.isActive) await this.invalidateActive();
+  }
+
   private invalidateActive() {
     return CacheService.delete(CacheSettings.event.active.key);
   }

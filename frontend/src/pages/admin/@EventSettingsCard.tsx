@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dices, Radio, Check } from 'lucide-react'
+import { Dices, Radio, Check, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
 
-type PendingAction = 'reroll' | 'activate' | null
+type PendingAction = 'reroll' | 'activate' | 'delete' | null
 
 export function EventSettingsCard() {
 	const { t } = useTranslation()
@@ -22,6 +22,8 @@ export function EventSettingsCard() {
 		rerolling,
 		activate,
 		activating,
+		remove,
+		deleting,
 	} = useAdminEvents()
 
 	const [name, setName] = useState('')
@@ -120,6 +122,17 @@ export function EventSettingsCard() {
 							{t('admin.event.make_live')}
 						</Button>
 					)}
+
+					<Button
+						type='button'
+						variant='outline'
+						disabled={deleting}
+						onClick={() => setPending('delete')}
+						className='gap-1.5 rounded-full text-destructive hover:text-destructive'
+					>
+						<Trash2 className='size-4' />
+						{t('admin.event.delete')}
+					</Button>
 				</div>
 			</Card>
 
@@ -148,6 +161,18 @@ export function EventSettingsCard() {
 				confirmLabel={t('admin.event.make_live')}
 				onConfirm={() => {
 					activate(selectedEvent.id)
+					setPending(null)
+				}}
+			/>
+
+			<ConfirmDialog
+				open={pending === 'delete'}
+				onOpenChange={open => !open && setPending(null)}
+				title={t('admin.event.delete_confirm_title')}
+				description={t('admin.event.delete_confirm_body', { name: eventLabel })}
+				confirmLabel={t('admin.event.delete')}
+				onConfirm={() => {
+					remove(selectedEvent.id)
 					setPending(null)
 				}}
 			/>

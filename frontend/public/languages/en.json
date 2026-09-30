@@ -89,8 +89,8 @@
 	},
 	"access": {
 		"back": "Back",
-		"enter_pin": "Enter event PIN",
-		"subtitle": "Unlocks tonight's tables & ordering",
+		"enter_pin": "Enter the PIN to get access",
+		"subtitle": "Enter the correct PIN to continue",
 		"unlock": "Unlock",
 		"unlocking": "Unlocking…",
 		"invalid_pin": "That PIN didn't work",
@@ -528,7 +528,11 @@
 			"reroll_confirm_title": "Generate a new PIN?",
 			"reroll_confirm_body": "PIN {{pin}} stops working. Guests who saved it will have to enter the new one.",
 			"activate_confirm_title": "Make this event live?",
-			"activate_confirm_body": "Guests will see the tables of \"{{name}}\" and need PIN {{pin}}. The event that is live now becomes a past event."
+			"activate_confirm_body": "Guests will see the tables of \"{{name}}\" and need PIN {{pin}}. The event that is live now becomes a past event.",
+			"delete": "Delete event",
+			"delete_confirm_title": "Delete this event?",
+			"delete_confirm_body": "\"{{name}}\" and all of its tables, people, orders and feedback will be deleted for good. This can't be undone.",
+			"deleted": "Event deleted"
 		},
 		"edit_mode": {
 			"label": "Edit mode",
