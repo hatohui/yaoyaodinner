@@ -514,6 +514,7 @@
 			"delete_desc": "此操作无法撤销。有订单记录的菜品无法删除 - 请改为切换可购买状态。",
 			"bulk_enable": "启用",
 			"bulk_disable": "停用",
+			"bulk_delete_title": "删除 {{count}} 道菜？",
 			"bulk_delete_desc": "此操作无法撤销 - 有订单记录的菜品将被跳过。",
 			"add_variant": "添加规格",
 			"variant_label_placeholder": "规格名称",

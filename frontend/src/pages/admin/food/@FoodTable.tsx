@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { LayoutGrid, Table2, UtensilsCrossed } from 'lucide-react'
 import { StoredImage } from '@/components/common/StoredImage'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditFoodDialog } from './@EditFoodDialog'
 import { cn } from '@/utils/shadcn'
 import { localStorage } from '@/utils/localstorage'
@@ -43,6 +44,7 @@ export function FoodTable({
 		setGalleryState(next)
 	}
 	const [editing, setEditing] = React.useState<FoodGridRow | null>(null)
+	const [confirmBulkDelete, setConfirmBulkDelete] = React.useState(false)
 
 	const categoryOptions = React.useMemo(
 		() => categories.map(c => ({ label: c.name ?? '', value: c.id })),
@@ -231,6 +233,14 @@ export function FoodTable({
 						>
 							{t('admin.food.bulk_disable')}
 						</Button>
+						<Button
+							size='sm'
+							variant='destructive'
+							className='rounded-full'
+							onClick={() => setConfirmBulkDelete(true)}
+						>
+							{t('admin.food.delete')}
+						</Button>
 					</>
 				)}
 			</div>
@@ -288,9 +298,23 @@ export function FoodTable({
 					food={editing}
 					categories={categories}
 					onSave={next => onDataChange([next])}
+					onDelete={() => onDelete(editing.id)}
 					onClose={() => setEditing(null)}
 				/>
 			)}
+
+			<ConfirmDialog
+				open={confirmBulkDelete}
+				onOpenChange={setConfirmBulkDelete}
+				title={t('admin.food.bulk_delete_title', { count: selectedIds.length })}
+				description={t('admin.food.bulk_delete_desc')}
+				confirmLabel={t('admin.food.delete')}
+				onConfirm={() => {
+					onRowsDelete(selected.map(r => r.original))
+					table.resetRowSelection()
+					setConfirmBulkDelete(false)
+				}}
+			/>
 		</div>
 	)
 }

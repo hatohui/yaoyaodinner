@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Trash2 } from 'lucide-react'
 import type { CategoryItemDto } from '@/api/model'
 import type { FoodGridRow } from './@useFoodCatalog'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { CategoryChips } from '@/components/common/CategoryChips'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { Button } from '@/components/ui/button'
@@ -21,6 +23,7 @@ interface EditFoodDialogProps {
 	food: FoodGridRow
 	categories: CategoryItemDto[]
 	onSave: (next: FoodGridRow) => void
+	onDelete: () => void
 	onClose: () => void
 }
 
@@ -28,10 +31,12 @@ export function EditFoodDialog({
 	food,
 	categories,
 	onSave,
+	onDelete,
 	onClose,
 }: EditFoodDialogProps) {
 	const { t } = useTranslation()
 	const [draft, setDraft] = useState(food)
+	const [confirmDelete, setConfirmDelete] = useState(false)
 
 	const set = <K extends keyof FoodGridRow>(key: K, value: FoodGridRow[K]) =>
 		setDraft(prev => ({ ...prev, [key]: value }))
@@ -123,6 +128,14 @@ export function EditFoodDialog({
 				</div>
 
 				<DialogFooter>
+					<Button
+						variant='ghost'
+						className='mr-auto gap-1.5 rounded-full text-muted-foreground hover:text-destructive'
+						onClick={() => setConfirmDelete(true)}
+					>
+						<Trash2 />
+						{t('admin.food.delete')}
+					</Button>
 					<Button variant='outline' className='rounded-full' onClick={onClose}>
 						{t('common.cancel')}
 					</Button>
@@ -138,6 +151,18 @@ export function EditFoodDialog({
 					</Button>
 				</DialogFooter>
 			</DialogContent>
+
+			<ConfirmDialog
+				open={confirmDelete}
+				onOpenChange={setConfirmDelete}
+				title={t('admin.food.delete_title', { name: food.name })}
+				description={t('admin.food.delete_desc')}
+				confirmLabel={t('admin.food.delete')}
+				onConfirm={() => {
+					onDelete()
+					onClose()
+				}}
+			/>
 		</Dialog>
 	)
 }

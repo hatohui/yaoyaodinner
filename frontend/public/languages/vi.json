@@ -514,6 +514,7 @@
 			"delete_desc": "Không thể hoàn tác. Món đã có lịch sử đặt hàng không thể xóa - hãy tắt trạng thái có sẵn thay vào đó.",
 			"bulk_enable": "Bật",
 			"bulk_disable": "Tắt",
+			"bulk_delete_title": "Xóa {{count}} món?",
 			"bulk_delete_desc": "Không thể hoàn tác - các món đã có lịch sử đặt hàng sẽ được bỏ qua.",
 			"add_variant": "Thêm biến thể",
 			"variant_label_placeholder": "Nhãn",

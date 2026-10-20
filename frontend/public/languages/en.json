@@ -514,6 +514,7 @@
 			"delete_desc": "This can't be undone. Foods with order history can't be deleted - toggle availability instead.",
 			"bulk_enable": "Enable",
 			"bulk_disable": "Disable",
+			"bulk_delete_title": "Delete {{count}} foods?",
 			"bulk_delete_desc": "This can't be undone - foods with order history will be skipped.",
 			"add_variant": "Add variant",
 			"variant_label_placeholder": "Label",
