@@ -8,6 +8,10 @@ import { getDataGridSelectColumn } from '@/components/data-grid/data-grid-select
 import { useDataGrid } from '@/hooks/use-data-grid'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import { LayoutGrid, Table2, UtensilsCrossed } from 'lucide-react'
+import { StoredImage } from '@/components/common/StoredImage'
+import { ImageViewer } from '@/components/common/ImageViewer'
+import { cn } from '@/utils/shadcn'
 
 interface FoodTableProps {
 	foods: FoodGridRow[]
@@ -29,9 +33,11 @@ export function FoodTable({
 	onBulkDelete,
 }: FoodTableProps) {
 	const { t } = useTranslation()
+	const [gallery, setGallery] = React.useState(false)
+	const [viewing, setViewing] = React.useState<FoodGridRow | null>(null)
 
 	const categoryOptions = React.useMemo(
-		() => categories.map(c => ({ label: c.name, value: c.id })),
+		() => categories.map(c => ({ label: c.name ?? '', value: c.id })),
 		[categories]
 	)
 
@@ -158,45 +164,125 @@ export function FoodTable({
 		)
 	}
 
+	const viewButton = (
+		active: boolean,
+		label: string,
+		icon: React.ReactNode,
+		onClick: () => void
+	) => (
+		<Button
+			size='icon-sm'
+			variant={active ? 'default' : 'outline'}
+			className='rounded-full'
+			aria-label={label}
+			aria-pressed={active}
+			onClick={onClick}
+		>
+			{icon}
+		</Button>
+	)
+
 	return (
 		<div className='flex flex-col gap-3'>
-			{selectedIds.length > 0 && (
-				<div className='flex flex-wrap items-center gap-2'>
-					<span className='text-sm font-medium text-foreground'>
-						{t('admin.tables.selected_count', { count: selectedIds.length })}
-					</span>
-					<Button
-						size='sm'
-						variant='outline'
-						className='rounded-full'
-						onClick={() => {
-							onBulkToggle(selectedIds, true)
-							table.resetRowSelection()
-						}}
-					>
-						{t('admin.food.bulk_enable')}
-					</Button>
-					<Button
-						size='sm'
-						variant='outline'
-						className='rounded-full'
-						onClick={() => {
-							onBulkToggle(selectedIds, false)
-							table.resetRowSelection()
-						}}
-					>
-						{t('admin.food.bulk_disable')}
-					</Button>
+			<div className='flex flex-wrap items-center gap-2'>
+				<div className='flex gap-1.5'>
+					{viewButton(!gallery, t('admin.food.view_table'), <Table2 />, () =>
+						setGallery(false)
+					)}
+					{viewButton(
+						gallery,
+						t('admin.food.view_gallery'),
+						<LayoutGrid />,
+						() => setGallery(true)
+					)}
 				</div>
+				{!gallery && selectedIds.length > 0 && (
+					<>
+						<span className='text-sm font-medium text-foreground'>
+							{t('admin.tables.selected_count', { count: selectedIds.length })}
+						</span>
+						<Button
+							size='sm'
+							variant='outline'
+							className='rounded-full'
+							onClick={() => {
+								onBulkToggle(selectedIds, true)
+								table.resetRowSelection()
+							}}
+						>
+							{t('admin.food.bulk_enable')}
+						</Button>
+						<Button
+							size='sm'
+							variant='outline'
+							className='rounded-full'
+							onClick={() => {
+								onBulkToggle(selectedIds, false)
+								table.resetRowSelection()
+							}}
+						>
+							{t('admin.food.bulk_disable')}
+						</Button>
+					</>
+				)}
+			</div>
+
+			{gallery ? (
+				<ul className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4'>
+					{foods.map(food => (
+						<li
+							key={food.id}
+							className={cn(
+								'overflow-hidden rounded-2xl border border-border/60 bg-card',
+								!food.isAvailable && 'opacity-60'
+							)}
+						>
+							<button
+								type='button'
+								disabled={!food.imageUrl}
+								onClick={() => setViewing(food)}
+								className='block aspect-[4/3] w-full bg-muted'
+							>
+								<StoredImage
+									imageKey={food.imageUrl}
+									alt={food.name}
+									className='size-full object-cover'
+									fallback={
+										<div className='flex size-full items-center justify-center text-muted-foreground'>
+											<UtensilsCrossed className='size-6' />
+										</div>
+									}
+								/>
+							</button>
+							<div className='px-3 py-2'>
+								<p className='truncate text-sm font-medium text-foreground'>
+									{food.name}
+								</p>
+								<p className='text-xs text-muted-foreground'>
+									{food.price != null && `${food.price} ${food.currency ?? ''}`}
+								</p>
+							</div>
+						</li>
+					))}
+				</ul>
+			) : (
+				<DataGrid
+					table={table}
+					{...dataGridProps}
+					onRowAdd={undefined}
+					height={520}
+					stretchColumns
+				/>
 			)}
 
-			<DataGrid
-				table={table}
-				{...dataGridProps}
-				onRowAdd={undefined}
-				height={520}
-				stretchColumns
-			/>
+			{viewing?.imageUrl && (
+				<ImageViewer
+					imageKey={viewing.imageUrl}
+					alt={viewing.name}
+					open
+					onOpenChange={() => setViewing(null)}
+				/>
+			)}
 		</div>
 	)
 }

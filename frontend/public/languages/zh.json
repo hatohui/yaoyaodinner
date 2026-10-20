@@ -502,6 +502,8 @@
 			"available": "可购买",
 			"recommended": "推荐",
 			"calculated": "计入账单",
+			"view_table": "表格视图",
+			"view_gallery": "图库视图",
 			"variants": "规格",
 			"variants_count": "{{count}} 个规格",
 			"empty": "未找到菜品",

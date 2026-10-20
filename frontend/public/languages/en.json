@@ -502,6 +502,8 @@
 			"available": "Available",
 			"recommended": "Recommended",
 			"calculated": "Counts toward bill",
+			"view_table": "Table view",
+			"view_gallery": "Gallery view",
 			"variants": "Variants",
 			"variants_count": "{{count}} variants",
 			"empty": "No food items found",

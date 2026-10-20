@@ -502,6 +502,8 @@
 			"available": "พร้อมขาย",
 			"recommended": "แนะนำ",
 			"calculated": "นับรวมในบิล",
+			"view_table": "มุมมองตาราง",
+			"view_gallery": "มุมมองแกลเลอรี",
 			"variants": "ตัวเลือก",
 			"variants_count": "{{count}} ตัวเลือก",
 			"empty": "ไม่พบเมนู",

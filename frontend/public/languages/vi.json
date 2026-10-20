@@ -502,6 +502,8 @@
 			"available": "Có sẵn",
 			"recommended": "Đề xuất",
 			"calculated": "Tính vào hóa đơn",
+			"view_table": "Dạng bảng",
+			"view_gallery": "Dạng thư viện ảnh",
 			"variants": "Biến thể",
 			"variants_count": "{{count}} biến thể",
 			"empty": "Không tìm thấy món ăn nào",
