@@ -2,12 +2,13 @@ import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import type { ColumnDef } from '@tanstack/react-table'
-import type { PresetMenuItemDto } from '@/api/model'
+import type { CategoryItemDto, PresetMenuItemDto } from '@/api/model'
 import { DataGrid } from '@/components/data-grid/data-grid'
 import { getDataGridSelectColumn } from '@/components/data-grid/data-grid-select-column'
 import { useDataGrid } from '@/hooks/use-data-grid'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import { CreateFoodDialog } from '../food/@CreateFoodDialog'
 import { AddPresetItemDialog } from './@AddPresetItemDialog'
 
 interface PresetItemsGridProps {
@@ -18,6 +19,14 @@ interface PresetItemsGridProps {
 	onDataChange: (updated: PresetMenuItemDto[]) => void
 	onRemoveItems: (variantIds: string[]) => void
 	onAddItem: (variantId: string) => void
+	categories: CategoryItemDto[]
+	creatingFood: boolean
+	onCreateFood: (
+		name: string,
+		categoryId: string,
+		price: number,
+		imageUrl?: string
+	) => void
 }
 
 export function PresetItemsGrid({
@@ -28,6 +37,9 @@ export function PresetItemsGrid({
 	onDataChange,
 	onRemoveItems,
 	onAddItem,
+	categories,
+	creatingFood,
+	onCreateFood,
 }: PresetItemsGridProps) {
 	const { t } = useTranslation()
 
@@ -86,7 +98,12 @@ export function PresetItemsGrid({
 
 	return (
 		<div className='flex flex-col gap-3'>
-			<div className='flex justify-end'>
+			<div className='flex flex-wrap justify-end gap-2'>
+				<CreateFoodDialog
+					categories={categories}
+					pending={creatingFood}
+					onCreate={onCreateFood}
+				/>
 				<AddPresetItemDialog
 					trigger={
 						<Button size='sm' className='gap-1.5 rounded-full'>

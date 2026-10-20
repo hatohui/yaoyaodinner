@@ -21,6 +21,9 @@ export default function AdminPresetsPage() {
 		addItem,
 		removeItem,
 		onItemsChange,
+		categories,
+		creatingFood,
+		createFood,
 	} = usePresetMenu()
 
 	return (
@@ -119,6 +122,11 @@ export default function AdminPresetsPage() {
 									variantIds.forEach(vid => removeItem(preset.id, vid))
 								}
 								onAddItem={variantId => addItem(preset.id, variantId)}
+								categories={categories}
+								creatingFood={creatingFood}
+								onCreateFood={(name, categoryId, price, imageUrl) =>
+									createFood(preset.id, name, categoryId, price, imageUrl)
+								}
 							/>
 						</TabsContent>
 					))}

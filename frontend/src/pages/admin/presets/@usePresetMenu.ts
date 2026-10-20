@@ -11,11 +11,17 @@ import {
 	useRemovePresetMenuItem,
 	getGetPresetMenusQueryKey,
 } from '@/api/preset-menus/preset-menus'
-import type { PresetMenuDto, PresetMenuItemDto } from '@/api/model'
+import { useCreateFood } from '@/api/foods/foods'
+import { useGetCategories } from '@/api/categories/categories'
+import type {
+	CategoryItemDto,
+	PresetMenuDto,
+	PresetMenuItemDto,
+} from '@/api/model'
 import { useToast } from '@/hooks/useToast'
 
 export function usePresetMenu() {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
 
@@ -43,6 +49,12 @@ export function usePresetMenu() {
 	const { mutate: addItemMutate } = useAddPresetMenuItem({
 		mutation: { onSuccess: invalidate, onError },
 	})
+	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>({
+		lang: i18n.language,
+	})
+	const { mutate: createFoodMutate, isPending: creatingFood } = useCreateFood({
+		mutation: { onError },
+	})
 	const { mutate: updateItemMutate } = useUpdatePresetMenuItem({
 		mutation: { onSuccess: invalidate, onError },
 	})
@@ -67,7 +79,36 @@ export function usePresetMenu() {
 		[presets, updateItemMutate]
 	)
 
+	const createFood = (
+		presetId: string,
+		name: string,
+		categoryId: string,
+		price: number,
+		imageUrl?: string
+	) =>
+		createFoodMutate(
+			{
+				data: {
+					name,
+					categoryId,
+					imageUrl,
+					lang: i18n.language,
+					variants: [{ label: t('admin.food.default_variant_label'), price }],
+				},
+			},
+			{
+				onSuccess: food => {
+					const variantId = food.variants[0]?.id
+					if (variantId)
+						addItemMutate({ id: presetId, data: { variantId, quantity: 1 } })
+				},
+			}
+		)
+
 	return {
+		categories,
+		creatingFood,
+		createFood,
 		presets,
 		isLoading,
 		creating,
