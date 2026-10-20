@@ -49,7 +49,7 @@
 		"crop_rotate_right": "Rotate right",
 		"crop_reset": "Reset",
 		"invalid_file_type": "Please choose a JPEG, PNG, WebP, or GIF image",
-		"file_too_large": "Image must be under 5 MB",
+		"file_too_large": "Image must be under 10 MB",
 		"view_image": "View image",
 		"close": "Close"
 	},

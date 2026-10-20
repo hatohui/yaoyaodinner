@@ -49,7 +49,7 @@
 		"crop_rotate_right": "向右旋转",
 		"crop_reset": "重置",
 		"invalid_file_type": "请选择 JPEG、PNG、WebP 或 GIF 格式的图片",
-		"file_too_large": "图片需小于 5 MB",
+		"file_too_large": "图片需小于 10 MB",
 		"view_image": "查看图片",
 		"close": "关闭"
 	},

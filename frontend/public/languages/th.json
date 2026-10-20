@@ -49,7 +49,7 @@
 		"crop_rotate_right": "หมุนขวา",
 		"crop_reset": "รีเซ็ต",
 		"invalid_file_type": "โปรดเลือกรูปภาพ JPEG, PNG, WebP หรือ GIF",
-		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 5 MB",
+		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 10 MB",
 		"view_image": "ดูรูปภาพ",
 		"close": "ปิด"
 	},
