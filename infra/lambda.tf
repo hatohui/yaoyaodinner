@@ -26,6 +26,7 @@ resource "aws_lambda_function" "yaoyao_function" {
       CORS_ORIGIN                  = local.doppler_cors_origin
 
       GEMINI_API_KEY = local.doppler_gemini_api_key
+      GEMINI_MODEL   = local.doppler_gemini_model
     }
   }
 

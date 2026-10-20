@@ -3,7 +3,8 @@ import { prisma } from "./prisma";
 import { CacheService } from "./redis";
 
 const SUPPORTED_LOCALES = ["en", "vi", "zh", "th"];
-const MODEL = "gemini-2.5-flash";
+// Google retires model ids; override with GEMINI_MODEL without a code change
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
 const SYSTEM_INSTRUCTION = [
   "You translate restaurant menu content.",

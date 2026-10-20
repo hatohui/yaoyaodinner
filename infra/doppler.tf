@@ -20,4 +20,5 @@ locals {
   doppler_cors_origin         = lookup(data.doppler_secrets.yaoyao.map, "CORS_ORIGIN", "")
 
   doppler_gemini_api_key = lookup(data.doppler_secrets.yaoyao.map, "GEMINI_API_KEY", "")
+  doppler_gemini_model   = lookup(data.doppler_secrets.yaoyao.map, "GEMINI_MODEL", "")
 }
