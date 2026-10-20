@@ -16,9 +16,10 @@ import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 interface OrdersTabProps {
 	table: TableDto
 	people: PersonDto[]
+	canEdit: boolean
 }
 
-export function OrdersTab({ table, people }: OrdersTabProps) {
+export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { t } = useTranslation()
 	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
 		table.id
@@ -46,12 +47,16 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 				</p>
 			) : (
 				<div className='flex items-center justify-between gap-2'>
-					<Button asChild className='gap-1.5 self-start rounded-full'>
-						<Link to={`/tables/${table.id}/order`}>
-							<Plus className='size-4' />
-							{t('orders.add_order')}
-						</Link>
-					</Button>
+					{canEdit ? (
+						<Button asChild className='gap-1.5 self-start rounded-full'>
+							<Link to={`/tables/${table.id}/order`}>
+								<Plus className='size-4' />
+								{t('orders.add_order')}
+							</Link>
+						</Button>
+					) : (
+						<span />
+					)}
 
 					<ViewToggle view={view} onChange={setView} />
 				</div>
@@ -72,6 +77,7 @@ export function OrdersTab({ table, people }: OrdersTabProps) {
 							onRemove={() => setRemoving(line)}
 							onQuantityChange={quantity => updateLine(line.ids, { quantity })}
 							compact={compact}
+							readOnly={!canEdit}
 						/>
 					))}
 				</ul>

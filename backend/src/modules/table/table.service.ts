@@ -5,7 +5,10 @@ import {
 } from "@nestjs/common";
 import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
+import { generatePin } from "@common/pin";
+import { CONFIG_KEYS } from "@common/config/registry";
 import { EventService } from "@modules/event/event.service";
+import { ConfigService } from "@modules/config/config.service";
 import { ImagesService } from "@modules/images/images.service";
 import { TableSlotService } from "./table-slot.service";
 import { CreateTableDto } from "./dto/create-table.dto";
@@ -42,7 +45,12 @@ export class TableService {
     private events: EventService,
     private slots: TableSlotService,
     private images: ImagesService,
+    private config: ConfigService,
   ) {}
+
+  private async newCode() {
+    return generatePin(await this.config.get<number>(CONFIG_KEYS.pinLength));
+  }
 
   /** Flattens the slot onto the table so callers see one table-shaped object. */
   private toDto(
@@ -202,6 +210,7 @@ export class TableService {
         capacity: dto.capacity ?? slot.defaultCapacity,
         isStaging,
         eventId,
+        code: await this.newCode(),
       },
       include: withSlot,
     });
@@ -240,6 +249,7 @@ export class TableService {
       reuse.push(...fresh.slice(0, missing));
     }
 
+    const codeLength = await this.config.get<number>(CONFIG_KEYS.pinLength);
     await prisma.table.createMany({
       data: reuse.map((slot) => ({
         id: uuidv4(),
@@ -247,6 +257,7 @@ export class TableService {
         capacity: dto.capacity ?? slot.defaultCapacity,
         isStaging,
         eventId,
+        code: generatePin(codeLength),
       })),
     });
 
@@ -309,6 +320,33 @@ export class TableService {
     }
 
     return this.findOne(id);
+  }
+
+  async verifyCode(id: string, code: string) {
+    const table = await prisma.table.findUnique({
+      where: { id },
+      select: { code: true },
+    });
+    if (!table) throw new NotFoundException("Table not found");
+    return { valid: table.code === code };
+  }
+
+  async getCode(id: string) {
+    const table = await prisma.table.findUnique({
+      where: { id },
+      select: { id: true, code: true },
+    });
+    if (!table) throw new NotFoundException("Table not found");
+    return table;
+  }
+
+  async rerollCode(id: string) {
+    await this.findOne(id);
+    return prisma.table.update({
+      where: { id },
+      data: { code: await this.newCode() },
+      select: { id: true, code: true },
+    });
   }
 
   /** Positions live on the slot, so the floor plan survives publishing. */

@@ -22,6 +22,8 @@ import { OrderSidePanel, type SidePanelTab } from './@OrderSidePanel'
 import { AddToCartModal } from './@AddToCartModal'
 import { useTableOrdering } from './@useTableOrdering'
 import { useOrderCart } from './@useOrderCart'
+import { OrderLocked } from './@OrderLocked'
+import { useTableAccess } from '@/hooks/useTableCode'
 
 export default function TableOrderPage() {
 	const { t } = useTranslation()
@@ -43,6 +45,7 @@ export default function TableOrderPage() {
 		pagination,
 	} = useTableOrdering()
 	const cart = useOrderCart(tableId)
+	const { canEdit } = useTableAccess(tableId)
 	const tableIsEmpty = (table?.seated ?? 0) === 0
 
 	const { data: orders = [] } = useGetOrders<OrderResponseDto[]>(
@@ -99,6 +102,8 @@ export default function TableOrderPage() {
 		setPanelTab(cart.itemCount > 0 ? 'cart' : 'ordered')
 		setSheetOpen(true)
 	}
+
+	if (!canEdit) return <OrderLocked tableId={tableId} />
 
 	return (
 		<div className='mx-auto max-w-6xl px-4 py-6'>

@@ -6,7 +6,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useGetTablePeople } from '@/api/tables/tables'
 import type { PersonDto } from '@/api/model'
-import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useTableAccess } from '@/hooks/useTableCode'
 import { useTableTab } from '@/hooks/useTableTab'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { EditableName } from '@/components/common/EditableName'
@@ -15,6 +15,7 @@ import { Roster } from './@Roster'
 import { OrdersTab } from './@OrdersTab'
 import { SplitsTab } from './@SplitsTab'
 import { TableBanner } from './@TableBanner'
+import { TableCodeBar } from './@TableCodeBar'
 import { useTableDetail } from './@useTableDetail'
 
 const tabTrigger =
@@ -32,9 +33,10 @@ export default function TableDetailPage() {
 		updateTableAdmin,
 	} = useTableDetail()
 	const { tab, setTab } = useTableTab(id)
-	const { isAdmin } = useIsAdmin()
+	const { canEdit, isAdmin } = useTableAccess(id)
 	const { data: people } = useGetTablePeople<PersonDto[]>(id)
-	const [editing, setEditing] = useState(false)
+	const [editingToggle, setEditing] = useState(false)
+	const editing = canEdit && editingToggle
 
 	if (isLoading) {
 		return (
@@ -99,27 +101,29 @@ export default function TableDetailPage() {
 					</span>
 				</div>
 				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
-					<button
-						type='button'
-						onClick={() => setEditing(e => !e)}
-						aria-pressed={editing}
-						aria-label={t(editing ? 'common.done' : 'common.edit')}
-						className={cn(
-							'inline-flex cursor-pointer items-center gap-1.5 rounded-full border p-2 text-sm font-medium transition-colors sm:px-3 sm:py-1.5',
-							editing
-								? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
-								: 'border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
-						)}
-					>
-						{editing ? (
-							<Check className='size-4' />
-						) : (
-							<Pencil className='size-4' />
-						)}
-						<span className='hidden sm:inline'>
-							{t(editing ? 'common.done' : 'common.edit')}
-						</span>
-					</button>
+					{canEdit && (
+						<button
+							type='button'
+							onClick={() => setEditing(e => !e)}
+							aria-pressed={editing}
+							aria-label={t(editing ? 'common.done' : 'common.edit')}
+							className={cn(
+								'inline-flex cursor-pointer items-center gap-1.5 rounded-full border p-2 text-sm font-medium transition-colors sm:px-3 sm:py-1.5',
+								editing
+									? 'border-primary bg-primary text-primary-foreground hover:bg-primary/90'
+									: 'border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+							)}
+						>
+							{editing ? (
+								<Check className='size-4' />
+							) : (
+								<Pencil className='size-4' />
+							)}
+							<span className='hidden sm:inline'>
+								{t(editing ? 'common.done' : 'common.edit')}
+							</span>
+						</button>
+					)}
 					<button
 						type='button'
 						onClick={shareLink}
@@ -131,6 +135,8 @@ export default function TableDetailPage() {
 					</button>
 				</div>
 			</div>
+
+			<TableCodeBar tableId={id} canEdit={canEdit} isAdmin={isAdmin} />
 
 			<Tabs value={tab} onValueChange={setTab}>
 				<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
@@ -149,11 +155,12 @@ export default function TableDetailPage() {
 					<Roster
 						table={table}
 						editing={editing}
+						canEdit={canEdit}
 						onSetHost={personId => updateTable({ tableLeaderId: personId })}
 					/>
 				</TabsContent>
 				<TabsContent value='orders'>
-					<OrdersTab table={table} people={people ?? []} />
+					<OrdersTab table={table} people={people ?? []} canEdit={canEdit} />
 				</TabsContent>
 				<TabsContent value='split'>
 					<SplitsTab table={table} people={people ?? []} />

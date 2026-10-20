@@ -28,7 +28,7 @@ export function PinInput({
 		const joined = next.join('').slice(0, length)
 		onChange(joined)
 		if (digit && index < length - 1) refs.current[index + 1]?.focus()
-		if (joined.length === length && !joined.includes('')) onComplete?.(joined)
+		if (joined.length === length) onComplete?.(joined)
 	}
 
 	const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {

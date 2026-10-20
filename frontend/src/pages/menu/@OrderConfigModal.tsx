@@ -5,6 +5,8 @@ import { Minus, Plus } from 'lucide-react'
 import { getGetFoodByIdQueryOptions } from '@/api/foods/foods'
 import { useGetTableById, useGetTablePeople } from '@/api/tables/tables'
 import { useCreateOrder, getGetOrdersQueryKey } from '@/api/orders/orders'
+import { useTableAccess } from '@/hooks/useTableCode'
+import { TableCodeForm } from '@/components/common/TableCodeForm'
 import type {
 	FoodDetailDto,
 	FoodVariantDto,
@@ -75,6 +77,7 @@ export function OrderConfigModal({
 		query: { enabled: open && !!tableId },
 	})
 	const { personId: myPersonId } = useWhoAmI(tableId ?? '')
+	const { canEdit } = useTableAccess(tableId ?? '')
 
 	const idsNeedingFetch = foods.filter(f => !f.variants).map(f => f.id)
 	const variantQueries = useQueries({
@@ -205,7 +208,14 @@ export function OrderConfigModal({
 					)}
 				</DialogHeader>
 
-				{loading ? (
+				{tableId && !canEdit ? (
+					<div className='flex flex-col gap-4 py-2 text-center'>
+						<p className='text-sm text-muted-foreground'>
+							{t('table_code.subtitle')}
+						</p>
+						<TableCodeForm tableId={tableId} autoFocus />
+					</div>
+				) : loading ? (
 					<div className='flex justify-center py-8'>
 						<Spinner />
 					</div>
@@ -287,15 +297,17 @@ export function OrderConfigModal({
 					</div>
 				)}
 
-				<DialogFooter>
-					<Button
-						className='rounded-full'
-						disabled={!canConfirm || isPending || loading}
-						onClick={handleConfirm}
-					>
-						{isPending ? t('menu.adding') : t('menu.add_to_order')}
-					</Button>
-				</DialogFooter>
+				{canEdit && (
+					<DialogFooter>
+						<Button
+							className='rounded-full'
+							disabled={!canConfirm || isPending || loading}
+							onClick={handleConfirm}
+						>
+							{isPending ? t('menu.adding') : t('menu.add_to_order')}
+						</Button>
+					</DialogFooter>
+				)}
 			</DialogContent>
 		</Dialog>
 	)
