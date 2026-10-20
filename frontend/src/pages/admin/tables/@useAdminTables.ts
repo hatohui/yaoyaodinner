@@ -9,11 +9,14 @@ import {
 	useDeleteTable,
 	useBulkDeleteTables,
 	useReassignTables,
+	useGetTableCodes,
+	useRerollTableCodes,
+	getGetTableCodesQueryKey,
 	useUpdateTable,
 	getGetTablesQueryKey,
 	getGetStagedTablesQueryKey,
 } from '@/api/tables/tables'
-import type { TableDto, TableListDto } from '@/api/model'
+import type { TableCodeResponseDto, TableDto, TableListDto } from '@/api/model'
 import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useToast } from '@/hooks/useToast'
@@ -44,6 +47,9 @@ export function useAdminTables() {
 
 	const { data: stagedTables = [], isLoading: stagedLoading } =
 		useGetStagedTables<TableDto[]>()
+
+	const { data: codeRows = [] } = useGetTableCodes<TableCodeResponseDto[]>()
+	const codes = Object.fromEntries(codeRows.map(c => [c.id, c.code]))
 
 	const invalidate = () => {
 		qc.invalidateQueries({ queryKey: getGetTablesQueryKey() })
@@ -124,7 +130,21 @@ export function useAdminTables() {
 		},
 	})
 
+	const { mutate: rerollCodes } = useRerollTableCodes({
+		mutation: {
+			onSuccess: fresh => {
+				qc.setQueryData<TableCodeResponseDto[]>(
+					getGetTableCodesQueryKey(),
+					prev => (prev ?? []).map(c => fresh.find(f => f.id === c.id) ?? c)
+				)
+				toast.success(t('admin.tables.codes_rerolled'))
+			},
+			onError: () => toast.error(t('admin.tables.reroll_failed')),
+		},
+	})
+
 	return {
+		codes,
 		search,
 		setSearch,
 		pagination,
@@ -145,6 +165,7 @@ export function useAdminTables() {
 		updateCapacity: (id: string, capacity: number) =>
 			updateTableMutate({ id, data: { capacity } }),
 		bulkRemoveTables: (ids: string[]) => bulkDelete({ data: { ids } }),
+		rerollCodes: (ids: string[]) => rerollCodes({ data: { ids } }),
 		moveToStaging: (ids: string[]) =>
 			reassign({ data: { ids, eventId: null } }),
 	}

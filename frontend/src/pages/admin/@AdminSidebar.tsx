@@ -5,6 +5,7 @@ import {
 	LogOut,
 	ExternalLink,
 	Armchair,
+	Map,
 	Users,
 	BarChart3,
 	MessageSquare,
@@ -24,6 +25,7 @@ interface AdminSidebarProps {
 const NAV_ITEMS = [
 	{ to: '/admin', labelKey: 'admin.nav.dashboard', icon: LayoutDashboard },
 	{ to: '/admin/tables', labelKey: 'admin.nav.tables', icon: Armchair },
+	{ to: '/admin/floor-plan', labelKey: 'admin.nav.floor_plan', icon: Map },
 	{ to: '/admin/food', labelKey: 'admin.nav.food', icon: UtensilsCrossed },
 	{ to: '/admin/presets', labelKey: 'admin.nav.presets', icon: ClipboardList },
 	{ to: '/admin/people', labelKey: 'admin.nav.people', icon: Users },

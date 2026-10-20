@@ -64,6 +64,22 @@ export class TableController {
     return this.table.findStaged();
   }
 
+  @Get('codes')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'getTableCodes' })
+  @ApiResponse({ status: 200, type: [TableCodeResponseDto] })
+  listCodes() {
+    return this.table.listCodes();
+  }
+
+  @Post('codes/reroll')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'rerollTableCodes' })
+  @ApiResponse({ status: 201, type: [TableCodeResponseDto] })
+  rerollCodes(@Body() dto: IdsDto) {
+    return this.table.rerollCodes(dto.ids);
+  }
+
   @Get(':id')
   @ApiOperation({ operationId: 'getTableById' })
   @ApiResponse({ status: 200, type: TableDto })
