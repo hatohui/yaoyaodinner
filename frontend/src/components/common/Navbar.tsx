@@ -124,9 +124,9 @@ export function Navbar() {
 							)}
 						>
 							{pendingTo === link.to ? (
-								<Loader2 className='size-3.5 animate-spin' />
+								<Loader2 className='size-3.5 animate-spin shrink-0' />
 							) : (
-								<link.icon className='size-3.5' />
+								<link.icon className='size-3.5 shrink-0' />
 							)}
 							{link.label}
 						</Link>
@@ -177,9 +177,9 @@ export function Navbar() {
 										)}
 									>
 										{pendingTo === link.to ? (
-											<Loader2 className='size-4 animate-spin' />
+											<Loader2 className='size-4 animate-spin shrink-0' />
 										) : (
-											<link.icon className='size-4' />
+											<link.icon className='size-4 shrink-0' />
 										)}
 										{link.label}
 									</Link>
