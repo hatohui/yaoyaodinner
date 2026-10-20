@@ -45,6 +45,7 @@ export function useFoodCatalog() {
 	const [failedTranslationFood, setFailedTranslationFood] = React.useState<{
 		id: string
 		name: string
+		manual?: boolean
 	} | null>(null)
 
 	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>({

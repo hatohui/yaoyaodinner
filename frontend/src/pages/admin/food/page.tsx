@@ -78,6 +78,13 @@ export default function AdminFoodPage() {
 				onDelete={deleteFood}
 				onBulkToggle={bulkToggle}
 				onBulkDelete={bulkDelete}
+				onTranslate={food =>
+					setFailedTranslationFood({
+						id: food.id,
+						name: food.name,
+						manual: true,
+					})
+				}
 			/>
 
 			<div className='flex justify-center'>
@@ -90,6 +97,11 @@ export default function AdminFoodPage() {
 					if (!open) setFailedTranslationFood(null)
 				}}
 				sourceName={failedTranslationFood?.name ?? ''}
+				title={
+					failedTranslationFood?.manual
+						? t('admin.food.translations')
+						: undefined
+				}
 				onSave={handleSaveTranslations}
 			/>
 		</div>

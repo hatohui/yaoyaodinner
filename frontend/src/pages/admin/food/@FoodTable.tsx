@@ -24,6 +24,7 @@ interface FoodTableProps {
 	onDelete: (id: string) => void
 	onBulkToggle: (ids: string[], isAvailable: boolean) => void
 	onBulkDelete: (ids: string[]) => void
+	onTranslate: (food: FoodGridRow) => void
 }
 
 export function FoodTable({
@@ -34,6 +35,7 @@ export function FoodTable({
 	onDelete,
 	onBulkToggle,
 	onBulkDelete,
+	onTranslate,
 }: FoodTableProps) {
 	const { t } = useTranslation()
 	const [gallery, setGalleryState] = React.useState(
@@ -299,6 +301,7 @@ export function FoodTable({
 					categories={categories}
 					onSave={next => onDataChange([next])}
 					onDelete={() => onDelete(editing.id)}
+					onTranslate={() => onTranslate(editing)}
 					onClose={() => setEditing(null)}
 				/>
 			)}

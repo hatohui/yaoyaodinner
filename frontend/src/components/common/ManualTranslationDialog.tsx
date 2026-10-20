@@ -16,6 +16,7 @@ interface ManualTranslationDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   sourceName: string
+  title?: string
   onSave: (translations: Record<string, string>) => Promise<void>
 }
 
@@ -25,6 +26,7 @@ export function ManualTranslationDialog({
   open,
   onOpenChange,
   sourceName,
+  title,
   onSave,
 }: ManualTranslationDialogProps) {
   const { t, i18n } = useTranslation()
@@ -53,7 +55,7 @@ export function ManualTranslationDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('admin.translation.fallback_title', 'AI Translation Failed')}</DialogTitle>
+          <DialogTitle>{title ?? t('admin.translation.fallback_title', 'AI Translation Failed')}</DialogTitle>
           <DialogDescription>
             {t('admin.translation.fallback_desc', 'Please provide translations manually for: ')}
             <strong className="text-foreground">{sourceName}</strong>

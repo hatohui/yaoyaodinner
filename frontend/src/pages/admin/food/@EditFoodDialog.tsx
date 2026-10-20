@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Trash2 } from 'lucide-react'
+import { Languages, Trash2 } from 'lucide-react'
 import type { CategoryItemDto } from '@/api/model'
 import type { FoodGridRow } from './@useFoodCatalog'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -24,6 +24,7 @@ interface EditFoodDialogProps {
 	categories: CategoryItemDto[]
 	onSave: (next: FoodGridRow) => void
 	onDelete: () => void
+	onTranslate: () => void
 	onClose: () => void
 }
 
@@ -32,6 +33,7 @@ export function EditFoodDialog({
 	categories,
 	onSave,
 	onDelete,
+	onTranslate,
 	onClose,
 }: EditFoodDialogProps) {
 	const { t } = useTranslation()
@@ -135,6 +137,17 @@ export function EditFoodDialog({
 					>
 						<Trash2 />
 						{t('admin.food.delete')}
+					</Button>
+					<Button
+						variant='ghost'
+						className='gap-1.5 rounded-full text-muted-foreground'
+						onClick={() => {
+							onTranslate()
+							onClose()
+						}}
+					>
+						<Languages />
+						{t('admin.food.translations')}
 					</Button>
 					<Button variant='outline' className='rounded-full' onClick={onClose}>
 						{t('common.cancel')}
