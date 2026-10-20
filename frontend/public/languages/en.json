@@ -527,7 +527,7 @@
 			"active": "Active",
 			"activate": "Set active",
 			"deactivate": "Deactivate",
-			"price_label": "Flat price (per person)",
+			"price_label": "Flat price (per table)",
 			"save_failed": "Couldn't save, please try again",
 			"delete_preset": "Delete preset",
 			"items_empty": "No items - add foods from the catalog",

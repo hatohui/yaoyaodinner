@@ -527,7 +527,7 @@
 			"active": "Đang dùng",
 			"activate": "Đặt làm đang dùng",
 			"deactivate": "Ngừng dùng",
-			"price_label": "Giá trọn gói (mỗi người)",
+			"price_label": "Giá trọn gói (mỗi bàn)",
 			"save_failed": "Không lưu được, vui lòng thử lại",
 			"delete_preset": "Xóa thực đơn",
 			"items_empty": "Chưa có món - thêm món từ danh mục",

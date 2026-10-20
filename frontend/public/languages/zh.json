@@ -527,7 +527,7 @@
 			"active": "已启用",
 			"activate": "设为启用",
 			"deactivate": "停用",
-			"price_label": "统一价格（每人）",
+			"price_label": "统一价格（每桌）",
 			"save_failed": "保存失败，请重试",
 			"delete_preset": "删除套餐",
 			"items_empty": "暂无菜品 - 从菜单中添加",
