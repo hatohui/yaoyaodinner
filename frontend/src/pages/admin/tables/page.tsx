@@ -1,6 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
-import { Map } from 'lucide-react'
 import { SearchBar } from '@/components/common/SearchBar'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -24,6 +22,8 @@ export default function AdminTablesPage() {
 		createTable,
 		bulkCreate,
 		bulkRemoveTables,
+		rerollCodes,
+		codes,
 		moveToStaging,
 		renameTable,
 		updateCapacity,
@@ -36,13 +36,6 @@ export default function AdminTablesPage() {
 					{t('admin.tables.title')}
 				</h1>
 				<div className='flex flex-wrap items-center gap-2'>
-					<Link
-						to='/admin/tables/map'
-						className='inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground'
-					>
-						<Map className='size-4' />
-						{t('floor_plan.title')}
-					</Link>
 					<BulkCreateDialog pending={bulkCreating} onCreate={bulkCreate} />
 					<CreateTableDialog pending={creating} onCreate={createTable} />
 				</div>
@@ -63,10 +56,12 @@ export default function AdminTablesPage() {
 					<TableListSection
 						tables={liveTables}
 						isLoading={liveLoading}
+						codes={codes}
 						showMoveToStaging
 						onRename={renameTable}
 						onCapacityChange={updateCapacity}
 						onBulkDelete={bulkRemoveTables}
+						onRerollCodes={rerollCodes}
 						onMoveToStaging={moveToStaging}
 					/>
 					<div className='flex justify-center'>
@@ -78,9 +73,11 @@ export default function AdminTablesPage() {
 					<TableListSection
 						tables={stagedTables}
 						isLoading={stagedLoading}
+						codes={codes}
 						onRename={renameTable}
 						onCapacityChange={updateCapacity}
 						onBulkDelete={bulkRemoveTables}
+						onRerollCodes={rerollCodes}
 					/>
 				</TabsContent>
 			</Tabs>

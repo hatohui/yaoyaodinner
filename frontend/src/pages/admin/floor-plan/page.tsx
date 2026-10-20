@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
-import { ArrowLeft } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { type OpenFloors, visibleBand } from '@/components/floor-plan/layout'
-import { CreateTableDialog } from '../@CreateTableDialog'
+import { CreateTableDialog } from '../tables/@CreateTableDialog'
 import { AdminFloorPlanCanvas } from './@AdminFloorPlanCanvas'
 import { UnplacedTray } from './@UnplacedTray'
 import { useAdminFloorPlan } from './@useAdminFloorPlan'
@@ -30,14 +28,6 @@ export default function AdminFloorPlanPage() {
 
 	return (
 		<div className='flex flex-col gap-4'>
-			<Link
-				to='/admin/tables'
-				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
-			>
-				<ArrowLeft className='size-4' />
-				{t('admin.tables.title')}
-			</Link>
-
 			<div className='flex flex-col items-start gap-3 sm:flex-row sm:justify-between'>
 				<div>
 					<h1 className='text-xl font-bold text-foreground'>

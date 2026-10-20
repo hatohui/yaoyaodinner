@@ -340,6 +340,27 @@ export class TableService {
     return table;
   }
 
+  listCodes() {
+    return prisma.table.findMany({ select: { id: true, code: true } });
+  }
+
+  async rerollCodes(ids: string[]) {
+    const length = await this.config.get<number>(CONFIG_KEYS.pinLength);
+    const existing = await prisma.table.findMany({
+      where: { id: { in: ids } },
+      select: { id: true },
+    });
+    return prisma.$transaction(
+      existing.map(({ id }) =>
+        prisma.table.update({
+          where: { id },
+          data: { code: generatePin(length) },
+          select: { id: true, code: true },
+        }),
+      ),
+    );
+  }
+
   async rerollCode(id: string) {
     await this.findOne(id);
     return prisma.table.update({

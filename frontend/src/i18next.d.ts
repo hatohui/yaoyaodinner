@@ -316,6 +316,7 @@ declare module 'react-i18next' {
             collapse: string
             expand: string
             tables: string
+            floor_plan: string
             food: string
             presets: string
             people: string
@@ -372,6 +373,13 @@ declare module 'react-i18next' {
             bulk_delete_desc: string
             move_to_staging: string
             moved_to_staging: string
+            reroll_codes: string
+            reroll_codes_title: string
+            reroll_codes_desc: string
+            codes_rerolled: string
+            reroll_failed: string
+            copy_codes: string
+            codes_copied: string
           }
           floor_plan: {
             drag_hint: string

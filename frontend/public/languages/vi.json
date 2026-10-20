@@ -379,6 +379,7 @@
 			"lock": "Khóa quản trị",
 			"toggle": "Bật/tắt menu quản trị",
 			"tables": "Bàn",
+			"floor_plan": "Sơ đồ bàn",
 			"food": "Món ăn",
 			"presets": "Thực đơn mẫu",
 			"people": "Mọi người",
@@ -436,7 +437,14 @@
 			"bulk_delete_desc": "Không thể hoàn tác - các bàn cùng danh sách người/đơn hàng sẽ bị xóa.",
 			"move_to_staging": "Chuyển về chuẩn bị",
 			"moved_to_staging": "Đã chuyển về chuẩn bị",
-			"rename_failed": "Không thể đổi tên bàn"
+			"rename_failed": "Không thể đổi tên bàn",
+			"reroll_codes": "Mã mới",
+			"reroll_codes_title": "Tạo mã mới cho {{count}} bàn?",
+			"reroll_codes_desc": "Các mã cũ sẽ không còn dùng được. Ai đã lưu mã cũ sẽ cần mã mới để chỉnh sửa.",
+			"codes_rerolled": "Đã tạo mã mới",
+			"reroll_failed": "Không thể tạo mã mới",
+			"copy_codes": "Sao chép mã",
+			"codes_copied": "Đã sao chép các mã"
 		},
 		"floor_plan": {
 			"drag_hint": "Kéo bàn vào đúng vị trí trên sơ đồ - vị trí sẽ tự lưu khi bạn thả.",

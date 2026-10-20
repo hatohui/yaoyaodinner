@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Users, Trash2, ArchiveRestore } from 'lucide-react'
+import { Users, Trash2, ArchiveRestore, KeyRound, Copy } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
@@ -8,15 +8,19 @@ import { Spinner } from '@/components/ui/spinner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditableName } from '@/components/common/EditableName'
 import { InlineEdit } from '@/components/common/InlineEdit'
+import { useToast } from '@/hooks/useToast'
 import { cn } from '@/utils/shadcn'
+import { TableCodeChip } from './@TableCodeChip'
 
 interface TableListSectionProps {
 	tables: TableDto[]
 	isLoading: boolean
 	showMoveToStaging?: boolean
+	codes: Record<string, string>
 	onRename: (id: string, name: string) => void
 	onCapacityChange: (id: string, capacity: number) => void
 	onBulkDelete: (ids: string[]) => void
+	onRerollCodes: (ids: string[]) => void
 	onMoveToStaging?: (ids: string[]) => void
 }
 
@@ -24,14 +28,18 @@ export function TableListSection({
 	tables,
 	isLoading,
 	showMoveToStaging,
+	codes,
 	onRename,
 	onCapacityChange,
 	onBulkDelete,
+	onRerollCodes,
 	onMoveToStaging,
 }: TableListSectionProps) {
 	const { t } = useTranslation()
+	const toast = useToast()
 	const [selected, setSelected] = useState<Set<string>>(new Set())
 	const [confirmOpen, setConfirmOpen] = useState(false)
+	const [rerollIds, setRerollIds] = useState<string[] | null>(null)
 
 	const toggle = (id: string) => {
 		setSelected(prev => {
@@ -46,6 +54,14 @@ export function TableListSection({
 		setSelected(prev =>
 			prev.size === tables.length ? new Set() : new Set(tables.map(t => t.id))
 		)
+	}
+
+	const copyCodes = () => {
+		const lines = tables
+			.filter(tb => selected.has(tb.id) && codes[tb.id])
+			.map(tb => `${tb.no}. ${tb.name}: ${codes[tb.id]}`)
+		navigator.clipboard?.writeText(lines.join('\n'))
+		toast.success(t('admin.tables.codes_copied'))
 	}
 
 	if (isLoading) {
@@ -95,7 +111,7 @@ export function TableListSection({
 								checked={selected.has(table.id)}
 								onCheckedChange={() => toggle(table.id)}
 							/>
-							<div className='flex flex-1 items-center justify-between gap-2'>
+							<div className='flex flex-1 flex-wrap items-center justify-between gap-2'>
 								<span className='flex min-w-0 items-center gap-2'>
 									<span className='flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground'>
 										{table.no}
@@ -106,27 +122,33 @@ export function TableListSection({
 										className='font-medium text-foreground'
 									/>
 								</span>
-								<span
-									className={cn(
-										'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
-										full
-											? 'bg-muted text-muted-foreground'
-											: 'bg-brand-muted text-primary'
-									)}
-								>
-									<Users className='size-3.5' />
-									{table.seated}/
-									<InlineEdit
-										alwaysEditable
-										type='number'
-										value={String(table.capacity)}
-										onCommit={v => {
-											const capacity = Number(v)
-											if (capacity >= table.seated)
-												onCapacityChange(table.id, capacity)
-										}}
-										inputClassName='w-14 text-xs'
+								<span className='flex items-center gap-2'>
+									<TableCodeChip
+										code={codes[table.id]}
+										onReroll={() => setRerollIds([table.id])}
 									/>
+									<span
+										className={cn(
+											'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
+											full
+												? 'bg-muted text-muted-foreground'
+												: 'bg-brand-muted text-primary'
+										)}
+									>
+										<Users className='size-3.5' />
+										{table.seated}/
+										<InlineEdit
+											alwaysEditable
+											type='number'
+											value={String(table.capacity)}
+											onCommit={v => {
+												const capacity = Number(v)
+												if (capacity >= table.seated)
+													onCapacityChange(table.id, capacity)
+											}}
+											inputClassName='w-14 text-xs'
+										/>
+									</span>
 								</span>
 							</div>
 						</li>
@@ -136,7 +158,7 @@ export function TableListSection({
 
 			{selected.size > 0 && (
 				<div className='fixed inset-x-0 bottom-4 z-30 mx-auto flex w-fit max-w-[calc(100%-2rem)] items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2.5 shadow-lg'>
-					<span className='text-sm font-medium text-foreground'>
+					<span className='text-sm font-medium whitespace-nowrap text-foreground'>
 						{t('admin.tables.selected_count', { count: selected.size })}
 					</span>
 					{showMoveToStaging && onMoveToStaging && (
@@ -144,26 +166,70 @@ export function TableListSection({
 							size='sm'
 							variant='outline'
 							className='gap-1.5 rounded-full'
+							aria-label={t('admin.tables.move_to_staging')}
 							onClick={() => {
 								onMoveToStaging([...selected])
 								setSelected(new Set())
 							}}
 						>
 							<ArchiveRestore className='size-3.5' />
-							{t('admin.tables.move_to_staging')}
+							<span className='hidden sm:inline'>
+								{t('admin.tables.move_to_staging')}
+							</span>
 						</Button>
 					)}
 					<Button
 						size='sm'
+						variant='outline'
+						className='gap-1.5 rounded-full'
+						onClick={copyCodes}
+						aria-label={t('admin.tables.copy_codes')}
+					>
+						<Copy className='size-3.5' />
+						<span className='hidden sm:inline'>
+							{t('admin.tables.copy_codes')}
+						</span>
+					</Button>
+					<Button
+						size='sm'
+						variant='outline'
+						className='gap-1.5 rounded-full'
+						onClick={() => setRerollIds([...selected])}
+						aria-label={t('admin.tables.reroll_codes')}
+					>
+						<KeyRound className='size-3.5' />
+						<span className='hidden sm:inline'>
+							{t('admin.tables.reroll_codes')}
+						</span>
+					</Button>
+					<Button
+						size='sm'
 						variant='destructive'
 						className='gap-1.5 rounded-full'
+						aria-label={t('admin.tables.delete_selected')}
 						onClick={() => setConfirmOpen(true)}
 					>
 						<Trash2 className='size-3.5' />
-						{t('admin.tables.delete_selected')}
+						<span className='hidden sm:inline'>
+							{t('admin.tables.delete_selected')}
+						</span>
 					</Button>
 				</div>
 			)}
+
+			<ConfirmDialog
+				open={rerollIds !== null}
+				onOpenChange={open => !open && setRerollIds(null)}
+				title={t('admin.tables.reroll_codes_title', {
+					count: rerollIds?.length ?? 0,
+				})}
+				description={t('admin.tables.reroll_codes_desc')}
+				confirmLabel={t('table_code.reroll')}
+				onConfirm={() => {
+					if (rerollIds) onRerollCodes(rerollIds)
+					setRerollIds(null)
+				}}
+			/>
 
 			<ConfirmDialog
 				open={confirmOpen}

@@ -379,6 +379,7 @@
 			"lock": "锁定管理",
 			"toggle": "切换管理菜单",
 			"tables": "餐桌",
+			"floor_plan": "平面图",
 			"food": "菜品",
 			"presets": "套餐",
 			"people": "人员",
@@ -436,7 +437,14 @@
 			"bulk_delete_desc": "此操作无法撤销 - 餐桌及其人员名单/订单都会被删除。",
 			"move_to_staging": "移回待发布",
 			"moved_to_staging": "已移回待发布",
-			"rename_failed": "无法重命名餐桌"
+			"rename_failed": "无法重命名餐桌",
+			"reroll_codes": "新代码",
+			"reroll_codes_title": "为 {{count}} 张餐桌生成新代码？",
+			"reroll_codes_desc": "旧代码将失效。已保存旧代码的人需要新代码才能编辑。",
+			"codes_rerolled": "已生成新代码",
+			"reroll_failed": "无法生成新代码",
+			"copy_codes": "复制代码",
+			"codes_copied": "已复制代码"
 		},
 		"floor_plan": {
 			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。",

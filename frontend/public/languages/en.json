@@ -379,6 +379,7 @@
 			"lock": "Lock admin",
 			"toggle": "Toggle admin menu",
 			"tables": "Tables",
+			"floor_plan": "Floor plan",
 			"food": "Food",
 			"presets": "Presets",
 			"people": "People",
@@ -436,7 +437,14 @@
 			"bulk_delete_desc": "This can't be undone - tables with people or order history will be deleted too.",
 			"move_to_staging": "Move to staging",
 			"moved_to_staging": "Moved to staging",
-			"rename_failed": "Could not rename the table"
+			"rename_failed": "Could not rename the table",
+			"reroll_codes": "New codes",
+			"reroll_codes_title": "Generate new codes for {{count}} table(s)?",
+			"reroll_codes_desc": "The old codes stop working. Anyone who saved one will need the new code to make changes.",
+			"codes_rerolled": "New codes generated",
+			"reroll_failed": "Couldn't generate new codes",
+			"copy_codes": "Copy codes",
+			"codes_copied": "Codes copied"
 		},
 		"floor_plan": {
 			"drag_hint": "Drag a table onto its spot on the floor - positions save as you drop them.",
