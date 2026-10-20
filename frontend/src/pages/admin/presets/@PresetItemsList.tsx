@@ -20,7 +20,7 @@ interface PresetItemsListProps {
 		categoryId: string,
 		price: number,
 		imageUrl?: string
-	) => void
+	) => Promise<unknown>
 }
 
 export function PresetItemsList({

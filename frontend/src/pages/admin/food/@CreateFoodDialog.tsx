@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import type { CategoryItemDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
@@ -24,7 +25,7 @@ interface CreateFoodDialogProps {
 		categoryId: string,
 		price: number,
 		imageUrl?: string
-	) => void
+	) => Promise<unknown>
 }
 
 export function CreateFoodDialog({
@@ -52,6 +53,7 @@ export function CreateFoodDialog({
 		<Dialog
 			open={open}
 			onOpenChange={next => {
+				if (pending) return
 				setOpen(next)
 				if (!next) reset()
 			}}
@@ -122,11 +124,15 @@ export function CreateFoodDialog({
 								Number(price) || 0,
 								imageKey ?? undefined
 							)
-							setOpen(false)
-							reset()
+								.then(() => {
+									setOpen(false)
+									reset()
+								})
+								.catch(() => {})
 						}}
 					>
-						{t('admin.food.create')}
+						{pending && <Spinner />}
+						{pending ? t('admin.food.creating') : t('admin.food.create')}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

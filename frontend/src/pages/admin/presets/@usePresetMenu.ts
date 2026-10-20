@@ -48,9 +48,10 @@ export function usePresetMenu() {
 	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>({
 		lang: i18n.language,
 	})
-	const { mutate: createFoodMutate, isPending: creatingFood } = useCreateFood({
-		mutation: { onError },
-	})
+	const { mutateAsync: createFoodAsync, isPending: creatingFood } =
+		useCreateFood({
+			mutation: { onError },
+		})
 	const { mutate: updateItemMutate } = useUpdatePresetMenuItem({
 		mutation: { onSuccess: invalidate, onError },
 	})
@@ -68,24 +69,19 @@ export function usePresetMenu() {
 		price: number,
 		imageUrl?: string
 	) =>
-		createFoodMutate(
-			{
-				data: {
-					name,
-					categoryId,
-					imageUrl,
-					lang: i18n.language,
-					variants: [{ label: t('admin.food.default_variant_label'), price }],
-				},
+		createFoodAsync({
+			data: {
+				name,
+				categoryId,
+				imageUrl,
+				lang: i18n.language,
+				variants: [{ label: t('admin.food.default_variant_label'), price }],
 			},
-			{
-				onSuccess: food => {
-					const variantId = food.variants[0]?.id
-					if (variantId)
-						addItemMutate({ id: presetId, data: { variantId, quantity: 1 } })
-				},
-			}
-		)
+		}).then(food => {
+			const variantId = food.variants[0]?.id
+			if (variantId)
+				addItemMutate({ id: presetId, data: { variantId, quantity: 1 } })
+		})
 
 	return {
 		categories,

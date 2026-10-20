@@ -73,6 +73,8 @@ async function translateOnce<T>(
         responseMimeType: "application/json",
         responseSchema: schema,
         temperature: 0.3,
+        // Leave headroom under the Lambda/CloudFront timeouts; on expiry the food still saves untranslated
+        httpOptions: { timeout: 20_000 },
       },
     });
 

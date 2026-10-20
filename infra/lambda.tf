@@ -3,7 +3,7 @@ resource "aws_lambda_function" "yaoyao_function" {
   role          = aws_iam_role.yaoyao_lambda_role.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.lambda.repository_url}:latest"
-  timeout       = 10
+  timeout       = 30
   memory_size   = 512
 
   lifecycle {

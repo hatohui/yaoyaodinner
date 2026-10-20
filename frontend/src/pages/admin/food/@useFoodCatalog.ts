@@ -107,7 +107,7 @@ export function useFoodCatalog() {
 		onError()
 	}
 
-	const { mutate: createFoodMutate, isPending: creating } = useCreateFood({
+	const { mutateAsync: createFoodAsync, isPending: creating } = useCreateFood({
 		mutation: {
 			onSuccess: data => {
 				invalidate()
@@ -206,7 +206,7 @@ export function useFoodCatalog() {
 			price: number,
 			imageUrl?: string
 		) =>
-			createFoodMutate({
+			createFoodAsync({
 				data: {
 					name,
 					categoryId: catId,

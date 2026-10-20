@@ -36,7 +36,7 @@ interface AddPresetItemDialogProps {
 		categoryId: string,
 		price: number,
 		imageUrl?: string
-	) => void
+	) => Promise<unknown>
 }
 
 export function AddPresetItemDialog({
@@ -99,10 +99,9 @@ export function AddPresetItemDialog({
 					<CreateFoodDialog
 						categories={categories}
 						pending={creatingFood}
-						onCreate={(...args) => {
-							onCreateFood(...args)
-							setOpen(false)
-						}}
+						onCreate={(...args) =>
+							onCreateFood(...args).then(() => setOpen(false))
+						}
 					/>
 				</div>
 
