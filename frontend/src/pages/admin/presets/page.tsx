@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { DebouncedInput } from '@/components/common/DebouncedInput'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { PresetItemsGrid } from './@PresetItemsGrid'
+import { PresetItemsList } from './@PresetItemsList'
 import { usePresetMenu } from './@usePresetMenu'
 
 export default function AdminPresetsPage() {
@@ -20,7 +20,7 @@ export default function AdminPresetsPage() {
 		deletePreset,
 		addItem,
 		removeItem,
-		onItemsChange,
+		setQuantity,
 		categories,
 		creatingFood,
 		createFood,
@@ -112,15 +112,14 @@ export default function AdminPresetsPage() {
 								</div>
 							</div>
 
-							<PresetItemsGrid
-								presetId={preset.id}
+							<PresetItemsList
 								items={preset.items ?? []}
 								isLoading={isLoading}
 								lang={i18n.language}
-								onDataChange={updated => onItemsChange(preset.id, updated)}
-								onRemoveItems={variantIds =>
-									variantIds.forEach(vid => removeItem(preset.id, vid))
+								onQuantityChange={(variantId, quantity) =>
+									setQuantity(preset.id, variantId, quantity)
 								}
+								onRemoveItem={variantId => removeItem(preset.id, variantId)}
 								onAddItem={variantId => addItem(preset.id, variantId)}
 								categories={categories}
 								creatingFood={creatingFood}

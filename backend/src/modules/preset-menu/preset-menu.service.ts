@@ -36,6 +36,7 @@ export class PresetMenuService {
         variantId: f.variantId,
         foodId: f.variant.foodId,
         foodName: f.variant.food.translations[0]?.name ?? "",
+        imageUrl: f.variant.food.imageUrl,
         variantLabel: f.variant.translations[0]?.label ?? "",
         price: f.variant.price ? Number(f.variant.price) : null,
         currency: f.variant.currency,

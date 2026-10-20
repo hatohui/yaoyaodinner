@@ -15,7 +15,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import {
@@ -78,7 +77,7 @@ export function AddPresetItemDialog({
 	const existingFoodIds = new Set(existingItems.map(i => i.foodId))
 
 	const foods = (data?.foods ?? []).flatMap(food => {
-		const variantId = food.defaultVariantId ?? food.variants[0]?.id
+		const variantId = food.variants[0]?.id
 		return variantId ? [{ ...food, variantId }] : []
 	})
 

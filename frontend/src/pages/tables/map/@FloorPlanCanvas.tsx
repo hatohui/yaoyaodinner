@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router'
-import { useTranslation } from 'react-i18next'
 import type { TableDto } from '@/api/model'
 import { FloorPlanBackdrop } from '@/components/floor-plan/FloorPlanBackdrop'
 import { FloorPlanTable } from '@/components/floor-plan/FloorPlanTable'
@@ -13,7 +12,6 @@ interface FloorPlanCanvasProps {
 }
 
 export function FloorPlanCanvas({ tables }: FloorPlanCanvasProps) {
-	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const myTableId = useGuest(s => s.me?.tableId)
 	const canHover = useCanHover()

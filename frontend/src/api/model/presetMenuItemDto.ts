@@ -10,6 +10,8 @@ export interface PresetMenuItemDto {
   variantId: string;
   foodId: string;
   foodName: string;
+  /** @nullable */
+  imageUrl: string | null;
   variantLabel: string;
   /** @nullable */
   price: number | null;

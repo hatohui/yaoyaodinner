@@ -13,11 +13,7 @@ import {
 } from '@/api/preset-menus/preset-menus'
 import { useCreateFood } from '@/api/foods/foods'
 import { useGetCategories } from '@/api/categories/categories'
-import type {
-	CategoryItemDto,
-	PresetMenuDto,
-	PresetMenuItemDto,
-} from '@/api/model'
+import type { CategoryItemDto, PresetMenuDto } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
 
 export function usePresetMenu() {
@@ -62,22 +58,8 @@ export function usePresetMenu() {
 		mutation: { onSuccess: invalidate, onError },
 	})
 
-	const onItemsChange = React.useCallback(
-		(presetId: string, updated: PresetMenuItemDto[]) => {
-			const prev = presets.find(p => p.id === presetId)?.items ?? []
-			for (const next of updated) {
-				const old = prev.find(i => i.variantId === next.variantId)
-				if (old && old.quantity !== next.quantity) {
-					updateItemMutate({
-						id: presetId,
-						variantId: next.variantId,
-						data: { quantity: next.quantity },
-					})
-				}
-			}
-		},
-		[presets, updateItemMutate]
-	)
+	const setQuantity = (presetId: string, variantId: string, quantity: number) =>
+		updateItemMutate({ id: presetId, variantId, data: { quantity } })
 
 	const createFood = (
 		presetId: string,
@@ -123,6 +105,6 @@ export function usePresetMenu() {
 			addItemMutate({ id: presetId, data: { variantId, quantity: 1 } }),
 		removeItem: (presetId: string, variantId: string) =>
 			removeItemMutate({ id: presetId, variantId }),
-		onItemsChange,
+		setQuantity,
 	}
 }
