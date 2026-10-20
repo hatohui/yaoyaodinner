@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { Search, UtensilsCrossed } from 'lucide-react'
 import { useGetFoodsForAdmin } from '@/api/foods/foods'
-import type { GetFoodsForAdminResponseDto, PresetMenuItemDto } from '@/api/model'
+import type {
+	CategoryItemDto,
+	GetFoodsForAdminResponseDto,
+	PresetMenuItemDto,
+} from '@/api/model'
 import {
 	Dialog,
 	DialogContent,
@@ -16,12 +20,21 @@ import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { StoredImage } from '@/components/common/StoredImage'
 import { cn } from '@/utils/shadcn'
+import { CreateFoodDialog } from '../food/@CreateFoodDialog'
 
 interface AddPresetItemDialogProps {
 	trigger: React.ReactNode
 	existingItems: PresetMenuItemDto[]
 	lang: string
 	onAdd: (variantId: string) => void
+	categories: CategoryItemDto[]
+	creatingFood: boolean
+	onCreateFood: (
+		name: string,
+		categoryId: string,
+		price: number,
+		imageUrl?: string
+	) => void
 }
 
 export function AddPresetItemDialog({
@@ -29,6 +42,9 @@ export function AddPresetItemDialog({
 	existingItems,
 	lang,
 	onAdd,
+	categories,
+	creatingFood,
+	onCreateFood,
 }: AddPresetItemDialogProps) {
 	const { t } = useTranslation()
 	const [open, setOpen] = useState(false)
@@ -62,13 +78,23 @@ export function AddPresetItemDialog({
 					<DialogTitle>{t('admin.presets.add_item_title')}</DialogTitle>
 				</DialogHeader>
 
-				<div className='relative'>
-					<Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
-					<Input
-						value={search}
-						onChange={e => setSearch(e.target.value)}
-						placeholder={t('menu.search_placeholder')}
-						className='rounded-full pl-9'
+				<div className='flex items-center gap-2'>
+					<div className='relative flex-1'>
+						<Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
+						<Input
+							value={search}
+							onChange={e => setSearch(e.target.value)}
+							placeholder={t('menu.search_placeholder')}
+							className='rounded-full pl-9'
+						/>
+					</div>
+					<CreateFoodDialog
+						categories={categories}
+						pending={creatingFood}
+						onCreate={(...args) => {
+							onCreateFood(...args)
+							setOpen(false)
+						}}
 					/>
 				</div>
 

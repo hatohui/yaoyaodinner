@@ -8,7 +8,6 @@ import { getDataGridSelectColumn } from '@/components/data-grid/data-grid-select
 import { useDataGrid } from '@/hooks/use-data-grid'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { CreateFoodDialog } from '../food/@CreateFoodDialog'
 import { AddPresetItemDialog } from './@AddPresetItemDialog'
 
 interface PresetItemsGridProps {
@@ -98,12 +97,7 @@ export function PresetItemsGrid({
 
 	return (
 		<div className='flex flex-col gap-3'>
-			<div className='flex flex-wrap justify-end gap-2'>
-				<CreateFoodDialog
-					categories={categories}
-					pending={creatingFood}
-					onCreate={onCreateFood}
-				/>
+			<div className='flex justify-end'>
 				<AddPresetItemDialog
 					trigger={
 						<Button size='sm' className='gap-1.5 rounded-full'>
@@ -114,6 +108,9 @@ export function PresetItemsGrid({
 					existingItems={items}
 					lang={lang}
 					onAdd={onAddItem}
+					categories={categories}
+					creatingFood={creatingFood}
+					onCreateFood={onCreateFood}
 				/>
 			</div>
 
