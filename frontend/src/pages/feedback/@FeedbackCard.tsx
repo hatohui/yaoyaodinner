@@ -55,7 +55,7 @@ export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
 			<ViewableImage
 				imageKey={item.imageUrl}
 				className='w-full'
-				imgClassName='max-h-72 w-full rounded-xl object-cover'
+				imgClassName='max-h-96 w-full rounded-xl bg-muted object-contain'
 			/>
 
 			<div className='flex flex-wrap items-center gap-1.5 pt-1'>
