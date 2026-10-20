@@ -48,17 +48,12 @@ export async function getCroppedImageBlob(
 	canvas.height = crop.height
 	const ctx = canvas.getContext('2d')
 	if (!ctx) throw new Error('Canvas not supported')
-	ctx.drawImage(
-		rotated,
-		crop.x,
-		crop.y,
-		crop.width,
-		crop.height,
-		0,
-		0,
-		crop.width,
-		crop.height
-	)
+	// Zooming out past the image edge leaves empty margins; JPEG has no alpha so they need a fill
+	if (mimeType === 'image/jpeg') {
+		ctx.fillStyle = '#fff'
+		ctx.fillRect(0, 0, crop.width, crop.height)
+	}
+	ctx.drawImage(rotated, -crop.x, -crop.y)
 
 	return new Promise((resolve, reject) => {
 		canvas.toBlob(

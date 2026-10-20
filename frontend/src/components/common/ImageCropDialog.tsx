@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/button'
 import { getCroppedImageBlob } from '@/utils/cropImage'
 import { cn } from '@/utils/shadcn'
 
-const MIN_ZOOM = 1
 const MAX_ZOOM = 4
 
 const ASPECT_PRESETS = [
@@ -45,7 +44,7 @@ export function ImageCropDialog({
 }: ImageCropDialogProps) {
 	const { t } = useTranslation()
 	const [crop, setCrop] = useState({ x: 0, y: 0 })
-	const [zoom, setZoom] = useState(MIN_ZOOM)
+	const [zoomOverride, setZoom] = useState<number | null>(null)
 	const [rotation, setRotation] = useState(0)
 	const [aspectChoice, setAspectChoice] = useState<AspectChoice>('original')
 	const [media, setMedia] = useState<MediaSize | null>(null)
@@ -67,6 +66,14 @@ export function ImageCropDialog({
 		ASPECT_PRESETS.find(p => p.key === aspectChoice)?.value ??
 		originalAspect
 
+	const fitRatio = Math.min(
+		activeAspect / originalAspect,
+		originalAspect / activeAspect
+	)
+	// zoom at which the whole image sits inside the crop frame; null until the image loads
+	const minZoom = media ? Math.min(1, fitRatio) : 1
+	const zoom = Math.max(minZoom, zoomOverride ?? minZoom)
+
 	const rotate = (delta: number) => {
 		setRotation(r => (r + delta + 360) % 360)
 		setCrop({ x: 0, y: 0 })
@@ -74,7 +81,7 @@ export function ImageCropDialog({
 
 	const reset = () => {
 		setCrop({ x: 0, y: 0 })
-		setZoom(MIN_ZOOM)
+		setZoom(null)
 		setRotation(0)
 		setAspectChoice('original')
 	}
@@ -112,7 +119,8 @@ export function ImageCropDialog({
 						crop={crop}
 						zoom={zoom}
 						rotation={rotation}
-						minZoom={MIN_ZOOM}
+						minZoom={minZoom}
+						restrictPosition={zoom >= 1}
 						maxZoom={MAX_ZOOM}
 						aspect={activeAspect}
 						cropShape={shape}
@@ -154,7 +162,7 @@ export function ImageCropDialog({
 				<div className='flex items-center gap-2'>
 					<button
 						type='button'
-						onClick={() => setZoom(z => Math.max(MIN_ZOOM, z - 0.25))}
+						onClick={() => setZoom(Math.max(minZoom, zoom - 0.25))}
 						aria-label={t('common.crop_zoom_out')}
 						className={toolButton}
 					>
@@ -162,7 +170,7 @@ export function ImageCropDialog({
 					</button>
 					<input
 						type='range'
-						min={MIN_ZOOM}
+						min={minZoom}
 						max={MAX_ZOOM}
 						step={0.01}
 						value={zoom}
@@ -172,7 +180,7 @@ export function ImageCropDialog({
 					/>
 					<button
 						type='button'
-						onClick={() => setZoom(z => Math.min(MAX_ZOOM, z + 0.25))}
+						onClick={() => setZoom(Math.min(MAX_ZOOM, zoom + 0.25))}
 						aria-label={t('common.crop_zoom_in')}
 						className={toolButton}
 					>
