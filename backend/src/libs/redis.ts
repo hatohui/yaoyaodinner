@@ -16,14 +16,17 @@ async function initializeClient(): Promise<void> {
     return;
   }
 
-  try {
-    const client = new Redis(url, {
-      retryStrategy: () => null,
-      maxRetriesPerRequest: 1,
-      enableReadyCheck: false,
-      enableOfflineQueue: false,
-    });
+  const client = new Redis(url, {
+    retryStrategy: () => null,
+    maxRetriesPerRequest: 1,
+    enableReadyCheck: false,
+    enableOfflineQueue: false,
+    // Connect explicitly below: with the offline queue off, a command sent before
+    // the (TLS) handshake finishes fails with "Stream isn't writeable".
+    lazyConnect: true,
+  });
 
+  try {
     client.on("error", (err: Error) => {
       console.warn("[Redis] Connection error:", err.message);
       _isAvailable = false;
@@ -34,6 +37,7 @@ async function initializeClient(): Promise<void> {
       console.log("[Redis] Connected successfully");
     });
 
+    await client.connect();
     await client.ping();
     _isAvailable = true;
     _client = client;
@@ -44,6 +48,7 @@ async function initializeClient(): Promise<void> {
     );
     _isAvailable = false;
     _client = null;
+    client.disconnect();
   }
 }
 
