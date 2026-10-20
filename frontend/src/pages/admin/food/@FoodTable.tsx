@@ -12,6 +12,8 @@ import { LayoutGrid, Table2, UtensilsCrossed } from 'lucide-react'
 import { StoredImage } from '@/components/common/StoredImage'
 import { EditFoodDialog } from './@EditFoodDialog'
 import { cn } from '@/utils/shadcn'
+import { localStorage } from '@/utils/localstorage'
+import { ADMIN_FOOD_VIEW_STORAGE_KEY } from '@/common/constants'
 
 interface FoodTableProps {
 	foods: FoodGridRow[]
@@ -33,7 +35,13 @@ export function FoodTable({
 	onBulkDelete,
 }: FoodTableProps) {
 	const { t } = useTranslation()
-	const [gallery, setGallery] = React.useState(false)
+	const [gallery, setGalleryState] = React.useState(
+		() => localStorage.load(ADMIN_FOOD_VIEW_STORAGE_KEY) === 'gallery'
+	)
+	const setGallery = (next: boolean) => {
+		localStorage.save(ADMIN_FOOD_VIEW_STORAGE_KEY, next ? 'gallery' : 'table')
+		setGalleryState(next)
+	}
 	const [editing, setEditing] = React.useState<FoodGridRow | null>(null)
 
 	const categoryOptions = React.useMemo(

@@ -34,3 +34,4 @@ export const ACCEPTED_IMAGE_TYPES = [
 export const THUMBNAIL_KEY_SUFFIX = '_thumb'
 export const THUMBNAIL_MAX_SIZE_PX = 800
 export const THUMBNAIL_QUALITY = 0.8
+export const ADMIN_FOOD_VIEW_STORAGE_KEY = 'admin_food_view'
