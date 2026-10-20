@@ -61,6 +61,31 @@ declare module 'react-i18next' {
           invalid_pin: string
           saved_note: string
         }
+        table_code: {
+          title: string
+          subtitle: string
+          locked: string
+          enter: string
+          unlock: string
+          unlocking: string
+          invalid: string
+          unlocked: string
+          unlocked_label: string
+          label: string
+          copy: string
+          copied: string
+          reroll: string
+          rerolled: string
+          reroll_failed: string
+          reroll_confirm_title: string
+          reroll_confirm_body: string
+          held_elsewhere: string
+          remove: string
+          removed: string
+          remove_confirm_title: string
+          remove_confirm_body: string
+          one_at_a_time: string
+        }
         tables: {
           no_host: string
           your_table: string

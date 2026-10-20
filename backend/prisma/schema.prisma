@@ -146,6 +146,8 @@ model Table {
   isStaging     Boolean @default(false) @map("is_staging")
   eventId       String? @map("event_id") @db.VarChar(255)
   bannerUrl     String? @map("banner_url") @db.VarChar(500)
+  /// Guests type this to edit the table; only admins can read it back.
+  code          String  @db.VarChar(10)
 
   slot   TableSlot? @relation(fields: [slotId], references: [id], onDelete: SetNull)
   event  Event?     @relation(fields: [eventId], references: [id], onDelete: Cascade)

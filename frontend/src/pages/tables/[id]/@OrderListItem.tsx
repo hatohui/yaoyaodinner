@@ -20,6 +20,7 @@ interface OrderListItemProps {
 	onRemove: () => void
 	onQuantityChange: (quantity: number) => void
 	compact?: boolean
+	readOnly?: boolean
 }
 
 export function OrderListItem({
@@ -29,6 +30,7 @@ export function OrderListItem({
 	onRemove,
 	onQuantityChange,
 	compact = false,
+	readOnly = false,
 }: OrderListItemProps) {
 	const { t } = useTranslation()
 	const [quantityInput, setQuantityInput] = useState(String(order.quantity))
@@ -90,7 +92,12 @@ export function OrderListItem({
 	)
 	const splitBadge = (
 		<div className='flex min-w-0 items-center gap-1.5'>
-			<button type='button' onClick={onEditSplit} className='min-w-0'>
+			<button
+				type='button'
+				onClick={onEditSplit}
+				disabled={readOnly}
+				className='min-w-0'
+			>
 				<Badge variant='outline' className='max-w-full gap-1 rounded-full'>
 					<Users2 className='size-3 shrink-0' />
 					<span className='truncate'>{splitLabel}</span>
@@ -103,7 +110,16 @@ export function OrderListItem({
 			)}
 		</div>
 	)
-	const stepper = (
+	const stepper = readOnly ? (
+		<span
+			className={cn(
+				'shrink-0 text-sm font-medium text-muted-foreground',
+				compact ? 'w-7 text-center' : ''
+			)}
+		>
+			x{order.quantity}
+		</span>
+	) : (
 		<div
 			className={cn('flex shrink-0 items-center', compact ? 'gap-1' : 'gap-2')}
 		>
@@ -159,7 +175,7 @@ export function OrderListItem({
 			{order.currency}
 		</span>
 	)
-	const removeButton = (
+	const removeButton = readOnly ? null : (
 		<button
 			type='button'
 			onClick={onRemove}

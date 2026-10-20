@@ -8,6 +8,8 @@ import {
   Query,
   Body,
   UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
@@ -21,6 +23,11 @@ import { UpdateTableDetailsDto } from './dto/update-table-details.dto';
 import { TablePositionDto } from './dto/table-position.dto';
 import { ReassignTablesDto } from './dto/reassign-tables.dto';
 import { TableDto, TableListDto } from './dto/table-response.dto';
+import {
+  TableCodeDto,
+  TableCodeResponseDto,
+  TableCodeVerifyResponseDto,
+} from './dto/table-code.dto';
 import { PersonDto } from '@modules/people/dto/person-response.dto';
 
 @ApiTags('tables')
@@ -69,6 +76,30 @@ export class TableController {
   @ApiResponse({ status: 200, type: [PersonDto] })
   getPeopleInTable(@Param('id') id: string) {
     return this.people.findByTableId(id);
+  }
+
+  @Get(':id/code')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'getTableCode' })
+  @ApiResponse({ status: 200, type: TableCodeResponseDto })
+  getCode(@Param('id') id: string) {
+    return this.table.getCode(id);
+  }
+
+  @Post(':id/code/verify')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ operationId: 'verifyTableCode' })
+  @ApiResponse({ status: 200, type: TableCodeVerifyResponseDto })
+  verifyCode(@Param('id') id: string, @Body() dto: TableCodeDto) {
+    return this.table.verifyCode(id, dto.code);
+  }
+
+  @Post(':id/code/reroll')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'rerollTableCode' })
+  @ApiResponse({ status: 201, type: TableCodeResponseDto })
+  rerollCode(@Param('id') id: string) {
+    return this.table.rerollCode(id);
   }
 
   @Post()

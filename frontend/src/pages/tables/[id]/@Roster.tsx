@@ -31,10 +31,11 @@ import { PersonNoteDialog } from './@PersonNoteDialog'
 interface RosterProps {
 	table: TableDto
 	editing: boolean
+	canEdit: boolean
 	onSetHost: (personId: string | null) => void
 }
 
-export function Roster({ table, editing, onSetHost }: RosterProps) {
+export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 	const { t } = useTranslation()
 	const { people, add, remove, updatePfp, rename } = useRoster(table.id)
 	const me = useGuest(s => s.me)
@@ -123,12 +124,14 @@ export function Roster({ table, editing, onSetHost }: RosterProps) {
 				</ul>
 			)}
 
-			<input
-				ref={inputRef}
-				onKeyDown={handleKeyDown}
-				placeholder={t('roster.add_placeholder')}
-				className='rounded-2xl border border-dashed border-border bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary'
-			/>
+			{canEdit && (
+				<input
+					ref={inputRef}
+					onKeyDown={handleKeyDown}
+					placeholder={t('roster.add_placeholder')}
+					className='rounded-2xl border border-dashed border-border bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary'
+				/>
+			)}
 
 			<ConfirmDialog
 				open={pending !== null}
@@ -309,10 +312,7 @@ function RosterItem({
 											</DropdownMenuItem>
 										)}
 										<DropdownMenuSeparator />
-										<DropdownMenuItem
-											variant='destructive'
-											onSelect={onRemove}
-										>
+										<DropdownMenuItem variant='destructive' onSelect={onRemove}>
 											<Trash2 />
 											{t('roster.remove')}
 										</DropdownMenuItem>

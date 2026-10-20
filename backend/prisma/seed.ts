@@ -8,6 +8,7 @@ import {
   CONFIG_DEFAULTS,
   serializeConfigValue,
 } from '../src/common/config/registry';
+import { generatePin } from '../src/common/pin';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -195,6 +196,7 @@ async function seedTables() {
         slotId,
         capacity: t.capacity,
         eventId: SEED_EVENT_ID,
+        code: generatePin(),
       },
     });
   }

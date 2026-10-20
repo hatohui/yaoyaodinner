@@ -31,6 +31,9 @@ import type {
   IdsDto,
   PersonDto,
   ReassignTablesDto,
+  TableCodeDto,
+  TableCodeResponseDto,
+  TableCodeVerifyResponseDto,
   TableDto,
   TableListDto,
   TablePositionDto,
@@ -558,7 +561,206 @@ export function useGetTablePeople<TData = Awaited<ReturnType<typeof getTablePeop
 
 
 
-export const bulkCreateTables = (
+export const getTableCode = (
+    id: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableCodeResponseDto>(
+      {url: `/api/tables/${id}/code`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
+
+export const getGetTableCodeQueryKey = (id: string,) => {
+    return [
+    `/api/tables/${id}/code`
+    ] as const;
+    }
+
+
+export const getGetTableCodeQueryOptions = <TData = Awaited<ReturnType<typeof getTableCode>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTableCodeQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTableCode>>> = ({ signal }) => getTableCode(id, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTableCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTableCodeQueryResult = NonNullable<Awaited<ReturnType<typeof getTableCode>>>
+export type GetTableCodeQueryError = unknown
+
+
+export function useGetTableCode<TData = Awaited<ReturnType<typeof getTableCode>>, TError = unknown>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableCode>>,
+          TError,
+          Awaited<ReturnType<typeof getTableCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableCode<TData = Awaited<ReturnType<typeof getTableCode>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableCode>>,
+          TError,
+          Awaited<ReturnType<typeof getTableCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableCode<TData = Awaited<ReturnType<typeof getTableCode>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetTableCode<TData = Awaited<ReturnType<typeof getTableCode>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTableCodeQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+export const verifyTableCode = (
+    id: string,
+    tableCodeDto: TableCodeDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableCodeVerifyResponseDto>(
+      {url: `/api/tables/${id}/code/verify`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: tableCodeDto, signal
+    },
+      );
+    }
+
+
+
+export const getVerifyTableCodeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyTableCode>>, TError,{id: string;data: TableCodeDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof verifyTableCode>>, TError,{id: string;data: TableCodeDto}, TContext> => {
+
+const mutationKey = ['verifyTableCode'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyTableCode>>, {id: string;data: TableCodeDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  verifyTableCode(id,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyTableCodeMutationResult = NonNullable<Awaited<ReturnType<typeof verifyTableCode>>>
+    export type VerifyTableCodeMutationBody = TableCodeDto
+    export type VerifyTableCodeMutationError = unknown
+
+    export const useVerifyTableCode = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyTableCode>>, TError,{id: string;data: TableCodeDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof verifyTableCode>>,
+        TError,
+        {id: string;data: TableCodeDto},
+        TContext
+      > => {
+      return useMutation(getVerifyTableCodeMutationOptions(options), queryClient);
+    }
+    export const rerollTableCode = (
+    id: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableCodeResponseDto>(
+      {url: `/api/tables/${id}/code/reroll`, method: 'POST', signal
+    },
+      );
+    }
+
+
+
+export const getRerollTableCodeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rerollTableCode>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof rerollTableCode>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['rerollTableCode'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof rerollTableCode>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  rerollTableCode(id,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RerollTableCodeMutationResult = NonNullable<Awaited<ReturnType<typeof rerollTableCode>>>
+
+    export type RerollTableCodeMutationError = unknown
+
+    export const useRerollTableCode = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof rerollTableCode>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof rerollTableCode>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getRerollTableCodeMutationOptions(options), queryClient);
+    }
+    export const bulkCreateTables = (
     bulkCreateTableDto: BulkCreateTableDto,
  signal?: AbortSignal
 ) => {
