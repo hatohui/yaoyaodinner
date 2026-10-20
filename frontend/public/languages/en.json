@@ -502,6 +502,7 @@
 			"available": "Available",
 			"recommended": "Recommended",
 			"calculated": "Counts toward bill",
+			"edit_title": "Edit food",
 			"view_table": "Table view",
 			"view_gallery": "Gallery view",
 			"variants": "Variants",

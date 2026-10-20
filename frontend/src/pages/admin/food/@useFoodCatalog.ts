@@ -259,6 +259,7 @@ export function useFoodCatalog() {
 
 				const patch: Record<string, unknown> = {}
 				if (prev.name !== next.name) patch.name = next.name
+				if (prev.imageUrl !== next.imageUrl) patch.imageUrl = next.imageUrl
 				if (prev.description !== next.description)
 					patch.description = next.description ?? ''
 				if (prev.categoryId !== next.categoryId)

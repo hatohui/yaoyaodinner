@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { LayoutGrid, Table2, UtensilsCrossed } from 'lucide-react'
 import { StoredImage } from '@/components/common/StoredImage'
-import { ImageViewer } from '@/components/common/ImageViewer'
+import { EditFoodDialog } from './@EditFoodDialog'
 import { cn } from '@/utils/shadcn'
 
 interface FoodTableProps {
@@ -34,7 +34,7 @@ export function FoodTable({
 }: FoodTableProps) {
 	const { t } = useTranslation()
 	const [gallery, setGallery] = React.useState(false)
-	const [viewing, setViewing] = React.useState<FoodGridRow | null>(null)
+	const [editing, setEditing] = React.useState<FoodGridRow | null>(null)
 
 	const categoryOptions = React.useMemo(
 		() => categories.map(c => ({ label: c.name ?? '', value: c.id })),
@@ -239,8 +239,7 @@ export function FoodTable({
 						>
 							<button
 								type='button'
-								disabled={!food.imageUrl}
-								onClick={() => setViewing(food)}
+								onClick={() => setEditing(food)}
 								className='block aspect-[4/3] w-full bg-muted'
 							>
 								<StoredImage
@@ -275,12 +274,13 @@ export function FoodTable({
 				/>
 			)}
 
-			{viewing?.imageUrl && (
-				<ImageViewer
-					imageKey={viewing.imageUrl}
-					alt={viewing.name}
-					open
-					onOpenChange={() => setViewing(null)}
+			{editing && (
+				<EditFoodDialog
+					key={editing.id}
+					food={editing}
+					categories={categories}
+					onSave={next => onDataChange([next])}
+					onClose={() => setEditing(null)}
 				/>
 			)}
 		</div>
