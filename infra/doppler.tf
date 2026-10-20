@@ -18,4 +18,6 @@ locals {
 
   doppler_acm_certificate_arn = lookup(data.doppler_secrets.yaoyao.map, "ACM_CERTIFICATE_ARN", "")
   doppler_cors_origin         = lookup(data.doppler_secrets.yaoyao.map, "CORS_ORIGIN", "")
+
+  doppler_gemini_api_key = lookup(data.doppler_secrets.yaoyao.map, "GEMINI_API_KEY", "")
 }
