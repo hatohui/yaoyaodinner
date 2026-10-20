@@ -21,7 +21,7 @@ export function CategoryChips({
 		: categories
 
 	return (
-		<div role='radiogroup' className={cn('flex flex-wrap gap-2', className)}>
+		<div role='radiogroup' className={cn('flex flex-wrap gap-1.5', className)}>
 			{options.map(option => (
 				<button
 					key={option.id}
@@ -30,7 +30,7 @@ export function CategoryChips({
 					aria-checked={value === option.id}
 					onClick={() => onChange(option.id)}
 					className={cn(
-						'rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors',
+						'rounded-full px-2.5 py-1 text-xs font-medium transition-colors',
 						value === option.id
 							? 'bg-primary text-primary-foreground shadow-sm'
 							: 'border border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
