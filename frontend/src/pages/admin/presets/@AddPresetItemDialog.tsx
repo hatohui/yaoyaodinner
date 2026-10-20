@@ -18,6 +18,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 import { StoredImage } from '@/components/common/StoredImage'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { usePagination } from '@/hooks/usePagination'
@@ -51,6 +58,7 @@ export function AddPresetItemDialog({
 	const { t } = useTranslation()
 	const [open, setOpen] = useState(false)
 	const [search, setSearch] = useState('')
+	const [categoryId, setCategoryId] = useState('all')
 
 	const [total, setTotal] = useState(0)
 	const pagination = usePagination({ total, initialCount: 20 })
@@ -60,6 +68,7 @@ export function AddPresetItemDialog({
 		page: pagination.page,
 		count: pagination.count,
 		search: search || undefined,
+		category: categoryId,
 	})
 
 	useEffect(() => {
@@ -109,6 +118,26 @@ export function AddPresetItemDialog({
 						}}
 					/>
 				</div>
+
+				<Select
+					value={categoryId}
+					onValueChange={value => {
+						setCategoryId(value)
+						pagination.setPage(1)
+					}}
+				>
+					<SelectTrigger className='w-full rounded-full'>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value='all'>{t('menu.all_categories')}</SelectItem>
+						{categories.map(c => (
+							<SelectItem key={c.id} value={c.id}>
+								{c.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 
 				{isLoading ? (
 					<div className='flex justify-center py-8'>
