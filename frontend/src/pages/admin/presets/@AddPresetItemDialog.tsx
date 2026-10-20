@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Search, UtensilsCrossed } from 'lucide-react'
 import { useGetFoodsForAdmin } from '@/api/foods/foods'
 import type {
@@ -19,6 +19,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { StoredImage } from '@/components/common/StoredImage'
+import { PaginationBar } from '@/components/common/PaginationBar'
+import { usePagination } from '@/hooks/usePagination'
 import { cn } from '@/utils/shadcn'
 import { CreateFoodDialog } from '../food/@CreateFoodDialog'
 
@@ -50,12 +52,19 @@ export function AddPresetItemDialog({
 	const [open, setOpen] = useState(false)
 	const [search, setSearch] = useState('')
 
+	const [total, setTotal] = useState(0)
+	const pagination = usePagination({ total, initialCount: 20 })
+
 	const { data, isLoading } = useGetFoodsForAdmin<GetFoodsForAdminResponseDto>({
 		lang,
-		page: 1,
-		count: 100,
+		page: pagination.page,
+		count: pagination.count,
 		search: search || undefined,
 	})
+
+	useEffect(() => {
+		if (data?.total !== undefined) setTotal(data.total)
+	}, [data?.total])
 
 	const existingVariantIds = new Set(existingItems.map(i => i.variantId))
 
@@ -83,7 +92,10 @@ export function AddPresetItemDialog({
 						<Search className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
 						<Input
 							value={search}
-							onChange={e => setSearch(e.target.value)}
+							onChange={e => {
+								setSearch(e.target.value)
+								pagination.setPage(1)
+							}}
 							placeholder={t('menu.search_placeholder')}
 							className='rounded-full pl-9'
 						/>
@@ -121,9 +133,7 @@ export function AddPresetItemDialog({
 									}}
 									className={cn(
 										'flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors',
-										already
-											? 'cursor-default opacity-40'
-											: 'hover:bg-accent'
+										already ? 'cursor-default opacity-40' : 'hover:bg-accent'
 									)}
 								>
 									<StoredImage
@@ -155,6 +165,8 @@ export function AddPresetItemDialog({
 						})}
 					</div>
 				)}
+
+				<PaginationBar pagination={pagination} />
 			</DialogContent>
 		</Dialog>
 	)
