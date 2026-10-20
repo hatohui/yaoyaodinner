@@ -53,13 +53,6 @@ export function PresetItemsGrid({
 				meta: { cell: { variant: 'short-text' } },
 			},
 			{
-				id: 'variantLabel',
-				accessorKey: 'variantLabel',
-				header: t('admin.presets.col_variant'),
-				size: 160,
-				meta: { cell: { variant: 'short-text' } },
-			},
-			{
 				id: 'quantity',
 				accessorKey: 'quantity',
 				header: t('admin.presets.col_qty'),

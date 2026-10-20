@@ -75,18 +75,12 @@ export function AddPresetItemDialog({
 		if (data?.total !== undefined) setTotal(data.total)
 	}, [data?.total])
 
-	const existingVariantIds = new Set(existingItems.map(i => i.variantId))
+	const existingFoodIds = new Set(existingItems.map(i => i.foodId))
 
-	const allVariants = (data?.foods ?? []).flatMap(food =>
-		food.variants.map(v => ({
-			variantId: v.id,
-			foodName: food.name,
-			imageUrl: food.imageUrl,
-			variantLabel: v.label,
-			price: v.price,
-			currency: v.currency,
-		}))
-	)
+	const foods = (data?.foods ?? []).flatMap(food => {
+		const variantId = food.defaultVariantId ?? food.variants[0]?.id
+		return variantId ? [{ ...food, variantId }] : []
+	})
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -143,21 +137,21 @@ export function AddPresetItemDialog({
 					<div className='flex justify-center py-8'>
 						<Spinner />
 					</div>
-				) : allVariants.length === 0 ? (
+				) : foods.length === 0 ? (
 					<p className='py-8 text-center text-sm text-muted-foreground'>
 						{t('admin.food.empty')}
 					</p>
 				) : (
 					<div className='scrollbar-thin flex flex-col gap-0.5 overflow-y-auto pr-1'>
-						{allVariants.map(v => {
-							const already = existingVariantIds.has(v.variantId)
+						{foods.map(food => {
+							const already = existingFoodIds.has(food.id)
 							return (
 								<button
-									key={v.variantId}
+									key={food.id}
 									type='button'
 									disabled={already}
 									onClick={() => {
-										onAdd(v.variantId)
+										onAdd(food.variantId)
 										setOpen(false)
 									}}
 									className={cn(
@@ -166,8 +160,8 @@ export function AddPresetItemDialog({
 									)}
 								>
 									<StoredImage
-										imageKey={v.imageUrl}
-										alt={v.foodName}
+										imageKey={food.imageUrl}
+										alt={food.name}
 										className='size-12 shrink-0 rounded-lg object-cover'
 										fallback={
 											<div className='flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
@@ -175,15 +169,9 @@ export function AddPresetItemDialog({
 											</div>
 										}
 									/>
-									<div className='min-w-0 flex-1'>
-										<p className='truncate text-sm font-medium text-foreground'>
-											{v.foodName}
-										</p>
-										<p className='text-xs text-muted-foreground'>
-											{v.variantLabel}
-											{v.price != null && ` · ${v.price} ${v.currency}`}
-										</p>
-									</div>
+									<p className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
+										{food.name}
+									</p>
 									{already && (
 										<span className='shrink-0 text-xs text-muted-foreground'>
 											{t('admin.presets.already_added')}
