@@ -5,6 +5,7 @@ import {
 	Armchair,
 	FlaskConical,
 	Info,
+	Loader2,
 	Menu,
 	MessageSquareHeart,
 	ShieldCheck,
@@ -34,6 +35,12 @@ export function Navbar() {
 	const tapCount = useRef(0)
 	const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const [mobileOpen, setMobileOpen] = useState(false)
+	const [pending, setPending] = useState<{ to: string; from: string } | null>(null)
+	const pendingTo = pending?.from === pathname ? pending.to : null
+
+	const handleNavClick = (to: string) => {
+		if (!isActive(to)) setPending({ to, from: pathname })
+	}
 
 	const handleLogoClick = (e: React.MouseEvent) => {
 		tapCount.current += 1
@@ -107,6 +114,8 @@ export function Navbar() {
 						<Link
 							key={link.to}
 							to={link.to}
+							onClick={() => handleNavClick(link.to)}
+							aria-busy={pendingTo === link.to}
 							className={cn(
 								'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all sm:px-4',
 								isActive(link.to)
@@ -114,7 +123,11 @@ export function Navbar() {
 									: 'text-muted-foreground hover:bg-accent hover:text-foreground'
 							)}
 						>
-							<link.icon className='size-3.5' />
+							{pendingTo === link.to ? (
+								<Loader2 className='size-3.5 animate-spin' />
+							) : (
+								<link.icon className='size-3.5' />
+							)}
 							{link.label}
 						</Link>
 					))}
@@ -151,7 +164,11 @@ export function Navbar() {
 									<Link
 										key={link.to}
 										to={link.to}
-										onClick={() => setMobileOpen(false)}
+										onClick={() => {
+											handleNavClick(link.to)
+											setMobileOpen(false)
+										}}
+										aria-busy={pendingTo === link.to}
 										className={cn(
 											'flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
 											isActive(link.to)
@@ -159,7 +176,11 @@ export function Navbar() {
 												: 'text-muted-foreground hover:bg-accent hover:text-foreground'
 										)}
 									>
-										<link.icon className='size-4' />
+										{pendingTo === link.to ? (
+											<Loader2 className='size-4 animate-spin' />
+										) : (
+											<link.icon className='size-4' />
+										)}
 										{link.label}
 									</Link>
 								))}
