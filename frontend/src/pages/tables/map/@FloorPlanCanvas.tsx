@@ -43,11 +43,6 @@ export function FloorPlanCanvas({ tables }: FloorPlanCanvasProps) {
 				)
 			})}
 
-			{tables.length === 0 && (
-				<p className='absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-muted-foreground'>
-					{t('floor_plan.empty')}
-				</p>
-			)}
 		</div>
 	)
 }

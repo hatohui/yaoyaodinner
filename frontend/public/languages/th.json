@@ -300,7 +300,6 @@
 	"floor_plan": {
 		"title": "ผังโต๊ะ",
 		"view_map": "ดูผังโต๊ะ",
-		"empty": "ยังไม่มีโต๊ะบนผัง",
 		"first_floor": "ชั้น 1",
 		"ground_floor": "ชั้นล่าง",
 		"floor_summary": "{{tables}} โต๊ะ · {{pax}} ที่นั่ง",

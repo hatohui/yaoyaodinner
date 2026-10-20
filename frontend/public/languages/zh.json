@@ -300,7 +300,6 @@
 	"floor_plan": {
 		"title": "平面图",
 		"view_map": "查看平面图",
-		"empty": "平面图上还没有餐桌",
 		"first_floor": "一楼",
 		"ground_floor": "地面层",
 		"floor_summary": "{{tables}} 桌 · {{pax}} 位",

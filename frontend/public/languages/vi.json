@@ -300,7 +300,6 @@
 	"floor_plan": {
 		"title": "Sơ đồ bàn",
 		"view_map": "Xem sơ đồ",
-		"empty": "Chưa có bàn nào được đặt trên sơ đồ",
 		"first_floor": "Tầng 1",
 		"ground_floor": "Tầng trệt",
 		"floor_summary": "{{tables}} bàn · {{pax}} khách",

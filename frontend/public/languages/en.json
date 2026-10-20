@@ -300,7 +300,6 @@
 	"floor_plan": {
 		"title": "Floor plan",
 		"view_map": "Map view",
-		"empty": "No tables placed on the map yet",
 		"first_floor": "First floor",
 		"ground_floor": "Ground floor",
 		"floor_summary": "{{tables}} tables · {{pax}} pax",

@@ -256,7 +256,6 @@ declare module 'react-i18next' {
         floor_plan: {
           title: string
           view_map: string
-          empty: string
           first_floor: string
           ground_floor: string
           floor_summary: string

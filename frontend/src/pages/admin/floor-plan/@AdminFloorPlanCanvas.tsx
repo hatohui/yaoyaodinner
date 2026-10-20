@@ -1,5 +1,4 @@
 import type { RefObject } from 'react'
-import { useTranslation } from 'react-i18next'
 import type { TableDto } from '@/api/model'
 import { FloorPlanBackdrop } from '@/components/floor-plan/FloorPlanBackdrop'
 import { FloorHeader } from '@/components/floor-plan/FloorHeader'
@@ -40,7 +39,6 @@ export function AdminFloorPlanCanvas({
 	onClearTap,
 	onDragStart,
 }: AdminFloorPlanCanvasProps) {
-	const { t } = useTranslation()
 	const tapped = tables.find(table => table.id === tappedId)
 
 	const collapsedBar = (floorId: FloorId) => {
@@ -112,11 +110,6 @@ export function AdminFloorPlanCanvas({
 					</div>
 
 				</div>
-			)}
-			{band && tables.length === 0 && (
-				<p className='py-2 text-center text-sm text-muted-foreground'>
-					{t('floor_plan.empty')}
-				</p>
 			)}
 			{collapsedBar('ground')}
 		</div>
