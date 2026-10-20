@@ -272,6 +272,7 @@
 		"empty": "No orders yet",
 		"you": "You",
 		"free_badge": "Free",
+		"set_menu": "Set menu (shared)",
 		"your_share": "Your share",
 		"quantity": "Quantity",
 		"people_count": "{{count}} people"

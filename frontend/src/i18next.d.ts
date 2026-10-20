@@ -233,6 +233,7 @@ declare module 'react-i18next' {
           empty: string
           you: string
           free_badge: string
+          set_menu: string
           your_share: string
           quantity: string
         }

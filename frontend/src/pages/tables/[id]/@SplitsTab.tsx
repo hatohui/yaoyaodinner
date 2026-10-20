@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { getGetOrdersQueryOptions } from '@/api/orders/orders'
-import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
+import { getGetPresetMenusQueryOptions } from '@/api/preset-menus/preset-menus'
+import type {
+	OrderResponseDto,
+	PersonDto,
+	PresetMenuDto,
+	TableDto,
+} from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import {
 	Dialog,
@@ -35,6 +41,14 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 		})
 	)
 
+	const { data: presets = [] } = useQuery(
+		getGetPresetMenusQueryOptions<PresetMenuDto[]>({ lang: i18n.language })
+	)
+	const flatPrice = presets.find(p => p.isActive)?.price ?? 0
+	const flatShare = flatPrice / Math.max(people.length, 1)
+	const currency =
+		orders[0]?.currency ?? presets.find(p => p.isActive)?.items[0]?.currency
+
 	const lineShare = (order: OrderResponseDto) => {
 		const lineTotal = order.price * order.quantity
 		if (order.splitAll) return lineTotal / Math.max(people.length, 1)
@@ -60,10 +74,10 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 			(sum, o) => (o.shouldCalculate ? sum + lineShare(o) : sum),
 			0
 		)
-		return { person, items, total }
+		return { person, items, total: total + flatShare }
 	})
 
-	if (orders.length === 0) {
+	if (orders.length === 0 && flatPrice === 0) {
 		return (
 			<p className='py-6 text-center text-sm text-muted-foreground'>
 				{t('split.empty')}
@@ -96,7 +110,7 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 								</span>
 								<span className='flex items-center gap-1.5'>
 									<span className='text-sm font-medium text-foreground'>
-										{total.toFixed(2)} {items[0]?.currency}
+										{total.toFixed(2)} {currency}
 									</span>
 									<ChevronDown
 										className={cn(
@@ -109,6 +123,14 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 
 							{isOpen && (
 								<ul className='mt-2.5 flex flex-col gap-1 border-t border-border/60 pt-2.5'>
+									{flatPrice > 0 && (
+										<li className='flex items-center justify-between gap-2 px-1.5 py-1.5 text-sm font-medium text-foreground'>
+											<span>{t('split.set_menu')}</span>
+											<span>
+												{flatShare.toFixed(2)} {currency}
+											</span>
+										</li>
+									)}
 									{items.map(o => (
 										<li key={o.id}>
 											<button
@@ -116,7 +138,10 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 												onClick={() => setSelectedOrder(o)}
 												className='flex w-full items-center gap-2.5 rounded-xl px-1.5 py-1.5 text-left transition-colors hover:bg-muted/60'
 											>
-												<OrderThumb imageKey={o.foodImageUrl} alt={o.foodName} />
+												<OrderThumb
+													imageKey={o.foodImageUrl}
+													alt={o.foodName}
+												/>
 												<span
 													className={cn(
 														'flex min-w-0 flex-1 flex-col',
