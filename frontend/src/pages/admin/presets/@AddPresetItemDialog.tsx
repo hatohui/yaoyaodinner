@@ -17,13 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+import { CategoryChips } from '@/components/common/CategoryChips'
 import { StoredImage } from '@/components/common/StoredImage'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { usePagination } from '@/hooks/usePagination'
@@ -112,25 +106,15 @@ export function AddPresetItemDialog({
 					/>
 				</div>
 
-				<Select
+				<CategoryChips
+					categories={categories}
 					value={categoryId}
-					onValueChange={value => {
+					allLabel={t('menu.all_categories')}
+					onChange={value => {
 						setCategoryId(value)
 						pagination.setPage(1)
 					}}
-				>
-					<SelectTrigger className='w-full rounded-full'>
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value='all'>{t('menu.all_categories')}</SelectItem>
-						{categories.map(c => (
-							<SelectItem key={c.id} value={c.id}>
-								{c.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+				/>
 
 				{isLoading ? (
 					<div className='flex justify-center py-8'>

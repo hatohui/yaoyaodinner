@@ -6,13 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
+import { CategoryChips } from '@/components/common/CategoryChips'
 import {
 	Dialog,
 	DialogContent,
@@ -97,18 +91,11 @@ export function CreateFoodDialog({
 
 					<div className='flex flex-col gap-1.5'>
 						<Label>{t('admin.food.category')}</Label>
-						<Select value={categoryId} onValueChange={setCategoryId}>
-							<SelectTrigger className='w-full rounded-full'>
-								<SelectValue placeholder={t('admin.food.category')} />
-							</SelectTrigger>
-							<SelectContent>
-								{categories.map(c => (
-									<SelectItem key={c.id} value={c.id}>
-										{c.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<CategoryChips
+							categories={categories}
+							value={categoryId}
+							onChange={setCategoryId}
+						/>
 					</div>
 
 					<div className='flex flex-col gap-1.5'>
