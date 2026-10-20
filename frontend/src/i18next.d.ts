@@ -70,7 +70,6 @@ declare module 'react-i18next' {
           unlocking: string
           invalid: string
           unlocked: string
-          unlocked_label: string
           label: string
           copy: string
           copied: string
@@ -79,12 +78,12 @@ declare module 'react-i18next' {
           reroll_failed: string
           reroll_confirm_title: string
           reroll_confirm_body: string
-          held_elsewhere: string
-          remove: string
-          removed: string
-          remove_confirm_title: string
-          remove_confirm_body: string
           one_at_a_time: string
+          held_elsewhere: string
+          leave: string
+          left: string
+          leave_confirm_title: string
+          leave_confirm_body: string
         }
         tables: {
           no_host: string

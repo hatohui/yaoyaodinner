@@ -105,7 +105,6 @@
 		"unlocking": "Đang mở khóa…",
 		"invalid": "Mã không đúng",
 		"unlocked": "Đã mở khóa bàn",
-		"unlocked_label": "Đã mở khóa - bạn có thể chỉnh sửa bàn này",
 		"label": "Mã bàn",
 		"copy": "Sao chép",
 		"copied": "Đã sao chép mã bàn",
@@ -114,12 +113,12 @@
 		"reroll_failed": "Không thể tạo mã mới",
 		"reroll_confirm_title": "Tạo mã bàn mới?",
 		"reroll_confirm_body": "Mã {{code}} sẽ không còn dùng được. Ai đã lưu mã này sẽ cần mã mới để chỉnh sửa.",
-		"held_elsewhere": "Thiết bị này đang giữ mã của bàn {{table}}. Hãy xóa mã đó trước khi nhập mã cho bàn này.",
-		"remove": "Xóa mã",
-		"removed": "Đã xóa mã bàn",
-		"remove_confirm_title": "Xóa mã bàn này?",
-		"remove_confirm_body": "Bạn sẽ chỉ được xem và cần nhập lại mã để chỉnh sửa. Mỗi thiết bị chỉ giữ được một mã bàn.",
-		"one_at_a_time": "Mỗi thiết bị chỉ giữ được một mã bàn"
+		"one_at_a_time": "Mỗi thiết bị chỉ giữ được một mã bàn",
+		"held_elsewhere": "Thiết bị này đang giữ mã của bàn {{table}}. Hãy rời bàn đó trước khi nhập mã cho bàn này.",
+		"leave": "Rời bàn",
+		"left": "Bạn đã rời bàn",
+		"leave_confirm_title": "Rời bàn này?",
+		"leave_confirm_body": "Bạn sẽ chỉ được xem và cần nhập lại mã để chỉnh sửa."
 	},
 	"tables": {
 		"find_title": "Tìm bàn của bạn",

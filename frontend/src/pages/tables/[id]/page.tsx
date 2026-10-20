@@ -16,6 +16,7 @@ import { OrdersTab } from './@OrdersTab'
 import { SplitsTab } from './@SplitsTab'
 import { TableBanner } from './@TableBanner'
 import { TableCodeBar } from './@TableCodeBar'
+import { LeaveTableButton } from './@LeaveTableButton'
 import { useTableDetail } from './@useTableDetail'
 
 const tabTrigger =
@@ -124,6 +125,7 @@ export default function TableDetailPage() {
 							</span>
 						</button>
 					)}
+					{canEdit && !isAdmin && <LeaveTableButton />}
 					<button
 						type='button'
 						onClick={shareLink}

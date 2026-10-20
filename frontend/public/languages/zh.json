@@ -105,7 +105,6 @@
 		"unlocking": "解锁中…",
 		"invalid": "代码不正确",
 		"unlocked": "餐桌已解锁",
-		"unlocked_label": "已解锁 - 你可以编辑此餐桌",
 		"label": "餐桌代码",
 		"copy": "复制",
 		"copied": "已复制餐桌代码",
@@ -114,12 +113,12 @@
 		"reroll_failed": "无法生成新代码",
 		"reroll_confirm_title": "生成新的餐桌代码？",
 		"reroll_confirm_body": "代码 {{code}} 将失效。已保存该代码的人需要新代码才能编辑。",
-		"held_elsewhere": "此设备已保存餐桌 {{table}} 的代码。请先移除，再输入此餐桌的代码。",
-		"remove": "移除代码",
-		"removed": "已移除餐桌代码",
-		"remove_confirm_title": "移除此餐桌代码？",
-		"remove_confirm_body": "你将只能查看，需要再次输入代码才能编辑。每台设备一次只能保存一个餐桌代码。",
-		"one_at_a_time": "每台设备一次只能保存一个餐桌代码"
+		"one_at_a_time": "每台设备一次只能保存一个餐桌代码",
+		"held_elsewhere": "此设备已保存餐桌 {{table}} 的代码。请先离开该餐桌，再输入此餐桌的代码。",
+		"leave": "离开餐桌",
+		"left": "你已离开餐桌",
+		"leave_confirm_title": "离开此餐桌？",
+		"leave_confirm_body": "你将只能查看，需要再次输入代码才能编辑。"
 	},
 	"tables": {
 		"find_title": "找到你的餐桌",

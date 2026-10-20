@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Trash2 } from 'lucide-react'
+import { DoorOpen } from 'lucide-react'
 import { useGetTableById } from '@/api/tables/tables'
 import type { TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
@@ -40,8 +40,8 @@ export function TableCodeForm({
 					className='gap-1.5 rounded-full'
 					onClick={release}
 				>
-					<Trash2 className='size-4' />
-					{t('table_code.remove')}
+					<DoorOpen className='size-4' />
+					{t('table_code.leave')}
 				</Button>
 			</div>
 		)

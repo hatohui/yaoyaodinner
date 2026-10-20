@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { Copy, KeyRound, Lock, LockOpen, RefreshCw, Trash2 } from 'lucide-react'
+import { Copy, KeyRound, Lock, RefreshCw } from 'lucide-react'
 import {
 	getGetTableCodeQueryKey,
 	useGetTableCode,
@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/dialog'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { TableCodeForm } from '@/components/common/TableCodeForm'
-import { useHeldTableCode } from '@/hooks/useTableCode'
 import { useToast } from '@/hooks/useToast'
 
 interface TableCodeBarProps {
@@ -33,8 +32,6 @@ export function TableCodeBar({ tableId, canEdit, isAdmin }: TableCodeBarProps) {
 	const qc = useQueryClient()
 	const [unlocking, setUnlocking] = useState(false)
 	const [confirmReroll, setConfirmReroll] = useState(false)
-	const [confirmRemove, setConfirmRemove] = useState(false)
-	const release = useHeldTableCode(s => s.release)
 
 	const { data: adminCode } = useGetTableCode<TableCodeResponseDto>(tableId, {
 		query: { enabled: isAdmin },
@@ -86,42 +83,7 @@ export function TableCodeBar({ tableId, canEdit, isAdmin }: TableCodeBarProps) {
 		)
 	}
 
-	if (!isAdmin) {
-		return (
-			<div className='flex items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-2.5 shadow-sm'>
-				<p className='flex min-w-0 items-center gap-3 text-sm text-foreground'>
-					<span className='flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-muted text-primary'>
-						<LockOpen className='size-4' />
-					</span>
-					{t('table_code.unlocked_label')}
-				</p>
-				<Button
-					variant='outline'
-					size='sm'
-					className='shrink-0 gap-1.5 rounded-full'
-					onClick={() => setConfirmRemove(true)}
-					aria-label={t('table_code.remove')}
-				>
-					<Trash2 className='size-3.5' />
-					<span className='hidden sm:inline'>{t('table_code.remove')}</span>
-				</Button>
-
-				<ConfirmDialog
-					open={confirmRemove}
-					onOpenChange={setConfirmRemove}
-					title={t('table_code.remove_confirm_title')}
-					description={t('table_code.remove_confirm_body')}
-					confirmLabel={t('table_code.remove')}
-					destructive
-					onConfirm={() => {
-						release()
-						setConfirmRemove(false)
-						toast.success(t('table_code.removed'))
-					}}
-				/>
-			</div>
-		)
-	}
+	if (!isAdmin) return null
 
 	const shown = adminCode?.code
 	if (!shown) return null
