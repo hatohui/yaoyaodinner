@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { prisma } from '../../libs/prisma';
@@ -72,6 +73,7 @@ export class FeedbackService {
 
   async create(dto: CreateFeedbackDto) {
     const eventId = await this.events.getActiveId();
+    if (!eventId) throw new UnauthorizedException('No active event');
     const feedback = await prisma.feedback.create({
       data: {
         id: uuidv4(),

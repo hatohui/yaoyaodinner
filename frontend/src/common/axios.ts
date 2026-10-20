@@ -1,6 +1,7 @@
 import a, { type AxiosRequestConfig } from 'axios'
 import { API_URL } from './app'
 import { ADMIN_HEADER, ADMIN_PASSPHRASE_STORAGE_KEY } from './constants'
+import { useGuest } from '@/hooks/useGuest'
 import { localStorage } from '@/utils/localstorage'
 
 const ApiUrl = API_URL
@@ -22,6 +23,8 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(
 	response => response,
 	error => {
+		if (error.response?.status === 401 && useGuest.getState().pin)
+			useGuest.getState().clear()
 		const data = error.response?.data?.message
 		if (typeof data === 'string') {
 			error.message = data
