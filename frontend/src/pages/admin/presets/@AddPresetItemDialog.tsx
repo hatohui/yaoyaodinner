@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import { Search } from 'lucide-react'
+import { Search, UtensilsCrossed } from 'lucide-react'
 import { useGetFoodsForAdmin } from '@/api/foods/foods'
 import type { GetFoodsForAdminResponseDto, PresetMenuItemDto } from '@/api/model'
 import {
@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
+import { StoredImage } from '@/components/common/StoredImage'
 import { cn } from '@/utils/shadcn'
 
 interface AddPresetItemDialogProps {
@@ -46,6 +47,7 @@ export function AddPresetItemDialog({
 		food.variants.map(v => ({
 			variantId: v.id,
 			foodName: food.name,
+			imageUrl: food.imageUrl,
 			variantLabel: v.label,
 			price: v.price,
 			currency: v.currency,
@@ -98,6 +100,16 @@ export function AddPresetItemDialog({
 											: 'hover:bg-accent'
 									)}
 								>
+									<StoredImage
+										imageKey={v.imageUrl}
+										alt={v.foodName}
+										className='size-12 shrink-0 rounded-lg object-cover'
+										fallback={
+											<div className='flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
+												<UtensilsCrossed className='size-5' />
+											</div>
+										}
+									/>
 									<div className='min-w-0 flex-1'>
 										<p className='truncate text-sm font-medium text-foreground'>
 											{v.foodName}
