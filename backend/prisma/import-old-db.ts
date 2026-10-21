@@ -151,6 +151,28 @@ async function inspect(url: string) {
       });
     }
     console.table(counts);
+
+    const { rows: cols } = await db.query(`
+      SELECT table_schema, table_name, column_name, data_type, is_nullable
+      FROM information_schema.columns
+      WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+      ORDER BY table_schema, table_name, ordinal_position
+    `);
+    for (const t of tables) {
+      const own = cols.filter(
+        (c) =>
+          c.table_schema === t.table_schema && c.table_name === t.table_name,
+      );
+      console.log(
+        `\n${t.table_schema}.${t.table_name}\n` +
+          own
+            .map(
+              (c) =>
+                `  ${c.column_name}: ${c.data_type}${c.is_nullable === 'NO' ? '' : '?'}`,
+            )
+            .join('\n'),
+      );
+    }
   } finally {
     await db.end();
   }
@@ -184,12 +206,12 @@ async function insert(db: Client, table: string, rows: Row[]): Promise<number> {
 async function main() {
   const oldUrl = process.env.OLD_DATABASE_URL;
   const newUrl = process.env.DATABASE_URL;
-  if (!oldUrl || !newUrl) {
-    throw new Error('Set OLD_DATABASE_URL and DATABASE_URL in backend/.env');
-  }
-  if (INSPECT) {
+  if (INSPECT && oldUrl) {
     await inspect(oldUrl);
     return;
+  }
+  if (!oldUrl || !newUrl) {
+    throw new Error('Set OLD_DATABASE_URL and DATABASE_URL in backend/.env');
   }
   if (oldUrl === newUrl) {
     throw new Error(
