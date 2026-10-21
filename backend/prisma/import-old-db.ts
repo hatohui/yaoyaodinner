@@ -33,6 +33,14 @@ const norm = (s: unknown) =>
 
 const priceKey = (p: unknown) => (p == null ? '' : Number(p).toFixed(2));
 
+// The old app stored names as unbounded text; the current columns are varchar(255).
+const truncated: string[] = [];
+const fit = (s: string, what: string) => {
+  if (s.length <= 255) return s;
+  truncated.push(`${what}, ${s.length} chars: "${s.slice(0, 60)}…"`);
+  return s.slice(0, 255);
+};
+
 const toVariant = (r: Row): VariantInfo => ({
   id: r.id,
   category: norm(r.category),
@@ -287,7 +295,7 @@ async function main() {
         newSlots.push({
           id,
           no,
-          name: t.name,
+          name: fit(t.name, `table ${t.id}`),
           default_capacity: t.capacity,
           is_active: false,
         });
@@ -317,7 +325,7 @@ async function main() {
 
     const people: Row[] = oldPeople.map((p) => ({
       id: p.id,
-      name: p.name,
+      name: fit(p.name, `person ${p.id}`),
       table_id: oldTableIds.has(p.table_id) ? p.table_id : null,
       event_id: LEGACY_EVENT.id,
     }));
@@ -399,6 +407,10 @@ async function main() {
     }
     if (unpriced > 0) {
       console.warn(`! ${unpriced} orders had no price anywhere, imported at 0`);
+    }
+    if (truncated.length > 0) {
+      console.warn(`! ${truncated.length} names cut to 255 characters:`);
+      truncated.forEach((t) => console.warn(`  ${t}`));
     }
 
     if (APPLY) {
