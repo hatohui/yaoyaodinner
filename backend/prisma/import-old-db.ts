@@ -3,6 +3,7 @@ import { Client } from 'pg';
 import { randomUUID } from 'crypto';
 import { generatePin } from '../src/common/pin';
 
+// Run via `task db:import:old`, `db:import:old:apply` or `db:import:old:inspect`.
 // Copies people and orders (plus the events, tables, notes and splits they
 // hang off) from OLD_DATABASE_URL into DATABASE_URL. The menu is not copied:
 // each old order is re-pointed at the matching variant in the current menu.
