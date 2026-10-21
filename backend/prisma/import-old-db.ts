@@ -383,8 +383,10 @@ async function main() {
       (v) => !v.id.startsWith(`${LEGACY_EVENT.id}-`),
     );
     const currentPrice = new Map(currentVariants.map((v) => [v.id, v.price]));
+    const oldVariants = await loadOldVariants(oldDb);
+    const oldVariantByKey = new Map(oldVariants.map((v) => [v.id, v]));
     const { mapping: variantMap, unmatched } = matchVariants(
-      await loadOldVariants(oldDb),
+      oldVariants,
       currentVariants,
     );
 
@@ -485,7 +487,8 @@ async function main() {
       event_id: LEGACY_EVENT.id,
     }));
 
-    let unpriced = 0;
+    const tableName = new Map(oldTables.map((t) => [t.id, t.name]));
+    const unpriced: Row[] = [];
     const orders: Row[] = oldOrders
       .filter(
         (o) => oldTableIds.has(o.table_id) && variantMap.has(o.variant_key),
@@ -493,7 +496,16 @@ async function main() {
       .map((o) => {
         const variantId = variantMap.get(o.variant_key);
         const price = o.price ?? (currentPrice.get(variantId) || null);
-        if (price == null) unpriced++;
+        if (price == null) {
+          const v = oldVariantByKey.get(o.variant_key);
+          unpriced.push({
+            table: tableName.get(o.table_id),
+            food: v?.foods.join(' / '),
+            label: v?.label,
+            qty: o.quantity,
+            ordered: o.created_at,
+          });
+        }
         const tagged = peopleIds.has(o.person_id);
         return {
           id: o.id,
@@ -567,8 +579,11 @@ async function main() {
     if (skipped > 0) {
       console.warn(`! ${skipped} orders skipped: their table no longer exists`);
     }
-    if (unpriced > 0) {
-      console.warn(`! ${unpriced} orders had no price anywhere, imported at 0`);
+    if (unpriced.length > 0) {
+      console.warn(
+        `! ${unpriced.length} orders had no price anywhere, imported at 0:`,
+      );
+      console.table(unpriced);
     }
     if (truncated.length > 0) {
       console.warn(
