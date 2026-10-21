@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Users, Trash2, ArchiveRestore, KeyRound, Copy } from 'lucide-react'
+import { Link, useNavigate } from 'react-router'
+import {
+	Users,
+	Trash2,
+	ArchiveRestore,
+	KeyRound,
+	Copy,
+	ChevronRight,
+} from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
@@ -37,6 +45,7 @@ export function TableListSection({
 }: TableListSectionProps) {
 	const { t } = useTranslation()
 	const toast = useToast()
+	const navigate = useNavigate()
 	const [selected, setSelected] = useState<Set<string>>(new Set())
 	const [confirmOpen, setConfirmOpen] = useState(false)
 	const [rerollIds, setRerollIds] = useState<string[] | null>(null)
@@ -97,11 +106,17 @@ export function TableListSection({
 			<ul className='grid gap-2 sm:grid-cols-2'>
 				{tables.map(table => {
 					const full = table.seated >= table.capacity
+					const detail = `/tables/${table.id}`
 					return (
 						<li
 							key={table.id}
+							onClick={e => {
+								const target = e.target as HTMLElement
+								if (!target.closest('button, input, a'))
+									navigate(detail, { state: { backTo: '/admin/tables' } })
+							}}
 							className={cn(
-								'flex items-center gap-3 rounded-2xl border bg-card px-4 py-3 shadow-sm transition-colors',
+								'flex cursor-pointer items-center gap-3 rounded-2xl border bg-card py-3 pr-2 pl-4 shadow-sm transition-colors hover:border-primary/40',
 								selected.has(table.id)
 									? 'border-primary/60'
 									: 'border-border/60'
@@ -111,46 +126,57 @@ export function TableListSection({
 								checked={selected.has(table.id)}
 								onCheckedChange={() => toggle(table.id)}
 							/>
-							<div className='flex flex-1 flex-wrap items-center justify-between gap-2'>
-								<span className='flex min-w-0 items-center gap-2'>
-									<span className='flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground'>
-										{table.no}
-									</span>
-									<EditableName
-										value={table.name}
-										onSave={name => onRename(table.id, name)}
-										className='font-medium text-foreground'
-									/>
-								</span>
-								<span className='flex items-center gap-2'>
-									<TableCodeChip
-										code={codes[table.id]}
-										onReroll={() => setRerollIds([table.id])}
-									/>
-									<span
-										className={cn(
-											'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
-											full
-												? 'bg-muted text-muted-foreground'
-												: 'bg-brand-muted text-primary'
-										)}
-									>
-										<Users className='size-3.5' />
-										{table.seated}/
-										<InlineEdit
-											alwaysEditable
-											type='number'
-											value={String(table.capacity)}
-											onCommit={v => {
-												const capacity = Number(v)
-												if (capacity >= table.seated)
-													onCapacityChange(table.id, capacity)
-											}}
-											inputClassName='w-14 text-xs'
+							<div className='@container min-w-0 flex-1'>
+								<div className='flex flex-col gap-2 @min-[22rem]:flex-row @min-[22rem]:items-center @min-[22rem]:justify-between'>
+									<span className='flex min-w-0 items-center gap-2'>
+										<span className='flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground'>
+											{table.no}
+										</span>
+										<EditableName
+											value={table.name}
+											onSave={name => onRename(table.id, name)}
+											className='font-medium text-foreground'
 										/>
 									</span>
-								</span>
+									<span className='flex shrink-0 items-center gap-2'>
+										<TableCodeChip
+											code={codes[table.id]}
+											onReroll={() => setRerollIds([table.id])}
+										/>
+										<span
+											className={cn(
+												'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
+												full
+													? 'bg-muted text-muted-foreground'
+													: 'bg-brand-muted text-primary'
+											)}
+										>
+											<Users className='size-3.5' />
+											{table.seated}/
+											<InlineEdit
+												alwaysEditable
+												type='number'
+												value={String(table.capacity)}
+												onCommit={v => {
+													const capacity = Number(v)
+													if (capacity >= table.seated)
+														onCapacityChange(table.id, capacity)
+												}}
+												inputClassName='w-14 text-xs'
+											/>
+										</span>
+									</span>
+								</div>
 							</div>
+							<Link
+								to={detail}
+								state={{ backTo: '/admin/tables' }}
+								aria-label={t('admin.tables.open_table')}
+								title={t('admin.tables.open_table')}
+								className='flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+							>
+								<ChevronRight className='size-4' />
+							</Link>
 						</li>
 					)
 				})}

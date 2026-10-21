@@ -104,6 +104,17 @@ export function FoodTable({
 				},
 			},
 			{
+				id: 'orderCount',
+				accessorKey: 'orderCount',
+				header: () => t('admin.food.ordered'),
+				size: 100,
+				cell: ({ row }) => (
+					<span className='block text-right tabular-nums text-muted-foreground'>
+						{row.original.orderCount}
+					</span>
+				),
+			},
+			{
 				id: 'isAvailable',
 				accessorKey: 'isAvailable',
 				header: t('admin.food.available'),
@@ -277,8 +288,14 @@ export function FoodTable({
 								<p className='truncate text-sm font-medium text-foreground'>
 									{food.name}
 								</p>
-								<p className='text-xs text-muted-foreground'>
-									{food.price != null && `${food.price} ${food.currency ?? ''}`}
+								<p className='flex justify-between gap-2 text-xs text-muted-foreground'>
+									<span>
+										{food.price != null &&
+											`${food.price} ${food.currency ?? ''}`}
+									</span>
+									<span>
+										{t('admin.food.ordered_count', { count: food.orderCount })}
+									</span>
 								</p>
 							</div>
 						</li>

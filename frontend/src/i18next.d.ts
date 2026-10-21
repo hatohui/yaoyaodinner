@@ -358,6 +358,7 @@ declare module 'react-i18next' {
             live: string
             empty: string
             select_all: string
+            open_table: string
             selected_count: string
             bulk_create: string
             bulk_create_title: string
@@ -409,6 +410,9 @@ declare module 'react-i18next' {
             totals_title: string
             totals_empty: string
             outlier: string
+            all_ordered: string
+            all_ordered_title: string
+            all_ordered_summary: string
           }
           feedback: {
             title: string

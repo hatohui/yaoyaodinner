@@ -422,6 +422,7 @@
 			"live": "进行中",
 			"empty": "暂无餐桌",
 			"select_all": "全选",
+			"open_table": "打开餐桌",
 			"selected_count": "已选 {{count}} 项",
 			"bulk_create": "批量创建",
 			"bulk_create_title": "批量创建餐桌",
@@ -473,7 +474,10 @@
 			"scope_all": "全部时间",
 			"totals_title": "各餐桌总额",
 			"totals_empty": "暂无餐桌",
-			"outlier": "异常"
+			"outlier": "异常",
+			"all_ordered": "查看所有已点菜品",
+			"all_ordered_title": "所有已点菜品",
+			"all_ordered_summary": "{{items}} 道菜，共点 {{count}} 份"
 		},
 		"feedback": {
 			"title": "反馈",
@@ -524,7 +528,9 @@
 			"default_variant_label": "标准",
 			"description": "描述",
 			"currency": "单位",
-			"image": "图片"
+			"image": "图片",
+			"ordered": "已点",
+			"ordered_count": "已点 {{count}} 次"
 		},
 		"presets": {
 			"title": "固定套餐",

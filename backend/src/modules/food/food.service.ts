@@ -48,12 +48,21 @@ export class FoodService {
     return perFood;
   }
 
-  async getPopularFoodIds(limit = 8): Promise<string[]> {
+  /** Only the most-ordered foods are popular, not everything ever ordered. */
+  private async getPopularFoodIds(limit = 8): Promise<Set<string>> {
     const perFood = await this.getPopularityMap();
-    return [...perFood.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, limit)
-      .map(([foodId]) => foodId);
+    const available = await prisma.food.findMany({
+      where: { id: { in: [...perFood.keys()] }, isAvailable: true },
+      select: { id: true },
+    });
+    const availableIds = new Set(available.map((f) => f.id));
+    return new Set(
+      [...perFood.entries()]
+        .filter(([foodId]) => availableIds.has(foodId))
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([foodId]) => foodId),
+    );
   }
 
   async findAll(
@@ -83,11 +92,12 @@ export class FoodService {
     if (cachedFoods) return cachedFoods;
 
     const popularityMap = await this.getPopularityMap();
+    const popularIds = await this.getPopularFoodIds();
 
     const where = {
       isAvailable: true,
       ...(categoryId !== "all" && categoryId !== "" ? { categoryId } : {}),
-      ...(popularOnly ? { id: { in: [...popularityMap.keys()] } } : {}),
+      ...(popularOnly ? { id: { in: [...popularIds] } } : {}),
       ...(recommendedOnly ? { isRecommended: true } : {}),
     };
 
@@ -109,7 +119,7 @@ export class FoodService {
         imageUrl: f.imageUrl,
         categoryId: f.categoryId,
         isAvailable: f.isAvailable,
-        isPopular: popularityMap.has(f.id),
+        isPopular: popularIds.has(f.id),
         isRecommended: f.isRecommended,
         defaultVariantId: defaultVariant?.id ?? null,
         price: defaultVariant?.price ? Number(defaultVariant.price) : null,
@@ -208,8 +218,8 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     if (!food) throw new NotFoundException("Food not found");
-    const popularityMap = await this.getPopularityMap();
-    return this.toDetailDto(food, popularityMap.has(food.id));
+    const popularIds = await this.getPopularFoodIds();
+    return this.toDetailDto(food, popularIds.has(food.id));
   }
 
   async findAllForAdmin(
@@ -231,7 +241,7 @@ export class FoodService {
         : {}),
     };
 
-    const [rawFoods, total, popularityMap] = await Promise.all([
+    const [rawFoods, total, popularIds, perFood] = await Promise.all([
       prisma.food.findMany({
         where,
         skip: offset,
@@ -240,11 +250,15 @@ export class FoodService {
         include: this.foodDetailInclude(lang),
       }),
       prisma.food.count({ where }),
+      this.getPopularFoodIds(),
       this.getPopularityMap(),
     ]);
 
     return {
-      foods: rawFoods.map((f) => this.toDetailDto(f, popularityMap.has(f.id))),
+      foods: rawFoods.map((f) => ({
+        ...this.toDetailDto(f, popularIds.has(f.id)),
+        orderCount: perFood.get(f.id) ?? 0,
+      })),
       page,
       count: rawFoods.length,
       total,
@@ -343,8 +357,8 @@ export class FoodService {
       await this.images.deleteKey(existing.imageUrl);
     }
 
-    const popularityMap = await this.getPopularityMap();
-    return this.toDetailDto(food, popularityMap.has(food.id));
+    const popularIds = await this.getPopularFoodIds();
+    return this.toDetailDto(food, popularIds.has(food.id));
   }
 
   async remove(id: string) {

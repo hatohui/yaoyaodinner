@@ -422,6 +422,7 @@
 			"live": "Đang hoạt động",
 			"empty": "Chưa có bàn nào",
 			"select_all": "Chọn tất cả",
+			"open_table": "Mở bàn",
 			"selected_count": "Đã chọn {{count}}",
 			"bulk_create": "Tạo hàng loạt",
 			"bulk_create_title": "Tạo nhiều bàn cùng lúc",
@@ -473,7 +474,10 @@
 			"scope_all": "Mọi lúc",
 			"totals_title": "Tổng theo từng bàn",
 			"totals_empty": "Chưa có bàn nào",
-			"outlier": "Bất thường"
+			"outlier": "Bất thường",
+			"all_ordered": "Xem tất cả món đã gọi",
+			"all_ordered_title": "Tất cả món đã gọi",
+			"all_ordered_summary": "{{items}} món, tổng cộng {{count}} phần"
 		},
 		"feedback": {
 			"title": "Phản hồi",
@@ -524,7 +528,9 @@
 			"default_variant_label": "Thường",
 			"description": "Mô tả",
 			"currency": "Đơn vị",
-			"image": "Ảnh"
+			"image": "Ảnh",
+			"ordered": "Đã gọi",
+			"ordered_count": "Đã gọi {{count}} lần"
 		},
 		"presets": {
 			"title": "Thực đơn cố định",

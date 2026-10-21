@@ -4,6 +4,7 @@ import { PopularItemsList } from './@PopularItemsList'
 import { PopularItemsChart } from './@PopularItemsChart'
 import { TableTotalsList } from './@TableTotalsList'
 import { TableTotalsChart } from './@TableTotalsChart'
+import { AllOrderedDialog } from './@AllOrderedDialog'
 import { useAdminStats } from './@useAdminStats'
 
 export default function AdminStatsPage() {
@@ -13,6 +14,10 @@ export default function AdminStatsPage() {
 		setScope,
 		popular,
 		popularLoading,
+		allOpen,
+		setAllOpen,
+		allOrdered,
+		allLoading,
 		tableTotals,
 		totalsLoading,
 	} = useAdminStats()
@@ -51,7 +56,11 @@ export default function AdminStatsPage() {
 				<div className='grid gap-4 lg:grid-cols-[1fr_300px]'>
 					<PopularItemsChart items={popular} isLoading={popularLoading} />
 					<div className='rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
-						<PopularItemsList items={popular} isLoading={popularLoading} />
+						<PopularItemsList
+							items={popular}
+							isLoading={popularLoading}
+							onShowAll={() => setAllOpen(true)}
+						/>
 					</div>
 				</div>
 			</div>
@@ -63,6 +72,13 @@ export default function AdminStatsPage() {
 				<TableTotalsChart totals={tableTotals} isLoading={totalsLoading} />
 				<TableTotalsList totals={tableTotals} isLoading={totalsLoading} />
 			</div>
+
+			<AllOrderedDialog
+				open={allOpen}
+				onOpenChange={setAllOpen}
+				items={allOrdered}
+				isLoading={allLoading}
+			/>
 		</div>
 	)
 }

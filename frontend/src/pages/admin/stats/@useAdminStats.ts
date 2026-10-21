@@ -13,6 +13,14 @@ export function useAdminStats() {
 		PopularItemDto[]
 	>({ scope, lang: i18n.language, eventId: scopedEventId })
 
+	const [allOpen, setAllOpen] = useState(false)
+	const { data: allOrdered = [], isLoading: allLoading } = useGetPopularItems<
+		PopularItemDto[]
+	>(
+		{ scope, lang: i18n.language, eventId: scopedEventId, limit: 0 },
+		{ query: { enabled: allOpen } }
+	)
+
 	const { data: tableTotals = [], isLoading: totalsLoading } =
 		useGetTableTotals<TableTotalDto[]>({ eventId: scopedEventId })
 
@@ -21,6 +29,10 @@ export function useAdminStats() {
 		setScope,
 		popular,
 		popularLoading,
+		allOpen,
+		setAllOpen,
+		allOrdered,
+		allLoading,
 		tableTotals,
 		totalsLoading,
 	}

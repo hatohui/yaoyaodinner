@@ -10,5 +10,9 @@ import type { GetPopularItemsScope } from './getPopularItemsScope';
 export type GetPopularItemsParams = {
 scope?: GetPopularItemsScope;
 eventId?: string;
+/**
+ * How many items to return, most ordered first; 0 for all. Defaults to 10.
+ */
+limit?: number;
 lang?: string;
 };

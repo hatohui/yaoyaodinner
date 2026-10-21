@@ -5,10 +5,10 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
-import type { FoodDetailDto } from './foodDetailDto';
+import type { FoodAdminItemDto } from './foodAdminItemDto';
 
 export interface GetFoodsForAdminResponseDto {
-  foods: FoodDetailDto[];
+  foods: FoodAdminItemDto[];
   page: number;
   count: number;
   total: number;

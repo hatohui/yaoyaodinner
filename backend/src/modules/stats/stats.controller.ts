@@ -19,13 +19,26 @@ export class StatsController {
   @ApiQuery({ name: 'scope', required: false, enum: ['event', 'all'] })
   @ApiQuery({ name: 'lang', required: false, type: String })
   @ApiQuery({ name: 'eventId', required: false, type: String })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'How many items to return, most ordered first; 0 for all. Defaults to 10.',
+  })
   @ApiResponse({ status: 200, type: [PopularItemDto] })
   popular(
     @Query('scope') scope: 'event' | 'all' = 'event',
     @Query('lang') lang = 'en',
     @Query('eventId') eventId?: string,
+    @Query('limit') limit?: string,
   ) {
-    return this.stats.popular(scope === 'all' ? 'all' : 'event', lang, eventId);
+    const parsed = Number(limit);
+    return this.stats.popular(
+      scope === 'all' ? 'all' : 'event',
+      lang,
+      eventId,
+      limit !== undefined && Number.isInteger(parsed) && parsed >= 0 ? parsed : 10,
+    );
   }
 
   @Get('tables')

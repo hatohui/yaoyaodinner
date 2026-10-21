@@ -422,6 +422,7 @@
 			"live": "Live",
 			"empty": "No tables yet",
 			"select_all": "Select all",
+			"open_table": "Open table",
 			"selected_count": "{{count}} selected",
 			"bulk_create": "Bulk create",
 			"bulk_create_title": "Create multiple tables",
@@ -473,7 +474,10 @@
 			"scope_all": "All time",
 			"totals_title": "Per-table totals",
 			"totals_empty": "No tables yet",
-			"outlier": "Outlier"
+			"outlier": "Outlier",
+			"all_ordered": "See everything ordered",
+			"all_ordered_title": "Everything ordered",
+			"all_ordered_summary": "{{items}} items, {{count}} ordered in total"
 		},
 		"feedback": {
 			"title": "Feedback",
@@ -524,7 +528,9 @@
 			"default_variant_label": "Regular",
 			"description": "Description",
 			"currency": "Unit",
-			"image": "Photo"
+			"image": "Photo",
+			"ordered": "Ordered",
+			"ordered_count": "Ordered {{count}}×"
 		},
 		"presets": {
 			"title": "Preset menus",
