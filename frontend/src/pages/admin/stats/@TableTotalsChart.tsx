@@ -47,10 +47,7 @@ export function TableTotalsChart({ totals, isLoading }: TableTotalsChartProps) {
 	return (
 		<div className='flex min-h-[300px] w-full flex-col justify-center rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
 			<ChartContainer config={chartConfig} className='w-full'>
-				<BarChart
-					data={totals}
-					margin={{ top: 20, left: -20, right: 10, bottom: 0 }}
-				>
+				<BarChart data={totals} margin={{ top: 20, left: -20, right: 10, bottom: 0 }}>
 					<CartesianGrid vertical={false} />
 					<XAxis
 						dataKey='name'
@@ -74,11 +71,7 @@ export function TableTotalsChart({ totals, isLoading }: TableTotalsChartProps) {
 						{totals.map((entry, index) => (
 							<Cell
 								key={`cell-${index}`}
-								fill={
-									entry.isOutlier
-										? 'var(--color-outlier)'
-										: 'var(--color-total)'
-								}
+								fill={entry.isOutlier ? 'var(--color-outlier)' : 'var(--color-total)'}
 							/>
 						))}
 					</Bar>
