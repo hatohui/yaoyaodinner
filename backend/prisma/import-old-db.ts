@@ -35,10 +35,11 @@ const priceKey = (p: unknown) => (p == null ? '' : Number(p).toFixed(2));
 
 // The old app stored names as unbounded text; the current columns are varchar(255).
 const truncated: string[] = [];
-const fit = (s: string, what: string) => {
+const fit = (s: string, what: string, cutTo = 255) => {
   if (s.length <= 255) return s;
-  truncated.push(`${what}, ${s.length} chars: "${s.slice(0, 60)}…"`);
-  return s.slice(0, 255);
+  const short = s.slice(0, cutTo).trim();
+  truncated.push(`${what}: "${short}" (was ${s.length} chars)`);
+  return short;
 };
 
 const toVariant = (r: Row): VariantInfo => ({
@@ -82,6 +83,129 @@ async function loadCurrentVariants(db: Client): Promise<VariantInfo[]> {
     JOIN category c ON c.id = f.category_id
   `);
   return rows.map(toVariant);
+}
+
+/** Recreates old menu items that have no current match as unavailable foods,
+ *  which the guest menu filters out, so their orders still import. Keys are
+ *  old variant ids, or `food:<id>` for orders that only recorded the food. */
+async function hiddenMenu(oldDb: Client, newDb: Client, keys: string[]) {
+  const prefix = `${LEGACY_EVENT.id}-`;
+  const variantIds = keys.filter((k) => !k.startsWith('food:'));
+  const foodOnlyIds = keys
+    .filter((k) => k.startsWith('food:'))
+    .map((k) => k.slice(5));
+
+  const { rows: oldVariants } = await oldDb.query(
+    `SELECT id::text, "foodId"::text AS food_id, label, price
+     FROM "FoodVariant" WHERE id::text = ANY($1)`,
+    [variantIds],
+  );
+  const foodIds = [
+    ...new Set([...oldVariants.map((v) => v.food_id), ...foodOnlyIds]),
+  ];
+  const { rows: oldFoods } = await oldDb.query(
+    `SELECT f.id::text, f.name, f.description, f."imageUrl" AS image_url,
+       c.id::text AS category_id, c.name AS category
+     FROM "Food" f JOIN "Category" c ON c.id = f."categoryId"
+     WHERE f.id::text = ANY($1)`,
+    [foodIds],
+  );
+  const { rows: oldTranslations } = await oldDb.query(
+    `SELECT "foodId"::text AS food_id, language, name, description
+     FROM "FoodTranslation" WHERE "foodId"::text = ANY($1)`,
+    [foodIds],
+  );
+  const { rows: currentCategories } = await newDb.query(
+    'SELECT id, key FROM category',
+  );
+  const { rows: languages } = await newDb.query('SELECT code FROM language');
+  const languageCodes = new Set(languages.map((l) => l.code));
+
+  const categoryByKey = new Map<string, string>(
+    currentCategories.map((c) => [norm(c.key), c.id]),
+  );
+  const categories: Row[] = [];
+  const categoryTranslations: Row[] = [];
+  const foods: Row[] = [];
+  const foodTranslations: Row[] = [];
+  for (const f of oldFoods) {
+    let categoryId = categoryByKey.get(norm(f.category));
+    if (!categoryId) {
+      categoryId = prefix + f.category_id;
+      categoryByKey.set(norm(f.category), categoryId);
+      categories.push({ id: categoryId, key: f.category, is_available: false });
+      categoryTranslations.push({
+        category_id: categoryId,
+        language: 'en',
+        name: fit(f.category, `category ${f.category_id}`),
+      });
+    }
+
+    const foodId = prefix + f.id;
+    foods.push({
+      id: foodId,
+      image_url: f.image_url?.length <= 500 ? f.image_url : null,
+      category_id: categoryId,
+      is_available: false,
+    });
+    const own = oldTranslations.filter(
+      (t) => t.food_id === f.id && languageCodes.has(t.language),
+    );
+    if (!own.some((t) => t.language === 'en')) {
+      own.push({ language: 'en', name: f.name, description: f.description });
+    }
+    for (const t of own) {
+      foodTranslations.push({
+        food_id: foodId,
+        language: t.language,
+        name: fit(t.name, `food ${f.id}`),
+        description: t.description,
+      });
+    }
+  }
+
+  const mapping = new Map<string, string>();
+  const variants: Row[] = [];
+  const variantTranslations: Row[] = [];
+  for (const v of oldVariants) {
+    const id = prefix + v.id;
+    mapping.set(v.id, id);
+    variants.push({
+      id,
+      food_id: prefix + v.food_id,
+      price: v.price,
+      is_available: false,
+    });
+    if (v.label?.trim()) {
+      variantTranslations.push({
+        variant_id: id,
+        language: 'en',
+        label: fit(v.label.trim(), `variant ${v.id}`),
+      });
+    }
+  }
+  for (const foodId of foodOnlyIds) {
+    const id = `${prefix}food-${foodId}`;
+    mapping.set(`food:${foodId}`, id);
+    variants.push({
+      id,
+      food_id: prefix + foodId,
+      price: null,
+      is_available: false,
+    });
+  }
+
+  return {
+    mapping,
+    tables: [
+      ['category', categories],
+      ['category_translation', categoryTranslations],
+      ['food', foods],
+      ['food_translation', foodTranslations],
+      ['food_variant', variants],
+      ['food_variant_translation', variantTranslations],
+    ] as [string, Row[]][],
+  };
 }
 
 /** Matches old variants to current ones, loosening the key one step at a time
@@ -237,12 +361,25 @@ async function main() {
       LEFT JOIN "FoodVariant" v ON v.id = o."variantId"
     `);
 
-    const currentVariants = await loadCurrentVariants(newDb);
+    // Leave out foods a previous run recreated, so re-runs match the same way.
+    const currentVariants = (await loadCurrentVariants(newDb)).filter(
+      (v) => !v.id.startsWith(`${LEGACY_EVENT.id}-`),
+    );
     const currentPrice = new Map(currentVariants.map((v) => [v.id, v.price]));
     const { mapping: variantMap, unmatched } = matchVariants(
       await loadOldVariants(oldDb),
       currentVariants,
     );
+
+    const missingQty = new Map<string, number>();
+    for (const o of oldOrders.filter((o) => !variantMap.has(o.variant_key))) {
+      missingQty.set(
+        o.variant_key,
+        (missingQty.get(o.variant_key) ?? 0) + o.quantity,
+      );
+    }
+    const hidden = await hiddenMenu(oldDb, newDb, [...missingQty.keys()]);
+    hidden.mapping.forEach((id, key) => variantMap.set(key, id));
 
     await newDb.query('BEGIN');
 
@@ -325,7 +462,7 @@ async function main() {
 
     const people: Row[] = oldPeople.map((p) => ({
       id: p.id,
-      name: fit(p.name, `person ${p.id}`),
+      name: fit(p.name, `person ${p.id}`, 25),
       table_id: oldTableIds.has(p.table_id) ? p.table_id : null,
       event_id: LEGACY_EVENT.id,
     }));
@@ -358,7 +495,18 @@ async function main() {
       .map((o) => ({ order_id: o.id, person_id: o.person_id }));
     orders.forEach((o) => delete o.person_id);
 
+    const hiddenSummary = [];
+    for (const [table, rows] of hidden.tables) {
+      hiddenSummary.push([
+        `${table} (hidden)`,
+        0,
+        rows,
+        await insert(newDb, table, rows),
+      ]);
+    }
+
     const summary = [
+      ...hiddenSummary,
       ['event', 0, [event], await insert(newDb, 'event', [event])],
       ['table_slot', 0, newSlots, await insert(newDb, 'table_slot', newSlots)],
       ['table', oldTables.length, tables, await insert(newDb, 'table', tables)],
@@ -381,35 +529,33 @@ async function main() {
     );
     console.table(summary);
 
-    const skipped = oldOrders.filter((o) => !variantMap.has(o.variant_key));
-    if (skipped.length > 0) {
-      const ordered = new Map<string, number>();
-      for (const o of skipped) {
-        ordered.set(
-          o.variant_key,
-          (ordered.get(o.variant_key) ?? 0) + o.quantity,
-        );
-      }
+    if (missingQty.size > 0) {
       console.warn(
-        `! ${skipped.length} orders skipped: no unique match in the current menu`,
+        `! ${missingQty.size} old menu items had no unique match, recreated as hidden foods:`,
       );
       console.table(
         unmatched
-          .filter((v) => ordered.has(v.id))
+          .filter((v) => missingQty.has(v.id))
           .map((v) => ({
             category: v.category,
             food: v.foods.join(' / '),
             label: v.label,
             price: v.price,
-            qty: ordered.get(v.id),
+            qty: missingQty.get(v.id),
           })),
       );
+    }
+    const skipped = oldOrders.length - orders.length;
+    if (skipped > 0) {
+      console.warn(`! ${skipped} orders skipped: their table no longer exists`);
     }
     if (unpriced > 0) {
       console.warn(`! ${unpriced} orders had no price anywhere, imported at 0`);
     }
     if (truncated.length > 0) {
-      console.warn(`! ${truncated.length} names cut to 255 characters:`);
+      console.warn(
+        `! ${truncated.length} names were over 255 characters and got cut:`,
+      );
       truncated.forEach((t) => console.warn(`  ${t}`));
     }
 
