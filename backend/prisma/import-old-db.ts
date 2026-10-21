@@ -6,6 +6,8 @@ import { generatePin } from '../src/common/pin';
 // Copies tables, people and orders from the old Prisma app (OLD_DATABASE_URL)
 // into DATABASE_URL, all under one inactive LEGACY_EVENT. The menu is not
 // copied: each old order is re-pointed at the matching current variant.
+// Old staging tables are later copies of the originals (via referenceId),
+// people and orders included, so only non-staging tables are read.
 //
 //   bun prisma/import-old-db.ts            dry run, rolls back
 //   bun prisma/import-old-db.ts --apply    commits
@@ -359,11 +361,12 @@ async function main() {
     const { rows: oldTables } = await oldDb.query(`
       SELECT id::text, name, capacity, "tableLeaderId"::text AS leader_id,
         "createdAt" AS created_at
-      FROM "Table" ORDER BY "createdAt", name
+      FROM "Table" WHERE NOT "isStaging" ORDER BY "createdAt", name
     `);
     const { rows: oldPeople } = await oldDb.query(`
-      SELECT id::text, name, "tableId"::text AS table_id FROM "People"
-      ORDER BY "createdAt"
+      SELECT p.id::text, p.name, p."tableId"::text AS table_id FROM "People" p
+      JOIN "Table" t ON t.id = p."tableId" AND NOT t."isStaging"
+      ORDER BY p."createdAt"
     `);
     const { rows: oldOrders } = await oldDb.query(`
       SELECT o.id::text, o."tableId"::text AS table_id, o.quantity,
@@ -371,6 +374,7 @@ async function main() {
         o."taggedPersonId"::text AS person_id,
         o."createdAt" AS created_at, o."updatedAt" AS updated_at, v.price
       FROM "Order" o
+      JOIN "Table" t ON t.id = o."tableId" AND NOT t."isStaging"
       LEFT JOIN "FoodVariant" v ON v.id = o."variantId"
     `);
 
