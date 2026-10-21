@@ -1,7 +1,7 @@
-import "dotenv/config";
-import { Client } from "pg";
-import { randomUUID } from "crypto";
-import { generatePin } from "../src/common/pin";
+import 'dotenv/config';
+import { Client } from 'pg';
+import { randomUUID } from 'crypto';
+import { generatePin } from '../src/common/pin';
 
 // Copies people and orders (plus the events, tables, notes and splits they
 // hang off) from OLD_DATABASE_URL into DATABASE_URL. The menu is not copied:
@@ -10,9 +10,11 @@ import { generatePin } from "../src/common/pin";
 //
 //   bun prisma/import-old-db.ts            dry run, rolls back
 //   bun prisma/import-old-db.ts --apply    commits
+//   bun prisma/import-old-db.ts --inspect  lists the old db's tables and row counts
 
-const APPLY = process.argv.includes("--apply");
-const LEGACY_EVENT = { id: "furum-2025", name: "Furum 2025" };
+const APPLY = process.argv.includes('--apply');
+const INSPECT = process.argv.includes('--inspect');
+const LEGACY_EVENT = { id: 'furum-2025', name: 'Furum 2025' };
 
 type Row = Record<string, any>;
 
@@ -25,12 +27,12 @@ interface VariantInfo {
 }
 
 const norm = (s: unknown) =>
-  String(s ?? "")
+  String(s ?? '')
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, " ");
+    .replace(/\s+/g, ' ');
 
-const priceKey = (p: unknown) => (p == null ? "" : Number(p).toFixed(2));
+const priceKey = (p: unknown) => (p == null ? '' : Number(p).toFixed(2));
 
 async function columns(db: Client, table: string): Promise<Set<string>> {
   const { rows } = await db.query(
@@ -48,25 +50,26 @@ async function selectAll(db: Client, table: string): Promise<Row[]> {
 }
 
 async function loadVariants(db: Client): Promise<VariantInfo[]> {
-  const variantCols = await columns(db, "food_variant");
-  const categoryCols = await columns(db, "category");
+  const variantCols = await columns(db, 'food_variant');
+  const categoryCols = await columns(db, 'category');
   const hasVariantTranslations =
-    (await columns(db, "food_variant_translation")).size > 0;
+    (await columns(db, 'food_variant_translation')).size > 0;
 
   const translatedLabel = `(SELECT vt.label FROM food_variant_translation vt
     WHERE vt.variant_id = v.id ORDER BY vt.language = 'en' DESC LIMIT 1)`;
   const label = [
     hasVariantTranslations ? translatedLabel : null,
-    variantCols.has("label") ? "v.label" : null,
+    variantCols.has('label') ? 'v.label' : null,
     `''`,
   ].filter(Boolean);
-  const categoryKey = categoryCols.has("key") ? "c.key" : "c.name";
+  const categoryKey = categoryCols.has('key') ? 'c.key' : 'c.name';
+  const foodName = (await columns(db, 'food')).has('name') ? 'f.name' : 'NULL';
 
   const { rows } = await db.query(`
     SELECT v.id, v.price,
-      COALESCE(${label.join(", ")}) AS label,
-      (SELECT ft.name FROM food_translation ft
-        WHERE ft.food_id = f.id ORDER BY ft.language = 'en' DESC LIMIT 1) AS food,
+      COALESCE(${label.join(', ')}) AS label,
+      COALESCE((SELECT ft.name FROM food_translation ft
+        WHERE ft.food_id = f.id ORDER BY ft.language = 'en' DESC LIMIT 1), ${foodName}) AS food,
       ${categoryKey} AS category
     FROM food_variant v
     JOIN food f ON f.id = v.food_id
@@ -87,9 +90,9 @@ async function loadVariants(db: Client): Promise<VariantInfo[]> {
 function matchVariants(oldVariants: VariantInfo[], newVariants: VariantInfo[]) {
   const newIds = new Set(newVariants.map((v) => v.id));
   const keys: ((v: VariantInfo) => string)[] = [
-    (v) => [v.category, v.food, v.label, v.price].join("|"),
-    (v) => [v.food, v.label, v.price].join("|"),
-    (v) => [v.food, v.label].join("|"),
+    (v) => [v.category, v.food, v.label, v.price].join('|'),
+    (v) => [v.food, v.label, v.price].join('|'),
+    (v) => [v.food, v.label].join('|'),
     (v) => v.food,
   ];
   const indexes = keys.map((key) => {
@@ -117,6 +120,42 @@ function matchVariants(oldVariants: VariantInfo[], newVariants: VariantInfo[]) {
   return { mapping, unmatched };
 }
 
+/** Prints every table in the old database with its row count, to find where
+ *  the data actually lives when the import comes up empty. */
+async function inspect(url: string) {
+  const db = new Client({ connectionString: url });
+  await db.connect();
+  try {
+    const { rows: databases } = await db.query(
+      'SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY 1',
+    );
+    console.log(
+      `Databases on this server: ${databases.map((d) => d.datname).join(', ')}`,
+    );
+
+    const { rows: tables } = await db.query(`
+      SELECT table_schema, table_name FROM information_schema.tables
+      WHERE table_type = 'BASE TABLE'
+        AND table_schema NOT IN ('pg_catalog', 'information_schema')
+      ORDER BY 1, 2
+    `);
+    const counts = [];
+    for (const t of tables) {
+      const { rows } = await db.query(
+        `SELECT count(*)::int AS n FROM "${t.table_schema}"."${t.table_name}"`,
+      );
+      counts.push({
+        schema: t.table_schema,
+        table: t.table_name,
+        rows: rows[0].n,
+      });
+    }
+    console.table(counts);
+  } finally {
+    await db.end();
+  }
+}
+
 async function insert(db: Client, table: string, rows: Row[]): Promise<number> {
   if (rows.length === 0) return 0;
   const cols = Object.keys(rows[0]);
@@ -130,11 +169,11 @@ async function insert(db: Client, table: string, rows: Row[]): Promise<number> {
             params.push(r[c]);
             return `$${params.length}`;
           })
-          .join(", ")})`,
+          .join(', ')})`,
     );
     const res = await db.query(
-      `INSERT INTO "${table}" (${cols.map((c) => `"${c}"`).join(", ")})
-       VALUES ${values.join(", ")} ON CONFLICT DO NOTHING`,
+      `INSERT INTO "${table}" (${cols.map((c) => `"${c}"`).join(', ')})
+       VALUES ${values.join(', ')} ON CONFLICT DO NOTHING`,
       params,
     );
     inserted += res.rowCount ?? 0;
@@ -146,11 +185,15 @@ async function main() {
   const oldUrl = process.env.OLD_DATABASE_URL;
   const newUrl = process.env.DATABASE_URL;
   if (!oldUrl || !newUrl) {
-    throw new Error("Set OLD_DATABASE_URL and DATABASE_URL in backend/.env");
+    throw new Error('Set OLD_DATABASE_URL and DATABASE_URL in backend/.env');
+  }
+  if (INSPECT) {
+    await inspect(oldUrl);
+    return;
   }
   if (oldUrl === newUrl) {
     throw new Error(
-      "OLD_DATABASE_URL and DATABASE_URL point at the same database",
+      'OLD_DATABASE_URL and DATABASE_URL point at the same database',
     );
   }
 
@@ -160,15 +203,15 @@ async function main() {
   await newDb.connect();
 
   try {
-    const oldEvents = await selectAll(oldDb, "event");
-    const oldTables = await selectAll(oldDb, "table");
+    const oldEvents = await selectAll(oldDb, 'event');
+    const oldTables = await selectAll(oldDb, 'table');
     const oldSlots = new Map(
-      (await selectAll(oldDb, "table_slot")).map((s) => [s.id, s]),
+      (await selectAll(oldDb, 'table_slot')).map((s) => [s.id, s]),
     );
-    const oldPeople = await selectAll(oldDb, "people");
-    const oldNotes = await selectAll(oldDb, "personal_note");
-    const oldOrders = await selectAll(oldDb, "order");
-    const oldSplits = await selectAll(oldDb, "order_split");
+    const oldPeople = await selectAll(oldDb, 'people');
+    const oldNotes = await selectAll(oldDb, 'personal_note');
+    const oldOrders = await selectAll(oldDb, 'order');
+    const oldSplits = await selectAll(oldDb, 'order_split');
 
     const { mapping: variantMap, unmatched } = matchVariants(
       await loadVariants(oldDb),
@@ -179,10 +222,10 @@ async function main() {
       orderedVariantIds.has(v.id),
     );
 
-    await newDb.query("BEGIN");
+    await newDb.query('BEGIN');
 
     const { rows: activeRows } = await newDb.query(
-      "SELECT 1 FROM event WHERE is_active LIMIT 1",
+      'SELECT 1 FROM event WHERE is_active LIMIT 1',
     );
     const targetHasActiveEvent = activeRows.length > 0;
     const events: Row[] = oldEvents.map((e) => ({
@@ -194,7 +237,7 @@ async function main() {
     }));
 
     const { rows: targetSlots } = await newDb.query(
-      "SELECT id, no, name FROM table_slot",
+      'SELECT id, no, name FROM table_slot',
     );
     const slotByNo = new Map<number, string>(
       targetSlots.map((s) => [s.no, s.id]),
@@ -204,6 +247,18 @@ async function main() {
     );
     const newSlots: Row[] = [];
 
+    // Old numbered tables keep their number, so unnumbered ones must not take it.
+    const reservedNos = new Set<number>(
+      oldTables
+        .map((t) => (t.slot_id ? oldSlots.get(t.slot_id)?.no : t.no))
+        .filter((no) => no >= 0),
+    );
+    const nextFreeNo = () => {
+      let no = 1;
+      while (slotByNo.has(no) || reservedNos.has(no)) no++;
+      return no;
+    };
+
     const resolveSlot = (t: Row): string | null => {
       const old = t.slot_id ? oldSlots.get(t.slot_id) : null;
       const no: number | null = old?.no ?? (t.no >= 0 ? t.no : null);
@@ -212,11 +267,11 @@ async function main() {
         (no != null ? slotByNo.get(no) : undefined) ??
         (name ? slotByName.get(norm(name)) : undefined);
       if (existing) return existing;
-      if (no == null) return null;
+      if (no == null && (t.is_staging || !name)) return null;
 
       const slot = {
         id: randomUUID(),
-        no,
+        no: no ?? nextFreeNo(),
         name: name ?? `T${no}`,
         x: old?.x ?? t.x ?? null,
         y: old?.y ?? t.y ?? null,
@@ -319,42 +374,42 @@ async function main() {
     }
 
     const summary = [
-      ["event", oldEvents.length, events, await insert(newDb, "event", events)],
-      ["table_slot", 0, newSlots, await insert(newDb, "table_slot", newSlots)],
-      ["table", oldTables.length, tables, await insert(newDb, "table", tables)],
+      ['event', oldEvents.length, events, await insert(newDb, 'event', events)],
+      ['table_slot', 0, newSlots, await insert(newDb, 'table_slot', newSlots)],
+      ['table', oldTables.length, tables, await insert(newDb, 'table', tables)],
       [
-        "people",
+        'people',
         oldPeople.length,
         people,
-        await insert(newDb, "people", people),
+        await insert(newDb, 'people', people),
       ],
       [
-        "personal_note",
+        'personal_note',
         oldNotes.length,
         notes,
-        await insert(newDb, "personal_note", notes),
+        await insert(newDb, 'personal_note', notes),
       ],
-      ["order", oldOrders.length, orders, await insert(newDb, "order", orders)],
+      ['order', oldOrders.length, orders, await insert(newDb, 'order', orders)],
       [
-        "order_split",
+        'order_split',
         oldSplits.length,
         splits,
-        await insert(newDb, "order_split", splits),
+        await insert(newDb, 'order_split', splits),
       ],
     ].map(
       ([table, inOld, rows, inserted]: [string, number, Row[], number]) => ({
         table,
-        "in old db": inOld,
-        "to import": rows.length,
+        'in old db': inOld,
+        'to import': rows.length,
         inserted,
-        "already there": rows.length - inserted,
+        'already there': rows.length - inserted,
       }),
     );
     console.table(summary);
 
     if (targetHasActiveEvent && oldEvents.some((e) => e.is_active)) {
       console.warn(
-        "! the current db already has an active event, imported events were set inactive",
+        '! the current db already has an active event, imported events were set inactive',
       );
     }
     if (unmatchedOrdered.length > 0) {
@@ -376,14 +431,14 @@ async function main() {
     }
 
     if (APPLY) {
-      await newDb.query("COMMIT");
-      console.log("✓ Committed");
+      await newDb.query('COMMIT');
+      console.log('✓ Committed');
     } else {
-      await newDb.query("ROLLBACK");
-      console.log("Dry run, nothing written. Re-run with --apply to commit.");
+      await newDb.query('ROLLBACK');
+      console.log('Dry run, nothing written. Re-run with --apply to commit.');
     }
   } catch (err) {
-    await newDb.query("ROLLBACK").catch(() => undefined);
+    await newDb.query('ROLLBACK').catch(() => undefined);
     throw err;
   } finally {
     await oldDb.end();
