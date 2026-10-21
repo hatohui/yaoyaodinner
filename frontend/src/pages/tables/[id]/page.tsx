@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { ArrowLeft, Check, Pencil, Share2, Users } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -24,6 +24,7 @@ const tabTrigger =
 
 export default function TableDetailPage() {
 	const { t } = useTranslation()
+	const backTo: string | undefined = useLocation().state?.backTo
 	const {
 		id,
 		table,
@@ -58,11 +59,11 @@ export default function TableDetailPage() {
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
 			<Link
-				to='/tables'
+				to={backTo ?? '/tables'}
 				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
 			>
 				<ArrowLeft className='size-4' />
-				{t('tables.all_tables')}
+				{backTo ? t('common.back') : t('tables.all_tables')}
 			</Link>
 
 			<TableBanner

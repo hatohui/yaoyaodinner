@@ -241,7 +241,7 @@ export class FoodService {
         : {}),
     };
 
-    const [rawFoods, total, popularIds] = await Promise.all([
+    const [rawFoods, total, popularIds, perFood] = await Promise.all([
       prisma.food.findMany({
         where,
         skip: offset,
@@ -251,10 +251,14 @@ export class FoodService {
       }),
       prisma.food.count({ where }),
       this.getPopularFoodIds(),
+      this.getPopularityMap(),
     ]);
 
     return {
-      foods: rawFoods.map((f) => this.toDetailDto(f, popularIds.has(f.id))),
+      foods: rawFoods.map((f) => ({
+        ...this.toDetailDto(f, popularIds.has(f.id)),
+        orderCount: perFood.get(f.id) ?? 0,
+      })),
       page,
       count: rawFoods.length,
       total,

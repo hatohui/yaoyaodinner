@@ -35,6 +35,7 @@ export * from './eventStatsDto';
 export * from './eventSummaryDto';
 export * from './feedbackItemDto';
 export * from './feedbackReactionDto';
+export * from './foodAdminItemDto';
 export * from './foodDetailDto';
 export * from './foodItemDto';
 export * from './foodVariantDto';

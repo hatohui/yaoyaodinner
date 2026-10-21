@@ -61,7 +61,9 @@ export function EditableName({
 
 	return (
 		<span className='inline-flex min-w-0 items-center gap-1.5'>
-			<span className={cn('truncate', className)}>{value}</span>
+			<span title={value} className={cn('truncate', className)}>
+				{value}
+			</span>
 			<button
 				type='button'
 				onClick={() => setEditing(true)}

@@ -26,7 +26,13 @@ export class StatsService {
     return names;
   }
 
-  async popular(scope: 'event' | 'all', lang = 'en', forEventId?: string) {
+  /** `limit` 0 returns every variant that has been ordered. */
+  async popular(
+    scope: 'event' | 'all',
+    lang = 'en',
+    forEventId?: string,
+    limit = 10,
+  ) {
     const eventId =
       scope === 'event'
         ? await this.events.resolveEventId(forEventId)
@@ -38,7 +44,7 @@ export class StatsService {
       where: eventId ? { eventId } : {},
       _sum: { quantity: true },
       orderBy: { _sum: { quantity: 'desc' } },
-      take: 10,
+      ...(limit > 0 ? { take: limit } : {}),
     });
 
     const names = await this.variantNames(

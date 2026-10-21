@@ -422,6 +422,7 @@
 			"live": "ใช้งานอยู่",
 			"empty": "ยังไม่มีโต๊ะ",
 			"select_all": "เลือกทั้งหมด",
+			"open_table": "เปิดโต๊ะ",
 			"selected_count": "เลือกแล้ว {{count}} รายการ",
 			"bulk_create": "สร้างจำนวนมาก",
 			"bulk_create_title": "สร้างโต๊ะจำนวนมาก",
@@ -473,7 +474,10 @@
 			"scope_all": "ทั้งหมด",
 			"totals_title": "ยอดรวมต่อโต๊ะ",
 			"totals_empty": "ยังไม่มีโต๊ะ",
-			"outlier": "ผิดปกติ"
+			"outlier": "ผิดปกติ",
+			"all_ordered": "ดูรายการที่สั่งทั้งหมด",
+			"all_ordered_title": "รายการที่สั่งทั้งหมด",
+			"all_ordered_summary": "{{items}} รายการ สั่งรวม {{count}} ที่"
 		},
 		"feedback": {
 			"title": "ความคิดเห็น",
@@ -524,7 +528,9 @@
 			"default_variant_label": "ปกติ",
 			"description": "คำอธิบาย",
 			"currency": "หน่วย",
-			"image": "รูปภาพ"
+			"image": "รูปภาพ",
+			"ordered": "สั่งแล้ว",
+			"ordered_count": "สั่ง {{count}} ครั้ง"
 		},
 		"presets": {
 			"title": "เมนูชุดสำเร็จรูป",

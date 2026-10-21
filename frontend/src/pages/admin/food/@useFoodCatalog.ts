@@ -16,7 +16,7 @@ import {
 import { useGetCategories } from '@/api/categories/categories'
 import type {
 	CategoryItemDto,
-	FoodDetailDto,
+	FoodAdminItemDto,
 	GetFoodsForAdminResponseDto,
 } from '@/api/model'
 import { usePagination } from '@/hooks/usePagination'
@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/useToast'
 import { updateFood as apiUpdateFood } from '@/api/foods/foods'
 
 /** Default variant's price/id flattened onto the row so the grid can edit it in place. */
-export type FoodGridRow = FoodDetailDto & {
+export type FoodGridRow = FoodAdminItemDto & {
 	price: number | null
 	currency: string | null
 	variantId: string | null
@@ -90,7 +90,7 @@ export function useFoodCatalog() {
 	/** Paints the inline edit immediately; rolled back by onError. */
 	const patchRow = async (
 		id: string,
-		apply: (row: FoodDetailDto) => FoodDetailDto
+		apply: (row: FoodAdminItemDto) => FoodAdminItemDto
 	) => {
 		await qc.cancelQueries({ queryKey: listKey })
 		const prev = qc.getQueryData<GetFoodsForAdminResponseDto>(listKey)

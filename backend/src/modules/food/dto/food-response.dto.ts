@@ -63,8 +63,13 @@ export class FoodDetailDto {
   @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }
 
+export class FoodAdminItemDto extends FoodDetailDto {
+  @ApiProperty({ description: 'Total quantity ever ordered, across all events.' })
+  orderCount: number;
+}
+
 export class GetFoodsForAdminResponseDto {
-  @ApiProperty({ type: [FoodDetailDto] }) foods: FoodDetailDto[];
+  @ApiProperty({ type: [FoodAdminItemDto] }) foods: FoodAdminItemDto[];
   @ApiProperty() page: number;
   @ApiProperty() count: number;
   @ApiProperty() total: number;

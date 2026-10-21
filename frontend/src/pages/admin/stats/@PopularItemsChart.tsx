@@ -42,17 +42,23 @@ export function PopularItemsChart({
 		fill: `var(--chart-${(index % 5) + 1})`,
 	}))
 
-	const chartConfig = items.reduce((acc, item, index) => {
-		acc[item.name] = {
-			label: item.name,
-			color: `var(--chart-${(index % 5) + 1})`,
-		}
-		return acc
-	}, { count: { label: 'Orders' } } as ChartConfig)
+	const chartConfig = items.reduce(
+		(acc, item, index) => {
+			acc[item.name] = {
+				label: item.name,
+				color: `var(--chart-${(index % 5) + 1})`,
+			}
+			return acc
+		},
+		{ count: { label: 'Orders' } } as ChartConfig
+	)
 
 	return (
 		<div className='flex min-h-[300px] w-full items-center justify-center rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
-			<ChartContainer config={chartConfig} className='aspect-square w-full max-w-[300px]'>
+			<ChartContainer
+				config={chartConfig}
+				className='aspect-square w-full max-w-[300px]'
+			>
 				<PieChart>
 					<ChartTooltip
 						cursor={false}
