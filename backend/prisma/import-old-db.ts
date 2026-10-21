@@ -1,17 +1,15 @@
 import 'dotenv/config';
 import { Client } from 'pg';
-import { randomUUID } from 'crypto';
 import { generatePin } from '../src/common/pin';
 
 // Run via `task db:import:old`, `db:import:old:apply` or `db:import:old:inspect`.
-// Copies people and orders (plus the events, tables, notes and splits they
-// hang off) from OLD_DATABASE_URL into DATABASE_URL. The menu is not copied:
-// each old order is re-pointed at the matching variant in the current menu.
-// The old app had no events, so anything without one lands in LEGACY_EVENT.
+// Copies tables, people and orders from the old Prisma app (OLD_DATABASE_URL)
+// into DATABASE_URL, all under one inactive LEGACY_EVENT. The menu is not
+// copied: each old order is re-pointed at the matching current variant.
 //
 //   bun prisma/import-old-db.ts            dry run, rolls back
 //   bun prisma/import-old-db.ts --apply    commits
-//   bun prisma/import-old-db.ts --inspect  lists the old db's tables and row counts
+//   bun prisma/import-old-db.ts --inspect  lists the old db's tables and columns
 
 const APPLY = process.argv.includes('--apply');
 const INSPECT = process.argv.includes('--inspect');
@@ -22,7 +20,7 @@ type Row = Record<string, any>;
 interface VariantInfo {
   id: string;
   category: string;
-  food: string;
+  foods: string[];
   label: string;
   price: string;
 }
@@ -35,72 +33,65 @@ const norm = (s: unknown) =>
 
 const priceKey = (p: unknown) => (p == null ? '' : Number(p).toFixed(2));
 
-async function columns(db: Client, table: string): Promise<Set<string>> {
-  const { rows } = await db.query(
-    `SELECT column_name FROM information_schema.columns
-     WHERE table_schema = 'public' AND table_name = $1`,
-    [table],
-  );
-  return new Set(rows.map((r) => r.column_name));
+const toVariant = (r: Row): VariantInfo => ({
+  id: r.id,
+  category: norm(r.category),
+  foods: [...new Set([r.food, r.food_en].filter(Boolean).map(norm))],
+  label: norm(r.label),
+  price: priceKey(r.price),
+});
+
+/** Old variants, plus one pseudo-variant per food (`food:<id>`, no label or
+ *  price) for orders that only recorded the food. */
+async function loadOldVariants(db: Client): Promise<VariantInfo[]> {
+  const foodEn = `(SELECT ft.name FROM "FoodTranslation" ft
+    WHERE ft."foodId" = f.id AND ft.language = 'en' LIMIT 1)`;
+  const { rows: variants } = await db.query(`
+    SELECT v.id::text, v.label, v.price, f.name AS food, ${foodEn} AS food_en,
+      c.name AS category
+    FROM "FoodVariant" v
+    JOIN "Food" f ON f.id = v."foodId"
+    LEFT JOIN "Category" c ON c.id = f."categoryId"
+  `);
+  const { rows: foods } = await db.query(`
+    SELECT 'food:' || f.id::text AS id, NULL AS label, NULL AS price,
+      f.name AS food, ${foodEn} AS food_en, c.name AS category
+    FROM "Food" f
+    LEFT JOIN "Category" c ON c.id = f."categoryId"
+  `);
+  return [...variants, ...foods].map(toVariant);
 }
 
-async function selectAll(db: Client, table: string): Promise<Row[]> {
-  if ((await columns(db, table)).size === 0) return [];
-  const { rows } = await db.query(`SELECT * FROM "${table}"`);
-  return rows;
-}
-
-async function loadVariants(db: Client): Promise<VariantInfo[]> {
-  const variantCols = await columns(db, 'food_variant');
-  const categoryCols = await columns(db, 'category');
-  const hasVariantTranslations =
-    (await columns(db, 'food_variant_translation')).size > 0;
-
-  const translatedLabel = `(SELECT vt.label FROM food_variant_translation vt
-    WHERE vt.variant_id = v.id ORDER BY vt.language = 'en' DESC LIMIT 1)`;
-  const label = [
-    hasVariantTranslations ? translatedLabel : null,
-    variantCols.has('label') ? 'v.label' : null,
-    `''`,
-  ].filter(Boolean);
-  const categoryKey = categoryCols.has('key') ? 'c.key' : 'c.name';
-  const foodName = (await columns(db, 'food')).has('name') ? 'f.name' : 'NULL';
-
+async function loadCurrentVariants(db: Client): Promise<VariantInfo[]> {
   const { rows } = await db.query(`
-    SELECT v.id, v.price,
-      COALESCE(${label.join(', ')}) AS label,
-      COALESCE((SELECT ft.name FROM food_translation ft
-        WHERE ft.food_id = f.id ORDER BY ft.language = 'en' DESC LIMIT 1), ${foodName}) AS food,
-      ${categoryKey} AS category
+    SELECT v.id, v.price, c.key AS category,
+      (SELECT vt.label FROM food_variant_translation vt
+        WHERE vt.variant_id = v.id ORDER BY vt.language = 'en' DESC LIMIT 1) AS label,
+      (SELECT ft.name FROM food_translation ft
+        WHERE ft.food_id = f.id ORDER BY ft.language = 'en' DESC LIMIT 1) AS food
     FROM food_variant v
     JOIN food f ON f.id = v.food_id
-    LEFT JOIN category c ON c.id = f.category_id
+    JOIN category c ON c.id = f.category_id
   `);
-
-  return rows.map((r) => ({
-    id: r.id,
-    category: norm(r.category),
-    food: norm(r.food),
-    label: norm(r.label),
-    price: priceKey(r.price),
-  }));
+  return rows.map(toVariant);
 }
 
 /** Matches old variants to current ones, loosening the key one step at a time
  *  and only accepting a step when it yields exactly one candidate. */
-function matchVariants(oldVariants: VariantInfo[], newVariants: VariantInfo[]) {
-  const newIds = new Set(newVariants.map((v) => v.id));
-  const keys: ((v: VariantInfo) => string)[] = [
-    (v) => [v.category, v.food, v.label, v.price].join('|'),
-    (v) => [v.food, v.label, v.price].join('|'),
-    (v) => [v.food, v.label].join('|'),
-    (v) => v.food,
+function matchVariants(oldVariants: VariantInfo[], current: VariantInfo[]) {
+  const keys: ((v: VariantInfo, food: string) => string)[] = [
+    (v, food) => [v.category, food, v.label, v.price].join('|'),
+    (v, food) => [food, v.label, v.price].join('|'),
+    (v, food) => [food, v.label].join('|'),
+    (_, food) => food,
   ];
   const indexes = keys.map((key) => {
-    const index = new Map<string, string[]>();
-    for (const v of newVariants) {
-      const k = key(v);
-      index.set(k, [...(index.get(k) ?? []), v.id]);
+    const index = new Map<string, Set<string>>();
+    for (const v of current) {
+      for (const food of v.foods) {
+        const k = key(v, food);
+        index.set(k, (index.get(k) ?? new Set()).add(v.id));
+      }
     }
     return index;
   });
@@ -108,21 +99,15 @@ function matchVariants(oldVariants: VariantInfo[], newVariants: VariantInfo[]) {
   const mapping = new Map<string, string>();
   const unmatched: VariantInfo[] = [];
   for (const v of oldVariants) {
-    if (newIds.has(v.id)) {
-      mapping.set(v.id, v.id);
-      continue;
-    }
     const hit = keys
-      .map((key, i) => indexes[i].get(key(v)))
-      .find((candidates) => candidates?.length === 1);
-    if (hit) mapping.set(v.id, hit[0]);
+      .flatMap((key, i) => v.foods.map((food) => indexes[i].get(key(v, food))))
+      .find((candidates) => candidates?.size === 1);
+    if (hit) mapping.set(v.id, [...hit][0]);
     else unmatched.push(v);
   }
   return { mapping, unmatched };
 }
 
-/** Prints every table in the old database with its row count, to find where
- *  the data actually lives when the import comes up empty. */
 async function inspect(url: string) {
   const db = new Client({ connectionString: url });
   await db.connect();
@@ -226,178 +211,147 @@ async function main() {
   await newDb.connect();
 
   try {
-    const oldEvents = await selectAll(oldDb, 'event');
-    const oldTables = await selectAll(oldDb, 'table');
-    const oldSlots = new Map(
-      (await selectAll(oldDb, 'table_slot')).map((s) => [s.id, s]),
-    );
-    const oldPeople = await selectAll(oldDb, 'people');
-    const oldNotes = await selectAll(oldDb, 'personal_note');
-    const oldOrders = await selectAll(oldDb, 'order');
-    const oldSplits = await selectAll(oldDb, 'order_split');
+    const { rows: oldTables } = await oldDb.query(`
+      SELECT id::text, name, capacity, "tableLeaderId"::text AS leader_id,
+        "isStaging" AS is_staging, "createdAt" AS created_at
+      FROM "Table" ORDER BY "createdAt", name
+    `);
+    const { rows: oldPeople } = await oldDb.query(`
+      SELECT id::text, name, "tableId"::text AS table_id FROM "People"
+      ORDER BY "createdAt"
+    `);
+    const { rows: oldOrders } = await oldDb.query(`
+      SELECT o.id::text, o."tableId"::text AS table_id, o.quantity,
+        COALESCE(o."variantId"::text, 'food:' || o."foodId"::text) AS variant_key,
+        o."taggedPersonId"::text AS person_id,
+        o."createdAt" AS created_at, o."updatedAt" AS updated_at, v.price
+      FROM "Order" o
+      LEFT JOIN "FoodVariant" v ON v.id = o."variantId"
+    `);
 
+    const currentVariants = await loadCurrentVariants(newDb);
+    const currentPrice = new Map(currentVariants.map((v) => [v.id, v.price]));
     const { mapping: variantMap, unmatched } = matchVariants(
-      await loadVariants(oldDb),
-      await loadVariants(newDb),
-    );
-    const orderedVariantIds = new Set(oldOrders.map((o) => o.variant_id));
-    const unmatchedOrdered = unmatched.filter((v) =>
-      orderedVariantIds.has(v.id),
+      await loadOldVariants(oldDb),
+      currentVariants,
     );
 
     await newDb.query('BEGIN');
 
-    const { rows: activeRows } = await newDb.query(
-      'SELECT 1 FROM event WHERE is_active LIMIT 1',
-    );
-    const targetHasActiveEvent = activeRows.length > 0;
-    const events: Row[] = oldEvents.map((e) => ({
-      id: e.id,
-      pin: e.pin,
-      name: e.name,
-      is_active: targetHasActiveEvent ? false : e.is_active,
-      created_at: e.created_at,
-    }));
-
-    const { rows: targetSlots } = await newDb.query(
-      'SELECT id, no, name FROM table_slot',
-    );
-    const slotByNo = new Map<number, string>(
-      targetSlots.map((s) => [s.no, s.id]),
-    );
-    const slotByName = new Map<string, string>(
-      targetSlots.map((s) => [norm(s.name), s.id]),
-    );
-    const newSlots: Row[] = [];
-
-    // Old numbered tables keep their number, so unnumbered ones must not take it.
-    const reservedNos = new Set<number>(
-      oldTables
-        .map((t) => (t.slot_id ? oldSlots.get(t.slot_id)?.no : t.no))
-        .filter((no) => no >= 0),
-    );
-    const nextFreeNo = () => {
-      let no = 1;
-      while (slotByNo.has(no) || reservedNos.has(no)) no++;
-      return no;
+    const event = {
+      id: LEGACY_EVENT.id,
+      pin: generatePin(),
+      name: LEGACY_EVENT.name,
+      is_active: false,
+      created_at: oldTables[0]?.created_at ?? new Date(),
     };
 
-    const resolveSlot = (t: Row): string | null => {
-      const old = t.slot_id ? oldSlots.get(t.slot_id) : null;
-      const no: number | null = old?.no ?? (t.no >= 0 ? t.no : null);
-      const name: string | null = old?.name ?? t.name ?? null;
-      const existing =
-        (no != null ? slotByNo.get(no) : undefined) ??
-        (name ? slotByName.get(norm(name)) : undefined);
-      if (existing) return existing;
-      if (no == null && (t.is_staging || !name)) return null;
+    // An old table takes the current active slot with the same name, if that
+    // slot is still free in the legacy event. Otherwise it gets its own
+    // inactive slot (kept off the floor plan) so its name survives.
+    const { rows: slots } = await newDb.query(
+      'SELECT id, no, name, is_active FROM table_slot',
+    );
+    const slotIds = new Set<string>(slots.map((s) => s.id));
+    const usedNos = new Set<number>(slots.map((s) => s.no));
+    const activeSlotByName = new Map<string, string>(
+      slots.filter((s) => s.is_active).map((s) => [norm(s.name), s.id]),
+    );
+    const oldTableIds = new Set(oldTables.map((t) => t.id));
+    const { rows: seated } = await newDb.query(
+      'SELECT id, slot_id FROM "table" WHERE event_id = $1 AND slot_id IS NOT NULL',
+      [LEGACY_EVENT.id],
+    );
+    const takenSlots = new Set<string>(
+      seated.filter((t) => !oldTableIds.has(t.id)).map((t) => t.slot_id),
+    );
+    const existingSlotOf = new Map<string, string>(
+      seated.map((t) => [t.id, t.slot_id]),
+    );
 
-      const slot = {
-        id: randomUUID(),
-        no: no ?? nextFreeNo(),
-        name: name ?? `T${no}`,
-        x: old?.x ?? t.x ?? null,
-        y: old?.y ?? t.y ?? null,
-        default_capacity: old?.default_capacity ?? t.capacity ?? 1,
-        is_active: true,
-      };
-      newSlots.push(slot);
-      slotByNo.set(slot.no, slot.id);
-      slotByName.set(norm(slot.name), slot.id);
-      return slot.id;
+    const newSlots: Row[] = [];
+    const slotFor = (t: Row): string => {
+      const existing = existingSlotOf.get(t.id);
+      if (existing) return existing;
+      const byName = activeSlotByName.get(norm(t.name));
+      if (byName && !takenSlots.has(byName)) {
+        takenSlots.add(byName);
+        return byName;
+      }
+      const id = `${LEGACY_EVENT.id}-${t.id}`;
+      if (!slotIds.has(id)) {
+        let no = 1;
+        while (usedNos.has(no)) no++;
+        usedNos.add(no);
+        slotIds.add(id);
+        newSlots.push({
+          id,
+          no,
+          name: t.name,
+          default_capacity: t.capacity,
+          is_active: false,
+        });
+      }
+      takenSlots.add(id);
+      return id;
     };
 
     const peopleIds = new Set(oldPeople.map((p) => p.id));
-    const tableEvent = new Map<string, string | null>(
-      oldTables.map((t) => [t.id, t.event_id ?? null]),
-    );
-    let needsLegacyEvent = false;
-    const eventFor = (eventId: string | null, tableId?: string | null) => {
-      const id = eventId ?? (tableId ? tableEvent.get(tableId) : null);
-      if (id) return id;
-      needsLegacyEvent = true;
-      return LEGACY_EVENT.id;
-    };
-
-    const { rows: seatedTables } = await newDb.query(
-      'SELECT id, slot_id, event_id FROM "table" WHERE slot_id IS NOT NULL',
-    );
-    const oldTableIds = new Set(oldTables.map((t) => t.id));
-    const usedSlotEvents = new Set<string>(
-      seatedTables
-        .filter((t) => !oldTableIds.has(t.id))
-        .map((t) => `${t.slot_id}|${t.event_id}`),
-    );
+    const usedLeaders = new Set<string>();
     const tables: Row[] = oldTables.map((t) => {
-      const eventId = eventFor(t.event_id);
-      let slotId = resolveSlot(t);
-      if (slotId && usedSlotEvents.has(`${slotId}|${eventId}`)) {
-        console.warn(
-          `! table ${t.id}: slot already taken in its event, left unseated`,
-        );
-        slotId = null;
-      }
-      if (slotId) usedSlotEvents.add(`${slotId}|${eventId}`);
+      const leader =
+        peopleIds.has(t.leader_id) && !usedLeaders.has(t.leader_id)
+          ? t.leader_id
+          : null;
+      if (leader) usedLeaders.add(leader);
       return {
         id: t.id,
-        slot_id: slotId,
+        slot_id: slotFor(t),
         capacity: t.capacity,
-        table_leader_id: peopleIds.has(t.table_leader_id)
-          ? t.table_leader_id
-          : null,
+        table_leader_id: leader,
         is_staging: t.is_staging,
-        event_id: eventId,
-        banner_url: t.banner_url ?? null,
-        code: t.code ?? generatePin(),
+        event_id: LEGACY_EVENT.id,
+        code: generatePin(),
       };
     });
-    const tableIds = new Set(tables.map((t) => t.id));
 
     const people: Row[] = oldPeople.map((p) => ({
       id: p.id,
       name: p.name,
-      table_id: tableIds.has(p.table_id) ? p.table_id : null,
-      event_id: eventFor(p.event_id, p.table_id),
-      pfp_url: p.pfp_url ?? null,
+      table_id: oldTableIds.has(p.table_id) ? p.table_id : null,
+      event_id: LEGACY_EVENT.id,
     }));
 
-    const notes: Row[] = oldNotes
-      .filter((n) => peopleIds.has(n.person_id))
-      .map((n) => ({ id: n.id, person_id: n.person_id, content: n.content }));
-
+    let unpriced = 0;
     const orders: Row[] = oldOrders
-      .filter((o) => tableIds.has(o.table_id) && variantMap.has(o.variant_id))
-      .map((o) => ({
-        id: o.id,
-        table_id: o.table_id,
-        variant_id: variantMap.get(o.variant_id),
-        event_id: eventFor(o.event_id, o.table_id),
-        quantity: o.quantity,
-        price: o.price,
-        split_all: o.split_all ?? true,
-        updated_at: o.updated_at ?? o.created_at,
-        created_at: o.created_at,
-      }));
-    const orderIds = new Set(orders.map((o) => o.id));
-
-    const splits: Row[] = oldSplits
-      .filter((s) => orderIds.has(s.order_id) && peopleIds.has(s.person_id))
-      .map((s) => ({ order_id: s.order_id, person_id: s.person_id }));
-
-    if (needsLegacyEvent) {
-      events.push({
-        id: LEGACY_EVENT.id,
-        pin: generatePin(),
-        name: LEGACY_EVENT.name,
-        is_active: false,
-        created_at:
-          oldOrders.map((o) => o.created_at).sort((a, b) => a - b)[0] ??
-          new Date(),
+      .filter(
+        (o) => oldTableIds.has(o.table_id) && variantMap.has(o.variant_key),
+      )
+      .map((o) => {
+        const variantId = variantMap.get(o.variant_key);
+        const price = o.price ?? (currentPrice.get(variantId) || null);
+        if (price == null) unpriced++;
+        const tagged = peopleIds.has(o.person_id);
+        return {
+          id: o.id,
+          table_id: o.table_id,
+          variant_id: variantId,
+          event_id: LEGACY_EVENT.id,
+          quantity: o.quantity,
+          price: price ?? 0,
+          split_all: !tagged,
+          updated_at: o.updated_at,
+          created_at: o.created_at,
+          person_id: tagged ? o.person_id : null,
+        };
       });
-    }
+    const splits: Row[] = orders
+      .filter((o) => o.person_id)
+      .map((o) => ({ order_id: o.id, person_id: o.person_id }));
+    orders.forEach((o) => delete o.person_id);
 
     const summary = [
-      ['event', oldEvents.length, events, await insert(newDb, 'event', events)],
+      ['event', 0, [event], await insert(newDb, 'event', [event])],
       ['table_slot', 0, newSlots, await insert(newDb, 'table_slot', newSlots)],
       ['table', oldTables.length, tables, await insert(newDb, 'table', tables)],
       [
@@ -406,19 +360,8 @@ async function main() {
         people,
         await insert(newDb, 'people', people),
       ],
-      [
-        'personal_note',
-        oldNotes.length,
-        notes,
-        await insert(newDb, 'personal_note', notes),
-      ],
       ['order', oldOrders.length, orders, await insert(newDb, 'order', orders)],
-      [
-        'order_split',
-        oldSplits.length,
-        splits,
-        await insert(newDb, 'order_split', splits),
-      ],
+      ['order_split', 0, splits, await insert(newDb, 'order_split', splits)],
     ].map(
       ([table, inOld, rows, inserted]: [string, number, Row[], number]) => ({
         table,
@@ -430,27 +373,32 @@ async function main() {
     );
     console.table(summary);
 
-    if (targetHasActiveEvent && oldEvents.some((e) => e.is_active)) {
+    const skipped = oldOrders.filter((o) => !variantMap.has(o.variant_key));
+    if (skipped.length > 0) {
+      const ordered = new Map<string, number>();
+      for (const o of skipped) {
+        ordered.set(
+          o.variant_key,
+          (ordered.get(o.variant_key) ?? 0) + o.quantity,
+        );
+      }
       console.warn(
-        '! the current db already has an active event, imported events were set inactive',
-      );
-    }
-    if (unmatchedOrdered.length > 0) {
-      const skipped = oldOrders.filter(
-        (o) => !variantMap.has(o.variant_id),
-      ).length;
-      console.warn(
-        `! ${skipped} orders skipped: no unique match in the current menu for these variants`,
+        `! ${skipped.length} orders skipped: no unique match in the current menu`,
       );
       console.table(
-        unmatchedOrdered.map(({ id, category, food, label, price }) => ({
-          id,
-          category,
-          food,
-          label,
-          price,
-        })),
+        unmatched
+          .filter((v) => ordered.has(v.id))
+          .map((v) => ({
+            category: v.category,
+            food: v.foods.join(' / '),
+            label: v.label,
+            price: v.price,
+            qty: ordered.get(v.id),
+          })),
       );
+    }
+    if (unpriced > 0) {
+      console.warn(`! ${unpriced} orders had no price anywhere, imported at 0`);
     }
 
     if (APPLY) {
