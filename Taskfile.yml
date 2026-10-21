@@ -82,6 +82,10 @@ tasks:
       - task: db:reset
       - "cd backend && bunx prisma db seed -- --with-sample-data"
 
+  db:import:old:
+    desc: Copy people + orders from OLD_DATABASE_URL (dry run; pass `-- --apply` to commit)
+    cmd: "cd backend && bun prisma/import-old-db.ts {{.CLI_ARGS}}"
+
   db:migrate:
     desc: Create a new migration
     cmd: "cd backend && bunx prisma migrate dev --name {{.NAME}}"
