@@ -270,6 +270,19 @@ async function inspect(url: string) {
     }
     console.table(counts);
 
+    if (counts.some((c) => c.table === 'Table')) {
+      const { rows: breakdown } = await db.query(`
+        SELECT left(t.id::text, 8) AS id, t.name, t."isStaging" AS staging,
+          left(t."referenceId"::text, 8) AS ref,
+          EXISTS (SELECT 1 FROM "Layout" l WHERE l."tableId" = t.id) AS layout,
+          (SELECT count(*)::int FROM "People" p WHERE p."tableId" = t.id) AS people,
+          (SELECT count(*)::int FROM "Order" o WHERE o."tableId" = t.id) AS orders,
+          to_char(t."createdAt", 'YYYY-MM-DD HH24:MI') AS created
+        FROM "Table" t ORDER BY t."createdAt"
+      `);
+      console.table(breakdown);
+    }
+
     const { rows: cols } = await db.query(`
       SELECT table_schema, table_name, column_name, data_type, is_nullable
       FROM information_schema.columns
@@ -345,7 +358,7 @@ async function main() {
   try {
     const { rows: oldTables } = await oldDb.query(`
       SELECT id::text, name, capacity, "tableLeaderId"::text AS leader_id,
-        "isStaging" AS is_staging, "createdAt" AS created_at
+        "createdAt" AS created_at
       FROM "Table" ORDER BY "createdAt", name
     `);
     const { rows: oldPeople } = await oldDb.query(`
@@ -454,7 +467,8 @@ async function main() {
         slot_id: slotFor(t),
         capacity: t.capacity,
         table_leader_id: leader,
-        is_staging: t.is_staging,
+        // Creating an event adopts every staging table, so none may come across as one.
+        is_staging: false,
         event_id: LEGACY_EVENT.id,
         code: generatePin(),
       };
