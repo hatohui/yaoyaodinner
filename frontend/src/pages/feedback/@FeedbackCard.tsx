@@ -6,6 +6,7 @@ import { useConfig } from '@/hooks/useConfig'
 import { DeleteFeedbackButton } from '@/components/common/DeleteFeedbackButton'
 import { ViewableImage } from '@/components/common/ViewableImage'
 import { cn } from '@/utils/shadcn'
+import { FeedbackAuthor } from './@FeedbackAuthor'
 
 interface FeedbackCardProps {
 	item: FeedbackItemDto
@@ -14,15 +15,13 @@ interface FeedbackCardProps {
 }
 
 export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
-	const { t, i18n } = useTranslation()
+	const { i18n } = useTranslation()
 	const { suggestedReactions } = useConfig()
 
 	return (
 		<div className='flex flex-col gap-2 rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
 			<div className='flex items-center justify-between'>
-				<span className='text-sm font-semibold text-foreground'>
-					{item.by || t('feedback.anonymous')}
-				</span>
+				<FeedbackAuthor by={item.by} author={item.author} />
 				<div className='flex items-center gap-1'>
 					<span className='text-xs text-muted-foreground'>
 						{new Intl.DateTimeFormat(i18n.language, {

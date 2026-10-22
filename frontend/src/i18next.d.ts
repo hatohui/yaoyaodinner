@@ -273,6 +273,8 @@ declare module 'react-i18next' {
         }
         notes: { title: string; placeholder: string; empty: string }
         feedback: {
+          author_table: string
+          go_to_table: string
           title: string
           name_placeholder: string
           content_placeholder: string

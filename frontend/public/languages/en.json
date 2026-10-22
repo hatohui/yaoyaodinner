@@ -295,6 +295,8 @@
 		"empty": "No note yet"
 	},
 	"feedback": {
+		"author_table": "Table {{no}} · {{name}}",
+		"go_to_table": "Go to table",
 		"title": "Feedback wall",
 		"name_placeholder": "Your name (optional)",
 		"content_placeholder": "Say something…",

@@ -295,6 +295,8 @@
 		"empty": "Chưa có ghi chú"
 	},
 	"feedback": {
+		"author_table": "Bàn {{no}} · {{name}}",
+		"go_to_table": "Đến bàn",
 		"title": "Bảng góp ý",
 		"name_placeholder": "Tên của bạn (không bắt buộc)",
 		"content_placeholder": "Viết gì đó…",

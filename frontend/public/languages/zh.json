@@ -295,6 +295,8 @@
 		"empty": "暂无备注"
 	},
 	"feedback": {
+		"author_table": "{{no}} 号桌 · {{name}}",
+		"go_to_table": "去这桌",
 		"title": "反馈墙",
 		"name_placeholder": "你的名字（可选）",
 		"content_placeholder": "说点什么…",

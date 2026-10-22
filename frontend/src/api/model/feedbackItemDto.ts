@@ -5,6 +5,7 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { FeedbackAuthorDto } from './feedbackAuthorDto';
 import type { FeedbackReactionDto } from './feedbackReactionDto';
 
 export interface FeedbackItemDto {
@@ -19,6 +20,8 @@ export interface FeedbackItemDto {
   eventId: string | null;
   reactions: FeedbackReactionDto[];
   reactionTotal: number;
+  /** The person at the event whose name matches "by", if exactly one does */
+  author?: FeedbackAuthorDto | null;
   createdAt: string;
   updatedAt: string;
 }

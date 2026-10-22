@@ -99,7 +99,7 @@ export function Roster({ table, canEdit, onSetHost }: RosterProps) {
 							person={person}
 							isMe={person.id === me?.id}
 							isHost={person.id === table.tableLeaderId}
-							showClaim={canEdit && !mine}
+							showClaim={canEdit && !me}
 							canEdit={canEdit}
 							compact={compact}
 							onClaim={() => claim(person)}
@@ -121,7 +121,7 @@ export function Roster({ table, canEdit, onSetHost }: RosterProps) {
 
 			<PersonDialog
 				person={editingPerson}
-				canClaim={!mine}
+				canClaim={!me}
 				isHost={editingPerson?.id === table.tableLeaderId}
 				onOpenChange={open => !open && setEditingId(null)}
 				onSave={changes => {

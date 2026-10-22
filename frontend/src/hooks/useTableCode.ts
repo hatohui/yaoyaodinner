@@ -5,7 +5,7 @@ import { useVerifyTableCode, verifyTableCode } from '@/api/tables/tables'
 import { localStorage } from '@/utils/localstorage'
 import { TABLE_CODE_STORAGE_KEY } from '@/common/constants'
 import { useConfig } from '@/hooks/useConfig'
-import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useEditMode } from '@/hooks/useEditMode'
 import { useGuest } from '@/hooks/useGuest'
 
 /** A device holds one table's code at a time, so it can't collect them. */
@@ -45,9 +45,9 @@ export const useHeldTableCode = create<TableCodeState>((set, get) => ({
 	},
 }))
 
-/** Admins can always edit; guests need the table's code saved on this device. */
+/** Admins edit while edit mode is on; everyone else needs the table's code saved on this device. */
 export function useTableAccess(tableId: string) {
-	const { isAdmin } = useIsAdmin()
+	const { editing: isAdmin } = useEditMode()
 	const held = useHeldTableCode(s => s.held)
 	const release = useHeldTableCode(s => s.release)
 	const code = held?.tableId === tableId ? held.code : null

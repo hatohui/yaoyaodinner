@@ -295,6 +295,8 @@
 		"empty": "ยังไม่มีโน้ต"
 	},
 	"feedback": {
+		"author_table": "โต๊ะ {{no}} · {{name}}",
+		"go_to_table": "ไปที่โต๊ะ",
 		"title": "กระดานความคิดเห็น",
 		"name_placeholder": "ชื่อของคุณ (ไม่บังคับ)",
 		"content_placeholder": "พูดอะไรสักอย่าง…",

@@ -21,17 +21,12 @@ export const LanguageSelector = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger className='flex h-8 w-auto items-center gap-1.5 rounded-full border-none bg-transparent px-2.5 outline-none shadow-none transition-colors hover:bg-accent focus:ring-0 focus:outline-none'>
 				<Globe className='size-3.5 shrink-0 text-muted-foreground' />
-				<span className='hidden sm:contents text-sm font-medium'>
-					{languages.find(l => l.code === lang)?.name || lang}
-				</span>
-				<span className='contents sm:hidden text-xs font-semibold uppercase'>
-					{lang}
-				</span>
+				<span className='text-xs font-semibold uppercase'>{lang}</span>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end' className='w-36 rounded-xl'>
 				{languages.map(l => (
-					<DropdownMenuItem 
-						key={l.code} 
+					<DropdownMenuItem
+						key={l.code}
 						onClick={() => setLanguage(l.code)}
 						className={`cursor-pointer rounded-lg ${l.code === lang ? 'bg-primary/10 text-primary font-semibold' : ''}`}
 					>

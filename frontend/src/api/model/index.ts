@@ -33,6 +33,7 @@ export * from './createTableSlotDto';
 export * from './eventDto';
 export * from './eventStatsDto';
 export * from './eventSummaryDto';
+export * from './feedbackAuthorDto';
 export * from './feedbackItemDto';
 export * from './feedbackReactionDto';
 export * from './foodAdminItemDto';
