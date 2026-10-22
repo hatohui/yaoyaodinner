@@ -52,7 +52,7 @@ export class FeedbackService {
         }))
         .sort((a, b) => b.reactionTotal - a.reactionTotal);
       const feedback = withTotals.slice((page - 1) * count, page * count);
-      return { feedback, total };
+      return { feedback: await this.withAuthors(eventId, feedback), total };
     }
 
     const feedback = await prisma.feedback.findMany({
@@ -63,12 +63,72 @@ export class FeedbackService {
       take: count,
     });
     return {
-      feedback: feedback.map((f) => ({
-        ...f,
-        reactionTotal: f.reactions.reduce((s, r) => s + r.count, 0),
-      })),
+      feedback: await this.withAuthors(
+        eventId,
+        feedback.map((f) => ({
+          ...f,
+          reactionTotal: f.reactions.reduce((s, r) => s + r.count, 0),
+        })),
+      ),
       total,
     };
+  }
+
+  /**
+   * Posts only store a typed name, so link it to someone at the event when
+   * exactly one person has that name; a shared name stays unlinked.
+   */
+  private async withAuthors<T extends { by: string | null }>(
+    eventId: string,
+    items: T[],
+  ) {
+    const names = [
+      ...new Set(
+        items.map((f) => f.by?.trim()).filter((n): n is string => Boolean(n)),
+      ),
+    ];
+    if (names.length === 0) return items.map((f) => ({ ...f, author: null }));
+
+    const people = await prisma.people.findMany({
+      where: {
+        eventId,
+        OR: names.map((name) => ({
+          name: { equals: name, mode: 'insensitive' as const },
+        })),
+      },
+      select: {
+        id: true,
+        name: true,
+        pfpUrl: true,
+        personalNotes: { select: { content: true }, take: 1 },
+        table: {
+          select: { id: true, no: true, slot: { select: { name: true } } },
+        },
+      },
+    });
+
+    const byName = new Map<string, typeof people>();
+    for (const p of people) {
+      const key = p.name.toLowerCase();
+      byName.set(key, [...(byName.get(key) ?? []), p]);
+    }
+
+    return items.map((f) => {
+      const matches = f.by ? byName.get(f.by.trim().toLowerCase()) : undefined;
+      const p = matches?.length === 1 ? matches[0] : null;
+      return {
+        ...f,
+        author: p && {
+          personId: p.id,
+          name: p.name,
+          pfpUrl: p.pfpUrl,
+          note: p.personalNotes[0]?.content ?? null,
+          tableId: p.table?.id ?? null,
+          tableNo: p.table?.no ?? null,
+          tableName: p.table?.slot?.name ?? null,
+        },
+      };
+    });
   }
 
   async create(dto: CreateFeedbackDto) {
