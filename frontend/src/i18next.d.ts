@@ -61,6 +61,12 @@ declare module 'react-i18next' {
           invalid_pin: string
           saved_note: string
         }
+        identity: {
+          signed_in_as: string
+          my_table: string
+          log_out: string
+          logged_out: string
+        }
         table_code: {
           title: string
           subtitle: string
@@ -110,19 +116,18 @@ declare module 'react-i18next' {
           remove_title: string
           remove_desc: string
           link_copied: string
-          share: string
+          copy_link: string
           not_found: string
           add_failed: string
           remove_failed: string
           update_failed: string
-          set_host: string
-          unset_host: string
           this_is_me: string
-          not_me: string
+          edit_person: string
+          name_label: string
+          note_label: string
+          host_label: string
           you: string
           pick_yourself: string
-          edit_note: string
-          more_actions: string
         }
         menu: {
           restaurant_name: string
@@ -381,6 +386,8 @@ declare module 'react-i18next' {
             reroll_failed: string
             copy_codes: string
             codes_copied: string
+            codes_sheet: string
+            codes_empty: string
           }
           floor_plan: {
             drag_hint: string

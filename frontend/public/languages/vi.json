@@ -96,11 +96,17 @@
 		"invalid_pin": "Mã PIN không đúng",
 		"saved_note": "Được lưu trên thiết bị này sau lần nhập đầu"
 	},
+	"identity": {
+		"signed_in_as": "Đang là {{name}}",
+		"my_table": "Bàn của tôi",
+		"log_out": "Đăng xuất",
+		"logged_out": "Bạn đã đăng xuất"
+	},
 	"table_code": {
 		"title": "Nhập mã bàn",
 		"subtitle": "Hỏi người ngồi cùng bàn để lấy mã và chỉnh sửa",
-		"locked": "Chỉ xem. Nhập mã bàn để chỉnh sửa.",
-		"enter": "Nhập mã",
+		"locked": "Bạn ngồi bàn này? Nhập mã bàn để tham gia.",
+		"enter": "Tôi ngồi bàn này",
 		"unlock": "Mở khóa",
 		"unlocking": "Đang mở khóa…",
 		"invalid": "Mã không đúng",
@@ -145,19 +151,18 @@
 		"remove_title": "Xóa {{name}} khỏi {{table}}?",
 		"remove_desc": "Không thể hoàn tác - họ sẽ không còn trong danh sách bàn này.",
 		"link_copied": "Đã sao chép liên kết",
-		"share": "Chia sẻ",
+		"copy_link": "Sao chép liên kết",
 		"not_found": "Không tìm thấy bàn",
 		"add_failed": "Không thêm được - bàn có thể đã đầy",
 		"remove_failed": "Không xóa được, vui lòng thử lại",
 		"update_failed": "Không thể cập nhật bàn",
-		"set_host": "Đặt làm chủ bàn",
-		"unset_host": "Bỏ chủ bàn",
 		"this_is_me": "Là tôi",
-		"not_me": "Không phải tôi",
+		"edit_person": "Sửa {{name}}",
+		"name_label": "Tên",
+		"note_label": "Ghi chú",
+		"host_label": "Chủ bàn",
 		"you": "Bạn",
-		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn.",
-		"edit_note": "Sửa ghi chú",
-		"more_actions": "Thêm tùy chọn"
+		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn."
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -234,7 +239,7 @@
 		"remove": "Xóa",
 		"remove_title": "Xóa {{name}}?",
 		"remove_desc": "Không thể hoàn tác - món này sẽ bị xóa khỏi đơn của bàn.",
-		"empty": "Chưa có đơn nào - hãy thêm món từ thực đơn",
+		"empty": "Chưa có đơn nào",
 		"total": "Tổng của bàn",
 		"quantity": "Số lượng",
 		"update_failed": "Không cập nhật được, vui lòng thử lại",
@@ -278,7 +283,6 @@
 		"people_count": "{{count}} người"
 	},
 	"notes": {
-		"title": "Ghi chú của {{name}}",
 		"placeholder": "Thêm ghi chú mọi người đều thấy được, vd: \"không ăn được tôm\"",
 		"empty": "Chưa có ghi chú"
 	},
@@ -445,7 +449,9 @@
 			"codes_rerolled": "Đã tạo mã mới",
 			"reroll_failed": "Không thể tạo mã mới",
 			"copy_codes": "Sao chép mã",
-			"codes_copied": "Đã sao chép các mã"
+			"codes_copied": "Đã sao chép các mã",
+			"codes_sheet": "Mã bàn",
+			"codes_empty": "Chưa có bàn nào có mã"
 		},
 		"floor_plan": {
 			"drag_hint": "Kéo bàn vào đúng vị trí trên sơ đồ - vị trí sẽ tự lưu khi bạn thả.",

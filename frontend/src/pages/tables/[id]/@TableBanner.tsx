@@ -9,21 +9,31 @@ import { defaultBannerSrc } from '../@tableCardUtils'
 
 interface TableBannerProps {
 	table: TableDto
-	editing: boolean
+	canEdit: boolean
 	onChange: (bannerUrl: string | null) => void
 }
 
-export function TableBanner({ table, editing, onChange }: TableBannerProps) {
+export function TableBanner({ table, canEdit, onChange }: TableBannerProps) {
 	const { t } = useTranslation()
 	const [viewing, setViewing] = useState(false)
 
-	if (editing) {
+	const fallback = (
+		<img
+			src={defaultBannerSrc(table.no)}
+			alt=''
+			className='size-full rounded-2xl object-cover'
+		/>
+	)
+
+	if (canEdit) {
 		return (
 			<ImageUploadSlot
 				shape='banner'
 				folder='table-banners'
 				imageKey={table.bannerUrl}
 				onChange={onChange}
+				fallback={fallback}
+				className='sm:h-48'
 			/>
 		)
 	}
@@ -32,14 +42,8 @@ export function TableBanner({ table, editing, onChange }: TableBannerProps) {
 		<div className='relative'>
 			<StoredImage
 				imageKey={table.bannerUrl}
-				className='h-32 w-full rounded-2xl object-cover'
-				fallback={
-					<img
-						src={defaultBannerSrc(table.no)}
-						alt=''
-						className='h-32 w-full rounded-2xl object-cover'
-					/>
-				}
+				className='h-32 w-full rounded-2xl object-cover sm:h-48'
+				fallback={<div className='h-32 sm:h-48'>{fallback}</div>}
 			/>
 			{table.bannerUrl && (
 				<>

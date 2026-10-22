@@ -1,53 +1,38 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	Crown,
-	EllipsisVertical,
-	ImageOff,
-	NotebookText,
-	Trash2,
-	UserCheck,
-	UserX,
-} from 'lucide-react'
+import { Crown, NotebookText, Pencil, UserCheck } from 'lucide-react'
 import type { PersonDto, TableDto } from '@/api/model'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
-import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
-import { EditableName } from '@/components/common/EditableName'
+import { ImageViewer } from '@/components/common/ImageViewer'
 import { StoredImage } from '@/components/common/StoredImage'
 import { cn } from '@/utils/shadcn'
 import { useGuest } from '@/hooks/useGuest'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { ROSTER_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useRoster } from './@useRoster'
-import { PersonNoteDialog } from './@PersonNoteDialog'
+import { PersonDialog } from './@PersonDialog'
 
 interface RosterProps {
 	table: TableDto
-	editing: boolean
 	canEdit: boolean
 	onSetHost: (personId: string | null) => void
 }
 
-export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
+export function Roster({ table, canEdit, onSetHost }: RosterProps) {
 	const { t } = useTranslation()
 	const { people, add, remove, updatePfp, rename } = useRoster(table.id)
 	const me = useGuest(s => s.me)
 	const setMe = useGuest(s => s.setMe)
 	const clearMe = useGuest(s => s.clearMe)
 	const [pending, setPending] = useState<PersonDto | null>(null)
-	const [noteFor, setNoteFor] = useState<PersonDto | null>(null)
+	const [editingId, setEditingId] = useState<string | null>(null)
+	const [viewing, setViewing] = useState<PersonDto | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { view, setView } = useListView(ROSTER_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
 
 	const mine = people.find(p => p.id === me?.id)
+	const editingPerson = people.find(p => p.id === editingId) ?? null
 	useEffect(() => {
 		if (
 			mine &&
@@ -64,15 +49,13 @@ export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 		}
 	}, [mine, me, table.id, setMe])
 
-	const toggleMe = (person: PersonDto) =>
-		person.id === me?.id
-			? clearMe()
-			: setMe({
-					id: person.id,
-					name: person.name,
-					tableId: table.id,
-					pfpUrl: person.pfpUrl ?? null,
-				})
+	const claim = (person: PersonDto) =>
+		setMe({
+			id: person.id,
+			name: person.name,
+			tableId: table.id,
+			pfpUrl: person.pfpUrl ?? null,
+		})
 
 	const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 		if (e.key !== 'Enter') return
@@ -83,7 +66,7 @@ export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 	}
 
 	return (
-		<div className='flex flex-col gap-3'>
+		<div className='flex flex-col gap-3 sm:gap-4'>
 			<div className='flex items-center justify-between'>
 				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 					{t('roster.people_here')}
@@ -91,7 +74,7 @@ export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 				{people.length > 0 && <ViewToggle view={view} onChange={setView} />}
 			</div>
 
-			{people.length > 0 && !me && (
+			{canEdit && people.length > 0 && !me && (
 				<p className='flex items-start gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
 					<UserCheck className='mt-0.5 size-4 shrink-0 text-primary' />
 					{t('roster.pick_yourself')}
@@ -103,22 +86,24 @@ export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 					{t('roster.empty')}
 				</p>
 			) : (
-				<ul className={cn('flex flex-col', compact ? 'gap-1.5' : 'gap-2')}>
+				<ul
+					className={cn(
+						'flex flex-col',
+						compact ? 'gap-1.5' : 'gap-2 sm:gap-3'
+					)}
+				>
 					{people.map(person => (
 						<RosterItem
 							key={person.id}
 							person={person}
-							table={table}
 							isMe={person.id === me?.id}
-							hasMe={Boolean(mine)}
-							editing={editing}
+							isHost={person.id === table.tableLeaderId}
+							showClaim={canEdit && !mine}
+							canEdit={canEdit}
 							compact={compact}
-							onToggleMe={() => toggleMe(person)}
-							onSetHost={onSetHost}
-							onNote={() => setNoteFor(person)}
-							onRemove={() => setPending(person)}
-							onPfpChange={pfpUrl => updatePfp(person.id, pfpUrl)}
-							onRename={name => rename(person.id, name)}
+							onClaim={() => claim(person)}
+							onOpen={() => setEditingId(person.id)}
+							onView={() => setViewing(person)}
 						/>
 					))}
 				</ul>
@@ -129,9 +114,31 @@ export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 					ref={inputRef}
 					onKeyDown={handleKeyDown}
 					placeholder={t('roster.add_placeholder')}
-					className='rounded-2xl border border-dashed border-border bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary'
+					className='rounded-2xl border border-dashed border-border bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary sm:px-5 sm:py-4'
 				/>
 			)}
+
+			<PersonDialog
+				person={editingPerson}
+				isMe={editingPerson?.id === me?.id}
+				isHost={editingPerson?.id === table.tableLeaderId}
+				onOpenChange={open => !open && setEditingId(null)}
+				onPfpChange={pfpUrl =>
+					editingPerson && updatePfp(editingPerson.id, pfpUrl)
+				}
+				onSave={changes => {
+					if (!editingPerson) return
+					if (changes.name) rename(editingPerson.id, changes.name)
+					if (changes.isHost !== undefined)
+						onSetHost(changes.isHost ? editingPerson.id : null)
+					if (changes.isMe === true) claim(editingPerson)
+					if (changes.isMe === false) clearMe()
+				}}
+				onRemove={() => {
+					setPending(editingPerson)
+					setEditingId(null)
+				}}
+			/>
 
 			<ConfirmDialog
 				open={pending !== null}
@@ -151,184 +158,151 @@ export function Roster({ table, editing, canEdit, onSetHost }: RosterProps) {
 				}}
 			/>
 
-			<PersonNoteDialog
-				person={noteFor}
-				onOpenChange={open => !open && setNoteFor(null)}
-			/>
+			{viewing?.pfpUrl && (
+				<ImageViewer
+					imageKey={viewing.pfpUrl}
+					alt={viewing.name}
+					open
+					onOpenChange={open => !open && setViewing(null)}
+				/>
+			)}
 		</div>
 	)
 }
 
 function RosterItem({
 	person,
-	table,
 	isMe,
-	hasMe,
-	editing,
+	isHost,
+	showClaim,
+	canEdit,
 	compact,
-	onToggleMe,
-	onSetHost,
-	onNote,
-	onRemove,
-	onPfpChange,
-	onRename,
+	onClaim,
+	onOpen,
+	onView,
 }: {
 	person: PersonDto
-	table: TableDto
 	isMe: boolean
-	hasMe: boolean
-	editing: boolean
+	isHost: boolean
+	showClaim: boolean
+	canEdit: boolean
 	compact: boolean
-	onToggleMe: () => void
-	onSetHost: (id: string | null) => void
-	onNote: () => void
-	onRemove: () => void
-	onPfpChange: (pfpUrl: string | null) => void
-	onRename: (name: string) => void
+	onClaim: () => void
+	onOpen: () => void
+	onView: () => void
 }) {
 	const { t } = useTranslation()
-	const note = person.personalNotes?.[0]
-	const isHost = person.id === table.tableLeaderId
-	const canToggleMe = !person.id.startsWith('temp-')
-	const menuToggleMe = canToggleMe && hasMe
+	const note = person.personalNotes?.[0]?.content
+	const saved = !person.id.startsWith('temp-')
+	const editable = canEdit && saved
+
+	const avatar = (
+		<StoredImage
+			imageKey={person.pfpUrl}
+			className='size-full object-cover'
+			fallback={person.name.charAt(0).toUpperCase()}
+		/>
+	)
+	const avatarClass = cn(
+		'flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary font-semibold text-secondary-foreground',
+		compact ? 'size-8 text-xs' : 'size-11 text-sm sm:size-12'
+	)
 
 	return (
 		<li
 			className={cn(
-				'flex flex-col gap-3 border border-border bg-card shadow-sm',
-				compact ? 'rounded-xl px-3 py-2' : 'rounded-2xl px-4 py-3',
+				'relative flex items-center gap-3 border border-border bg-card shadow-sm transition-colors',
+				compact
+					? 'rounded-xl px-3 py-2'
+					: 'min-h-[4.5rem] rounded-2xl px-4 py-3 sm:gap-4 sm:px-5 sm:py-4',
+				editable && 'hover:border-primary/40 hover:bg-primary/5',
 				isMe && 'border-primary ring-2 ring-primary/30'
 			)}
 		>
-			<div className='flex items-center justify-between gap-2'>
-				<div className='flex min-w-0 items-center gap-2'>
-					{editing ? (
-						<ImageUploadSlot
-							shape='circle'
-							folder='person-pfps'
-							imageKey={person.pfpUrl}
-							onChange={onPfpChange}
-						/>
-					) : (
-						<span
-							className={cn(
-								'flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary font-semibold text-secondary-foreground',
-								compact ? 'size-7 text-xs' : 'size-10 text-sm'
-							)}
-						>
-							<StoredImage
-								imageKey={person.pfpUrl}
-								className='size-full object-cover'
-								fallback={person.name.charAt(0).toUpperCase()}
-							/>
+			{editable && (
+				<button
+					type='button'
+					onClick={onOpen}
+					aria-label={t('roster.edit_person', { name: person.name })}
+					className='absolute inset-0 cursor-pointer rounded-[inherit] outline-none focus-visible:ring-2 focus-visible:ring-ring'
+				/>
+			)}
+
+			{person.pfpUrl ? (
+				<button
+					type='button'
+					onClick={onView}
+					aria-label={t('common.view_image')}
+					className={cn(
+						avatarClass,
+						'relative cursor-zoom-in ring-primary/40 transition-shadow hover:ring-2'
+					)}
+				>
+					{avatar}
+				</button>
+			) : (
+				<span className={cn(avatarClass, 'pointer-events-none relative')}>
+					{avatar}
+				</span>
+			)}
+
+			<div
+				className={cn(
+					'pointer-events-none relative flex min-w-0 flex-1',
+					compact ? 'items-center gap-2' : 'flex-col gap-0.5'
+				)}
+			>
+				<span
+					className={cn(
+						'flex min-w-0 items-center gap-1.5 font-medium text-foreground',
+						compact ? 'shrink-0 text-sm' : 'sm:text-base'
+					)}
+				>
+					<span className='truncate'>{person.name}</span>
+					{isMe && (
+						<span className='shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-inset ring-primary/30'>
+							{t('roster.you')}
 						</span>
 					)}
+					{isHost && (
+						<span
+							title={t('roster.host')}
+							aria-label={t('roster.host')}
+							className='flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground'
+						>
+							<Crown className='size-3' />
+						</span>
+					)}
+				</span>
+				{note && (
 					<span
+						title={note}
 						className={cn(
-							'flex min-w-0 items-center gap-1.5 font-medium text-foreground',
-							compact && 'shrink-0 text-sm'
+							'flex min-w-0 items-center gap-1.5 text-muted-foreground',
+							compact ? 'text-xs' : 'text-sm'
 						)}
 					>
-						{editing ? (
-							<EditableName value={person.name} onSave={onRename} />
-						) : (
-							<span className='truncate'>{person.name}</span>
-						)}
-						{isMe && (
-							<span className='shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-inset ring-primary/30'>
-								{t('roster.you')}
-							</span>
-						)}
-						{isHost && (
-							<span
-								title={t('roster.host')}
-								aria-label={t('roster.host')}
-								className='flex size-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground'
-							>
-								<Crown className='size-3' />
-							</span>
-						)}
+						<NotebookText className='size-3.5 shrink-0 text-primary' />
+						<span className='truncate'>{note}</span>
 					</span>
-					{compact && note?.content && (
-						<span
-							title={note.content}
-							className='flex min-w-0 items-center gap-1 text-xs text-muted-foreground'
-						>
-							<NotebookText className='size-3 shrink-0 text-primary' />
-							<span className='truncate'>{note.content}</span>
-						</span>
-					)}
-				</div>
-				<div className='flex shrink-0 items-center gap-1'>
-					{canToggleMe && !hasMe && (
-						<button
-							type='button'
-							onClick={onToggleMe}
-							aria-pressed={isMe}
-							className={cn(
-								'mr-1 inline-flex items-center gap-1 rounded-full font-medium transition-colors',
-								compact ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs',
-								'border border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
-							)}
-						>
-							{!compact && <UserCheck className='size-3.5' />}
-							{t('roster.this_is_me')}
-						</button>
-					)}
-					{(editing || menuToggleMe) && (
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<button
-									type='button'
-									aria-label={t('roster.more_actions')}
-									className='rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-								>
-									<EllipsisVertical className='size-4' />
-								</button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align='end'>
-								{menuToggleMe && (
-									<DropdownMenuItem onSelect={onToggleMe}>
-										{isMe ? <UserX /> : <UserCheck />}
-										{t(isMe ? 'roster.not_me' : 'roster.this_is_me')}
-									</DropdownMenuItem>
-								)}
-								{editing && (
-									<>
-										<DropdownMenuItem
-											onSelect={() => onSetHost(isHost ? null : person.id)}
-										>
-											<Crown />
-											{t(isHost ? 'roster.unset_host' : 'roster.set_host')}
-										</DropdownMenuItem>
-										<DropdownMenuItem onSelect={onNote}>
-											<NotebookText />
-											{t('roster.edit_note')}
-										</DropdownMenuItem>
-										{person.pfpUrl && (
-											<DropdownMenuItem onSelect={() => onPfpChange(null)}>
-												<ImageOff />
-												{t('common.remove_image')}
-											</DropdownMenuItem>
-										)}
-										<DropdownMenuSeparator />
-										<DropdownMenuItem variant='destructive' onSelect={onRemove}>
-											<Trash2 />
-											{t('roster.remove')}
-										</DropdownMenuItem>
-									</>
-								)}
-							</DropdownMenuContent>
-						</DropdownMenu>
-					)}
-				</div>
+				)}
 			</div>
 
-			{!compact && note?.content && (
-				<div className='flex items-start gap-2 rounded-xl bg-primary/10 px-3 py-2 text-sm text-foreground/85'>
-					<NotebookText className='mt-0.5 size-3.5 shrink-0 text-primary' />
-					{note.content}
-				</div>
+			{saved && showClaim && (
+				<button
+					type='button'
+					onClick={onClaim}
+					className={cn(
+						'relative inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-control font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary',
+						compact ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs'
+					)}
+				>
+					{!compact && <UserCheck className='size-3.5' />}
+					{t('roster.this_is_me')}
+				</button>
+			)}
+			{editable && (
+				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground' />
 			)}
 		</li>
 	)

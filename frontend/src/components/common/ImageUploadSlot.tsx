@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Camera, Expand, ImagePlus, Loader2, X } from 'lucide-react'
 import { useImageUpload } from '@/hooks/useImageUpload'
@@ -17,6 +17,8 @@ interface ImageUploadSlotProps {
 	compact?: boolean
 	/** Crop aspect ratio for the banner shape */
 	aspect?: number
+	/** Shown in the banner shape while there is no image */
+	fallback?: ReactNode
 }
 
 export function ImageUploadSlot({
@@ -27,6 +29,7 @@ export function ImageUploadSlot({
 	className,
 	compact,
 	aspect = 3,
+	fallback,
 }: ImageUploadSlotProps) {
 	const { t } = useTranslation()
 	const { upload, validate, isUploading } = useImageUpload(folder)
@@ -197,19 +200,21 @@ export function ImageUploadSlot({
 				className
 			)}
 		>
-			{src && (
+			{src ? (
 				<StoredImage
 					imageKey={src}
 					className='absolute inset-0 size-full object-cover'
 				/>
+			) : (
+				fallback && <div className='absolute inset-0'>{fallback}</div>
 			)}
 			<button
 				type='button'
 				onClick={() => inputRef.current?.click()}
 				className={cn(
 					'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
-					src
-						? 'bg-black/50 text-white opacity-0 group-hover:opacity-100'
+					src || fallback
+						? 'bg-black/50 text-white opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100'
 						: 'text-primary'
 				)}
 			>
@@ -225,7 +230,7 @@ export function ImageUploadSlot({
 					type='button'
 					onClick={() => onChange(null)}
 					aria-label={t('common.remove_image')}
-					className='absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100'
+					className='absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100 [@media(hover:none)]:opacity-100'
 				>
 					<X className='size-3.5' />
 				</button>

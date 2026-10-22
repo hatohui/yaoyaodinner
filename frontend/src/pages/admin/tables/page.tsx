@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { CreateTableDialog } from './@CreateTableDialog'
 import { BulkCreateDialog } from './@BulkCreateDialog'
 import { TableListSection } from './@TableListSection'
+import { TableCodesDialog } from './@TableCodesDialog'
 import { useAdminTables } from './@useAdminTables'
 
 export default function AdminTablesPage() {
@@ -36,6 +37,7 @@ export default function AdminTablesPage() {
 					{t('admin.tables.title')}
 				</h1>
 				<div className='flex flex-wrap items-center gap-2'>
+					<TableCodesDialog codes={codes} />
 					<BulkCreateDialog pending={bulkCreating} onCreate={bulkCreate} />
 					<CreateTableDialog pending={creating} onCreate={createTable} />
 				</div>

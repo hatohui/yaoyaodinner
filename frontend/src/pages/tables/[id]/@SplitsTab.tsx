@@ -21,13 +21,15 @@ import {
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { cn } from '@/utils/shadcn'
 import { OrderThumb } from './@OrderThumb'
+import { TabEmptyState } from './@TabEmptyState'
 
 interface SplitsTabProps {
 	table: TableDto
 	people: PersonDto[]
+	canEdit: boolean
 }
 
-export function SplitsTab({ table, people }: SplitsTabProps) {
+export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 	const { t, i18n } = useTranslation()
 	const { personId: myPersonId } = useWhoAmI(table.id)
 	const [expanded, setExpanded] = useState<Set<string>>(new Set())
@@ -79,9 +81,11 @@ export function SplitsTab({ table, people }: SplitsTabProps) {
 
 	if (orders.length === 0 && flatPrice === 0) {
 		return (
-			<p className='py-6 text-center text-sm text-muted-foreground'>
-				{t('split.empty')}
-			</p>
+			<TabEmptyState
+				message={t('split.empty')}
+				tableId={table.id}
+				canEdit={canEdit}
+			/>
 		)
 	}
 

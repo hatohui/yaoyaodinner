@@ -96,11 +96,17 @@
 		"invalid_pin": "PIN 码不正确",
 		"saved_note": "首次输入后保存在此设备上"
 	},
+	"identity": {
+		"signed_in_as": "当前身份：{{name}}",
+		"my_table": "我的餐桌",
+		"log_out": "退出",
+		"logged_out": "已退出"
+	},
 	"table_code": {
 		"title": "输入餐桌代码",
 		"subtitle": "向同桌的人索取代码后即可编辑",
-		"locked": "仅可查看。输入餐桌代码即可编辑。",
-		"enter": "输入代码",
+		"locked": "你在这桌吗？输入餐桌代码加入。",
+		"enter": "我在这桌",
 		"unlock": "解锁",
 		"unlocking": "解锁中…",
 		"invalid": "代码不正确",
@@ -145,19 +151,18 @@
 		"remove_title": "将 {{name}} 从 {{table}} 移除？",
 		"remove_desc": "此操作无法撤销 - 他们将不再显示在此桌名单中。",
 		"link_copied": "链接已复制",
-		"share": "分享",
+		"copy_link": "复制链接",
 		"not_found": "未找到餐桌",
 		"add_failed": "无法添加 - 此桌可能已满",
 		"remove_failed": "移除失败，请重试",
 		"update_failed": "无法更新餐桌",
-		"set_host": "设为主人",
-		"unset_host": "取消主人",
 		"this_is_me": "这是我",
-		"not_me": "不是我",
+		"edit_person": "编辑 {{name}}",
+		"name_label": "名字",
+		"note_label": "备注",
+		"host_label": "桌主",
 		"you": "你",
-		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。",
-		"edit_note": "编辑备注",
-		"more_actions": "更多操作"
+		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -234,7 +239,7 @@
 		"remove": "移除",
 		"remove_title": "移除 {{name}}？",
 		"remove_desc": "此操作无法撤销 - 将从餐桌订单中移除。",
-		"empty": "暂无订单 - 从菜单添加一些吧",
+		"empty": "暂无订单",
 		"total": "餐桌总额",
 		"quantity": "数量",
 		"update_failed": "更新失败，请重试",
@@ -278,7 +283,6 @@
 		"people_count": "{{count}} 人"
 	},
 	"notes": {
-		"title": "{{name}} 的备注",
 		"placeholder": "添加所有人可见的备注，例如\"不吃虾\"",
 		"empty": "暂无备注"
 	},
@@ -445,7 +449,9 @@
 			"codes_rerolled": "已生成新代码",
 			"reroll_failed": "无法生成新代码",
 			"copy_codes": "复制代码",
-			"codes_copied": "已复制代码"
+			"codes_copied": "已复制代码",
+			"codes_sheet": "餐桌代码",
+			"codes_empty": "还没有带代码的餐桌"
 		},
 		"floor_plan": {
 			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。",

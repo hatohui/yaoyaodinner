@@ -4,12 +4,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
 	useGetTableById,
 	useUpdateTableDetails,
-	useUpdateTable,
 	getGetTableByIdQueryKey,
 	getGetTablesQueryKey,
 } from '@/api/tables/tables'
 import { useToast } from '@/hooks/useToast'
-import type { TableDto, UpdateTableDetailsDto, UpdateTableDto } from '@/api/model'
+import type { TableDto, UpdateTableDetailsDto } from '@/api/model'
 
 export function useTableDetail() {
 	const { id = '' } = useParams()
@@ -22,25 +21,6 @@ export function useTableDetail() {
 	const tableKey = getGetTableByIdQueryKey(id)
 
 	const { mutate: updateMutate } = useUpdateTableDetails({
-		mutation: {
-			onMutate: async ({ data: patch }) => {
-				await qc.cancelQueries({ queryKey: tableKey })
-				const prev = qc.getQueryData<TableDto>(tableKey)
-				if (prev) qc.setQueryData<TableDto>(tableKey, { ...prev, ...patch })
-				return { prev }
-			},
-			onError: (_e, _v, ctx) => {
-				qc.setQueryData(tableKey, ctx?.prev)
-				toast.error(t('roster.update_failed'))
-			},
-			onSettled: () => {
-				qc.invalidateQueries({ queryKey: tableKey })
-				qc.invalidateQueries({ queryKey: getGetTablesQueryKey() })
-			},
-		},
-	})
-
-	const { mutate: updateAdminMutate } = useUpdateTable({
 		mutation: {
 			onMutate: async ({ data: patch }) => {
 				await qc.cancelQueries({ queryKey: tableKey })
@@ -72,7 +52,5 @@ export function useTableDetail() {
 		shareLink,
 		updateTable: (patch: UpdateTableDetailsDto) =>
 			updateMutate({ id, data: patch }),
-		updateTableAdmin: (patch: UpdateTableDto) =>
-			updateAdminMutate({ id, data: patch }),
 	}
 }

@@ -14,6 +14,7 @@ import {
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageSelector } from './LanguageSelector'
 import { EditModeToggle } from './EditModeToggle'
+import { IdentityMenu } from './IdentityMenu'
 import {
 	Sheet,
 	SheetContent,
@@ -135,6 +136,7 @@ export function Navbar() {
 
 				<div className='flex shrink-0 items-center gap-0.5 sm:gap-1'>
 					{!pathname.startsWith('/admin') && <EditModeToggle />}
+					{!pathname.startsWith('/admin') && <IdentityMenu />}
 					<LanguageSelector />
 					<ThemeToggle />
 

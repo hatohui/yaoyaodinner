@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Users } from 'lucide-react'
 import { cn } from '@/utils/shadcn'
 
-const MAX_DOTS = 12
+const MAX_DOTS = 6
 
 interface SeatDotsProps {
 	seated: number

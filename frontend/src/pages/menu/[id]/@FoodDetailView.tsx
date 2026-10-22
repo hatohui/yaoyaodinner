@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { ArrowLeft, Share } from 'lucide-react'
+import { ArrowLeft, Link as LinkIcon } from 'lucide-react'
 import type { FoodDetailDto, FoodVariantDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { InlineEdit } from '@/components/common/InlineEdit'
@@ -57,14 +57,14 @@ export function FoodDetailView({
 		<button
 			type='button'
 			onClick={shareLink}
-			aria-label={t('roster.share')}
+			aria-label={t('roster.copy_link')}
 			className={cn(
 				'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-border bg-control text-sm font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary',
 				modal ? 'size-11' : 'px-3 py-1.5'
 			)}
 		>
-			<Share className='size-4' />
-			{!modal && t('roster.share')}
+			<LinkIcon className='size-4' />
+			{!modal && t('roster.copy_link')}
 		</button>
 	)
 
@@ -180,7 +180,6 @@ export function FoodDetailView({
 	const actions = (
 		<div className='flex flex-col gap-2'>
 			<div className='flex items-center gap-2'>
-				{modal && shareButton}
 				<Button
 					size='lg'
 					className='h-11 flex-1 rounded-full'
@@ -189,6 +188,7 @@ export function FoodDetailView({
 				>
 					{t('food_detail.add_to_order')}
 				</Button>
+				{modal && shareButton}
 			</div>
 			{!canOrder && (
 				<p className='text-center text-xs text-muted-foreground'>

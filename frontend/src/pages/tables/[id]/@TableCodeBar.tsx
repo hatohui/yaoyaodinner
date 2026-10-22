@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { Copy, KeyRound, Lock, RefreshCw } from 'lucide-react'
+import { Armchair, Copy, KeyRound, RefreshCw } from 'lucide-react'
 import {
 	getGetTableCodeQueryKey,
 	useGetTableCode,
@@ -9,28 +9,25 @@ import {
 } from '@/api/tables/tables'
 import type { TableCodeResponseDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
-import { TableCodeForm } from '@/components/common/TableCodeForm'
 import { useToast } from '@/hooks/useToast'
 
 interface TableCodeBarProps {
 	tableId: string
 	canEdit: boolean
 	isAdmin: boolean
+	onJoin: () => void
 }
 
-export function TableCodeBar({ tableId, canEdit, isAdmin }: TableCodeBarProps) {
+export function TableCodeBar({
+	tableId,
+	canEdit,
+	isAdmin,
+	onJoin,
+}: TableCodeBarProps) {
 	const { t } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
-	const [unlocking, setUnlocking] = useState(false)
 	const [confirmReroll, setConfirmReroll] = useState(false)
 
 	const { data: adminCode } = useGetTableCode<TableCodeResponseDto>(tableId, {
@@ -48,38 +45,15 @@ export function TableCodeBar({ tableId, canEdit, isAdmin }: TableCodeBarProps) {
 
 	if (!canEdit) {
 		return (
-			<>
-				<div className='flex items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3'>
-					<p className='flex items-start gap-2 text-sm text-foreground'>
-						<Lock className='mt-0.5 size-4 shrink-0 text-primary' />
-						{t('table_code.locked')}
-					</p>
-					<Button
-						size='sm'
-						className='shrink-0 rounded-full'
-						onClick={() => setUnlocking(true)}
-					>
-						{t('table_code.enter')}
-					</Button>
-				</div>
-
-				<Dialog open={unlocking} onOpenChange={setUnlocking}>
-					<DialogContent className='rounded-3xl sm:max-w-sm'>
-						<DialogHeader className='items-center text-center'>
-							<DialogTitle>{t('table_code.title')}</DialogTitle>
-							<DialogDescription>{t('table_code.subtitle')}</DialogDescription>
-						</DialogHeader>
-						<TableCodeForm
-							tableId={tableId}
-							autoFocus
-							onUnlock={() => {
-								setUnlocking(false)
-								toast.success(t('table_code.unlocked'))
-							}}
-						/>
-					</DialogContent>
-				</Dialog>
-			</>
+			<div className='flex items-center justify-between gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3'>
+				<p className='flex items-start gap-2 text-sm text-foreground'>
+					<Armchair className='mt-0.5 size-4 shrink-0 text-primary' />
+					{t('table_code.locked')}
+				</p>
+				<Button size='sm' className='shrink-0 rounded-full' onClick={onJoin}>
+					{t('table_code.enter')}
+				</Button>
+			</div>
 		)
 	}
 

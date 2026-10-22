@@ -8,6 +8,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useOrders } from './@useOrders'
 import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
+import { TabEmptyState } from './@TabEmptyState'
 import { groupOrders, type OrderedLine } from './@groupOrders'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
@@ -45,6 +46,12 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
 					{t('orders.needs_people_body')}
 				</p>
+			) : orders.length === 0 ? (
+				<TabEmptyState
+					message={t('orders.empty')}
+					tableId={table.id}
+					canEdit={canEdit}
+				/>
 			) : (
 				<div className='flex items-center justify-between gap-2'>
 					{canEdit ? (
@@ -62,11 +69,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 				</div>
 			)}
 
-			{orders.length === 0 ? (
-				<p className='py-6 text-center text-sm text-muted-foreground'>
-					{t('orders.empty')}
-				</p>
-			) : (
+			{orders.length > 0 && (
 				<ul className='flex flex-col gap-2'>
 					{lines.map(line => (
 						<OrderListItem
