@@ -24,6 +24,12 @@ export class TableDto {
   eventId: string | null;
   @ApiPropertyOptional({ nullable: true, type: String })
   bannerUrl: string | null;
+  @ApiPropertyOptional({
+    description: 'What the table has ordered so far (list endpoint only)',
+  })
+  orderTotal?: number;
+  @ApiPropertyOptional({ nullable: true, type: String })
+  currency?: string | null;
 }
 
 export class TableListDto {

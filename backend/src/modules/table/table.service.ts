@@ -102,6 +102,32 @@ export class TableService {
     return map;
   }
 
+  /** The running bill per table, counting only foods that go on the bill. */
+  private async orderTotals(rows: TableRow[]) {
+    const orders = await prisma.order.findMany({
+      where: {
+        tableId: { in: rows.map((r) => r.id) },
+        variant: { food: { shouldCalculate: true } },
+      },
+      select: {
+        tableId: true,
+        price: true,
+        quantity: true,
+        variant: { select: { currency: true } },
+      },
+    });
+
+    const totals = new Map<string, { orderTotal: number; currency: string }>();
+    for (const o of orders) {
+      const prev = totals.get(o.tableId);
+      totals.set(o.tableId, {
+        orderTotal: (prev?.orderTotal ?? 0) + Number(o.price) * o.quantity,
+        currency: prev?.currency ?? o.variant.currency,
+      });
+    }
+    return totals;
+  }
+
   /** One lookup for the whole page rather than a join per row. */
   private async leaderNames(rows: TableRow[]): Promise<Map<string, string>> {
     const ids = rows
@@ -164,12 +190,17 @@ export class TableService {
       prisma.table.count({ where }),
     ]);
 
-    const [names, matched] = await Promise.all([
+    const [names, matched, totals] = await Promise.all([
       this.leaderNames(rows),
       this.matchedPeople(rows, search),
+      this.orderTotals(rows),
     ]);
     return {
-      tables: rows.map((r) => this.toDto(r, names, matched)),
+      tables: rows.map((r) => ({
+        ...this.toDto(r, names, matched),
+        orderTotal: totals.get(r.id)?.orderTotal ?? 0,
+        currency: totals.get(r.id)?.currency ?? null,
+      })),
       total,
     };
   }
