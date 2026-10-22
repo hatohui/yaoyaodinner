@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Send } from 'lucide-react'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { MarkdownEditor } from '@/components/common/MarkdownEditor'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { useGuest } from '@/hooks/useGuest'
+import { FeedbackNameField } from './@FeedbackNameField'
 
 interface FeedbackFormProps {
 	onPost: (by: string, content: string, imageUrl: string | null) => void
@@ -28,12 +28,7 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 
 	return (
 		<div className='flex flex-col gap-2 rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
-			<Input
-				value={by}
-				onChange={e => setBy(e.target.value)}
-				placeholder={t('feedback.name_placeholder')}
-				className='rounded-full'
-			/>
+			<FeedbackNameField value={by} onChange={setBy} />
 			<MarkdownEditor
 				value={content}
 				onChange={setContent}

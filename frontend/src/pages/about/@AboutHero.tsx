@@ -9,13 +9,13 @@ export function AboutHero() {
 	const { tables } = useConfig()
 
 	return (
-		<section className='relative isolate overflow-hidden border-b border-border/60'>
+		<section className='relative isolate overflow-hidden border-b border-border bg-card shadow-md'>
 			<img
 				src='/images/banner.png'
 				alt=''
 				className='absolute inset-0 -z-10 size-full object-cover object-right'
 			/>
-			<div className='absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/85 to-background/40 sm:bg-gradient-to-r sm:via-background/80 sm:to-transparent' />
+			<div className='absolute inset-0 -z-10 bg-gradient-to-t from-card from-35% via-card/70 to-card/5 sm:bg-gradient-to-r sm:from-25% sm:via-card/60 sm:via-45% sm:to-transparent sm:to-70%' />
 			<PawPrint className='absolute -left-6 bottom-6 -z-10 size-32 -rotate-12 text-primary/10' />
 
 			<div className='mx-auto max-w-5xl px-4 pb-14 pt-32 sm:py-24'>

@@ -19,36 +19,40 @@ import { usePersonNote } from '@/hooks/usePersonNote'
 
 interface PersonDialogProps {
 	person: PersonDto | null
-	isMe: boolean
+	canClaim: boolean
 	isHost: boolean
 	onOpenChange: (open: boolean) => void
-	onPfpChange: (pfpUrl: string | null) => void
-	onSave: (changes: { name?: string; isMe?: boolean; isHost?: boolean }) => void
+	onSave: (changes: {
+		name?: string
+		isHost?: boolean
+		pfpUrl?: string | null
+	}) => void
+	onClaim: () => void
 	onRemove: () => void
 }
 
 export function PersonDialog({
 	person,
-	isMe,
+	canClaim,
 	isHost,
 	onOpenChange,
-	onPfpChange,
 	onSave,
+	onClaim,
 	onRemove,
 }: PersonDialogProps) {
 	const { t } = useTranslation()
 	const { note, save: saveNote } = usePersonNote(person?.id ?? '')
 	const [name, setName] = useState('')
 	const [noteDraft, setNoteDraft] = useState('')
-	const [meDraft, setMeDraft] = useState(false)
 	const [hostDraft, setHostDraft] = useState(false)
+	const [pfpDraft, setPfpDraft] = useState<string | null>(null)
 	const personId = person?.id
 
 	useEffect(() => {
 		if (!personId) return
 		setName(person.name)
-		setMeDraft(isMe)
 		setHostDraft(isHost)
+		setPfpDraft(person.pfpUrl ?? null)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [personId])
 
@@ -58,14 +62,21 @@ export function PersonDialog({
 
 	if (!person) return null
 
+	const trimmedName = name.trim()
+	const nameChanged = Boolean(trimmedName) && trimmedName !== person.name
+	const noteChanged = noteDraft.trim() !== (note?.content ?? '')
+	const hostChanged = hostDraft !== isHost
+	const pfpChanged = pfpDraft !== (person.pfpUrl ?? null)
+	const dirty = nameChanged || noteChanged || hostChanged || pfpChanged
+
 	const save = () => {
-		const trimmed = name.trim()
+		if (!dirty) return
 		onSave({
-			name: trimmed && trimmed !== person.name ? trimmed : undefined,
-			isMe: meDraft !== isMe ? meDraft : undefined,
-			isHost: hostDraft !== isHost ? hostDraft : undefined,
+			name: nameChanged ? trimmedName : undefined,
+			isHost: hostChanged ? hostDraft : undefined,
+			pfpUrl: pfpChanged ? pfpDraft : undefined,
 		})
-		if (noteDraft.trim() !== (note?.content ?? '')) saveNote(noteDraft.trim())
+		if (noteChanged) saveNote(noteDraft.trim())
 		onOpenChange(false)
 	}
 
@@ -82,8 +93,8 @@ export function PersonDialog({
 					<ImageUploadSlot
 						shape='circle'
 						folder='person-pfps'
-						imageKey={person.pfpUrl}
-						onChange={onPfpChange}
+						imageKey={pfpDraft}
+						onChange={setPfpDraft}
 						className='[&>button]:size-16'
 					/>
 					<div className='flex min-w-0 flex-1 flex-col gap-1.5'>
@@ -97,10 +108,10 @@ export function PersonDialog({
 						/>
 					</div>
 				</div>
-				{person.pfpUrl && (
+				{pfpDraft && (
 					<button
 						type='button'
-						onClick={() => onPfpChange(null)}
+						onClick={() => setPfpDraft(null)}
 						className='-mt-3 inline-flex w-fit items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-destructive'
 					>
 						<ImageOff className='size-3.5' />
@@ -120,22 +131,24 @@ export function PersonDialog({
 					/>
 				</div>
 
-				<div className='flex flex-col divide-y divide-border rounded-2xl border border-border'>
-					<label className='flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm'>
-						<span className='flex items-center gap-2'>
-							<UserCheck className='size-4 text-primary' />
-							{t('roster.this_is_me')}
-						</span>
-						<Switch checked={meDraft} onCheckedChange={setMeDraft} />
-					</label>
-					<label className='flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm'>
-						<span className='flex items-center gap-2'>
-							<Crown className='size-4 text-primary' />
-							{t('roster.host_label')}
-						</span>
-						<Switch checked={hostDraft} onCheckedChange={setHostDraft} />
-					</label>
-				</div>
+				<label className='flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-sm'>
+					<span className='flex items-center gap-2'>
+						<Crown className='size-4 text-primary' />
+						{t('roster.host_label')}
+					</span>
+					<Switch checked={hostDraft} onCheckedChange={setHostDraft} />
+				</label>
+
+				{canClaim && (
+					<Button
+						variant='outline'
+						className='gap-1.5 rounded-full border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
+						onClick={onClaim}
+					>
+						<UserCheck className='size-4' />
+						{t('roster.this_is_me')}
+					</Button>
+				)}
 
 				<DialogFooter className='flex-row items-center justify-between gap-2 sm:justify-between'>
 					<Button
@@ -146,7 +159,11 @@ export function PersonDialog({
 						<Trash2 className='size-4' />
 						{t('roster.remove')}
 					</Button>
-					<Button className='rounded-full px-6' onClick={save}>
+					<Button
+						className='rounded-full px-6'
+						disabled={!dirty}
+						onClick={save}
+					>
 						{t('common.save')}
 					</Button>
 				</DialogFooter>

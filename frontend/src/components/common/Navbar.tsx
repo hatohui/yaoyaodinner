@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import {
 	Armchair,
+	CircleHelp,
 	FlaskConical,
 	Info,
 	Loader2,
@@ -36,7 +37,9 @@ export function Navbar() {
 	const tapCount = useRef(0)
 	const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const [mobileOpen, setMobileOpen] = useState(false)
-	const [pending, setPending] = useState<{ to: string; from: string } | null>(null)
+	const [pending, setPending] = useState<{ to: string; from: string } | null>(
+		null
+	)
 	const pendingTo = pending?.from === pathname ? pending.to : null
 
 	const handleNavClick = (to: string) => {
@@ -74,6 +77,7 @@ export function Navbar() {
 			icon: MessageSquareHeart,
 			show: feedbackWall,
 		},
+		{ to: '/faq', label: t('nav.faq'), icon: CircleHelp, show: true },
 		{
 			to: '/dev',
 			label: t('nav.dev'),
@@ -94,11 +98,12 @@ export function Navbar() {
 			: pathname === to
 
 	return (
-		<header 
+		<header
 			className='fixed top-0 z-50 w-full border-b border-border/40 bg-background/80 shadow-sm backdrop-blur-xl'
 			style={{
-				backgroundImage: 'radial-gradient(circle, var(--bg-dot) 1px, transparent 0)',
-				backgroundSize: '28px 28px'
+				backgroundImage:
+					'radial-gradient(circle, var(--bg-dot) 1px, transparent 0)',
+				backgroundSize: '28px 28px',
 			}}
 		>
 			<div className='mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-3 sm:px-4'>
@@ -107,7 +112,11 @@ export function Navbar() {
 					onClick={handleLogoClick}
 					className='flex min-w-0 shrink items-center gap-1.5 font-bold tracking-tight text-foreground transition-opacity hover:opacity-70'
 				>
-					<img src='/images/logo.png' className='h-5 w-auto object-contain dark:invert' alt='Logo' />
+					<img
+						src='/images/logo.png'
+						className='h-5 w-auto object-contain dark:invert'
+						alt='Logo'
+					/>
 				</Link>
 
 				<nav className='hidden min-w-0 items-center gap-0.5 sm:flex sm:gap-1'>
@@ -137,8 +146,10 @@ export function Navbar() {
 				<div className='flex shrink-0 items-center gap-0.5 sm:gap-1'>
 					{!pathname.startsWith('/admin') && <EditModeToggle />}
 					{!pathname.startsWith('/admin') && <IdentityMenu />}
-					<LanguageSelector />
-					<ThemeToggle />
+					<div className='hidden items-center gap-1 sm:flex'>
+						<LanguageSelector />
+						<ThemeToggle />
+					</div>
 
 					<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
 						<SheetTrigger asChild>
@@ -187,6 +198,10 @@ export function Navbar() {
 									</Link>
 								))}
 							</nav>
+							<div className='mt-auto flex items-center justify-between gap-2 border-t border-border px-4 py-3'>
+								<LanguageSelector />
+								<ThemeToggle />
+							</div>
 						</SheetContent>
 					</Sheet>
 				</div>

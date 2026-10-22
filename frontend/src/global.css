@@ -52,6 +52,9 @@
 }
 
 @theme inline {
+	--font-sans:
+		'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif,
+		'Apple Color Emoji', 'Segoe UI Emoji';
 	--color-brand: var(--primary);
 	--color-brand-foreground: var(--primary-foreground);
 	--color-brand-muted: color-mix(in oklch, var(--primary) 15%, transparent);
@@ -139,8 +142,8 @@
 :root {
 	--radius: 0.625rem;
 
-	--background: oklch(0.91 0.012 310);
-	--foreground: oklch(0.2 0.01 305);
+	--background: oklch(0.9 0.02 310);
+	--foreground: oklch(0.18 0.015 305);
 
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.2 0.01 305);
@@ -148,7 +151,7 @@
 	--popover: oklch(1 0 0);
 	--popover-foreground: oklch(0.2 0.01 305);
 
-	--primary: oklch(0.45 0.15 305);
+	--primary: oklch(0.47 0.12 305);
 	/* More vibrant purple for light mode */
 
 	--primary-foreground: oklch(0.98 0.002 320);
@@ -159,7 +162,7 @@
 	--secondary-foreground: oklch(0.25 0.05 305);
 
 	--muted: oklch(0.86 0.02 310);
-	--muted-foreground: oklch(0.4 0.035 305);
+	--muted-foreground: oklch(0.38 0.04 305);
 
 	/* Surface for inputs, selects and filter pills */
 	--control: oklch(1 0 0);
@@ -171,12 +174,12 @@
 
 	--destructive: oklch(0.577 0.245 27.325);
 
-	--border: oklch(0.8 0.02 310);
-	--input: oklch(0.8 0.02 310);
+	--border: oklch(0.76 0.03 310);
+	--input: oklch(0.76 0.03 310);
 
-	--ring: oklch(0.45 0.15 305);
+	--ring: oklch(0.47 0.12 305);
 
-	--chart-1: oklch(0.45 0.15 305);
+	--chart-1: oklch(0.47 0.12 305);
 	--chart-2: oklch(0.5 0.1 305);
 	--chart-3: oklch(0.65 0.12 305);
 	--chart-4: oklch(0.28 0.06 305);
@@ -184,23 +187,23 @@
 
 	--sidebar: oklch(0.98 0.005 310);
 	--sidebar-foreground: oklch(0.2 0.01 305);
-	--sidebar-primary: oklch(0.45 0.15 305);
+	--sidebar-primary: oklch(0.47 0.12 305);
 	--sidebar-primary-foreground: oklch(0.98 0.002 320);
 	--sidebar-accent: oklch(0.93 0.02 310);
 	--sidebar-accent-foreground: oklch(0.25 0.05 305);
 	--sidebar-border: oklch(0.88 0.015 310);
-	--sidebar-ring: oklch(0.45 0.15 305);
+	--sidebar-ring: oklch(0.47 0.12 305);
 
 	--bg-paw-opacity: 0.03;
 	--bg-dot: color-mix(in oklch, var(--primary) 25%, transparent);
 }
 
 [data-theme='dark'] {
-	--background: oklch(0.147 0.004 49.25);
+	--background: oklch(0.125 0.004 49.25);
 
 	--foreground: oklch(0.98 0.005 305);
 
-	--card: oklch(0.216 0.006 56.043);
+	--card: oklch(0.225 0.006 56.043);
 
 	--card-foreground: oklch(0.98 0.005 305);
 
@@ -208,7 +211,7 @@
 
 	--popover-foreground: oklch(0.98 0.005 305);
 
-	--primary: oklch(0.73 0.18 305);
+	--primary: oklch(0.68 0.13 305);
 
 	--primary-foreground: oklch(0.98 0.005 305);
 
@@ -218,9 +221,9 @@
 
 	--muted: oklch(0.3 0.1 305);
 
-	--muted-foreground: oklch(0.78 0.02 305);
+	--muted-foreground: oklch(0.82 0.025 305);
 
-	--control: oklch(0.3 0.1 305);
+	--control: oklch(0.27 0.03 305);
 
 	--accent: oklch(0.5 0.12 305);
 	/* Mid-range accent */
@@ -229,15 +232,15 @@
 
 	--destructive: oklch(0.704 0.191 22.216);
 
-	--border: oklch(1 0 0 / 15%);
+	--border: oklch(1 0 0 / 20%);
 
-	--input: oklch(1 0 0 / 15%);
+	--input: oklch(1 0 0 / 20%);
 
-	--ring: oklch(0.73 0.18 305);
-	/* Ring using #be79e6 */
+	--ring: oklch(0.68 0.13 305);
+	/* Ring matches primary */
 
-	--chart-1: oklch(0.73 0.18 305);
-	/* Brightest - primary #be79e6 */
+	--chart-1: oklch(0.68 0.13 305);
+	/* Brightest - primary */
 
 	--chart-2: oklch(0.58 0.15 305);
 	/* Medium */
@@ -253,7 +256,7 @@
 
 	--sidebar-foreground: oklch(0.985 0.001 106.423);
 
-	--sidebar-primary: oklch(0.73 0.18 305);
+	--sidebar-primary: oklch(0.68 0.13 305);
 
 	--sidebar-primary-foreground: oklch(79.661% 0.05976 307.582);
 
@@ -263,7 +266,7 @@
 
 	--sidebar-border: oklch(1 0 0 / 10%);
 
-	--sidebar-ring: oklch(0.73 0.18 305);
+	--sidebar-ring: oklch(0.68 0.13 305);
 
 	--bg-paw-opacity: 0.02;
 	--bg-dot: color-mix(in oklch, var(--primary) 9%, transparent);
@@ -278,6 +281,17 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	/* Tailwind v4 dropped the pointer cursor on buttons */
+	button:not(:disabled),
+	[role='button']:not([aria-disabled='true']),
+	[role='tab']:not(:disabled),
+	[role='menuitem']:not([data-disabled]),
+	[role='option']:not([data-disabled]),
+	label[for],
+	summary {
+		cursor: pointer;
 	}
 
 	input[type='number'] {
@@ -309,8 +323,8 @@
 	}
 
 	[data-theme='dark'] ::selection {
-		background-color: oklch(0.73 0.18 305);
-		/* #be79e6 for dark mode selection */
+		background-color: oklch(0.68 0.13 305);
+		/* Primary for dark mode selection */
 		color: oklch(0.15 0.05 305);
 	}
 }

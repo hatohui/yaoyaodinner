@@ -6,6 +6,7 @@ import { localStorage } from '@/utils/localstorage'
 import { TABLE_CODE_STORAGE_KEY } from '@/common/constants'
 import { useConfig } from '@/hooks/useConfig'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useGuest } from '@/hooks/useGuest'
 
 /** A device holds one table's code at a time, so it can't collect them. */
 interface HeldCode {
@@ -29,13 +30,16 @@ interface TableCodeState {
 	release: () => void
 }
 
-export const useHeldTableCode = create<TableCodeState>(set => ({
+export const useHeldTableCode = create<TableCodeState>((set, get) => ({
 	held: loadHeld(),
 	hold: held => {
 		localStorage.save(TABLE_CODE_STORAGE_KEY, JSON.stringify(held))
 		set({ held })
 	},
 	release: () => {
+		// whoever you claimed at a table goes with its code
+		const { me, clearMe } = useGuest.getState()
+		if (me && me.tableId === get().held?.tableId) clearMe()
 		localStorage.remove(TABLE_CODE_STORAGE_KEY)
 		set({ held: null })
 	},

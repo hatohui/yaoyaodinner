@@ -5,6 +5,7 @@ import type { PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ImageViewer } from '@/components/common/ImageViewer'
 import { StoredImage } from '@/components/common/StoredImage'
+import { TruncatedText } from '@/components/common/TruncatedText'
 import { cn } from '@/utils/shadcn'
 import { useGuest } from '@/hooks/useGuest'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
@@ -120,19 +121,20 @@ export function Roster({ table, canEdit, onSetHost }: RosterProps) {
 
 			<PersonDialog
 				person={editingPerson}
-				isMe={editingPerson?.id === me?.id}
+				canClaim={!mine}
 				isHost={editingPerson?.id === table.tableLeaderId}
 				onOpenChange={open => !open && setEditingId(null)}
-				onPfpChange={pfpUrl =>
-					editingPerson && updatePfp(editingPerson.id, pfpUrl)
-				}
 				onSave={changes => {
 					if (!editingPerson) return
 					if (changes.name) rename(editingPerson.id, changes.name)
 					if (changes.isHost !== undefined)
 						onSetHost(changes.isHost ? editingPerson.id : null)
-					if (changes.isMe === true) claim(editingPerson)
-					if (changes.isMe === false) clearMe()
+					if (changes.pfpUrl !== undefined)
+						updatePfp(editingPerson.id, changes.pfpUrl)
+				}}
+				onClaim={() => {
+					if (editingPerson) claim(editingPerson)
+					setEditingId(null)
 				}}
 				onRemove={() => {
 					setPending(editingPerson)
@@ -258,7 +260,11 @@ function RosterItem({
 						compact ? 'shrink-0 text-sm' : 'sm:text-base'
 					)}
 				>
-					<span className='truncate'>{person.name}</span>
+					<TruncatedText
+						text={person.name}
+						onClick={editable ? onOpen : undefined}
+						className='pointer-events-auto'
+					/>
 					{isMe && (
 						<span className='shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-inset ring-primary/30'>
 							{t('roster.you')}
@@ -276,14 +282,17 @@ function RosterItem({
 				</span>
 				{note && (
 					<span
-						title={note}
 						className={cn(
 							'flex min-w-0 items-center gap-1.5 text-muted-foreground',
 							compact ? 'text-xs' : 'text-sm'
 						)}
 					>
 						<NotebookText className='size-3.5 shrink-0 text-primary' />
-						<span className='truncate'>{note}</span>
+						<TruncatedText
+							text={note}
+							onClick={editable ? onOpen : undefined}
+							className='pointer-events-auto'
+						/>
 					</span>
 				)}
 			</div>

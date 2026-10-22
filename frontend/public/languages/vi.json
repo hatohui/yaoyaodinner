@@ -79,6 +79,7 @@
 		"loading": "Đang tải sức khỏe hệ thống..."
 	},
 	"nav": {
+		"faq": "Hỏi đáp",
 		"menu": "Thực Đơn",
 		"about": "Giới thiệu",
 		"dev": "Dev",
@@ -136,8 +137,15 @@
 		"no_host": "Chưa có chủ bàn",
 		"your_table": "Bàn của bạn",
 		"seats_taken": "Đã có {{seated}}/{{capacity}} chỗ",
-		"filter_all": "Tất cả bàn",
-		"filter_free": "Còn chỗ",
+		"sort": {
+			"label": "Sắp xếp bàn",
+			"number": "Số bàn",
+			"most_ordered": "Gọi nhiều nhất",
+			"least_ordered": "Gọi ít nhất",
+			"name_asc": "Tên A–Z",
+			"name_desc": "Tên Z–A",
+			"most_people": "Đông người nhất"
+		},
 		"filter_full": "Đã đầy",
 		"view_card": "Xem dạng thẻ",
 		"view_compact": "Xem gọn"
@@ -312,9 +320,7 @@
 		"kitchen": "Bếp",
 		"fish_tank": "Bể cá",
 		"vip_room": "V4",
-		"open_table": "Mở bàn",
-		"legend_open": "Còn chỗ",
-		"legend_full": "Đã đầy"
+		"open_table": "Mở bàn"
 	},
 	"dev": {
 		"title": "Kiểm Tra Phát Triển",
@@ -587,5 +593,26 @@
 			"label": "Chế độ chỉnh sửa",
 			"on": "Đang chỉnh sửa"
 		}
+	},
+	"faq": {
+		"tag": "Hỏi đáp",
+		"title": "Câu hỏi thường gặp",
+		"subtitle": "Bí ở đâu? Có lẽ câu trả lời nằm ở đây.",
+		"wrong_identity_q": "Tôi bấm \"Đó là tôi\" nhầm người. Cứu!",
+		"wrong_identity_a": "Đừng lo. Mở menu có tên bạn ở thanh trên cùng và chọn Đăng xuất. Sau đó vào lại bàn bằng mã bàn và bấm \"Đó là tôi\" cạnh đúng tên.",
+		"table_code_q": "Lấy mã bàn ở đâu?",
+		"table_code_a": "Hỏi người ngồi cùng bàn hoặc chủ bàn. Mở bàn của bạn, bấm \"Tôi ngồi bàn này\" rồi nhập mã.",
+		"find_table_q": "Làm sao tìm bàn của tôi?",
+		"find_table_a": "Vào mục Bàn và tìm theo tên bàn hoặc tên của bạn. Bàn của bạn có nhãn \"Bạn ở đây\", và chế độ bản đồ cho biết bàn nằm ở đâu trong phòng.",
+		"order_q": "Gọi món thế nào?",
+		"order_a": "Mở bàn của bạn, vào thẻ món đã gọi và bấm Thêm món. Bạn cần vào bàn bằng mã bàn trước.",
+		"split_q": "Hóa đơn được chia thế nào?",
+		"split_a": "Thẻ chia tiền cho biết mỗi người phải trả bao nhiêu. Một món có thể chia cho cả bàn hoặc chỉ cho những người bạn chọn.",
+		"edit_me_q": "Tôi có thể đổi tên, ảnh hoặc ghi chú không?",
+		"edit_me_a": "Được. Sau khi vào bàn, bấm vào dòng của bạn ở thẻ Mọi người để sửa. Ghi chú như \"không ăn tôm\" ai cũng thấy được.",
+		"switch_table_q": "Tôi vào nhầm bàn.",
+		"switch_table_a": "Bấm nút hình cửa cạnh Sao chép liên kết để rời bàn, rồi mở đúng bàn và vào bằng mã của bàn đó. Mỗi điện thoại chỉ giữ được một mã bàn.",
+		"feedback_q": "Gửi góp ý hoặc ảnh ở đâu?",
+		"feedback_a": "Ở trang Góp ý. Viết vài dòng, thêm ảnh nếu muốn, rồi đăng để mọi người cùng xem."
 	}
 }

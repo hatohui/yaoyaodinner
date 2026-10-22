@@ -3,18 +3,24 @@ import { Link } from 'react-router'
 import { Users, Crown } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { StoredImage } from '@/components/common/StoredImage'
+import { TruncatedText } from '@/components/common/TruncatedText'
 import { cn } from '@/utils/shadcn'
 import { matchedPeople, tableCardClass } from './@tableCardUtils'
 import { MatchedPeople } from './@MatchedPeople'
+import { OrderTotalChip } from './@OrderTotalChip'
 
 interface TableCompactCardProps {
 	table: TableDto
 	isMine: boolean
+	showTotal?: boolean
 }
 
-export function TableCompactCard({ table, isMine }: TableCompactCardProps) {
+export function TableCompactCard({
+	table,
+	isMine,
+	showTotal,
+}: TableCompactCardProps) {
 	const { t } = useTranslation()
-	const full = table.seated >= table.capacity
 	const chip =
 		table.bannerUrl && 'rounded-full bg-card/90 px-2 py-0.5 backdrop-blur-sm'
 
@@ -35,22 +41,20 @@ export function TableCompactCard({ table, isMine }: TableCompactCardProps) {
 					<span className='flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground shadow-sm'>
 						{table.no}
 					</span>
-					<span className='truncate text-sm font-medium text-foreground'>
-						{table.name}
-					</span>
+					<TruncatedText
+						text={table.name}
+						className='text-sm font-medium text-foreground'
+					/>
 				</span>
 				<div className='flex items-center justify-between gap-1.5'>
 					<span
 						className={cn(
-							'flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium',
-							full
-								? 'bg-muted text-foreground/75'
-								: 'bg-primary/15 text-primary ring-1 ring-inset ring-primary/25',
+							'flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary ring-1 ring-inset ring-primary/25',
 							table.bannerUrl && 'bg-card/90 backdrop-blur-sm'
 						)}
 					>
 						<Users className='size-3' />
-						{table.seated}/{table.capacity}
+						{table.seated}
 					</span>
 					{table.tableLeaderName ? (
 						<span
@@ -61,7 +65,7 @@ export function TableCompactCard({ table, isMine }: TableCompactCardProps) {
 							)}
 						>
 							<Crown className='size-3 shrink-0 text-primary' />
-							<span className='truncate'>{table.tableLeaderName}</span>
+							<TruncatedText text={table.tableLeaderName} />
 						</span>
 					) : (
 						<span
@@ -71,6 +75,8 @@ export function TableCompactCard({ table, isMine }: TableCompactCardProps) {
 						</span>
 					)}
 				</div>
+
+				{showTotal && <OrderTotalChip table={table} />}
 
 				<MatchedPeople names={matchedPeople(table)} />
 			</div>

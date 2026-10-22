@@ -29,4 +29,8 @@ export interface TableDto {
   eventId?: string | null;
   /** @nullable */
   bannerUrl?: string | null;
+  /** What the table has ordered so far (list endpoint only) */
+  orderTotal?: number;
+  /** @nullable */
+  currency?: string | null;
 }

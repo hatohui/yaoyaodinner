@@ -41,7 +41,7 @@ export function FloorPlanBackdrop({
 
 					<div
 						style={toPercent(floor)}
-						className='absolute rounded-[1.5cqw] border border-border bg-background'
+						className='absolute rounded-[1.5cqw] border border-border bg-card shadow-sm'
 					/>
 
 					{floor.fixtures.map((fixture, i) => (

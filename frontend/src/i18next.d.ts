@@ -44,6 +44,7 @@ declare module 'react-i18next' {
           close: string
         }
         nav: {
+          faq: string
           menu: string
           about: string
           dev: string
@@ -91,12 +92,40 @@ declare module 'react-i18next' {
           leave_confirm_title: string
           leave_confirm_body: string
         }
+        faq: {
+          tag: string
+          title: string
+          subtitle: string
+          wrong_identity_q: string
+          wrong_identity_a: string
+          table_code_q: string
+          table_code_a: string
+          find_table_q: string
+          find_table_a: string
+          order_q: string
+          order_a: string
+          split_q: string
+          split_a: string
+          edit_me_q: string
+          edit_me_a: string
+          switch_table_q: string
+          switch_table_a: string
+          feedback_q: string
+          feedback_a: string
+        }
         tables: {
           no_host: string
           your_table: string
           seats_taken: string
-          filter_all: string
-          filter_free: string
+          sort: {
+            label: string
+            number: string
+            most_ordered: string
+            least_ordered: string
+            name_asc: string
+            name_desc: string
+            most_people: string
+          }
           filter_full: string
           view_card: string
           view_compact: string
@@ -270,8 +299,6 @@ declare module 'react-i18next' {
           fish_tank: string
           vip_room: string
           open_table: string
-          legend_open: string
-          legend_full: string
         }
         health: Record<string, string>
         dev: Record<string, unknown>

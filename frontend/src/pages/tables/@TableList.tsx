@@ -7,9 +7,10 @@ import { TableCompactCard } from './@TableCompactCard'
 interface TableListProps {
 	tables: TableDto[]
 	compact?: boolean
+	showTotal?: boolean
 }
 
-export function TableList({ tables, compact }: TableListProps) {
+export function TableList({ tables, compact, showTotal }: TableListProps) {
 	const myTableId = useGuest(s => s.me?.tableId)
 	const Card = compact ? TableCompactCard : TableCard
 
@@ -24,7 +25,11 @@ export function TableList({ tables, compact }: TableListProps) {
 		>
 			{tables.map(table => (
 				<li key={table.id}>
-					<Card table={table} isMine={table.id === myTableId} />
+					<Card
+						table={table}
+						isMine={table.id === myTableId}
+						showTotal={showTotal}
+					/>
 				</li>
 			))}
 		</ul>

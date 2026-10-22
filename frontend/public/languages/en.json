@@ -79,6 +79,7 @@
 		"loading": "Loading system health..."
 	},
 	"nav": {
+		"faq": "Q&A",
 		"menu": "Menu",
 		"about": "About",
 		"dev": "Dev",
@@ -136,8 +137,15 @@
 		"no_host": "No host",
 		"your_table": "You're here",
 		"seats_taken": "{{seated}} of {{capacity}} seats taken",
-		"filter_all": "All tables",
-		"filter_free": "Has space",
+		"sort": {
+			"label": "Sort tables",
+			"number": "Table number",
+			"most_ordered": "Most ordered",
+			"least_ordered": "Least ordered",
+			"name_asc": "Name A–Z",
+			"name_desc": "Name Z–A",
+			"most_people": "Most people"
+		},
 		"filter_full": "Full",
 		"view_card": "Card view",
 		"view_compact": "Compact view"
@@ -312,9 +320,7 @@
 		"kitchen": "Kitchen",
 		"fish_tank": "Fish tank",
 		"vip_room": "V4",
-		"open_table": "Open table",
-		"legend_open": "Seats available",
-		"legend_full": "Full"
+		"open_table": "Open table"
 	},
 	"dev": {
 		"title": "Development Testing",
@@ -587,5 +593,26 @@
 			"label": "Edit mode",
 			"on": "Editing"
 		}
+	},
+	"faq": {
+		"tag": "Q&A",
+		"title": "Questions & answers",
+		"subtitle": "Stuck on something? It's probably answered here.",
+		"wrong_identity_q": "I tapped \"That's me\" on the wrong person. Help!",
+		"wrong_identity_a": "No worries. Open the menu with your name in the top bar and choose Log out. Then join your table again with its code and tap \"That's me\" next to the right name.",
+		"table_code_q": "Where do I get my table's code?",
+		"table_code_a": "Ask someone sitting at your table, or the host. Open your table, tap \"I'm at this table\" and type the code in.",
+		"find_table_q": "How do I find my table?",
+		"find_table_a": "Go to Tables and search for the table name or your own name. Your table is marked \"You're here\", and Map view shows where it is in the room.",
+		"order_q": "How do I order food?",
+		"order_a": "Open your table, go to Orders and tap Add order. You'll need to join your table with its code first.",
+		"split_q": "How is the bill split?",
+		"split_a": "The Splits tab shows what each person owes. An order can be shared by the whole table or only by the people you pick.",
+		"edit_me_q": "Can I change my name, photo or note?",
+		"edit_me_a": "Yes. Once you've joined your table, tap your row on the People tab to edit it. Notes like \"no shrimp\" are visible to everyone.",
+		"switch_table_q": "I joined the wrong table.",
+		"switch_table_a": "Tap the door button next to Copy link to leave, then open the right table and join it with its code. A phone can only hold one table's code at a time.",
+		"feedback_q": "Where do I leave feedback or photos?",
+		"feedback_a": "On the Feedback page. Write something, add a photo if you like, and post it for everyone to see."
 	}
 }

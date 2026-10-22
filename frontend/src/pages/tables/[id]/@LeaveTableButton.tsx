@@ -2,17 +2,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DoorOpen } from 'lucide-react'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
-import { useGuest } from '@/hooks/useGuest'
 import { useHeldTableCode } from '@/hooks/useTableCode'
 import { useToast } from '@/hooks/useToast'
 
 export function LeaveTableButton() {
 	const { t } = useTranslation()
 	const toast = useToast()
-	const held = useHeldTableCode(s => s.held)
 	const release = useHeldTableCode(s => s.release)
-	const me = useGuest(s => s.me)
-	const clearMe = useGuest(s => s.clearMe)
 	const [confirming, setConfirming] = useState(false)
 
 	return (
@@ -35,7 +31,6 @@ export function LeaveTableButton() {
 				confirmLabel={t('table_code.leave')}
 				destructive
 				onConfirm={() => {
-					if (me?.tableId === held?.tableId) clearMe()
 					release()
 					setConfirming(false)
 					toast.success(t('table_code.left'))

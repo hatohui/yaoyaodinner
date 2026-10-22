@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { ArrowLeft } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { FloorPlanCanvas } from './@FloorPlanCanvas'
@@ -9,6 +9,7 @@ import { useFloorPlan } from './@useFloorPlan'
 export default function FloorPlanPage() {
 	const { t } = useTranslation()
 	const { tables, isLoading, isError } = useFloorPlan()
+	const [params] = useSearchParams()
 
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
@@ -34,7 +35,10 @@ export default function FloorPlanPage() {
 				</p>
 			) : (
 				<>
-					<FloorPlanCanvas tables={tables} />
+					<FloorPlanCanvas
+						tables={tables}
+						highlightId={params.get('highlight')}
+					/>
 					<FloorPlanLegend />
 				</>
 			)}

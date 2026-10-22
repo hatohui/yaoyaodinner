@@ -11,7 +11,7 @@ export function matchedPeople(table: TableDto) {
 export const tableCardClass = (isMine: boolean) =>
 	cn(
 		'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md',
-		isMine && 'border-primary ring-2 ring-primary/40'
+		isMine && 'border-primary/70'
 	)
 
 const DEFAULT_BANNERS = [

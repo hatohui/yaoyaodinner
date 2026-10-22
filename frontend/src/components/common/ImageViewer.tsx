@@ -28,6 +28,7 @@ export function ImageViewer({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
 				showCloseButton={false}
+				overlayClassName='bg-black/85 backdrop-blur-sm'
 				className='flex max-h-[90vh] w-auto max-w-[95vw] items-center justify-center border-0 bg-transparent p-0 shadow-none sm:max-w-[90vw]'
 				onClick={() => onOpenChange(false)}
 			>

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
-import { ArrowLeft, Link as LinkIcon, Users } from 'lucide-react'
+import { ArrowLeft, Link as LinkIcon, Map, Users } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useGetTablePeople } from '@/api/tables/tables'
@@ -10,6 +10,8 @@ import type { OrderResponseDto, PersonDto } from '@/api/model'
 import { useTableAccess } from '@/hooks/useTableCode'
 import { useTableTab } from '@/hooks/useTableTab'
 import { useToast } from '@/hooks/useToast'
+import { useConfig } from '@/hooks/useConfig'
+import { isOnMap } from '@/components/floor-plan/layout'
 import { EditableName } from '@/components/common/EditableName'
 import { Roster } from './@Roster'
 import { OrdersTab } from './@OrdersTab'
@@ -38,7 +40,10 @@ export default function TableDetailPage() {
 		lang: i18n.language,
 	})
 	const orderCount = useMemo(() => groupOrders(orders ?? []).length, [orders])
+	const showSplits = !orders || orderCount > 0
+	const activeTab = tab === 'split' && !showSplits ? 'orders' : tab
 	const [joining, setJoining] = useState(false)
+	const { floorPlan } = useConfig()
 	const join = () => setJoining(true)
 
 	if (isLoading) {
@@ -87,11 +92,23 @@ export default function TableDetailPage() {
 					</h1>
 					<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/25'>
 						<Users className='size-3.5' />
-						{table.seated}/{table.capacity}
+						{table.seated}
 					</span>
 				</div>
 				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
 					{canEdit && !isAdmin && <LeaveTableButton />}
+					{floorPlan && isOnMap(table) && (
+						<Link
+							to={`/tables/map?highlight=${table.id}`}
+							aria-label={t('floor_plan.view_map')}
+							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
+						>
+							<Map className='size-4' />
+							<span className='hidden sm:inline'>
+								{t('floor_plan.view_map')}
+							</span>
+						</Link>
+					)}
 					<button
 						type='button'
 						onClick={shareLink}
@@ -111,19 +128,20 @@ export default function TableDetailPage() {
 				onJoin={join}
 			/>
 
-			<Tabs value={tab} onValueChange={setTab}>
+			<Tabs value={activeTab} onValueChange={setTab}>
 				<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
 					<TabsTrigger value='people' className={tabTrigger}>
 						{t('tabs.people')}
-						<TabCount count={people?.length ?? 0} />
 					</TabsTrigger>
 					<TabsTrigger value='orders' className={tabTrigger}>
 						{t('tabs.orders')}
 						<TabCount count={orderCount} />
 					</TabsTrigger>
-					<TabsTrigger value='split' className={tabTrigger}>
-						{t('tabs.splits')}
-					</TabsTrigger>
+					{showSplits && (
+						<TabsTrigger value='split' className={tabTrigger}>
+							{t('tabs.splits')}
+						</TabsTrigger>
+					)}
 				</TabsList>
 
 				<TabsContent value='people'>

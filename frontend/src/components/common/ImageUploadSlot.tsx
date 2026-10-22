@@ -135,7 +135,7 @@ export function ImageUploadSlot({
 					<button
 						type='button'
 						onClick={() => inputRef.current?.click()}
-						className='flex items-center gap-1.5 rounded-full border border-dashed border-border/60 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-foreground'
+						className='flex items-center gap-1.5 rounded-full border border-border bg-control px-3 py-1.5 text-xs font-medium text-foreground/80 shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 					>
 						{isUploading ? (
 							<Loader2 className='size-3.5 animate-spin' />

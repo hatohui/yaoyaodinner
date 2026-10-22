@@ -126,47 +126,45 @@ export function TableListSection({
 								checked={selected.has(table.id)}
 								onCheckedChange={() => toggle(table.id)}
 							/>
-							<div className='@container min-w-0 flex-1'>
-								<div className='flex flex-col gap-2 @min-[22rem]:flex-row @min-[22rem]:items-center @min-[22rem]:justify-between'>
-									<span className='flex min-w-0 items-center gap-2'>
-										<span className='flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground'>
-											{table.no}
-										</span>
-										<EditableName
-											value={table.name}
-											onSave={name => onRename(table.id, name)}
-											className='font-medium text-foreground'
+							<div className='flex min-w-0 flex-1 flex-col gap-2'>
+								<span className='flex min-w-0 items-center gap-2'>
+									<span className='flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground'>
+										{table.no}
+									</span>
+									<EditableName
+										value={table.name}
+										onSave={name => onRename(table.id, name)}
+										className='font-semibold text-foreground'
+									/>
+								</span>
+								<span className='flex flex-wrap items-center gap-2 pl-8'>
+									<TableCodeChip
+										code={codes[table.id]}
+										onReroll={() => setRerollIds([table.id])}
+									/>
+									<span
+										className={cn(
+											'flex h-7 items-center gap-1 rounded-full pl-2.5 pr-1 text-xs font-medium tabular-nums',
+											full
+												? 'bg-muted text-muted-foreground'
+												: 'bg-brand-muted text-primary'
+										)}
+									>
+										<Users className='size-3.5' />
+										{table.seated} /
+										<InlineEdit
+											alwaysEditable
+											type='number'
+											value={String(table.capacity)}
+											onCommit={v => {
+												const capacity = Number(v)
+												if (capacity >= table.seated)
+													onCapacityChange(table.id, capacity)
+											}}
+											inputClassName='h-5 w-10 rounded-full border-solid border-border bg-card px-1 py-0 text-xs font-semibold shadow-none'
 										/>
 									</span>
-									<span className='flex shrink-0 items-center gap-2'>
-										<TableCodeChip
-											code={codes[table.id]}
-											onReroll={() => setRerollIds([table.id])}
-										/>
-										<span
-											className={cn(
-												'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
-												full
-													? 'bg-muted text-muted-foreground'
-													: 'bg-brand-muted text-primary'
-											)}
-										>
-											<Users className='size-3.5' />
-											{table.seated}/
-											<InlineEdit
-												alwaysEditable
-												type='number'
-												value={String(table.capacity)}
-												onCommit={v => {
-													const capacity = Number(v)
-													if (capacity >= table.seated)
-														onCapacityChange(table.id, capacity)
-												}}
-												inputClassName='w-14 text-xs'
-											/>
-										</span>
-									</span>
-								</div>
+								</span>
 							</div>
 							<Link
 								to={detail}
