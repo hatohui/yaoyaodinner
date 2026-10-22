@@ -23,6 +23,7 @@ const withSlot = {
 
 type TableRow = {
   id: string;
+  no: number;
   capacity: number;
   isStaging: boolean;
   tableLeaderId: string | null;
@@ -61,7 +62,7 @@ export class TableService {
     return {
       id: t.id,
       slotId: t.slotId,
-      no: t.slot?.no ?? -1,
+      no: t.no,
       name: t.slot?.name ?? "",
       x: t.slot?.x ?? null,
       y: t.slot?.y ?? null,
@@ -134,7 +135,7 @@ export class TableService {
       ...(search
         ? {
             OR: [
-              ...(searchNo !== null ? [{ slot: { no: searchNo } }] : []),
+              ...(searchNo !== null ? [{ no: searchNo }] : []),
               {
                 slot: {
                   name: { contains: search, mode: "insensitive" as const },
@@ -155,7 +156,7 @@ export class TableService {
     const [rows, total] = await Promise.all([
       prisma.table.findMany({
         where,
-        orderBy: { slot: { no: "asc" } },
+        orderBy: { no: "asc" },
         skip: (page - 1) * count,
         take: count,
         include: withSlot,
@@ -176,7 +177,7 @@ export class TableService {
   async findStaged() {
     const rows = await prisma.table.findMany({
       where: { isStaging: true },
-      orderBy: { slot: { no: "asc" } },
+      orderBy: { no: "asc" },
       include: withSlot,
     });
     const names = await this.leaderNames(rows);
@@ -190,6 +191,15 @@ export class TableService {
     });
     if (!table) throw new NotFoundException("Table not found");
     return this.toDto(table, await this.leaderNames([table]));
+  }
+
+  /** Staged tables count among themselves, so a published set starts at 1. */
+  private async nextNo(isStaging: boolean, eventId: string | null) {
+    const max = await prisma.table.aggregate({
+      where: isStaging ? { isStaging: true } : { eventId, isStaging: false },
+      _max: { no: true },
+    });
+    return (max._max.no ?? 0) + 1;
   }
 
   async create(dto: CreateTableDto) {
@@ -207,6 +217,7 @@ export class TableService {
       data: {
         id: uuidv4(),
         slotId: slot.id,
+        no: await this.nextNo(isStaging, eventId),
         capacity: dto.capacity ?? slot.defaultCapacity,
         isStaging,
         eventId,
@@ -250,10 +261,12 @@ export class TableService {
     }
 
     const codeLength = await this.config.get<number>(CONFIG_KEYS.pinLength);
+    const startNo = await this.nextNo(isStaging, eventId);
     await prisma.table.createMany({
-      data: reuse.map((slot) => ({
+      data: reuse.map((slot, i) => ({
         id: uuidv4(),
         slotId: slot.id,
+        no: startNo + i,
         capacity: dto.capacity ?? slot.defaultCapacity,
         isStaging,
         eventId,

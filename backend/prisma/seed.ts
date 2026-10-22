@@ -190,10 +190,11 @@ async function seedTables() {
     const id = `${SEED_EVENT_ID}-table-${no}`;
     await prisma.table.upsert({
       where: { id },
-      update: { capacity: t.capacity, slotId },
+      update: { capacity: t.capacity, slotId, no },
       create: {
         id,
         slotId,
+        no,
         capacity: t.capacity,
         eventId: SEED_EVENT_ID,
         code: generatePin(),

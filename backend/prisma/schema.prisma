@@ -141,6 +141,8 @@ model TableSlot {
 model Table {
   id            String  @id @db.VarChar(255)
   slotId        String? @map("slot_id") @db.VarChar(255)
+  /// Numbered from 1 within each event; the slot's number is the room layout.
+  no            Int
   capacity      Int     @default(1)
   tableLeaderId String? @unique @map("table_leader_id") @db.VarChar(255)
   isStaging     Boolean @default(false) @map("is_staging")
@@ -157,6 +159,7 @@ model Table {
   @@unique([slotId, eventId])
   @@map("table")
   @@index([eventId])
+  @@index([eventId, no])
   @@index([slotId])
 }
 
