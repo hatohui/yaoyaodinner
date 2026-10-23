@@ -193,6 +193,23 @@ declare module 'react-i18next' {
           added_to_order: string
           add_failed: string
           pin_required: string
+          admin: {
+            title: string
+            banner: string
+            exit: string
+            hide: string
+            show: string
+            delete: string
+            delete_title: string
+            delete_desc: string
+            deleted: string
+            delete_failed: string
+            delete_has_orders: string
+            hidden: string
+            shown: string
+            update_failed: string
+            image_updated: string
+          }
         }
         about: {
           hero_tag: string
@@ -437,6 +454,10 @@ declare module 'react-i18next' {
             swap_numbers: string
             numbers_swapped: string
             swap_failed: string
+            more_actions: string
+            swap_with: string
+            swap_title: string
+            swap_desc: string
             copy_codes: string
             codes_copied: string
             codes_sheet: string

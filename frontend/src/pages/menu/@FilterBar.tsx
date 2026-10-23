@@ -83,7 +83,11 @@ export function FilterBar({
 					icon={Flame}
 					active={popular}
 					onClick={() =>
-						onFilterChange({ category: 'all', popular: true, recommended: false })
+						onFilterChange({
+							category: 'all',
+							popular: true,
+							recommended: false,
+						})
 					}
 				/>
 				<CategoryPill
@@ -91,14 +95,22 @@ export function FilterBar({
 					icon={Sparkles}
 					active={recommended}
 					onClick={() =>
-						onFilterChange({ category: 'all', popular: false, recommended: true })
+						onFilterChange({
+							category: 'all',
+							popular: false,
+							recommended: true,
+						})
 					}
 				/>
 				<CategoryPill
 					label={t('menu.all_categories')}
 					active={activeCategory === 'all' && !popular && !recommended}
 					onClick={() =>
-						onFilterChange({ category: 'all', popular: false, recommended: false })
+						onFilterChange({
+							category: 'all',
+							popular: false,
+							recommended: false,
+						})
 					}
 				/>
 				{categories.map(cat => (
@@ -142,7 +154,8 @@ export function FilterBar({
 					}
 					onValueChange={val =>
 						onFilterChange({
-							category: val === 'popular' || val === 'recommended' ? 'all' : val,
+							category:
+								val === 'popular' || val === 'recommended' ? 'all' : val,
 							popular: val === 'popular',
 							recommended: val === 'recommended',
 						})

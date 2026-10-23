@@ -9,17 +9,25 @@ import {
 	KeyRound,
 	Copy,
 	ChevronRight,
+	EllipsisVertical,
 } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditableName } from '@/components/common/EditableName'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
 import { cn } from '@/utils/shadcn'
 import { TableCodeChip } from './@TableCodeChip'
+import { SwapNumberDialog } from './@SwapNumberDialog'
 
 interface TableListSectionProps {
 	tables: TableDto[]
@@ -52,6 +60,7 @@ export function TableListSection({
 	const [selected, setSelected] = useState<Set<string>>(new Set())
 	const [confirmOpen, setConfirmOpen] = useState(false)
 	const [rerollIds, setRerollIds] = useState<string[] | null>(null)
+	const [swapping, setSwapping] = useState<TableDto | null>(null)
 
 	const toggle = (id: string) => {
 		setSelected(prev => {
@@ -169,6 +178,27 @@ export function TableListSection({
 									</span>
 								</span>
 							</div>
+							<DropdownMenu modal={false}>
+								<DropdownMenuTrigger asChild>
+									<button
+										type='button'
+										aria-label={t('admin.tables.more_actions')}
+										title={t('admin.tables.more_actions')}
+										className='flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+									>
+										<EllipsisVertical className='size-4' />
+									</button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent
+									align='end'
+									onClick={e => e.stopPropagation()}
+								>
+									<DropdownMenuItem onSelect={() => setSwapping(table)}>
+										<ArrowLeftRight />
+										{t('admin.tables.swap_with')}
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
 							<Link
 								to={detail}
 								state={{ backTo: '/admin/tables' }}
@@ -261,6 +291,12 @@ export function TableListSection({
 					</Button>
 				</div>
 			)}
+
+			<SwapNumberDialog
+				table={swapping}
+				onOpenChange={open => !open && setSwapping(null)}
+				onSwap={onSwapNumbers}
+			/>
 
 			<ConfirmDialog
 				open={rerollIds !== null}

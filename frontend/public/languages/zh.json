@@ -207,7 +207,24 @@
 		"choose_table_title": "选择餐桌",
 		"added_to_order": "已加入订单",
 		"add_failed": "添加失败，请重试",
-		"pin_required": "请输入活动PIN码以下单"
+		"pin_required": "请输入活动PIN码以下单",
+		"admin": {
+			"title": "编辑模式已开启",
+			"banner": "将鼠标悬停在菜品上即可更换图片、隐藏或删除。",
+			"exit": "完成",
+			"hide": "从菜单隐藏",
+			"show": "在菜单显示",
+			"delete": "删除",
+			"delete_title": "删除 {{name}}？",
+			"delete_desc": "该菜品及其图片将被永久删除。",
+			"deleted": "菜品已删除",
+			"delete_failed": "无法删除菜品",
+			"delete_has_orders": "该菜品已有点单记录，只能隐藏",
+			"hidden": "菜品已从菜单隐藏",
+			"shown": "菜品已重新上架",
+			"update_failed": "无法更新菜品",
+			"image_updated": "图片已更新"
+		}
 	},
 	"about": {
 		"hero_tag": "一场兽迷聚餐之夜",
@@ -483,7 +500,11 @@
 			"codes_empty": "还没有带代码的餐桌",
 			"swap_numbers": "交换桌号",
 			"numbers_swapped": "桌号已交换",
-			"swap_failed": "无法交换桌号"
+			"swap_failed": "无法交换桌号",
+			"more_actions": "更多操作",
+			"swap_with": "与其他桌交换桌号…",
+			"swap_title": "将 {{no}} 号桌 · {{name}} 交换至…",
+			"swap_desc": "选择要互换桌号的桌子。"
 		},
 		"floor_plan": {
 			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。",

@@ -1,12 +1,13 @@
 import type { MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Check, Plus } from 'lucide-react'
+import { Check, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { FoodTags } from '@/components/common/FoodTags'
 import { cn } from '@/utils/shadcn'
 import { StoredImage } from '@/components/common/StoredImage'
+import { FoodImageButton } from './@FoodImageButton'
 
 interface FoodCardProps {
 	food: FoodItemDto
@@ -14,6 +15,9 @@ interface FoodCardProps {
 	selected?: boolean
 	onToggleSelect?: () => void
 	onQuickView?: (id: string) => void
+	onToggleAvailable?: () => void
+	onDelete?: () => void
+	onImageChange?: (key: string) => void
 }
 
 export function FoodCard({
@@ -22,6 +26,9 @@ export function FoodCard({
 	selected = false,
 	onToggleSelect,
 	onQuickView,
+	onToggleAvailable,
+	onDelete,
+	onImageChange,
 }: FoodCardProps) {
 	const { t } = useTranslation()
 
@@ -35,6 +42,8 @@ export function FoodCard({
 
 	const hasPrice = food.price !== null && food.price !== undefined
 
+	const isEditing = Boolean(onToggleAvailable || onDelete || onImageChange)
+
 	const canSelect =
 		Boolean(onToggleSelect) &&
 		food.isAvailable &&
@@ -46,7 +55,9 @@ export function FoodCard({
 				'group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-md',
 				'transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
 				!food.isAvailable && 'opacity-70',
-				selected && 'ring-2 ring-primary'
+				selected && 'ring-2 ring-primary',
+				isEditing &&
+					'outline-2 outline-offset-2 outline-primary/60 outline-dashed'
 			)}
 		>
 			<Link
@@ -118,6 +129,49 @@ export function FoodCard({
 					</button>
 				)}
 			</Link>
+
+			{isEditing && (
+				<div className='pointer-events-none absolute inset-x-0 top-0 z-10 aspect-[4/3]'>
+					{onImageChange && (
+						<FoodImageButton
+							onChange={onImageChange}
+							className='pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100'
+						/>
+					)}
+					<div className='pointer-events-auto absolute bottom-2 left-2 flex gap-1.5'>
+						{onToggleAvailable && (
+							<button
+								type='button'
+								aria-label={
+									food.isAvailable ? t('menu.admin.hide') : t('menu.admin.show')
+								}
+								title={
+									food.isAvailable ? t('menu.admin.hide') : t('menu.admin.show')
+								}
+								onClick={onToggleAvailable}
+								className='flex size-8 items-center justify-center rounded-full bg-card/90 text-foreground shadow-md backdrop-blur-sm transition-all hover:scale-110 hover:bg-primary hover:text-primary-foreground'
+							>
+								{food.isAvailable ? (
+									<EyeOff className='size-4' />
+								) : (
+									<Eye className='size-4' />
+								)}
+							</button>
+						)}
+						{onDelete && (
+							<button
+								type='button'
+								aria-label={t('menu.admin.delete')}
+								title={t('menu.admin.delete')}
+								onClick={onDelete}
+								className='flex size-8 items-center justify-center rounded-full bg-destructive text-primary-foreground shadow-md transition-all hover:scale-110'
+							>
+								<Trash2 className='size-4' />
+							</button>
+						)}
+					</div>
+				</div>
+			)}
 
 			<Link
 				to={`/menu/${food.id}`}

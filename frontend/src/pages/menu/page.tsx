@@ -18,6 +18,9 @@ import { EmptyView } from './@EmptyView'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { EditModeBanner } from './@EditModeBanner'
+import { useMenuAdmin } from './@useMenuAdmin'
 import type {
 	FoodItemDto,
 	CategoryItemDto,
@@ -32,6 +35,9 @@ export default function MenuPage() {
 	const pin = useGuest(s => s.pin)
 	const { isAdmin } = useIsAdmin()
 	const canOrder = Boolean(pin) || isAdmin
+	const { editing, exitEditMode, deleteFood, setAvailable, setImage } =
+		useMenuAdmin()
+	const [pendingDelete, setPendingDelete] = useState<FoodItemDto | null>(null)
 
 	const {
 		page: urlPage,
@@ -54,7 +60,7 @@ export default function MenuPage() {
 		onPageChange: setUrlPage,
 		onCountChange: setUrlCount,
 	})
-	
+
 	const { page, count } = pagination
 
 	const { data, isLoading, isError, error, refetch } =
@@ -127,6 +133,8 @@ export default function MenuPage() {
 					onFilterChange={setFilter}
 				/>
 
+				{editing && <EditModeBanner onExit={exitEditMode} />}
+
 				<div className='py-8'>
 					{isLoading && !data ? (
 						<LoadingView />
@@ -153,6 +161,17 @@ export default function MenuPage() {
 											canOrder ? () => selection.toggle(food.id) : undefined
 										}
 										onQuickView={setQuickViewId}
+										onToggleAvailable={
+											editing
+												? () => setAvailable(food.id, !food.isAvailable)
+												: undefined
+										}
+										onDelete={
+											editing ? () => setPendingDelete(food) : undefined
+										}
+										onImageChange={
+											editing ? key => setImage(food.id, key) : undefined
+										}
 									/>
 								))}
 							</div>
@@ -195,6 +214,19 @@ export default function MenuPage() {
 				}))}
 				onSuccess={selection.handleDone}
 				onChangeTable={selection.changeTable}
+			/>
+
+			<ConfirmDialog
+				open={pendingDelete !== null}
+				onOpenChange={open => !open && setPendingDelete(null)}
+				title={t('menu.admin.delete_title', { name: pendingDelete?.name })}
+				description={t('menu.admin.delete_desc')}
+				confirmLabel={t('menu.admin.delete')}
+				destructive
+				onConfirm={() => {
+					if (pendingDelete) deleteFood(pendingDelete.id)
+					setPendingDelete(null)
+				}}
 			/>
 
 			<FoodDetailModal

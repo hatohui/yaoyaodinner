@@ -207,7 +207,24 @@
 		"choose_table_title": "Chọn một bàn",
 		"added_to_order": "Đã thêm vào đơn",
 		"add_failed": "Không thêm được, vui lòng thử lại",
-		"pin_required": "Nhập mã PIN sự kiện để đặt món"
+		"pin_required": "Nhập mã PIN sự kiện để đặt món",
+		"admin": {
+			"title": "Đang bật chế độ chỉnh sửa",
+			"banner": "Di chuột lên món để đổi ảnh, ẩn hoặc xoá món.",
+			"exit": "Xong",
+			"hide": "Ẩn khỏi thực đơn",
+			"show": "Hiện trên thực đơn",
+			"delete": "Xoá",
+			"delete_title": "Xoá {{name}}?",
+			"delete_desc": "Món và ảnh của món sẽ bị xoá vĩnh viễn.",
+			"deleted": "Đã xoá món",
+			"delete_failed": "Không thể xoá món",
+			"delete_has_orders": "Món này đã từng được gọi nên chỉ có thể ẩn",
+			"hidden": "Đã ẩn món khỏi thực đơn",
+			"shown": "Món đã hiện lại trên thực đơn",
+			"update_failed": "Không thể cập nhật món",
+			"image_updated": "Đã cập nhật ảnh"
+		}
 	},
 	"about": {
 		"hero_tag": "Một đêm tiệc furry",
@@ -483,7 +500,11 @@
 			"codes_empty": "Chưa có bàn nào có mã",
 			"swap_numbers": "Đổi số bàn",
 			"numbers_swapped": "Đã đổi số bàn",
-			"swap_failed": "Không thể đổi số bàn"
+			"swap_failed": "Không thể đổi số bàn",
+			"more_actions": "Thao tác khác",
+			"swap_with": "Đổi số với bàn…",
+			"swap_title": "Đổi số Bàn {{no}} · {{name}} với…",
+			"swap_desc": "Chọn bàn để đổi số cho nhau."
 		},
 		"floor_plan": {
 			"drag_hint": "Kéo bàn vào đúng vị trí trên sơ đồ - vị trí sẽ tự lưu khi bạn thả.",

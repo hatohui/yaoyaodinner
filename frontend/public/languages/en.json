@@ -207,7 +207,24 @@
 		"choose_table_title": "Choose a table",
 		"added_to_order": "Added to order",
 		"add_failed": "Couldn't add, please try again",
-		"pin_required": "Enter the event PIN to order"
+		"pin_required": "Enter the event PIN to order",
+		"admin": {
+			"title": "Edit mode is on",
+			"banner": "Hover a dish to change its picture, hide it or delete it.",
+			"exit": "Done",
+			"hide": "Hide from menu",
+			"show": "Show on menu",
+			"delete": "Delete",
+			"delete_title": "Delete {{name}}?",
+			"delete_desc": "This removes the dish and its picture for good.",
+			"deleted": "Dish deleted",
+			"delete_failed": "Couldn't delete the dish",
+			"delete_has_orders": "This dish has been ordered before, so it can only be hidden",
+			"hidden": "Dish hidden from the menu",
+			"shown": "Dish is back on the menu",
+			"update_failed": "Couldn't update the dish",
+			"image_updated": "Picture updated"
+		}
 	},
 	"about": {
 		"hero_tag": "A furry dinner night",
@@ -483,7 +500,11 @@
 			"codes_empty": "No tables with codes yet",
 			"swap_numbers": "Swap numbers",
 			"numbers_swapped": "Table numbers swapped",
-			"swap_failed": "Couldn't swap table numbers"
+			"swap_failed": "Couldn't swap table numbers",
+			"more_actions": "More actions",
+			"swap_with": "Swap number with…",
+			"swap_title": "Swap Table {{no}} · {{name}} with…",
+			"swap_desc": "Pick the table to trade numbers with."
 		},
 		"floor_plan": {
 			"drag_hint": "Drag a table onto its spot on the floor - positions save as you drop them.",
