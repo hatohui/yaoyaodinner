@@ -2,8 +2,8 @@ import { IsString, IsOptional, MaxLength } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
- * Guest-editable subset of a table. Capacity stays admin-only (it's a hard cap),
- * but the name and who's hosting are open, matching the app's no-auth model.
+ * Subset of a table that guests holding its code can edit. Capacity and the host
+ * stay admin-only.
  */
 export class UpdateTableDetailsDto {
   @ApiPropertyOptional({ example: 'Table 4' })
@@ -15,7 +15,8 @@ export class UpdateTableDetailsDto {
   @ApiPropertyOptional({
     nullable: true,
     type: String,
-    description: 'Person id hosting this table, or null to clear',
+    description:
+      'Person id hosting this table, or null to clear (admin passphrase required)',
   })
   @IsString()
   @IsOptional()

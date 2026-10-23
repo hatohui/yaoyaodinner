@@ -1,3 +1,4 @@
+import { TableAccessModule } from '@modules/table-access/table-access.module';
 import { Module } from '@nestjs/common';
 import { TableController } from './table.controller';
 import { TableService } from './table.service';
@@ -9,7 +10,13 @@ import { ConfigModule } from '@modules/config/config.module';
 import { ImagesModule } from '@modules/images/images.module';
 
 @Module({
-  imports: [PeopleModule, EventModule, ConfigModule, ImagesModule],
+  imports: [
+    PeopleModule,
+    EventModule,
+    ConfigModule,
+    ImagesModule,
+    TableAccessModule,
+  ],
   controllers: [TableController, TableSlotController],
   providers: [TableService, TableSlotService],
   exports: [TableService, TableSlotService],

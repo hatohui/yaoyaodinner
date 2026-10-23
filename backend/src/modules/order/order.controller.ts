@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   Query,
+  Headers,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { OrderService } from './order.service';
@@ -14,11 +15,15 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { BatchCreateOrderDto } from './dto/batch-create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderResponseDto } from './dto/order-response.dto';
+import { TableAccessService } from '@modules/table-access/table-access.service';
 
 @ApiTags('orders')
 @Controller('orders')
 export class OrderController {
-  constructor(private order: OrderService) {}
+  constructor(
+    private order: OrderService,
+    private access: TableAccessService,
+  ) {}
 
   @Get()
   @ApiOperation({ operationId: 'getOrders' })
@@ -34,7 +39,12 @@ export class OrderController {
   @ApiOperation({ operationId: 'createOrder' })
   @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
   @ApiResponse({ status: 201, type: OrderResponseDto })
-  create(@Body() dto: CreateOrderDto, @Query('lang') lang = 'en') {
+  async create(
+    @Body() dto: CreateOrderDto,
+    @Headers() headers: Record<string, string>,
+    @Query('lang') lang = 'en',
+  ) {
+    await this.access.forTable(dto.tableId, headers);
     return this.order.create(dto, lang);
   }
 
@@ -42,7 +52,12 @@ export class OrderController {
   @ApiOperation({ operationId: 'createOrderBatch' })
   @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
   @ApiResponse({ status: 201, type: [OrderResponseDto] })
-  createBatch(@Body() dto: BatchCreateOrderDto, @Query('lang') lang = 'en') {
+  async createBatch(
+    @Body() dto: BatchCreateOrderDto,
+    @Headers() headers: Record<string, string>,
+    @Query('lang') lang = 'en',
+  ) {
+    await this.access.forTable(dto.tableId, headers);
     return this.order.createBatch(dto, lang);
   }
 
@@ -50,17 +65,23 @@ export class OrderController {
   @ApiOperation({ operationId: 'updateOrder' })
   @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
   @ApiResponse({ status: 200, type: OrderResponseDto })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() dto: UpdateOrderDto,
+    @Headers() headers: Record<string, string>,
     @Query('lang') lang = 'en',
   ) {
+    await this.access.forOrder(id, headers);
     return this.order.update(id, dto, lang);
   }
 
   @Delete(':id')
   @ApiOperation({ operationId: 'deleteOrder' })
-  remove(@Param('id') id: string) {
+  async remove(
+    @Param('id') id: string,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forOrder(id, headers);
     return this.order.remove(id);
   }
 }

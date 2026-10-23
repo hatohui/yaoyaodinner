@@ -7,16 +7,21 @@ import {
   Body,
   Param,
   Query,
+  Headers,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PersonalNoteService } from './personal-note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { NoteResponseDto } from './dto/note-response.dto';
+import { TableAccessService } from '@modules/table-access/table-access.service';
 
 @ApiTags('personal-notes')
 @Controller('personal-notes')
 export class PersonalNoteController {
-  constructor(private notes: PersonalNoteService) {}
+  constructor(
+    private notes: PersonalNoteService,
+    private access: TableAccessService,
+  ) {}
 
   @Get()
   @ApiOperation({ operationId: 'getNotesByPerson' })
@@ -29,20 +34,32 @@ export class PersonalNoteController {
   @Post()
   @ApiOperation({ operationId: 'createNote' })
   @ApiResponse({ status: 201, type: NoteResponseDto })
-  create(@Body() dto: CreateNoteDto) {
+  async create(
+    @Body() dto: CreateNoteDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forPerson(dto.personId, headers);
     return this.notes.create(dto);
   }
 
   @Put()
   @ApiOperation({ operationId: 'upsertNote' })
   @ApiResponse({ status: 200, type: NoteResponseDto })
-  upsert(@Body() dto: CreateNoteDto) {
+  async upsert(
+    @Body() dto: CreateNoteDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forPerson(dto.personId, headers);
     return this.notes.upsert(dto);
   }
 
   @Delete(':id')
   @ApiOperation({ operationId: 'deleteNote' })
-  remove(@Param('id') id: string) {
+  async remove(
+    @Param('id') id: string,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forNote(id, headers);
     return this.notes.remove(id);
   }
 }

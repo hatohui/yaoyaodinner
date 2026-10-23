@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Headers,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -17,11 +18,15 @@ import { MovePeopleDto } from './dto/move-people.dto';
 import { PersonDto } from './dto/person-response.dto';
 import { IdsDto } from '@common/dto/ids.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { TableAccessService } from '@modules/table-access/table-access.service';
 
 @ApiTags('people')
 @Controller('people')
 export class PeopleController {
-  constructor(private people: PeopleService) {}
+  constructor(
+    private people: PeopleService,
+    private access: TableAccessService,
+  ) {}
 
   @Get()
   @ApiOperation({ operationId: 'getPeople' })
@@ -32,7 +37,11 @@ export class PeopleController {
   @Post()
   @ApiOperation({ operationId: 'createPerson' })
   @ApiResponse({ status: 201, type: PersonDto })
-  create(@Body() dto: CreatePersonDto) {
+  async create(
+    @Body() dto: CreatePersonDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forTable(dto.tableId, headers);
     return this.people.create(dto);
   }
 
@@ -50,24 +59,38 @@ export class PeopleController {
     return this.people.bulkRemove(dto.ids);
   }
 
-  // Open like create/delete: guests fix their own names on the roster
+  // Guests fix names on their own table's roster, so these need its code
   @Patch(':id')
   @ApiOperation({ operationId: 'updatePerson' })
   @ApiResponse({ status: 200, type: PersonDto })
-  update(@Param('id') id: string, @Body() dto: UpdatePersonDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdatePersonDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forPerson(id, headers);
     return this.people.update(id, dto);
   }
 
   @Patch(':id/pfp')
   @ApiOperation({ operationId: 'updatePersonPfp' })
   @ApiResponse({ status: 200, type: PersonDto })
-  updatePfp(@Param('id') id: string, @Body() dto: UpdatePersonPfpDto) {
+  async updatePfp(
+    @Param('id') id: string,
+    @Body() dto: UpdatePersonPfpDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forPerson(id, headers);
     return this.people.updatePfp(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ operationId: 'deletePerson' })
-  remove(@Param('id') id: string) {
+  async remove(
+    @Param('id') id: string,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forPerson(id, headers);
     return this.people.remove(id);
   }
 }

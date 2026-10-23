@@ -7,6 +7,8 @@ import {
   Param,
   Query,
   Body,
+  Headers,
+  ForbiddenException,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -15,6 +17,9 @@ import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
 import { PeopleService } from '@modules/people/people.service';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { ADMIN_HEADER } from '@common/auth/admin';
+import { ConfigService } from '@modules/config/config.service';
+import { TableAccessService } from '@modules/table-access/table-access.service';
 import { IdsDto } from '@common/dto/ids.dto';
 import { CreateTableDto } from './dto/create-table.dto';
 import { BulkCreateTableDto } from './dto/bulk-create-table.dto';
@@ -36,6 +41,8 @@ export class TableController {
   constructor(
     private table: TableService,
     private people: PeopleService,
+    private config: ConfigService,
+    private access: TableAccessService,
   ) {}
 
   @Get()
@@ -158,7 +165,20 @@ export class TableController {
   @Patch(':id/details')
   @ApiOperation({ operationId: 'updateTableDetails' })
   @ApiResponse({ status: 200, type: TableDto })
-  updateDetails(@Param('id') id: string, @Body() dto: UpdateTableDetailsDto) {
+  async updateDetails(
+    @Param('id') id: string,
+    @Body() dto: UpdateTableDetailsDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    // name and banner need the table's code; who hosts is the admin's call
+    await this.access.forTable(id, headers);
+    if (dto.tableLeaderId !== undefined) {
+      const passphrase = await this.config.getAdminPassphrase();
+      const adminSecret = headers[ADMIN_HEADER];
+      if (!adminSecret || !passphrase || adminSecret !== passphrase) {
+        throw new ForbiddenException('Only admins can change the host');
+      }
+    }
     return this.table.updateDetails(id, dto);
   }
 
