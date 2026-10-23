@@ -380,6 +380,27 @@ declare module 'react-i18next' {
             stat_people: string
             stat_orders: string
           }
+          export: {
+            button: string
+            title: string
+            desc: string
+            include: string
+            field_no: string
+            field_name: string
+            field_host: string
+            field_people: string
+            field_foods: string
+            field_variant: string
+            field_quantity: string
+            tables: string
+            select_none: string
+            food_count: string
+            save: string
+            table_no: string
+            host: string
+            people: string
+            no_orders: string
+          }
           tables: {
             rename_failed: string
             title: string
@@ -413,6 +434,9 @@ declare module 'react-i18next' {
             reroll_codes_desc: string
             codes_rerolled: string
             reroll_failed: string
+            swap_numbers: string
+            numbers_swapped: string
+            swap_failed: string
             copy_codes: string
             codes_copied: string
             codes_sheet: string

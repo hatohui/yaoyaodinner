@@ -9,7 +9,7 @@
 export interface UpdateTableDetailsDto {
   name?: string;
   /**
-     * Person id hosting this table, or null to clear
+     * Person id hosting this table, or null to clear (admin passphrase required)
      * @nullable
      */
   tableLeaderId?: string | null;

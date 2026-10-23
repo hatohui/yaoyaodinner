@@ -423,6 +423,27 @@
 			"stat_people": "People",
 			"stat_orders": "Orders"
 		},
+		"export": {
+			"button": "Export orders",
+			"title": "Export table orders to PDF",
+			"desc": "Pick what to include, then save it as a PDF from the print dialog.",
+			"include": "Include",
+			"field_no": "Table number",
+			"field_name": "Table name",
+			"field_host": "Host",
+			"field_people": "Guests",
+			"field_foods": "Foods",
+			"field_variant": "Size / option",
+			"field_quantity": "Quantity",
+			"tables": "Tables ({{count}}/{{total}})",
+			"select_none": "Select none",
+			"food_count": "Dishes: {{count}}",
+			"save": "Save as PDF",
+			"table_no": "Table {{no}}",
+			"host": "Host",
+			"people": "Guests",
+			"no_orders": "No orders yet"
+		},
 		"tables": {
 			"title": "Tables",
 			"create": "New table",
@@ -459,7 +480,10 @@
 			"copy_codes": "Copy codes",
 			"codes_copied": "Codes copied",
 			"codes_sheet": "Table codes",
-			"codes_empty": "No tables with codes yet"
+			"codes_empty": "No tables with codes yet",
+			"swap_numbers": "Swap numbers",
+			"numbers_swapped": "Table numbers swapped",
+			"swap_failed": "Couldn't swap table numbers"
 		},
 		"floor_plan": {
 			"drag_hint": "Drag a table onto its spot on the floor - positions save as you drop them.",

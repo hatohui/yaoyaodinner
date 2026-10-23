@@ -11,6 +11,7 @@ import {
 	useReassignTables,
 	useGetTableCodes,
 	useRerollTableCodes,
+	useSwapTableNumbers,
 	getGetTableCodesQueryKey,
 	useUpdateTable,
 	getGetTablesQueryKey,
@@ -130,6 +131,16 @@ export function useAdminTables() {
 		},
 	})
 
+	const { mutate: swapNumbers } = useSwapTableNumbers({
+		mutation: {
+			onSuccess: () => {
+				invalidate()
+				toast.success(t('admin.tables.numbers_swapped'))
+			},
+			onError: () => toast.error(t('admin.tables.swap_failed')),
+		},
+	})
+
 	const { mutate: rerollCodes } = useRerollTableCodes({
 		mutation: {
 			onSuccess: fresh => {
@@ -168,5 +179,6 @@ export function useAdminTables() {
 		rerollCodes: (ids: string[]) => rerollCodes({ data: { ids } }),
 		moveToStaging: (ids: string[]) =>
 			reassign({ data: { ids, eventId: null } }),
+		swapNumbers: (ids: string[]) => swapNumbers({ data: { ids } }),
 	}
 }

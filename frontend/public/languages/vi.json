@@ -423,6 +423,27 @@
 			"stat_people": "Người",
 			"stat_orders": "Đơn hàng"
 		},
+		"export": {
+			"button": "Xuất đơn món",
+			"title": "Xuất đơn món của các bàn ra PDF",
+			"desc": "Chọn nội dung cần có, rồi lưu thành PDF từ hộp thoại in.",
+			"include": "Bao gồm",
+			"field_no": "Số bàn",
+			"field_name": "Tên bàn",
+			"field_host": "Chủ bàn",
+			"field_people": "Khách",
+			"field_foods": "Món ăn",
+			"field_variant": "Cỡ / tuỳ chọn",
+			"field_quantity": "Số lượng",
+			"tables": "Bàn ({{count}}/{{total}})",
+			"select_none": "Bỏ chọn tất cả",
+			"food_count": "Số món: {{count}}",
+			"save": "Lưu thành PDF",
+			"table_no": "Bàn {{no}}",
+			"host": "Chủ bàn",
+			"people": "Khách",
+			"no_orders": "Chưa gọi món"
+		},
 		"tables": {
 			"title": "Bàn",
 			"create": "Bàn mới",
@@ -459,7 +480,10 @@
 			"copy_codes": "Sao chép mã",
 			"codes_copied": "Đã sao chép các mã",
 			"codes_sheet": "Mã bàn",
-			"codes_empty": "Chưa có bàn nào có mã"
+			"codes_empty": "Chưa có bàn nào có mã",
+			"swap_numbers": "Đổi số bàn",
+			"numbers_swapped": "Đã đổi số bàn",
+			"swap_failed": "Không thể đổi số bàn"
 		},
 		"floor_plan": {
 			"drag_hint": "Kéo bàn vào đúng vị trí trên sơ đồ - vị trí sẽ tự lưu khi bạn thả.",

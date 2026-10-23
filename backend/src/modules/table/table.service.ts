@@ -205,6 +205,75 @@ export class TableService {
     };
   }
 
+  /** Who sits where and what they ordered, for printing; prices are left out. */
+  async exportForEvent(forEventId?: string, lang = "en") {
+    const eventId = await this.events.resolveEventId(forEventId);
+    if (!eventId) return [];
+
+    const rows = await prisma.table.findMany({
+      where: { eventId, isStaging: false },
+      orderBy: { no: "asc" },
+      include: {
+        slot: { select: { name: true } },
+        people: { select: { id: true, name: true }, orderBy: { name: "asc" } },
+        orders: {
+          orderBy: { createdAt: "asc" },
+          select: {
+            quantity: true,
+            variant: {
+              select: {
+                id: true,
+                translations: {
+                  where: { language: lang },
+                  select: { label: true },
+                },
+                food: {
+                  select: {
+                    translations: {
+                      where: { language: lang },
+                      select: { name: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return rows.map((r) => {
+      const foods = new Map<
+        string,
+        {
+          variantId: string;
+          foodName: string;
+          variantLabel: string;
+          quantity: number;
+        }
+      >();
+      for (const o of r.orders) {
+        const prev = foods.get(o.variant.id);
+        foods.set(o.variant.id, {
+          variantId: o.variant.id,
+          foodName: o.variant.food.translations[0]?.name ?? "",
+          variantLabel: o.variant.translations[0]?.label ?? "",
+          quantity: (prev?.quantity ?? 0) + o.quantity,
+        });
+      }
+
+      return {
+        id: r.id,
+        no: r.no,
+        name: r.slot?.name ?? "",
+        hostName:
+          r.people.find((p) => p.id === r.tableLeaderId)?.name ?? null,
+        people: r.people.map((p) => p.name),
+        foods: [...foods.values()],
+      };
+    });
+  }
+
   async findStaged() {
     const rows = await prisma.table.findMany({
       where: { isStaging: true },
@@ -420,6 +489,26 @@ export class TableService {
     if (!table.slotId) throw new BadRequestException("Table has no slot");
     await this.slots.updatePosition(table.slotId, x, y);
     return this.findOne(id);
+  }
+
+  async swapNumbers(aId: string, bId: string) {
+    const [a, b] = await Promise.all([
+      prisma.table.findUnique({ where: { id: aId } }),
+      prisma.table.findUnique({ where: { id: bId } }),
+    ]);
+    if (!a || !b) throw new NotFoundException("Table not found");
+    if (a.id === b.id) {
+      throw new BadRequestException("Pick two different tables");
+    }
+    if (a.isStaging !== b.isStaging || a.eventId !== b.eventId) {
+      throw new BadRequestException("Both tables must be in the same event");
+    }
+
+    await prisma.$transaction([
+      prisma.table.update({ where: { id: a.id }, data: { no: b.no } }),
+      prisma.table.update({ where: { id: b.id }, data: { no: a.no } }),
+    ]);
+    return Promise.all([this.findOne(a.id), this.findOne(b.id)]);
   }
 
   async remove(id: string) {

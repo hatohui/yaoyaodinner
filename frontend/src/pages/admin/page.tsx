@@ -5,6 +5,7 @@ import { EventStatsCards } from './@EventStatsCards'
 import { PublishEventDialog } from './@PublishEventDialog'
 import { PastEventsList } from './@PastEventsList'
 import { EventSettingsCard } from './@EventSettingsCard'
+import { ExportOrdersDialog } from './@ExportOrdersDialog'
 import { useAdminDashboard } from './@useAdminDashboard'
 
 export default function AdminDashboardPage() {
@@ -21,15 +22,22 @@ export default function AdminDashboardPage() {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<div className='flex items-center justify-between gap-3'>
+			<div className='flex flex-wrap items-center justify-between gap-3'>
 				<h1 className='text-xl font-bold text-foreground'>
 					{t('admin.dashboard.title')}
 				</h1>
-				<PublishEventDialog
-					hasActiveEvent={Boolean(activeEvent)}
-					pending={publishing}
-					onPublish={name => publish(name ? { name } : {})}
-				/>
+				<div className='flex flex-wrap items-center gap-2'>
+					{activeEvent && (
+						<ExportOrdersDialog
+							eventName={activeEvent.name || t('admin.dashboard.unnamed_event')}
+						/>
+					)}
+					<PublishEventDialog
+						hasActiveEvent={Boolean(activeEvent)}
+						pending={publishing}
+						onPublish={name => publish(name ? { name } : {})}
+					/>
+				</div>
 			</div>
 
 			{activeLoading ? (

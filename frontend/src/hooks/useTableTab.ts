@@ -4,7 +4,7 @@ import { TABLE_TAB_STORAGE_KEY } from '@/common/constants'
 
 export type TableTab = 'people' | 'orders' | 'split'
 
-const DEFAULT_TAB: TableTab = 'orders'
+const DEFAULT_TAB: TableTab = 'people'
 const TABS: TableTab[] = ['people', 'orders', 'split']
 
 type TabMap = Record<string, TableTab>

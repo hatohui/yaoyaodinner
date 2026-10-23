@@ -28,6 +28,7 @@ export default function AdminTablesPage() {
 		moveToStaging,
 		renameTable,
 		updateCapacity,
+		swapNumbers,
 	} = useAdminTables()
 
 	return (
@@ -64,6 +65,7 @@ export default function AdminTablesPage() {
 						onCapacityChange={updateCapacity}
 						onBulkDelete={bulkRemoveTables}
 						onRerollCodes={rerollCodes}
+						onSwapNumbers={swapNumbers}
 						onMoveToStaging={moveToStaging}
 					/>
 					<div className='flex justify-center'>
@@ -80,6 +82,7 @@ export default function AdminTablesPage() {
 						onCapacityChange={updateCapacity}
 						onBulkDelete={bulkRemoveTables}
 						onRerollCodes={rerollCodes}
+						onSwapNumbers={swapNumbers}
 					/>
 				</TabsContent>
 			</Tabs>

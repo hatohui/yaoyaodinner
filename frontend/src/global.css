@@ -59,6 +59,10 @@
 	--color-brand-foreground: var(--primary-foreground);
 	--color-brand-muted: color-mix(in oklch, var(--primary) 15%, transparent);
 	--color-control: var(--control);
+	--color-paper: var(--paper);
+	--color-paper-foreground: var(--paper-foreground);
+	--color-paper-muted: var(--paper-muted);
+	--color-paper-border: var(--paper-border);
 }
 
 @theme inline {
@@ -196,6 +200,11 @@
 
 	--bg-paw-opacity: 0.03;
 	--bg-dot: color-mix(in oklch, var(--primary) 25%, transparent);
+	/* Printed exports stay light whatever the screen theme is */
+	--paper: oklch(1 0 0);
+	--paper-foreground: oklch(0.18 0.015 305);
+	--paper-muted: oklch(0.45 0.03 305);
+	--paper-border: oklch(0.85 0.02 310);
 }
 
 [data-theme='dark'] {
@@ -326,5 +335,17 @@
 		background-color: oklch(0.68 0.13 305);
 		/* Primary for dark mode selection */
 		color: oklch(0.15 0.05 305);
+	}
+}
+
+@media print {
+	@page {
+		margin: 12mm;
+	}
+	body:has(.print-sheet) > :not(.print-sheet) {
+		display: none !important;
+	}
+	body:has(.print-sheet) {
+		background: var(--paper);
 	}
 }

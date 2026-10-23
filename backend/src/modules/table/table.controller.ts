@@ -27,7 +27,9 @@ import { UpdateTableDto } from './dto/update-table.dto';
 import { UpdateTableDetailsDto } from './dto/update-table-details.dto';
 import { TablePositionDto } from './dto/table-position.dto';
 import { ReassignTablesDto } from './dto/reassign-tables.dto';
+import { SwapTablesDto } from './dto/swap-tables.dto';
 import { TableDto, TableListDto } from './dto/table-response.dto';
+import { TableExportDto } from './dto/table-export.dto';
 import {
   TableCodeDto,
   TableCodeResponseDto,
@@ -69,6 +71,19 @@ export class TableController {
   @ApiResponse({ status: 200, type: [TableDto] })
   findStaged() {
     return this.table.findStaged();
+  }
+
+  @Get('export')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'exportTables' })
+  @ApiQuery({ name: 'eventId', required: false, type: String })
+  @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
+  @ApiResponse({ status: 200, type: [TableExportDto] })
+  exportTables(
+    @Query('eventId') eventId?: string,
+    @Query('lang') lang = 'en',
+  ) {
+    return this.table.exportForEvent(eventId, lang);
   }
 
   @Get('codes')
@@ -152,6 +167,14 @@ export class TableController {
   @ApiOperation({ operationId: 'reassignTables' })
   reassign(@Body() dto: ReassignTablesDto) {
     return this.table.bulkReassign(dto.ids, dto.eventId ?? null);
+  }
+
+  @Post('swap-numbers')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'swapTableNumbers' })
+  @ApiResponse({ status: 201, type: [TableDto] })
+  swapNumbers(@Body() dto: SwapTablesDto) {
+    return this.table.swapNumbers(dto.ids[0], dto.ids[1]);
   }
 
   @Patch(':id')

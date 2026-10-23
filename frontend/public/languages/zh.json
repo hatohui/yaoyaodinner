@@ -423,6 +423,27 @@
 			"stat_people": "人数",
 			"stat_orders": "订单"
 		},
+		"export": {
+			"button": "导出点单",
+			"title": "将各桌点单导出为 PDF",
+			"desc": "选择要包含的内容，然后在打印对话框中保存为 PDF。",
+			"include": "包含",
+			"field_no": "桌号",
+			"field_name": "桌名",
+			"field_host": "桌长",
+			"field_people": "客人",
+			"field_foods": "菜品",
+			"field_variant": "规格 / 选项",
+			"field_quantity": "数量",
+			"tables": "桌子（{{count}}/{{total}}）",
+			"select_none": "全部取消",
+			"food_count": "菜品数：{{count}}",
+			"save": "保存为 PDF",
+			"table_no": "{{no}} 号桌",
+			"host": "桌长",
+			"people": "客人",
+			"no_orders": "暂无点单"
+		},
 		"tables": {
 			"title": "餐桌",
 			"create": "新建餐桌",
@@ -459,7 +480,10 @@
 			"copy_codes": "复制代码",
 			"codes_copied": "已复制代码",
 			"codes_sheet": "餐桌代码",
-			"codes_empty": "还没有带代码的餐桌"
+			"codes_empty": "还没有带代码的餐桌",
+			"swap_numbers": "交换桌号",
+			"numbers_swapped": "桌号已交换",
+			"swap_failed": "无法交换桌号"
 		},
 		"floor_plan": {
 			"drag_hint": "将餐桌拖到平面图上的位置 - 松开即自动保存。",

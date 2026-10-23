@@ -5,6 +5,7 @@ import {
 	Users,
 	Trash2,
 	ArchiveRestore,
+	ArrowLeftRight,
 	KeyRound,
 	Copy,
 	ChevronRight,
@@ -30,6 +31,7 @@ interface TableListSectionProps {
 	onBulkDelete: (ids: string[]) => void
 	onRerollCodes: (ids: string[]) => void
 	onMoveToStaging?: (ids: string[]) => void
+	onSwapNumbers: (ids: string[]) => void
 }
 
 export function TableListSection({
@@ -42,6 +44,7 @@ export function TableListSection({
 	onBulkDelete,
 	onRerollCodes,
 	onMoveToStaging,
+	onSwapNumbers,
 }: TableListSectionProps) {
 	const { t } = useTranslation()
 	const toast = useToast()
@@ -199,6 +202,24 @@ export function TableListSection({
 							<ArchiveRestore className='size-3.5' />
 							<span className='hidden sm:inline'>
 								{t('admin.tables.move_to_staging')}
+							</span>
+						</Button>
+					)}
+					{selected.size === 2 && (
+						<Button
+							size='sm'
+							variant='outline'
+							className='gap-1.5 rounded-full'
+							aria-label={t('admin.tables.swap_numbers')}
+							title={t('admin.tables.swap_numbers')}
+							onClick={() => {
+								onSwapNumbers([...selected])
+								setSelected(new Set())
+							}}
+						>
+							<ArrowLeftRight className='size-3.5' />
+							<span className='hidden sm:inline'>
+								{t('admin.tables.swap_numbers')}
 							</span>
 						</Button>
 					)}
