@@ -8,7 +8,5 @@ export default function RouteErrorPage() {
 	useEffect(() => console.error(error), [error])
 
 	// A full reload also recovers from stale lazy chunks after a deploy.
-	return (
-		<ErrorFallback error={error} onRetry={() => window.location.reload()} />
-	)
+	return <ErrorFallback onRetry={() => window.location.reload()} />
 }

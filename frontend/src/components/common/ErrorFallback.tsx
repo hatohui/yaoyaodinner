@@ -4,22 +4,12 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/shadcn'
 
 interface ErrorFallbackProps {
-	error: unknown
 	onRetry: () => void
 	className?: string
 }
 
-const describe = (error: unknown) =>
-	error instanceof Error
-		? (error.stack ?? `${error.name}: ${error.message}`)
-		: JSON.stringify(error, null, 2)
-
 /** Plain anchors and no router hooks, so it also works above the router. */
-export function ErrorFallback({
-	error,
-	onRetry,
-	className,
-}: ErrorFallbackProps) {
+export function ErrorFallback({ onRetry, className }: ErrorFallbackProps) {
 	const { t } = useTranslation()
 
 	return (
@@ -53,11 +43,6 @@ export function ErrorFallback({
 					</a>
 				</Button>
 			</div>
-			{import.meta.env.DEV && (
-				<pre className='scrollbar-thin mt-2 max-h-64 w-full overflow-auto rounded-xl border border-border bg-muted p-3 text-left text-xs text-muted-foreground'>
-					{describe(error)}
-				</pre>
-			)}
 		</div>
 	)
 }

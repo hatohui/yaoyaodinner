@@ -6,7 +6,6 @@ interface AppErrorBoundaryProps {
 }
 
 interface AppErrorBoundaryState {
-	error: unknown
 	hasError: boolean
 }
 
@@ -18,10 +17,10 @@ export class AppErrorBoundary extends Component<
 	AppErrorBoundaryProps,
 	AppErrorBoundaryState
 > {
-	state: AppErrorBoundaryState = { error: null, hasError: false }
+	state: AppErrorBoundaryState = { hasError: false }
 
-	static getDerivedStateFromError(error: unknown): AppErrorBoundaryState {
-		return { error, hasError: true }
+	static getDerivedStateFromError(): AppErrorBoundaryState {
+		return { hasError: true }
 	}
 
 	componentDidCatch(error: unknown, info: ErrorInfo) {
@@ -33,10 +32,7 @@ export class AppErrorBoundary extends Component<
 
 		return (
 			<div className='min-h-screen bg-background'>
-				<ErrorFallback
-					error={this.state.error}
-					onRetry={() => window.location.reload()}
-				/>
+				<ErrorFallback onRetry={() => window.location.reload()} />
 			</div>
 		)
 	}
