@@ -1,6 +1,11 @@
 import a, { type AxiosRequestConfig } from 'axios'
 import { API_URL } from './app'
-import { ADMIN_HEADER, ADMIN_PASSPHRASE_STORAGE_KEY } from './constants'
+import {
+	ADMIN_HEADER,
+	ADMIN_PASSPHRASE_STORAGE_KEY,
+	TABLE_ACCESS_HEADER,
+	TABLE_CODE_STORAGE_KEY,
+} from './constants'
 import { useGuest } from '@/hooks/useGuest'
 import { localStorage } from '@/utils/localstorage'
 
@@ -17,6 +22,22 @@ const axios = a.create({
 axios.interceptors.request.use(config => {
 	const passphrase = localStorage.load(ADMIN_PASSPHRASE_STORAGE_KEY)
 	if (passphrase) config.headers[ADMIN_HEADER] = passphrase
+
+	// the server checks this table's code on edits; read from storage to avoid
+	// an import cycle with the table-code store
+	const held = localStorage.load(TABLE_CODE_STORAGE_KEY)
+	if (held) {
+		try {
+			const { tableId, code } = JSON.parse(held) as {
+				tableId: string
+				code: string
+			}
+			if (tableId && code)
+				config.headers[TABLE_ACCESS_HEADER] = `${tableId}:${code}`
+		} catch {
+			// a corrupt entry just means no code is sent
+		}
+	}
 	return config
 })
 

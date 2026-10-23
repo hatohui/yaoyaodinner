@@ -148,6 +148,7 @@ export default function TableDetailPage() {
 					<Roster
 						table={table}
 						canEdit={canEdit}
+						canSetHost={isAdmin}
 						onSetHost={personId => updateTable({ tableLeaderId: personId })}
 					/>
 				</TabsContent>

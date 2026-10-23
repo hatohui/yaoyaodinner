@@ -16,10 +16,11 @@ import { PersonDialog } from './@PersonDialog'
 interface RosterProps {
 	table: TableDto
 	canEdit: boolean
+	canSetHost: boolean
 	onSetHost: (personId: string | null) => void
 }
 
-export function Roster({ table, canEdit, onSetHost }: RosterProps) {
+export function Roster({ table, canEdit, canSetHost, onSetHost }: RosterProps) {
 	const { t } = useTranslation()
 	const { people, add, remove, updatePfp, rename } = useRoster(table.id)
 	const me = useGuest(s => s.me)
@@ -122,6 +123,7 @@ export function Roster({ table, canEdit, onSetHost }: RosterProps) {
 			<PersonDialog
 				person={editingPerson}
 				canClaim={!me}
+				canSetHost={canSetHost}
 				isHost={editingPerson?.id === table.tableLeaderId}
 				onOpenChange={open => !open && setEditingId(null)}
 				onSave={changes => {

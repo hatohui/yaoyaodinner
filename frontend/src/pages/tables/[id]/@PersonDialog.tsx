@@ -20,6 +20,7 @@ import { usePersonNote } from '@/hooks/usePersonNote'
 interface PersonDialogProps {
 	person: PersonDto | null
 	canClaim: boolean
+	canSetHost: boolean
 	isHost: boolean
 	onOpenChange: (open: boolean) => void
 	onSave: (changes: {
@@ -34,6 +35,7 @@ interface PersonDialogProps {
 export function PersonDialog({
 	person,
 	canClaim,
+	canSetHost,
 	isHost,
 	onOpenChange,
 	onSave,
@@ -131,13 +133,15 @@ export function PersonDialog({
 					/>
 				</div>
 
-				<label className='flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-sm'>
-					<span className='flex items-center gap-2'>
-						<Crown className='size-4 text-primary' />
-						{t('roster.host_label')}
-					</span>
-					<Switch checked={hostDraft} onCheckedChange={setHostDraft} />
-				</label>
+				{canSetHost && (
+					<label className='flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-sm'>
+						<span className='flex items-center gap-2'>
+							<Crown className='size-4 text-primary' />
+							{t('roster.host_label')}
+						</span>
+						<Switch checked={hostDraft} onCheckedChange={setHostDraft} />
+					</label>
+				)}
 
 				{canClaim && (
 					<Button

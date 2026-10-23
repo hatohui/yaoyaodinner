@@ -16,6 +16,7 @@ export const ADMIN_EDIT_MODE_STORAGE_KEY = 'admin_edit_mode'
 export const ADMIN_SIDEBAR_COLLAPSED_STORAGE_KEY = 'admin_sidebar_collapsed'
 
 export const ADMIN_HEADER = 'x-admin-secret'
+export const TABLE_ACCESS_HEADER = 'x-table-access'
 export const ADMIN_GATE_TAPS = 5
 export const ADMIN_GATE_WINDOW_MS = 1500
 

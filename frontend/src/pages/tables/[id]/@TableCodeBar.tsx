@@ -10,6 +10,7 @@ import {
 import type { TableCodeResponseDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { useHeldTableCode } from '@/hooks/useTableCode'
 import { useToast } from '@/hooks/useToast'
 
 interface TableCodeBarProps {
@@ -29,6 +30,7 @@ export function TableCodeBar({
 	const toast = useToast()
 	const qc = useQueryClient()
 	const [confirmReroll, setConfirmReroll] = useState(false)
+	const heldTableId = useHeldTableCode(s => s.held?.tableId)
 
 	const { data: adminCode } = useGetTableCode<TableCodeResponseDto>(tableId, {
 		query: { enabled: isAdmin },
@@ -42,6 +44,8 @@ export function TableCodeBar({
 			onError: () => toast.error(t('table_code.reroll_failed')),
 		},
 	})
+
+	if (!canEdit && heldTableId && heldTableId !== tableId) return null
 
 	if (!canEdit) {
 		return (
