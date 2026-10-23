@@ -25,7 +25,7 @@ const AppContent = (): React.ReactNode => {
 			<ThemeProvider>
 				<TooltipProvider>
 					<RouterProvider router={router} />
-					<Toaster richColors position='top-center' />
+					<Toaster richColors position='bottom-right' />
 				</TooltipProvider>
 			</ThemeProvider>
 			{import.meta.env.DEV && (
