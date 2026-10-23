@@ -141,6 +141,10 @@
 	--color-sidebar-border: var(--sidebar-border);
 
 	--color-sidebar-ring: var(--sidebar-ring);
+
+	--color-selection: var(--selection);
+
+	--color-selection-foreground: var(--selection-foreground);
 }
 
 :root {
@@ -197,6 +201,8 @@
 	--sidebar-accent-foreground: oklch(0.25 0.05 305);
 	--sidebar-border: oklch(0.88 0.015 310);
 	--sidebar-ring: oklch(0.47 0.12 305);
+	--selection: oklch(0.8 0.17 150);
+	--selection-foreground: oklch(0.2 0.05 150);
 
 	--bg-paw-opacity: 0.03;
 	--bg-dot: color-mix(in oklch, var(--primary) 25%, transparent);
@@ -208,7 +214,7 @@
 }
 
 [data-theme='dark'] {
-	--background: oklch(0.125 0.004 49.25);
+	--background: oklch(0.17 0.012 305);
 
 	--foreground: oklch(0.98 0.005 305);
 
@@ -277,6 +283,10 @@
 
 	--sidebar-ring: oklch(0.68 0.13 305);
 
+	--selection: oklch(0.78 0.18 150);
+
+	--selection-foreground: oklch(0.16 0.04 150);
+
 	--bg-paw-opacity: 0.02;
 	--bg-dot: color-mix(in oklch, var(--primary) 9%, transparent);
 }
@@ -326,15 +336,8 @@
 	}
 
 	::selection {
-		background-color: oklch(0.55 0.1 305);
-		/* Light selection tint of #4c2e50 */
-		color: oklch(0.98 0.002 320);
-	}
-
-	[data-theme='dark'] ::selection {
-		background-color: oklch(0.68 0.13 305);
-		/* Primary for dark mode selection */
-		color: oklch(0.15 0.05 305);
+		background-color: var(--selection);
+		color: var(--selection-foreground);
 	}
 }
 
