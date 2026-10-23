@@ -208,7 +208,7 @@ function RosterItem({
 		/>
 	)
 	const avatarClass = cn(
-		'flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary font-semibold text-secondary-foreground',
+		'flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-muted font-semibold text-primary ring-1 ring-primary/25 ring-inset',
 		compact ? 'size-8 text-xs' : 'size-11 text-sm sm:size-12'
 	)
 

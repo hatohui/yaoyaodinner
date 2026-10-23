@@ -12,6 +12,7 @@ import tanstackConfig from './config/tanstack'
 import { useTranslation } from 'react-i18next'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { GlobalLoading } from './components/common/GlobalLoading'
+import { AppErrorBoundary } from './components/common/AppErrorBoundary'
 
 registerGSAPPlugins()
 
@@ -46,9 +47,11 @@ const AppContent = (): React.ReactNode => {
 const App = (): React.ReactNode => {
 	return (
 		<Suspense fallback={<GlobalLoading />}>
-			<LanguageProvider>
-				<AppContent />
-			</LanguageProvider>
+			<AppErrorBoundary>
+				<LanguageProvider>
+					<AppContent />
+				</LanguageProvider>
+			</AppErrorBoundary>
 		</Suspense>
 	)
 }

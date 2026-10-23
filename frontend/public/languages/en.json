@@ -53,6 +53,12 @@
 		"view_image": "View image",
 		"close": "Close"
 	},
+	"error_boundary": {
+		"title": "Something went wrong",
+		"description": "This page hit an error. Try again, or head back home.",
+		"retry": "Try again",
+		"home": "Go home"
+	},
 	"health": {
 		"title": "System Health",
 		"subtitle": "Monitor the status of all system services",

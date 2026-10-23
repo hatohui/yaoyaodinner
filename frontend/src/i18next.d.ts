@@ -43,6 +43,12 @@ declare module 'react-i18next' {
           view_image: string
           close: string
         }
+        error_boundary: {
+          title: string
+          description: string
+          retry: string
+          home: string
+        }
         nav: {
           faq: string
           menu: string

@@ -53,6 +53,12 @@
 		"view_image": "查看图片",
 		"close": "关闭"
 	},
+	"error_boundary": {
+		"title": "出错了",
+		"description": "此页面出现错误。请重试或返回首页。",
+		"retry": "重试",
+		"home": "返回首页"
+	},
 	"health": {
 		"title": "系统健康",
 		"subtitle": "监控所有系统服务的状态",

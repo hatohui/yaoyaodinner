@@ -6,8 +6,9 @@ type GlobImport = Record<string, () => Promise<PageModule>>
 
 const pageLoaders = import.meta.glob('../pages/**/page.tsx') as GlobImport
 const layoutLoaders = import.meta.glob('../pages/**/layout.tsx') as GlobImport
-const errorLoaders = import.meta.glob(
-	'../pages/**/{not-found,error}.tsx'
+const errorLoaders = import.meta.glob('../pages/**/error.tsx') as GlobImport
+const notFoundLoaders = import.meta.glob(
+	'../pages/**/not-found.tsx'
 ) as GlobImport
 
 const getRoutePath = (filename: string) => {
@@ -65,7 +66,7 @@ const routes = Object.keys(pageLoaders).map(pageKey => {
 			for (const errorKey of Object.keys(errorLoaders)) {
 				const normalizedErrorKey = errorKey.replace(/\\/g, '/')
 				const errorDir = normalizedErrorKey
-					.replace(/\/(not-found|error)\.tsx$/, '/')
+					.replace(/\/error\.tsx$/, '/')
 					.replace(/\\/g, '/')
 				if (normalizedPageKey.startsWith(errorDir)) {
 					errorMatches.push(errorKey)
@@ -91,17 +92,15 @@ const routes = Object.keys(pageLoaders).map(pageKey => {
 	}
 })
 
-const globalNotFoundKey = Object.keys(errorLoaders).find(
-	k =>
-		k.replace(/\\/g, '/') === '../pages/not-found.tsx' ||
-		k.replace(/\\/g, '/') === '../pages/error.tsx'
+const globalNotFoundKey = Object.keys(notFoundLoaders).find(
+	k => k.replace(/\\/g, '/') === '../pages/not-found.tsx'
 )
 
 if (globalNotFoundKey) {
 	routes.push({
 		path: '*',
 		lazy: async () => {
-			const mod = await errorLoaders[globalNotFoundKey]()
+			const mod = await notFoundLoaders[globalNotFoundKey]()
 			let Component = mod.default
 
 			const normalizedKey = globalNotFoundKey.replace(/\\/g, '/')
@@ -133,7 +132,32 @@ if (globalNotFoundKey) {
 	})
 }
 
-const router = createBrowserRouter(routes, {
+const rootErrorKey = '../pages/error.tsx'
+const rootLayoutKey = '../pages/layout.tsx'
+
+// Pathless parent: catches failures before a page's own errorElement exists,
+// such as a lazy chunk that no longer exists after a deploy.
+const rootRoute = {
+	lazy: async () => {
+		if (!errorLoaders[rootErrorKey]) return {}
+		const { default: ErrorPage } = await errorLoaders[rootErrorKey]()
+		const Layout = layoutLoaders[rootLayoutKey]
+			? (await layoutLoaders[rootLayoutKey]()).default
+			: null
+		return {
+			errorElement: Layout ? (
+				<Layout>
+					<ErrorPage />
+				</Layout>
+			) : (
+				<ErrorPage />
+			),
+		}
+	},
+	children: routes,
+}
+
+const router = createBrowserRouter([rootRoute], {
 	future: { v7_startTransition: true },
 })
 

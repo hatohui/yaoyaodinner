@@ -53,6 +53,12 @@
 		"view_image": "Xem ảnh",
 		"close": "Đóng"
 	},
+	"error_boundary": {
+		"title": "Đã xảy ra lỗi",
+		"description": "Trang này gặp lỗi. Hãy thử lại hoặc quay về trang chủ.",
+		"retry": "Thử lại",
+		"home": "Về trang chủ"
+	},
 	"health": {
 		"title": "Sức Khỏe Hệ Thống",
 		"subtitle": "Giám sát trạng thái của tất cả các dịch vụ hệ thống",
