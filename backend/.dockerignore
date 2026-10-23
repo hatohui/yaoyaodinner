@@ -1,10 +1,12 @@
 node_modules
 build
+dist
 .env
 .env.*
 *.md
 package-lock.json
-dist
-.env.example
 docker-compose.yaml
 Dockerfile
+.dockerignore
+prisma/data
+prisma/seed.ts
