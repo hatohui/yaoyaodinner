@@ -115,7 +115,7 @@ export function FoodCard({
 							onToggleSelect?.()
 						}}
 						className={cn(
-							'absolute right-2 top-2 flex size-8 items-center justify-center rounded-full shadow-md backdrop-blur-sm transition-all hover:scale-110',
+							'absolute right-2 top-2 flex size-8 items-center justify-center rounded-full border border-foreground/20 shadow-md ring-1 ring-background/70 backdrop-blur-sm transition-all hover:scale-110',
 							selected
 								? 'bg-primary text-primary-foreground'
 								: 'bg-card/90 text-primary hover:bg-primary hover:text-primary-foreground'
