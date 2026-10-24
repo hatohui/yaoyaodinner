@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router'
+import { createBrowserRouter, Outlet } from 'react-router'
 import type { ComponentType } from 'react'
 
 type PageModule = { default: ComponentType<Record<string, unknown>> }
@@ -10,6 +10,9 @@ const errorLoaders = import.meta.glob('../pages/**/error.tsx') as GlobImport
 const notFoundLoaders = import.meta.glob(
 	'../pages/**/not-found.tsx'
 ) as GlobImport
+
+const rootErrorKey = '../pages/error.tsx'
+const rootLayoutKey = '../pages/layout.tsx'
 
 const getRoutePath = (filename: string) => {
 	let name = filename.replace(/^\.\.\/pages\//, '').replace(/\.tsx$/, '')
@@ -41,7 +44,10 @@ const routes = Object.keys(pageLoaders).map(pageKey => {
 				const layoutDir = normalizedLayoutKey
 					.replace(/\/layout\.tsx$/, '/')
 					.replace(/\\/g, '/')
-				if (normalizedPageKey.startsWith(layoutDir)) {
+				if (
+					layoutKey !== rootLayoutKey &&
+					normalizedPageKey.startsWith(layoutDir)
+				) {
 					matches.push(layoutKey)
 				}
 			}
@@ -110,7 +116,10 @@ if (globalNotFoundKey) {
 				const layoutDir = normalizedLayoutKey
 					.replace(/\/layout\.tsx$/, '/')
 					.replace(/\\/g, '/')
-				if (normalizedKey.startsWith(layoutDir)) {
+				if (
+					layoutKey !== rootLayoutKey &&
+					normalizedKey.startsWith(layoutDir)
+				) {
 					matches.push(layoutKey)
 				}
 			}
@@ -132,26 +141,35 @@ if (globalNotFoundKey) {
 	})
 }
 
-const rootErrorKey = '../pages/error.tsx'
-const rootLayoutKey = '../pages/layout.tsx'
-
-// Pathless parent: catches failures before a page's own errorElement exists,
-// such as a lazy chunk that no longer exists after a deploy.
+// Pathless parent: renders the root layout once so the navbar stays mounted
+// across navigation, and catches failures before a page's own errorElement
+// exists, such as a lazy chunk that no longer exists after a deploy.
 const rootRoute = {
 	lazy: async () => {
-		if (!errorLoaders[rootErrorKey]) return {}
-		const { default: ErrorPage } = await errorLoaders[rootErrorKey]()
 		const Layout = layoutLoaders[rootLayoutKey]
 			? (await layoutLoaders[rootLayoutKey]()).default
 			: null
+		const ErrorPage = errorLoaders[rootErrorKey]
+			? (await errorLoaders[rootErrorKey]()).default
+			: null
+
 		return {
-			errorElement: Layout ? (
-				<Layout>
+			Component: Layout
+				? () => (
+						<Layout>
+							<Outlet />
+						</Layout>
+					)
+				: undefined,
+			errorElement: ErrorPage ? (
+				Layout ? (
+					<Layout>
+						<ErrorPage />
+					</Layout>
+				) : (
 					<ErrorPage />
-				</Layout>
-			) : (
-				<ErrorPage />
-			),
+				)
+			) : undefined,
 		}
 	},
 	children: routes,
