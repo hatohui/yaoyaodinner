@@ -12,6 +12,7 @@ import {
 	ShieldCheck,
 	UtensilsCrossed,
 } from 'lucide-react'
+import { DesktopNav } from './DesktopNav'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageSelector } from './LanguageSelector'
 import { AdminMenu } from './AdminMenu'
@@ -92,6 +93,8 @@ export function Navbar() {
 		},
 	].filter(link => link.show)
 
+	const desktopLinks = navLinks.filter(link => link.to !== '/admin')
+
 	const isActive = (to: string) =>
 		to === '/admin' || to === '/tables'
 			? pathname.startsWith(to)
@@ -119,31 +122,12 @@ export function Navbar() {
 					/>
 				</Link>
 
-				<nav className='hidden min-w-0 items-center gap-0.5 sm:flex sm:gap-1'>
-					{navLinks
-						.filter(link => link.to !== '/admin')
-						.map(link => (
-							<Link
-								key={link.to}
-								to={link.to}
-								onClick={() => handleNavClick(link.to)}
-								aria-busy={pendingTo === link.to}
-								className={cn(
-									'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-all',
-									isActive(link.to)
-										? 'bg-primary/90 text-primary-foreground shadow-sm'
-										: 'text-muted-foreground hover:bg-accent hover:text-foreground'
-								)}
-							>
-								{pendingTo === link.to ? (
-									<Loader2 className='size-3.5 animate-spin shrink-0' />
-								) : (
-									<link.icon className='size-3.5 shrink-0' />
-								)}
-								{link.label}
-							</Link>
-						))}
-				</nav>
+				<DesktopNav
+					links={desktopLinks}
+					isActive={isActive}
+					pendingTo={pendingTo}
+					onNavigate={handleNavClick}
+				/>
 
 				<div className='flex shrink-0 items-center gap-0.5 sm:gap-1'>
 					{!pathname.startsWith('/admin') && <AdminMenu />}
