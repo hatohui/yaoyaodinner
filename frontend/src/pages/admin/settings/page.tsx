@@ -10,6 +10,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 	tables: 'admin.settings.category_tables',
 	feedback: 'admin.settings.category_feedback',
 	features: 'admin.settings.category_features',
+	banner: 'admin.settings.category_banner',
 }
 
 export default function AdminSettingsPage() {

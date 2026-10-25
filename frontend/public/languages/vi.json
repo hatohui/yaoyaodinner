@@ -53,6 +53,12 @@
 		"view_image": "Xem ảnh",
 		"close": "Đóng"
 	},
+	"banner": {
+		"dismiss": "Đóng"
+	},
+	"dinner": {
+		"label": "Giờ ăn tối"
+	},
 	"error_boundary": {
 		"title": "Đã xảy ra lỗi",
 		"description": "Trang này gặp lỗi. Hãy thử lại hoặc quay về trang chủ.",
@@ -559,7 +565,8 @@
 			"category_event": "Sự kiện",
 			"category_tables": "Bàn",
 			"category_feedback": "Phản hồi",
-			"category_features": "Tính năng"
+			"category_features": "Tính năng",
+			"category_banner": "Thông báo"
 		},
 		"food": {
 			"title": "Danh mục món ăn",

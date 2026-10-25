@@ -39,7 +39,11 @@ export function ConfigRow({ item, onSave }: ConfigRowProps) {
 	return (
 		<div className='flex flex-col gap-2 py-3'>
 			{label}
-			<TextEditor item={item} onSave={onSave} invalidLabel={t('admin.settings.invalid_json')} />
+			<TextEditor
+				item={item}
+				onSave={onSave}
+				invalidLabel={t('admin.settings.invalid_json')}
+			/>
 		</div>
 	)
 }
@@ -96,7 +100,13 @@ function TextEditor({
 				value={draft}
 				onChange={e => setDraft(e.target.value)}
 				type={
-					isSecret && !showSecret ? 'password' : item.type === 'number' ? 'number' : 'text'
+					isSecret && !showSecret
+						? 'password'
+						: item.type === 'number'
+							? 'number'
+							: item.key === 'event.dinnerTime'
+								? 'datetime-local'
+								: 'text'
 				}
 				className={isSecret ? 'pr-9' : ''}
 			/>
@@ -106,7 +116,11 @@ function TextEditor({
 					onClick={() => setShowSecret(prev => !prev)}
 					className='absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
 				>
-					{showSecret ? <EyeOff className='size-4' /> : <Eye className='size-4' />}
+					{showSecret ? (
+						<EyeOff className='size-4' />
+					) : (
+						<Eye className='size-4' />
+					)}
 				</button>
 			)}
 		</div>

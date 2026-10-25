@@ -53,6 +53,12 @@
 		"view_image": "查看图片",
 		"close": "关闭"
 	},
+	"banner": {
+		"dismiss": "关闭"
+	},
+	"dinner": {
+		"label": "晚餐时间"
+	},
 	"error_boundary": {
 		"title": "出错了",
 		"description": "此页面出现错误。请重试或返回首页。",
@@ -559,7 +565,8 @@
 			"category_event": "活动",
 			"category_tables": "餐桌",
 			"category_feedback": "反馈",
-			"category_features": "功能"
+			"category_features": "功能",
+			"category_banner": "公告"
 		},
 		"food": {
 			"title": "菜品目录",

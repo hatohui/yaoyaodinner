@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import VideoPlayer from '@/components/common/VideoPlayer'
 import QuoteSection from '@/config/quotes'
+import { DinnerTime } from './@DinnerTime'
 
 const LandingPage = (): React.JSX.Element => {
 	const { t } = useTranslation()
@@ -31,6 +32,7 @@ const LandingPage = (): React.JSX.Element => {
 					{t('menu.restaurant_name')}
 				</h1>
 				<QuoteSection />
+				<DinnerTime />
 				<div className='mt-8 flex flex-wrap items-center justify-center gap-4'>
 					<Link
 						to='/menu'

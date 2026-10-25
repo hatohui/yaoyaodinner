@@ -53,6 +53,12 @@
 		"view_image": "View image",
 		"close": "Close"
 	},
+	"banner": {
+		"dismiss": "Dismiss"
+	},
+	"dinner": {
+		"label": "Dinner time"
+	},
 	"error_boundary": {
 		"title": "Something went wrong",
 		"description": "This page hit an error. Try again, or head back home.",
@@ -559,7 +565,8 @@
 			"category_event": "Event",
 			"category_tables": "Tables",
 			"category_feedback": "Feedback",
-			"category_features": "Features"
+			"category_features": "Features",
+			"category_banner": "Banner"
 		},
 		"food": {
 			"title": "Food catalog",

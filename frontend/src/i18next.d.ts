@@ -5,6 +5,12 @@ declare module 'react-i18next' {
     defaultNS: 'translation'
     resources: {
       translation: {
+        banner: {
+          dismiss: string
+        }
+        dinner: {
+          label: string
+        }
         config: { select_language: string }
         quotes: {
           offer_socks: string
@@ -517,6 +523,7 @@ declare module 'react-i18next' {
             category_tables: string
             category_feedback: string
             category_features: string
+            category_banner: string
           }
         }
       }

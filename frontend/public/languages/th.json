@@ -53,6 +53,12 @@
 		"view_image": "ดูรูปภาพ",
 		"close": "ปิด"
 	},
+	"banner": {
+		"dismiss": "ปิด"
+	},
+	"dinner": {
+		"label": "เวลาอาหารเย็น"
+	},
 	"error_boundary": {
 		"title": "เกิดข้อผิดพลาด",
 		"description": "หน้านี้เกิดข้อผิดพลาด ลองใหม่อีกครั้งหรือกลับไปหน้าแรก",
@@ -559,7 +565,8 @@
 			"category_event": "อีเวนต์",
 			"category_tables": "โต๊ะ",
 			"category_feedback": "ความคิดเห็น",
-			"category_features": "ฟีเจอร์"
+			"category_features": "ฟีเจอร์",
+			"category_banner": "ประกาศ"
 		},
 		"food": {
 			"title": "แคตตาล็อกเมนู",
