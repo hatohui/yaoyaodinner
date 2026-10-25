@@ -131,11 +131,11 @@ export function Navbar() {
 
 				<div className='flex shrink-0 items-center gap-0.5 sm:gap-1'>
 					{!pathname.startsWith('/admin') && <AdminMenu />}
-					{!pathname.startsWith('/admin') && <IdentityMenu />}
 					<div className='hidden items-center gap-1 sm:flex'>
 						<LanguageSelector />
 						<ThemeToggle />
 					</div>
+					{!pathname.startsWith('/admin') && <IdentityMenu />}
 
 					<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
 						<SheetTrigger asChild>
