@@ -29,10 +29,10 @@ export function AdminMenu() {
 					aria-label={t('admin.nav.title')}
 					title={editing ? t('admin.edit_mode.on') : t('admin.nav.title')}
 					className={cn(
-						'flex size-8 shrink-0 items-center justify-center rounded-full ring-1 transition-colors',
+						'flex size-8 shrink-0 items-center justify-center rounded-full transition-colors',
 						editing
-							? 'bg-primary text-primary-foreground shadow-sm ring-primary'
-							: 'bg-primary/15 text-primary ring-primary/40 hover:bg-primary/25'
+							? 'bg-primary text-primary-foreground shadow-sm'
+							: 'text-destructive hover:bg-accent'
 					)}
 				>
 					{editing ? (
