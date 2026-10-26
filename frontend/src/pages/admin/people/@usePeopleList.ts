@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetPeopleList, getGetPeopleListQueryKey } from '@/api/stats/stats'
 import { useUpdatePerson, useMovePeople } from '@/api/people/people'
+import { useUpsertNote } from '@/api/personal-notes/personal-notes'
 import { useGetTables } from '@/api/tables/tables'
 import type { PeopleListDto, PersonRowDto, TableListDto } from '@/api/model'
 import { usePagination } from '@/hooks/usePagination'
@@ -92,6 +93,18 @@ export function usePeopleList() {
 		},
 	})
 
+	const { mutate: upsertNoteMutate } = useUpsertNote({
+		mutation: {
+			onMutate: ({ data: { personId, content } }) =>
+				patchRow(personId, p => ({ ...p, note: content })),
+			onError: (_e, _v, ctx) => {
+				if (ctx?.prev) qc.setQueryData(listKey, ctx.prev)
+				toast.error(t('admin.people.note_save_failed'))
+			},
+			onSettled: invalidate,
+		},
+	})
+
 	const people = data?.people ?? []
 
 	const onDataChange = (updated: PersonRowDto[]) => {
@@ -104,6 +117,10 @@ export function usePeopleList() {
 			}
 			if (prev.tableId !== next.tableId && next.tableId) {
 				movePeopleMutate({ data: { ids: [next.id], tableId: next.tableId } })
+			}
+			const note = next.note?.trim() ?? ''
+			if ((prev.note ?? '') !== note) {
+				upsertNoteMutate({ data: { personId: next.id, content: note } })
 			}
 		}
 	}

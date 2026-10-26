@@ -8,7 +8,6 @@ import { getDataGridSelectColumn } from '@/components/data-grid/data-grid-select
 import { useDataGrid } from '@/hooks/use-data-grid'
 import { Badge } from '@/components/ui/badge'
 import { Spinner } from '@/components/ui/spinner'
-import { PersonNoteCell } from './@PersonNoteCell'
 
 interface PeopleTableProps {
 	people: PersonRowDto[]
@@ -78,15 +77,14 @@ export function PeopleTable({
 			},
 			{
 				id: 'note',
-				header: () => t('admin.people.note'),
+				accessorKey: 'note',
+				header: t('admin.people.note'),
 				size: 260,
 				enableSorting: false,
-				cell: ({ row }) => (
-					<PersonNoteCell
-						personId={row.original.id}
-						note={row.original.note ?? null}
-					/>
-				),
+				meta: {
+					label: t('admin.people.note'),
+					cell: { variant: 'short-text' },
+				},
 			},
 		],
 		[t, tableOptions]

@@ -533,7 +533,6 @@
 			"table": "Table",
 			"ordered": "Ordered",
 			"note": "Note",
-			"note_placeholder": "Add a note",
 			"note_save_failed": "Could not save the note",
 			"update_failed": "Could not save, please try again"
 		},

@@ -533,7 +533,6 @@
 			"table": "餐桌",
 			"ordered": "已点菜品",
 			"note": "备注",
-			"note_placeholder": "添加备注",
 			"note_save_failed": "无法保存备注",
 			"update_failed": "保存失败，请重试"
 		},

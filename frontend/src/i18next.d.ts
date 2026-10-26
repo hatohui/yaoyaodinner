@@ -490,7 +490,6 @@ declare module 'react-i18next' {
             table: string
             ordered: string
             note: string
-            note_placeholder: string
             note_save_failed: string
             update_failed: string
           }

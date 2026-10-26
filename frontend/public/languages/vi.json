@@ -533,7 +533,6 @@
 			"table": "Bàn",
 			"ordered": "Đã gọi món",
 			"note": "Ghi chú",
-			"note_placeholder": "Thêm ghi chú",
 			"note_save_failed": "Không thể lưu ghi chú",
 			"update_failed": "Không thể lưu, vui lòng thử lại"
 		},
