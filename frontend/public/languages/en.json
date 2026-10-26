@@ -262,7 +262,7 @@
 		"variants": "Options",
 		"add_to_cart": "Add to cart",
 		"remove_from_cart": "Remove from cart",
-		"ordered_by": "{{count}} ordered tonight",
+		"ordered_by": "{{count}} ordered",
 		"not_found": "Food not found",
 		"description_placeholder": "Add a description"
 	},

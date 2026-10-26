@@ -262,7 +262,7 @@
 		"variants": "选项",
 		"add_to_cart": "加入购物车",
 		"remove_from_cart": "移出购物车",
-		"ordered_by": "今晚已有 {{count}} 人点",
+		"ordered_by": "{{count}} 人已点",
 		"not_found": "未找到该菜品",
 		"description_placeholder": "添加描述"
 	},

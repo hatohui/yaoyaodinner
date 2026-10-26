@@ -262,7 +262,7 @@
 		"variants": "ตัวเลือก",
 		"add_to_cart": "เพิ่มลงตะกร้า",
 		"remove_from_cart": "นำออกจากตะกร้า",
-		"ordered_by": "คืนนี้สั่งแล้ว {{count}} คน",
+		"ordered_by": "สั่งแล้ว {{count}} คน",
 		"not_found": "ไม่พบเมนูนี้",
 		"description_placeholder": "เพิ่มคำอธิบาย"
 	},

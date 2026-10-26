@@ -262,7 +262,7 @@
 		"variants": "Tùy chọn",
 		"add_to_cart": "Thêm vào giỏ",
 		"remove_from_cart": "Bỏ khỏi giỏ",
-		"ordered_by": "{{count}} người đã gọi tối nay",
+		"ordered_by": "{{count}} người đã gọi",
 		"not_found": "Không tìm thấy món ăn",
 		"description_placeholder": "Thêm mô tả"
 	},
