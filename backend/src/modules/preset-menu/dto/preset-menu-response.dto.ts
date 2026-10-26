@@ -15,5 +15,11 @@ export class PresetMenuDto {
   @ApiProperty() id: string;
   @ApiProperty() price: number;
   @ApiProperty() isActive: boolean;
+  @ApiProperty({
+    nullable: true,
+    type: String,
+    description: 'Free, limited extra the preset includes (e.g. "5 buckets of soft drinks"), in the requested language.',
+  })
+  note: string | null;
   @ApiProperty({ type: [PresetMenuItemDto] }) items: PresetMenuItemDto[];
 }

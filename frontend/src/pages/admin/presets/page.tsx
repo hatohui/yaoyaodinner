@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { DebouncedInput } from '@/components/common/DebouncedInput'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { PresetItemsList } from './@PresetItemsList'
+import { PresetNoteField } from './@PresetNoteField'
 import { usePresetMenu } from './@usePresetMenu'
 
 export default function AdminPresetsPage() {
@@ -75,14 +76,14 @@ export default function AdminPresetsPage() {
 							{/* Preset meta toolbar */}
 							<div className='flex flex-wrap items-center gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3'>
 								<div className='flex flex-1 items-center gap-2'>
-									<span className='text-sm text-muted-foreground'>
+									<span className='whitespace-nowrap text-sm text-muted-foreground'>
 										{t('admin.presets.price_label')}
 									</span>
 									<DebouncedInput
 										type='number'
 										value={String(preset.price ?? 0)}
 										onCommit={v =>
-											updatePreset(preset.id, Number(v), undefined)
+											updatePreset(preset.id, { price: Number(v) })
 										}
 										className='h-8 w-28 rounded-full'
 									/>
@@ -94,7 +95,7 @@ export default function AdminPresetsPage() {
 										variant={preset.isActive ? 'default' : 'outline'}
 										className='rounded-full'
 										onClick={() =>
-											updatePreset(preset.id, undefined, !preset.isActive)
+											updatePreset(preset.id, { isActive: !preset.isActive })
 										}
 									>
 										{preset.isActive
@@ -111,6 +112,11 @@ export default function AdminPresetsPage() {
 									</Button>
 								</div>
 							</div>
+
+							<PresetNoteField
+								note={preset.note}
+								onCommit={note => updatePreset(preset.id, { note })}
+							/>
 
 							<PresetItemsList
 								items={preset.items ?? []}

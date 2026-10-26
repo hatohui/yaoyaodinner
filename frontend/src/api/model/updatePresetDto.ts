@@ -9,4 +9,8 @@
 export interface UpdatePresetDto {
   price?: number;
   isActive?: boolean;
+  /** Empty string clears the note in every language. */
+  note?: string;
+  /** Language the note is written in. */
+  lang?: string;
 }

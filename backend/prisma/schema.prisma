@@ -14,6 +14,7 @@ model Language {
   categoryTranslations    CategoryTranslation[]
   foodTranslations        FoodTranslation[]
   foodVariantTranslations FoodVariantTranslation[]
+  presetMenuTranslations  PresetMenuTranslation[]
 
   @@map("language")
 }
@@ -258,10 +259,23 @@ model PresetMenu {
   price    Decimal @db.Decimal(10, 2)
   isActive Boolean @default(true) @map("is_active")
 
-  foods  PresetMenuFood[]
-  events Event[]
+  foods        PresetMenuFood[]
+  events       Event[]
+  translations PresetMenuTranslation[]
 
   @@map("preset_menu")
+}
+
+model PresetMenuTranslation {
+  presetId String @map("preset_id") @db.VarChar(255)
+  language String @db.VarChar(10)
+  note     String @db.Text
+
+  preset PresetMenu @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  lang   Language   @relation(fields: [language], references: [code], onDelete: Cascade)
+
+  @@id([presetId, language])
+  @@map("preset_menu_translation")
 }
 
 model PresetMenuFood {

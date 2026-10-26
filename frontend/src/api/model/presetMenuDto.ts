@@ -11,5 +11,10 @@ export interface PresetMenuDto {
   id: string;
   price: number;
   isActive: boolean;
+  /**
+     * Free, limited extra the preset includes (e.g. "5 buckets of soft drinks"), in the requested language.
+     * @nullable
+     */
+  note: string | null;
   items: PresetMenuItemDto[];
 }

@@ -267,6 +267,8 @@ declare module 'react-i18next' {
           decrease: string
           split_as: string
           free: string
+          free_limited: string
+          included: string
           view_cart: string
           needs_people_title: string
           needs_people_body: string

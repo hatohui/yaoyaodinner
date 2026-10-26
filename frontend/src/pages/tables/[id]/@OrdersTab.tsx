@@ -9,6 +9,7 @@ import { useOrders } from './@useOrders'
 import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
+import { IncludedNote } from './@IncludedNote'
 import { groupOrders, type OrderedLine } from './@groupOrders'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
@@ -42,6 +43,8 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 
 	return (
 		<div className='flex flex-col gap-3'>
+			<IncludedNote />
+
 			{people.length === 0 ? (
 				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
 					{t('orders.needs_people_body')}

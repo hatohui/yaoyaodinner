@@ -5,10 +5,12 @@ import { AddPresetItemDto, UpdatePresetItemDto } from "./dto/preset-item.dto";
 import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
+import { AiService } from "@libs/gemini";
 
 const PRESET_CACHE_PREFIX = "preset-menus:";
 
 const presetInclude = (lang: string) => ({
+  translations: { where: { language: lang } },
   foods: {
     include: {
       variant: {
@@ -32,6 +34,7 @@ export class PresetMenuService {
       id: preset.id,
       price: Number(preset.price),
       isActive: preset.isActive,
+      note: preset.translations[0]?.note ?? null,
       items: preset.foods.map((f) => ({
         variantId: f.variantId,
         foodId: f.variant.foodId,
@@ -75,7 +78,8 @@ export class PresetMenuService {
     return this.findOne(id, lang);
   }
 
-  async update(id: string, dto: UpdatePresetDto, lang = "en") {
+  async update(id: string, dto: UpdatePresetDto) {
+    const lang = dto.lang ?? "en";
     const existing = await prisma.presetMenu.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException("Preset menu not found");
 
@@ -83,8 +87,22 @@ export class PresetMenuService {
       where: { id },
       data: { price: dto.price, isActive: dto.isActive },
     });
+    if (dto.note !== undefined) await this.setNote(id, dto.note.trim(), lang);
     await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     return this.findOne(id, lang);
+  }
+
+  private async setNote(presetId: string, note: string, lang: string) {
+    if (!note) {
+      await prisma.presetMenuTranslation.deleteMany({ where: { presetId } });
+      return;
+    }
+    await prisma.presetMenuTranslation.upsert({
+      where: { presetId_language: { presetId, language: lang } },
+      create: { presetId, language: lang, note },
+      update: { note },
+    });
+    await AiService.translatePresetNote(presetId, lang, note);
   }
 
   async remove(id: string) {

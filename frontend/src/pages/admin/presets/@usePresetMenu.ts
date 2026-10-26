@@ -13,7 +13,11 @@ import {
 } from '@/api/preset-menus/preset-menus'
 import { useCreateFood } from '@/api/foods/foods'
 import { useGetCategories } from '@/api/categories/categories'
-import type { CategoryItemDto, PresetMenuDto } from '@/api/model'
+import type {
+	CategoryItemDto,
+	PresetMenuDto,
+	UpdatePresetDto,
+} from '@/api/model'
 import { useToast } from '@/hooks/useToast'
 
 export function usePresetMenu() {
@@ -23,7 +27,9 @@ export function usePresetMenu() {
 
 	const [activeId, setActiveId] = React.useState<string | null>(null)
 
-	const { data: presets = [], isLoading } = useGetPresetMenus<PresetMenuDto[]>()
+	const { data: presets = [], isLoading } = useGetPresetMenus<PresetMenuDto[]>({
+		lang: i18n.language,
+	})
 
 	const selectedPreset =
 		presets.find(p => p.id === activeId) ?? presets[0] ?? null
@@ -94,8 +100,8 @@ export function usePresetMenu() {
 		setActiveId,
 		createPreset: (price: number) =>
 			createMutate({ data: { price, isActive: false } }),
-		updatePreset: (id: string, price?: number, isActive?: boolean) =>
-			updateMutate({ id, data: { price, isActive } }),
+		updatePreset: (id: string, patch: Omit<UpdatePresetDto, 'lang'>) =>
+			updateMutate({ id, data: { ...patch, lang: i18n.language } }),
 		deletePreset: (id: string) => deleteMutate({ id }),
 		addItem: (presetId: string, variantId: string) =>
 			addItemMutate({ id: presetId, data: { variantId, quantity: 1 } }),

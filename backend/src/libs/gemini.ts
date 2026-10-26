@@ -217,4 +217,28 @@ export const AiService = {
     await CacheService.deleteByPrefix("foods:");
     return true;
   },
+
+  async translatePresetNote(
+    presetId: string,
+    sourceLang: string,
+    note: string,
+  ): Promise<boolean> {
+    const result = await translateOnce<{ note?: string }>(
+      "note about a free, limited item included with a set menu",
+      sourceLang,
+      { note },
+      { note: { type: Type.STRING } },
+    );
+    if (!result) return false;
+
+    for (const [language, data] of Object.entries(result)) {
+      if (!data?.note) continue;
+      await prisma.presetMenuTranslation.upsert({
+        where: { presetId_language: { presetId, language } },
+        create: { presetId, language, note: data.note },
+        update: { note: data.note },
+      });
+    }
+    return true;
+  },
 };
