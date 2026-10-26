@@ -195,6 +195,7 @@ export function ShortTextCell<TData>({
         contentEditable={isEditing}
         tabIndex={-1}
         ref={cellRef}
+        title={isEditing ? undefined : value || undefined}
         onBlur={onBlur}
         onInput={onInput}
         suppressContentEditableWarning
@@ -380,7 +381,9 @@ export function LongTextCell<TData>({
           readOnly={readOnly}
           onKeyDown={onWrapperKeyDown}
         >
-          <span data-slot="grid-cell-content">{value}</span>
+          <span data-slot="grid-cell-content" title={value || undefined}>
+            {value}
+          </span>
         </DataGridCellWrapper>
       </PopoverAnchor>
       <PopoverContent
