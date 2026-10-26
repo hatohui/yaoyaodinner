@@ -63,6 +63,13 @@ export class FoodDetailDto {
   @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }
 
+export class FoodDetailWithStatsDto extends FoodDetailDto {
+  @ApiProperty({
+    description: 'People at the active event having this dish, via a shared table order or a personal split.',
+  })
+  orderedBy: number;
+}
+
 export class FoodAdminItemDto extends FoodDetailDto {
   @ApiProperty({ description: 'Total quantity ever ordered, across all events.' })
   orderCount: number;

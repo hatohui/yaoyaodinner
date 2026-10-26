@@ -11,7 +11,7 @@ interface MenuBasketState {
 
 // lives outside the page component so quick-viewing a dish (which navigates
 // to /menu/:id and back) doesn't unmount MenuPage and wipe the selection
-const useMenuBasketStore = create<MenuBasketState>(set => ({
+export const useMenuBasketStore = create<MenuBasketState>(set => ({
 	selected: new Set(),
 	toggle: foodId =>
 		set(s => {

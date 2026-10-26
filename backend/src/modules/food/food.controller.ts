@@ -19,6 +19,7 @@ import {
   GetFoodsResponseDto,
   GetFoodsForAdminResponseDto,
   FoodDetailDto,
+  FoodDetailWithStatsDto,
   FoodVariantDto,
 } from './dto/food-response.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
@@ -100,7 +101,7 @@ export class FoodController {
   @Get(':id')
   @ApiOperation({ operationId: 'getFoodById' })
   @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
-  @ApiResponse({ status: 200, type: FoodDetailDto })
+  @ApiResponse({ status: 200, type: FoodDetailWithStatsDto })
   findOne(@Param('id') id: string, @Query('lang') lang = 'en') {
     return this.food.findOne(id, lang);
   }

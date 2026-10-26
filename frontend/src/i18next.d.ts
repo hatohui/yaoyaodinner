@@ -194,7 +194,8 @@ declare module 'react-i18next' {
           sort_popular: string
           count_all: string
           select_item: string
-          selected_count: string
+          cart: string
+          view_cart: string
           clear_selection: string
           add_to_order: string
           configure_title: string
@@ -244,7 +245,9 @@ declare module 'react-i18next' {
           title: string
           back_to_menu: string
           variants: string
-          add_to_order: string
+          add_to_cart: string
+          remove_from_cart: string
+          ordered_by: string
           not_found: string
           description_placeholder: string
         }

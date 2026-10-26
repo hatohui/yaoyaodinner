@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { ArrowLeft, Link as LinkIcon } from 'lucide-react'
-import type { FoodDetailDto, FoodVariantDto } from '@/api/model'
+import { ArrowLeft, Link as LinkIcon, ShoppingCart, Users } from 'lucide-react'
+import type { FoodDetailWithStatsDto, FoodVariantDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
@@ -14,9 +14,10 @@ import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { cn } from '@/utils/shadcn'
 
 interface FoodDetailViewProps {
-	food: FoodDetailDto
+	food: FoodDetailWithStatsDto
 	availableVariants: FoodVariantDto[]
-	onAdd: () => void
+	inCart: boolean
+	onToggleCart: () => void
 	onUpdateFood: (patch: {
 		name?: string
 		description?: string
@@ -33,7 +34,8 @@ interface FoodDetailViewProps {
 export function FoodDetailView({
 	food,
 	availableVariants,
-	onAdd,
+	inCart,
+	onToggleCart,
 	onUpdateFood,
 	onUpdateVariant,
 	variant = 'page',
@@ -112,10 +114,18 @@ export function FoodDetailView({
 	const details = (
 		<>
 			<div className='space-y-1.5'>
-				<FoodTags
-					isPopular={food.isPopular}
-					isRecommended={food.isRecommended}
-				/>
+				<div className='flex flex-wrap items-center gap-1.5'>
+					<FoodTags
+						isPopular={food.isPopular}
+						isRecommended={food.isRecommended}
+					/>
+					{food.orderedBy > 0 && (
+						<span className='flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary'>
+							<Users className='size-3.5' />
+							{t('food_detail.ordered_by', { count: food.orderedBy })}
+						</span>
+					)}
+				</div>
 				<h1
 					className={cn(
 						'font-bold leading-tight text-foreground',
@@ -182,11 +192,15 @@ export function FoodDetailView({
 			<div className='flex items-center gap-2'>
 				<Button
 					size='lg'
-					className='h-11 flex-1 rounded-full'
+					variant={inCart ? 'outline' : 'default'}
+					className='h-11 flex-1 gap-2 rounded-full'
 					disabled={availableVariants.length === 0 || !canOrder}
-					onClick={onAdd}
+					onClick={onToggleCart}
 				>
-					{t('food_detail.add_to_order')}
+					<ShoppingCart className='size-4' />
+					{inCart
+						? t('food_detail.remove_from_cart')
+						: t('food_detail.add_to_cart')}
 				</Button>
 				{modal && shareButton}
 			</div>

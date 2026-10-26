@@ -29,6 +29,7 @@ import type {
   BulkToggleDto,
   CreateFoodDto,
   FoodDetailDto,
+  FoodDetailWithStatsDto,
   FoodVariantDto,
   GetFoodByIdParams,
   GetFoodsForAdminParams,
@@ -283,7 +284,7 @@ export const getFoodById = (
 ) => {
 
 
-      return customInstance<FoodDetailDto>(
+      return customInstance<FoodDetailWithStatsDto>(
       {url: `/api/foods/${id}`, method: 'GET',
         params, signal
     },

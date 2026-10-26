@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -8,10 +7,9 @@ import {
 	useUpdateFoodVariant,
 	getGetFoodByIdQueryKey,
 } from '@/api/foods/foods'
-import { STALE_TIME_STATIC } from '@/common/constants'
-import type { FoodDetailDto, UpdateFoodDto } from '@/api/model'
+import type { FoodDetailWithStatsDto, UpdateFoodDto } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
-import { useGuest } from '@/hooks/useGuest'
+import { useMenuBasketStore } from '../@useMenuSelection'
 
 export function useFoodDetail(idOverride?: string) {
 	const { id: idParam = '' } = useParams()
@@ -19,21 +17,18 @@ export function useFoodDetail(idOverride?: string) {
 	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
-	const [pickerOpen, setPickerOpen] = useState(false)
-	const [configOpen, setConfigOpen] = useState(false)
-	const [tableId, setTableId] = useState<string | null>(null)
-	const myTableId = useGuest(s => s.me?.tableId ?? null)
+	const inCart = useMenuBasketStore(s => s.selected.has(id))
+	const toggleCart = useMenuBasketStore(s => s.toggle)
 
 	const {
 		data: food,
 		isLoading,
 		isError,
-	} = useGetFoodById<FoodDetailDto>(
+	} = useGetFoodById<FoodDetailWithStatsDto>(
 		id,
 		{ lang: i18n.language },
 		{
 			query: {
-				staleTime: STALE_TIME_STATIC,
 				refetchOnWindowFocus: false,
 				enabled: Boolean(id),
 			},
@@ -55,40 +50,14 @@ export function useFoodDetail(idOverride?: string) {
 		mutation: { onSuccess: invalidate, onError },
 	})
 
-	const selectTable = (id: string) => {
-		setTableId(id)
-		setPickerOpen(false)
-		setConfigOpen(true)
-	}
-
-	const openPicker = () => {
-		if (availableVariants.length === 0) return
-		if (myTableId) selectTable(myTableId)
-		else setPickerOpen(true)
-	}
-
-	const changeTable = () => {
-		setConfigOpen(false)
-		setPickerOpen(true)
-	}
-
-	const handleDone = () => setConfigOpen(false)
-
 	return {
 		id,
 		food,
 		isLoading,
 		isError,
 		availableVariants,
-		pickerOpen,
-		setPickerOpen,
-		openPicker,
-		configOpen,
-		setConfigOpen,
-		tableId,
-		selectTable,
-		changeTable,
-		handleDone,
+		inCart,
+		toggleCart: () => toggleCart(id),
 		updateFood: (patch: UpdateFoodDto) =>
 			updateFoodMutate({ id, data: { ...patch, lang: i18n.language } }),
 		updateVariant: (

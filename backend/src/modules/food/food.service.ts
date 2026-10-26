@@ -9,12 +9,16 @@ import { CacheService } from "@libs/redis";
 import { CacheSettings } from "@common/cache/constants";
 import { AiService } from "@libs/gemini";
 import { ImagesService } from "@modules/images/images.service";
+import { EventService } from "@modules/event/event.service";
 
 const FOOD_CACHE_PREFIX = "foods:";
 
 @Injectable()
 export class FoodService {
-  constructor(private images: ImagesService) {}
+  constructor(
+    private images: ImagesService,
+    private events: EventService,
+  ) {}
 
   private async getPopularityMap(): Promise<Map<string, number>> {
     const cacheKey = CacheSettings.food.popular.key;
@@ -218,8 +222,26 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     if (!food) throw new NotFoundException("Food not found");
-    const popularIds = await this.getPopularFoodIds();
-    return this.toDetailDto(food, popularIds.has(food.id));
+    const [popularIds, orderedBy] = await Promise.all([
+      this.getPopularFoodIds(),
+      this.countPeopleOrdering(id),
+    ]);
+    return { ...this.toDetailDto(food, popularIds.has(food.id)), orderedBy };
+  }
+
+  private async countPeopleOrdering(foodId: string) {
+    const eventId = await this.events.getActiveId();
+    if (!eventId) return 0;
+    const ofFood = { variant: { foodId } };
+    return prisma.people.count({
+      where: {
+        eventId,
+        OR: [
+          { table: { orders: { some: { ...ofFood, splitAll: true } } } },
+          { orderSplits: { some: { order: ofFood } } },
+        ],
+      },
+    });
   }
 
   async findAllForAdmin(

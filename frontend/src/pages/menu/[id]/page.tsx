@@ -1,26 +1,19 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 import { Spinner } from '@/components/ui/spinner'
-import { TablePickerModal } from '../@TablePickerModal'
-import { OrderConfigModal } from '../@OrderConfigModal'
 import { FoodDetailView } from './@FoodDetailView'
 import { useFoodDetail } from './@useFoodDetail'
 
 export default function FoodDetailPage() {
 	const { t } = useTranslation()
+	const navigate = useNavigate()
 	const {
 		food,
 		isLoading,
 		isError,
 		availableVariants,
-		pickerOpen,
-		setPickerOpen,
-		openPicker,
-		configOpen,
-		setConfigOpen,
-		tableId,
-		selectTable,
-		changeTable,
-		handleDone,
+		inCart,
+		toggleCart,
 		updateFood,
 		updateVariant,
 	} = useFoodDetail()
@@ -42,40 +35,16 @@ export default function FoodDetailPage() {
 	}
 
 	return (
-		<>
-			<FoodDetailView
-				food={food}
-				availableVariants={availableVariants}
-				onAdd={openPicker}
-				onUpdateFood={updateFood}
-				onUpdateVariant={updateVariant}
-			/>
-
-			<TablePickerModal
-				open={pickerOpen}
-				onOpenChange={setPickerOpen}
-				onSelect={selectTable}
-			/>
-
-			<OrderConfigModal
-				open={configOpen}
-				onOpenChange={setConfigOpen}
-				tableId={tableId}
-				foods={
-					food
-						? [
-								{
-									id: food.id,
-									name: food.name,
-									defaultVariantId: availableVariants[0]?.id ?? null,
-									variants: availableVariants,
-								},
-							]
-						: []
-				}
-				onSuccess={handleDone}
-				onChangeTable={changeTable}
-			/>
-		</>
+		<FoodDetailView
+			food={food}
+			availableVariants={availableVariants}
+			inCart={inCart}
+			onToggleCart={() => {
+				toggleCart()
+				if (!inCart) navigate('/menu')
+			}}
+			onUpdateFood={updateFood}
+			onUpdateVariant={updateVariant}
+		/>
 	)
 }

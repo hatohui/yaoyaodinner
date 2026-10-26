@@ -39,6 +39,7 @@ export * from './feedbackItemDto';
 export * from './feedbackReactionDto';
 export * from './foodAdminItemDto';
 export * from './foodDetailDto';
+export * from './foodDetailWithStatsDto';
 export * from './foodItemDto';
 export * from './foodVariantDto';
 export * from './getCategoriesParams';
