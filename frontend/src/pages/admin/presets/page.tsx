@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/utils/shadcn'
 import { Badge } from '@/components/ui/badge'
 import { DebouncedInput } from '@/components/common/DebouncedInput'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -92,8 +93,13 @@ export default function AdminPresetsPage() {
 								<div className='flex items-center gap-2'>
 									<Button
 										size='sm'
-										variant={preset.isActive ? 'default' : 'outline'}
-										className='rounded-full'
+										variant='outline'
+										className={cn(
+											'rounded-full',
+											preset.isActive
+												? 'border-destructive/40 bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive'
+												: 'border-success/40 bg-success/10 text-success hover:bg-success/20 hover:text-success'
+										)}
 										onClick={() =>
 											updatePreset(preset.id, { isActive: !preset.isActive })
 										}

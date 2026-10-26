@@ -620,6 +620,7 @@
 			"note_label": "免费限量项目",
 			"note_placeholder": "5 桶汽水",
 			"note_hint": "显示在每桌订单页顶部，自动翻译。",
+			"note_remove": "移除",
 			"save_failed": "保存失败，请重试",
 			"delete_preset": "删除套餐",
 			"items_empty": "暂无菜品 - 从菜单中添加",

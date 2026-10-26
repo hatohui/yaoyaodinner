@@ -620,6 +620,7 @@
 			"note_label": "Free, limited item",
 			"note_placeholder": "5 buckets of soft drinks",
 			"note_hint": "Shown at the top of every table's Orders tab, translated automatically.",
+			"note_remove": "Remove",
 			"save_failed": "Couldn't save, please try again",
 			"delete_preset": "Delete preset",
 			"items_empty": "No items - add foods from the catalog",
