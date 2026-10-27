@@ -351,12 +351,9 @@ declare module 'react-i18next' {
             pin_rerolled: string
             activated: string
             untitled: string
-            pin_label: string
             live: string
             people_tab: string
             past: string
-            name_label: string
-            name_placeholder: string
             reroll_pin: string
             make_live: string
             reroll_confirm_title: string

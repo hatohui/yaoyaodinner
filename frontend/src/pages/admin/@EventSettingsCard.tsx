@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dices, Radio, Check, Trash2 } from 'lucide-react'
+import { Dices, Radio, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { EditableName } from '@/components/common/EditableName'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
 
 type PendingAction = 'reroll' | 'activate' | 'delete' | null
@@ -17,7 +17,6 @@ export function EventSettingsCard() {
 		selectedEvent,
 		activeEvent,
 		rename,
-		renaming,
 		rerollPin,
 		rerolling,
 		activate,
@@ -26,19 +25,13 @@ export function EventSettingsCard() {
 		deleting,
 	} = useAdminEvents()
 
-	const [name, setName] = useState('')
 	const [pending, setPending] = useState<PendingAction>(null)
-
-	useEffect(() => {
-		setName(selectedEvent?.name ?? '')
-	}, [selectedEvent?.id, selectedEvent?.name])
 
 	if (!selectedEvent) return null
 
 	const isLive = selectedEvent.id === activeEvent?.id
 	const eventLabel =
 		selectedEvent.name || format(new Date(selectedEvent.createdAt), 'PP')
-	const nameChanged = name.trim() !== (selectedEvent.name ?? '')
 
 	return (
 		<div className='flex flex-col gap-2'>
@@ -48,17 +41,11 @@ export function EventSettingsCard() {
 
 			<Card className='flex flex-col gap-4 px-4 py-4'>
 				<div className='flex items-center justify-between gap-3'>
-					<div className='flex min-w-0 flex-col'>
-						<span className='truncate text-sm font-medium text-foreground'>
-							{eventLabel}
-						</span>
-						<span className='text-xs text-muted-foreground'>
-							{t('admin.event.pin_label')}{' '}
-							<span className='font-semibold tracking-[0.2em] text-foreground'>
-								{selectedEvent.pin}
-							</span>
-						</span>
-					</div>
+					<EditableName
+						value={eventLabel}
+						onSave={name => rename(selectedEvent.id, name)}
+						className='text-sm font-medium text-foreground'
+					/>
 					{isLive ? (
 						<Badge className='shrink-0 gap-1 rounded-full'>
 							<Radio className='size-3' />
@@ -69,33 +56,6 @@ export function EventSettingsCard() {
 							{t('admin.event.past')}
 						</Badge>
 					)}
-				</div>
-
-				<div className='flex flex-col gap-2'>
-					<label
-						htmlFor='event-name'
-						className='text-sm font-medium text-foreground'
-					>
-						{t('admin.event.name_label')}
-					</label>
-					<div className='flex flex-wrap gap-2'>
-						<Input
-							id='event-name'
-							value={name}
-							onChange={e => setName(e.target.value)}
-							placeholder={t('admin.event.name_placeholder')}
-							className='min-w-40 flex-1 rounded-full'
-						/>
-						<Button
-							type='button'
-							disabled={!nameChanged || renaming}
-							onClick={() => rename(selectedEvent.id, name.trim())}
-							className='gap-1.5 rounded-full'
-						>
-							<Check className='size-4' />
-							{t('common.save')}
-						</Button>
-					</div>
 				</div>
 
 				<div className='flex flex-wrap gap-2 border-t border-border/60 pt-4'>
