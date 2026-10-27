@@ -301,6 +301,8 @@
 		"free": "Miễn phí",
 		"free_limited": "Miễn phí · có hạn",
 		"included": "Đã bao gồm {{item}}",
+		"ordering_closed": "Chưa mở gọi món",
+		"ordering_closed_body": "Bạn có thể xem thực đơn ngay bây giờ và gọi món khi chủ tiệc mở gọi món.",
 		"view_cart": "Giỏ ({{count}})",
 		"needs_people_title": "Chưa có ai ngồi ở đây",
 		"needs_people_body": "Hãy thêm người vào bàn trước khi gọi món — món ăn thuộc về những người ngồi ở đó.",

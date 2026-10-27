@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/useToast'
 import { FoodTags } from '@/components/common/FoodTags'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useOrderingOpen } from '@/hooks/useOrderingOpen'
 import { useEditMode } from '@/hooks/useEditMode'
 import { ViewableImage } from '@/components/common/ViewableImage'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
@@ -45,7 +46,8 @@ export function FoodDetailView({
 	const pin = useGuest(s => s.pin)
 	const { isAdmin } = useIsAdmin()
 	const { editing } = useEditMode()
-	const canOrder = Boolean(pin) || isAdmin
+	const orderingOpen = useOrderingOpen()
+	const canOrder = (Boolean(pin) || isAdmin) && orderingOpen
 	const modal = variant === 'modal'
 
 	const shareLink = () => {
@@ -206,7 +208,7 @@ export function FoodDetailView({
 			</div>
 			{!canOrder && (
 				<p className='text-center text-xs text-muted-foreground'>
-					{t('menu.pin_required')}
+					{orderingOpen ? t('menu.pin_required') : t('orders.ordering_closed')}
 				</p>
 			)}
 		</div>

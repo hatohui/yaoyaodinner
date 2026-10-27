@@ -45,6 +45,7 @@ export class OrderController {
     @Query('lang') lang = 'en',
   ) {
     await this.access.forTable(dto.tableId, headers);
+    await this.access.assertOrderingOpen(headers);
     return this.order.create(dto, lang);
   }
 
@@ -58,6 +59,7 @@ export class OrderController {
     @Query('lang') lang = 'en',
   ) {
     await this.access.forTable(dto.tableId, headers);
+    await this.access.assertOrderingOpen(headers);
     return this.order.createBatch(dto, lang);
   }
 
@@ -72,6 +74,7 @@ export class OrderController {
     @Query('lang') lang = 'en',
   ) {
     await this.access.forOrder(id, headers);
+    if (dto.quantity !== undefined) await this.access.assertOrderingOpen(headers);
     return this.order.update(id, dto, lang);
   }
 

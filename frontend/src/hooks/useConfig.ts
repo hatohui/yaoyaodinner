@@ -1,6 +1,5 @@
 import { useGetPublicConfig } from '@/api/config/config'
 import type { GetPublicConfig200 } from '@/api/model'
-import { STALE_TIME_STATIC } from '@/common/constants'
 
 const DEFAULT_PIN_LENGTH = 4
 const DEFAULT_TABLE_CAPACITY = 8
@@ -17,13 +16,19 @@ const FALLBACK: GetPublicConfig200 = {
 	'feature.ordering': true,
 	'feature.tables': true,
 	'event.dinnerTime': '',
+	'orders.open': false,
 	'banner.enabled': false,
 	'banner.message': '',
 }
 
 export function useConfig() {
 	const { data } = useGetPublicConfig<GetPublicConfig200>({
-		query: { staleTime: STALE_TIME_STATIC, initialData: FALLBACK },
+		// short so opening orders reaches guests quickly; the fallback alone never counts as fresh
+		query: {
+			staleTime: 60_000,
+			initialData: FALLBACK,
+			initialDataUpdatedAt: 0,
+		},
 	})
 
 	const cfg = { ...FALLBACK, ...(data ?? {}) }
@@ -40,6 +45,7 @@ export function useConfig() {
 		ordering: cfg['feature.ordering'] !== false,
 		tables: cfg['feature.tables'] !== false,
 		dinnerTime: String(cfg['event.dinnerTime'] ?? ''),
+		ordersOpen: cfg['orders.open'] === true,
 		bannerMessage:
 			cfg['banner.enabled'] === true
 				? String(cfg['banner.message'] ?? '').trim()

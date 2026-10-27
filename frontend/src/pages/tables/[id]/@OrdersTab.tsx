@@ -10,6 +10,8 @@ import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNote } from './@IncludedNote'
+import { useOrderingOpen } from '@/hooks/useOrderingOpen'
+import { OrderingClosedNotice } from '@/components/common/OrderingClosedNotice'
 import { groupOrders, type OrderedLine } from './@groupOrders'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
@@ -26,6 +28,8 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
 		table.id
 	)
+	const orderingOpen = useOrderingOpen()
+	const canOrder = canEdit && orderingOpen
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
 	const lines = useMemo(() => groupOrders(orders), [orders])
@@ -44,6 +48,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	return (
 		<div className='flex flex-col gap-3'>
 			<IncludedNote />
+			{!orderingOpen && <OrderingClosedNotice />}
 
 			{people.length === 0 ? (
 				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
@@ -53,11 +58,11 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 				<TabEmptyState
 					message={t('orders.empty')}
 					tableId={table.id}
-					canEdit={canEdit}
+					canEdit={canOrder}
 				/>
 			) : (
 				<div className='flex items-center justify-between gap-2'>
-					{canEdit ? (
+					{canOrder ? (
 						<Button asChild className='gap-1.5 self-start rounded-full'>
 							<Link to={`/tables/${table.id}/order`}>
 								<Plus className='size-4' />

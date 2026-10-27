@@ -301,6 +301,8 @@
 		"free": "Free",
 		"free_limited": "Free · limited",
 		"included": "{{item}} included",
+		"ordering_closed": "Ordering hasn't opened yet",
+		"ordering_closed_body": "You can browse the menu now and order once the host opens ordering.",
 		"view_cart": "Cart ({{count}})",
 		"needs_people_title": "Nobody is seated here yet",
 		"needs_people_body": "Add someone to this table before ordering — orders belong to the people sitting there.",

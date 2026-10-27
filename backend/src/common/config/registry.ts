@@ -13,6 +13,7 @@ export const CONFIG_KEYS = {
   adminPassphrase: "auth.adminPassphrase",
   pinLength: "event.pinLength",
   dinnerTime: "event.dinnerTime",
+  ordersOpen: "orders.open",
   bannerEnabled: "banner.enabled",
   bannerMessage: "banner.message",
   defaultTableCapacity: "table.defaultCapacity",
@@ -47,6 +48,14 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     category: "event",
     label: "Dinner time",
     value: "",
+  },
+  {
+    key: CONFIG_KEYS.ordersOpen,
+    type: "boolean",
+    isPublic: true,
+    category: "event",
+    label: "Accept orders",
+    value: false,
   },
   {
     key: CONFIG_KEYS.bannerEnabled,

@@ -7,6 +7,7 @@ import { prisma } from '../../libs/prisma';
 import { ADMIN_HEADER } from '@common/auth/admin';
 import { TABLE_ACCESS_HEADER } from '@common/auth/table-access';
 import { ConfigService } from '@modules/config/config.service';
+import { CONFIG_KEYS } from '@common/config/registry';
 
 type Headers = Record<string, string | string[] | undefined>;
 
@@ -26,6 +27,14 @@ export class TableAccessService {
     const provided = first(headers[ADMIN_HEADER]);
     const passphrase = await this.config.getAdminPassphrase();
     return Boolean(provided && passphrase && provided === passphrase);
+  }
+
+  /** Admins can still enter orders while guests wait for ordering to open. */
+  async assertOrderingOpen(headers: Headers) {
+    if (await this.isAdmin(headers)) return;
+    if (!(await this.config.get<boolean>(CONFIG_KEYS.ordersOpen))) {
+      throw new ForbiddenException("Ordering hasn't opened yet");
+    }
   }
 
   async forTable(tableId: string | null | undefined, headers: Headers) {

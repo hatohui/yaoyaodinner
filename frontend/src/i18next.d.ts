@@ -270,6 +270,8 @@ declare module 'react-i18next' {
           free: string
           free_limited: string
           included: string
+          ordering_closed: string
+          ordering_closed_body: string
           view_cart: string
           needs_people_title: string
           needs_people_body: string

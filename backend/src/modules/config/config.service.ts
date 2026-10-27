@@ -7,6 +7,7 @@ import {
   CONFIG_KEYS,
   ConfigType,
   parseConfigValue,
+  serializeConfigValue,
 } from "@common/config/registry";
 
 type ConfigRow = {
@@ -27,9 +28,22 @@ export class ConfigService {
     );
     if (cached) return cached;
 
-    const rows = await prisma.appConfig.findMany({
+    const stored = await prisma.appConfig.findMany({
       orderBy: [{ category: "asc" }, { key: "asc" }],
     });
+    // keys added to the registry after the DB was seeded still show, at their default
+    const missing = CONFIG_DEFAULTS.filter(
+      (d) => !stored.some((r) => r.key === d.key),
+    ).map((d) => ({
+      key: d.key,
+      value: serializeConfigValue(d.type, d.value),
+      type: d.type,
+      category: d.category,
+      label: d.label,
+      isPublic: d.isPublic,
+      updatedAt: new Date(0),
+    }));
+    const rows = [...stored, ...missing];
     await CacheService.set(
       CacheSettings.config.all.key,
       rows,
