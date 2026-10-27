@@ -102,6 +102,24 @@ export class TableService {
     return map;
   }
 
+  /** Everyone at each table by name, for the at-a-glance roster view. */
+  private async seatedNames(rows: TableRow[]): Promise<Map<string, string[]>> {
+    if (rows.length === 0) return new Map();
+
+    const people = await prisma.people.findMany({
+      where: { tableId: { in: rows.map((r) => r.id) } },
+      orderBy: { name: "asc" },
+      select: { tableId: true, name: true },
+    });
+
+    const map = new Map<string, string[]>();
+    for (const p of people) {
+      if (!p.tableId) continue;
+      map.set(p.tableId, [...(map.get(p.tableId) ?? []), p.name]);
+    }
+    return map;
+  }
+
   /** The running bill per table, counting only foods that go on the bill. */
   private async orderTotals(rows: TableRow[]) {
     const orders = await prisma.order.findMany({
@@ -190,14 +208,16 @@ export class TableService {
       prisma.table.count({ where }),
     ]);
 
-    const [names, matched, totals] = await Promise.all([
+    const [names, matched, totals, seated] = await Promise.all([
       this.leaderNames(rows),
       this.matchedPeople(rows, search),
       this.orderTotals(rows),
+      this.seatedNames(rows),
     ]);
     return {
       tables: rows.map((r) => ({
         ...this.toDto(r, names, matched),
+        seatedNames: seated.get(r.id) ?? [],
         orderTotal: totals.get(r.id)?.orderTotal ?? 0,
         currency: totals.get(r.id)?.currency ?? null,
       })),

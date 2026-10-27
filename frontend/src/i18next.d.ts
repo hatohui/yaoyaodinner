@@ -141,6 +141,8 @@ declare module 'react-i18next' {
           filter_full: string
           view_card: string
           view_compact: string
+          view_people: string
+          nobody_seated: string
           find_title: string
           search_placeholder: string
           all_tables: string

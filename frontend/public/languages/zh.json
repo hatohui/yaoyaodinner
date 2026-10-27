@@ -160,7 +160,9 @@
 		},
 		"filter_full": "已满",
 		"view_card": "卡片视图",
-		"view_compact": "紧凑视图"
+		"view_compact": "紧凑视图",
+		"view_people": "人员视图",
+		"nobody_seated": "还没有人"
 	},
 	"roster": {
 		"people_here": "这桌的人",

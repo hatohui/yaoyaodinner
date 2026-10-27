@@ -160,7 +160,9 @@
 		},
 		"filter_full": "เต็ม",
 		"view_card": "มุมมองการ์ด",
-		"view_compact": "มุมมองกะทัดรัด"
+		"view_compact": "มุมมองกะทัดรัด",
+		"view_people": "มุมมองรายชื่อ",
+		"nobody_seated": "ยังไม่มีใคร"
 	},
 	"roster": {
 		"people_here": "คนที่โต๊ะนี้",

@@ -20,6 +20,11 @@ export class TableDto {
     description: 'Seated people whose name matched the current search',
   })
   matchedPeople?: string[];
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'Everyone seated, by name (list endpoint only)',
+  })
+  seatedNames?: string[];
   @ApiPropertyOptional({ nullable: true, type: String })
   eventId: string | null;
   @ApiPropertyOptional({ nullable: true, type: String })

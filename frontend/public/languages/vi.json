@@ -160,7 +160,9 @@
 		},
 		"filter_full": "Đã đầy",
 		"view_card": "Xem dạng thẻ",
-		"view_compact": "Xem gọn"
+		"view_compact": "Xem gọn",
+		"view_people": "Xem theo người",
+		"nobody_seated": "Chưa có ai"
 	},
 	"roster": {
 		"people_here": "Mọi người tại bàn này",

@@ -160,7 +160,9 @@
 		},
 		"filter_full": "Full",
 		"view_card": "Card view",
-		"view_compact": "Compact view"
+		"view_compact": "Compact view",
+		"view_people": "People view",
+		"nobody_seated": "Nobody here yet"
 	},
 	"roster": {
 		"people_here": "People at this table",

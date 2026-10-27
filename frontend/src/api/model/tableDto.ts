@@ -25,6 +25,8 @@ export interface TableDto {
   tableLeaderName?: string | null;
   /** Seated people whose name matched the current search */
   matchedPeople?: string[];
+  /** Everyone seated, by name (list endpoint only) */
+  seatedNames?: string[];
   /** @nullable */
   eventId?: string | null;
   /** @nullable */
