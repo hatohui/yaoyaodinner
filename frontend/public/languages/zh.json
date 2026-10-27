@@ -137,7 +137,8 @@
 		"leave": "离开餐桌",
 		"left": "你已离开餐桌",
 		"leave_confirm_title": "离开此餐桌？",
-		"leave_confirm_body": "你将只能查看，需要再次输入代码才能编辑。"
+		"leave_confirm_body": "你将只能查看，需要再次输入代码才能编辑。",
+		"not_your_table": "你只能修改自己所在的餐桌"
 	},
 	"tables": {
 		"find_title": "找到你的餐桌",

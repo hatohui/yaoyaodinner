@@ -137,7 +137,8 @@
 		"leave": "Leave table",
 		"left": "You left the table",
 		"leave_confirm_title": "Leave this table?",
-		"leave_confirm_body": "You'll go back to view only and need the code again to make changes."
+		"leave_confirm_body": "You'll go back to view only and need the code again to make changes.",
+		"not_your_table": "You can only make changes at your own table"
 	},
 	"tables": {
 		"find_title": "Find your table",

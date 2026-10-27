@@ -2,9 +2,11 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ArrowLeft, Lock } from 'lucide-react'
 import { TableCodeForm } from '@/components/common/TableCodeForm'
+import { useConfig } from '@/hooks/useConfig'
 
 export function OrderLocked({ tableId }: { tableId: string }) {
 	const { t } = useTranslation()
+	const { tableCodes } = useConfig()
 
 	return (
 		<div className='mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-md flex-col px-4 py-6'>
@@ -22,13 +24,17 @@ export function OrderLocked({ tableId }: { tableId: string }) {
 				</div>
 				<div className='space-y-1.5'>
 					<h1 className='text-2xl font-bold text-foreground'>
-						{t('table_code.title')}
+						{tableCodes
+							? t('table_code.title')
+							: t('table_code.not_your_table')}
 					</h1>
-					<p className='text-sm text-muted-foreground'>
-						{t('table_code.subtitle')}
-					</p>
+					{tableCodes && (
+						<p className='text-sm text-muted-foreground'>
+							{t('table_code.subtitle')}
+						</p>
+					)}
 				</div>
-				<TableCodeForm tableId={tableId} autoFocus />
+				{tableCodes && <TableCodeForm tableId={tableId} autoFocus />}
 			</div>
 		</div>
 	)

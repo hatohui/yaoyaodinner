@@ -103,6 +103,7 @@ declare module 'react-i18next' {
           left: string
           leave_confirm_title: string
           leave_confirm_body: string
+          not_your_table: string
         }
         faq: {
           tag: string

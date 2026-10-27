@@ -6,6 +6,7 @@ import { getGetFoodByIdQueryOptions } from '@/api/foods/foods'
 import { useGetTableById, useGetTablePeople } from '@/api/tables/tables'
 import { useCreateOrder, getGetOrdersQueryKey } from '@/api/orders/orders'
 import { useTableAccess } from '@/hooks/useTableCode'
+import { useConfig } from '@/hooks/useConfig'
 import { TableCodeForm } from '@/components/common/TableCodeForm'
 import type {
 	FoodDetailDto,
@@ -78,6 +79,7 @@ export function OrderConfigModal({
 	})
 	const { personId: myPersonId } = useWhoAmI(tableId ?? '')
 	const { canEdit } = useTableAccess(tableId ?? '')
+	const { tableCodes } = useConfig()
 
 	const idsNeedingFetch = foods.filter(f => !f.variants).map(f => f.id)
 	const variantQueries = useQueries({
@@ -211,9 +213,11 @@ export function OrderConfigModal({
 				{tableId && !canEdit ? (
 					<div className='flex flex-col gap-4 py-2 text-center'>
 						<p className='text-sm text-muted-foreground'>
-							{t('table_code.subtitle')}
+							{tableCodes
+								? t('table_code.subtitle')
+								: t('table_code.not_your_table')}
 						</p>
-						<TableCodeForm tableId={tableId} autoFocus />
+						{tableCodes && <TableCodeForm tableId={tableId} autoFocus />}
 					</div>
 				) : loading ? (
 					<div className='flex justify-center py-8'>

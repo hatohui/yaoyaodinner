@@ -137,7 +137,8 @@
 		"leave": "Rời bàn",
 		"left": "Bạn đã rời bàn",
 		"leave_confirm_title": "Rời bàn này?",
-		"leave_confirm_body": "Bạn sẽ chỉ được xem và cần nhập lại mã để chỉnh sửa."
+		"leave_confirm_body": "Bạn sẽ chỉ được xem và cần nhập lại mã để chỉnh sửa.",
+		"not_your_table": "Bạn chỉ có thể chỉnh sửa bàn của mình"
 	},
 	"tables": {
 		"find_title": "Tìm bàn của bạn",

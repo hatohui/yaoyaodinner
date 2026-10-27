@@ -45,12 +45,17 @@ export const useHeldTableCode = create<TableCodeState>((set, get) => ({
 	},
 }))
 
-/** Admins edit while edit mode is on; everyone else needs the table's code saved on this device, unless codes are switched off. */
+/**
+ * Admins edit while edit mode is on. Otherwise you need the table's code saved
+ * on this device, or with codes switched off, any table until you claim
+ * someone, then only that person's table.
+ */
 export function useTableAccess(tableId: string) {
 	const { editing: isAdmin } = useEditMode()
 	const held = useHeldTableCode(s => s.held)
 	const release = useHeldTableCode(s => s.release)
 	const { tableCodes } = useConfig()
+	const claimedTableId = useGuest(s => s.me?.tableId)
 	const code = held?.tableId === tableId ? held.code : null
 
 	// a rerolled code should lock out devices still holding the old one
@@ -65,7 +70,12 @@ export function useTableAccess(tableId: string) {
 		if (data && !data.valid) release()
 	}, [data, release])
 
-	return { isAdmin, canEdit: isAdmin || !tableCodes || Boolean(code) }
+	const open = !tableCodes && (!claimedTableId || claimedTableId === tableId)
+
+	return {
+		isAdmin,
+		canEdit: isAdmin || (tableCodes ? Boolean(code) : open),
+	}
 }
 
 export function useTableCodeUnlock(tableId: string, onUnlock?: () => void) {
