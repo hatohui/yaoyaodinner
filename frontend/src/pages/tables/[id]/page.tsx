@@ -33,7 +33,7 @@ export default function TableDetailPage() {
 	const { id, table, isLoading, isError, shareLink, updateTable } =
 		useTableDetail()
 	const { tab, setTab } = useTableTab(id)
-	const { canEdit, isAdmin } = useTableAccess(id)
+	const { canEdit, canJoin, isAdmin } = useTableAccess(id)
 	const { data: people } = useGetTablePeople<PersonDto[]>(id)
 	const { data: orders } = useGetOrders<OrderResponseDto[]>({
 		tableId: id,
@@ -150,6 +150,7 @@ export default function TableDetailPage() {
 					<Roster
 						table={table}
 						canEdit={canEdit}
+						canJoin={canJoin}
 						canSetHost={isAdmin}
 						onSetHost={personId => updateTable({ tableLeaderId: personId })}
 					/>

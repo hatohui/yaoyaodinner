@@ -128,11 +128,14 @@ export function useRoster(tableId: string) {
 				p.id !== exceptId && p.name.trim().toLowerCase() === name.toLowerCase()
 		)
 
-	const add = (name: string) => {
+	const add = (name: string, onAdded?: (person: PersonDto) => void) => {
 		const trimmed = name.trim()
 		if (!trimmed) return
 		if (nameTaken(trimmed)) return toast.error(t('roster.name_taken'))
-		addMutation.mutate({ data: { name: trimmed, tableId } })
+		addMutation.mutate(
+			{ data: { name: trimmed, tableId } },
+			{ onSuccess: onAdded }
+		)
 	}
 
 	const remove = (id: string) => removeMutation.mutate({ id })

@@ -47,8 +47,8 @@ export const useHeldTableCode = create<TableCodeState>((set, get) => ({
 
 /**
  * Admins edit while edit mode is on. Otherwise you need the table's code saved
- * on this device, or with codes switched off, any table until you claim
- * someone, then only that person's table.
+ * on this device, or with codes switched off, to have claimed someone at the
+ * table. Unclaimed devices can still join: claim a person or add themselves.
  */
 export function useTableAccess(tableId: string) {
 	const { editing: isAdmin } = useEditMode()
@@ -70,11 +70,13 @@ export function useTableAccess(tableId: string) {
 		if (data && !data.valid) release()
 	}, [data, release])
 
-	const open = !tableCodes && (!claimedTableId || claimedTableId === tableId)
+	const canEdit =
+		isAdmin || (tableCodes ? Boolean(code) : claimedTableId === tableId)
 
 	return {
 		isAdmin,
-		canEdit: isAdmin || (tableCodes ? Boolean(code) : open),
+		canEdit,
+		canJoin: canEdit || (!tableCodes && !claimedTableId),
 	}
 }
 

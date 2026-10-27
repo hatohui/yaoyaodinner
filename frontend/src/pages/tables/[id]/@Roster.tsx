@@ -16,11 +16,18 @@ import { PersonDialog } from './@PersonDialog'
 interface RosterProps {
 	table: TableDto
 	canEdit: boolean
+	canJoin: boolean
 	canSetHost: boolean
 	onSetHost: (personId: string | null) => void
 }
 
-export function Roster({ table, canEdit, canSetHost, onSetHost }: RosterProps) {
+export function Roster({
+	table,
+	canEdit,
+	canJoin,
+	canSetHost,
+	onSetHost,
+}: RosterProps) {
 	const { t } = useTranslation()
 	const { people, add, remove, updatePfp, rename } = useRoster(table.id)
 	const me = useGuest(s => s.me)
@@ -62,7 +69,8 @@ export function Roster({ table, canEdit, canSetHost, onSetHost }: RosterProps) {
 	const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 		if (e.key !== 'Enter') return
 		const input = e.currentTarget
-		add(input.value)
+		// someone joining by adding themselves becomes that person
+		add(input.value, me ? undefined : claim)
 		input.value = ''
 		inputRef.current?.focus()
 	}
@@ -76,7 +84,7 @@ export function Roster({ table, canEdit, canSetHost, onSetHost }: RosterProps) {
 				{people.length > 0 && <ViewToggle view={view} onChange={setView} />}
 			</div>
 
-			{canEdit && people.length > 0 && !me && (
+			{canJoin && people.length > 0 && !me && (
 				<p className='flex items-start gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
 					<UserCheck className='mt-0.5 size-4 shrink-0 text-primary' />
 					{t('roster.pick_yourself')}
@@ -100,7 +108,7 @@ export function Roster({ table, canEdit, canSetHost, onSetHost }: RosterProps) {
 							person={person}
 							isMe={person.id === me?.id}
 							isHost={person.id === table.tableLeaderId}
-							showClaim={canEdit && !me}
+							showClaim={canJoin && !me}
 							canEdit={canEdit}
 							compact={compact}
 							onClaim={() => claim(person)}
@@ -111,7 +119,7 @@ export function Roster({ table, canEdit, canSetHost, onSetHost }: RosterProps) {
 				</ul>
 			)}
 
-			{canEdit && (
+			{canJoin && (
 				<input
 					ref={inputRef}
 					onKeyDown={handleKeyDown}
