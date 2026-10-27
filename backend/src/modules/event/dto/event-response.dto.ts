@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ORDERING_STAGES } from './set-ordering-stage.dto';
 
 export class EventDto {
   @ApiProperty() id: string;
@@ -7,6 +8,8 @@ export class EventDto {
   @ApiProperty() isActive: boolean;
   @ApiPropertyOptional({ nullable: true, type: String })
   presetMenuId: string | null;
+  @ApiProperty({ enum: ORDERING_STAGES, enumName: 'StoredOrderingStage' })
+  orderingStage: (typeof ORDERING_STAGES)[number];
   @ApiProperty() createdAt: string;
 }
 

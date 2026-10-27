@@ -120,22 +120,43 @@ export class TableService {
     return map;
   }
 
-  /** The running bill per table, counting only foods that go on the bill. */
+  /**
+   * The running bill per table, matching the splits view: the set menu for
+   * everyone seated plus every order that goes on the bill.
+   */
   private async orderTotals(rows: TableRow[]) {
-    const orders = await prisma.order.findMany({
-      where: {
-        tableId: { in: rows.map((r) => r.id) },
-        variant: { food: { shouldCalculate: true } },
-      },
-      select: {
-        tableId: true,
-        price: true,
-        quantity: true,
-        variant: { select: { currency: true } },
-      },
-    });
+    const [orders, preset] = await Promise.all([
+      prisma.order.findMany({
+        where: {
+          tableId: { in: rows.map((r) => r.id) },
+          variant: { food: { shouldCalculate: true } },
+        },
+        select: {
+          tableId: true,
+          price: true,
+          quantity: true,
+          variant: { select: { currency: true } },
+        },
+      }),
+      prisma.presetMenu.findFirst({
+        where: { isActive: true },
+        select: {
+          price: true,
+          foods: { take: 1, select: { variant: { select: { currency: true } } } },
+        },
+      }),
+    ]);
 
-    const totals = new Map<string, { orderTotal: number; currency: string }>();
+    const setPrice = preset ? Number(preset.price) : 0;
+    const totals = new Map<string, { orderTotal: number; currency: string | null }>();
+    for (const r of rows) {
+      if (setPrice > 0 && r._count.people > 0) {
+        totals.set(r.id, {
+          orderTotal: setPrice * r._count.people,
+          currency: preset?.foods[0]?.variant.currency ?? null,
+        });
+      }
+    }
     for (const o of orders) {
       const prev = totals.get(o.tableId);
       totals.set(o.tableId, {

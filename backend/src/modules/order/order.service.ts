@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { OrderRound } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
@@ -52,6 +52,8 @@ export class OrderService {
       variantLabel: order.variant.translations[0]?.label ?? "",
       shouldCalculate: order.variant.food.shouldCalculate,
       splits: order.splits.map((s) => ({ personId: s.personId })),
+      round: order.round,
+      priceEdited: order.priceEdited,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     };
@@ -112,8 +114,8 @@ export class OrderService {
   }
 
   /**
-   * Ordering the same thing again (same variant, price and split) bumps the
-   * existing line's quantity instead of adding a duplicate row.
+   * Ordering the same thing again (same variant, price, split and round) bumps
+   * the existing line's quantity instead of adding a duplicate row.
    */
   private async placeOrMerge(
     tx: Pick<typeof prisma, 'order'>,
@@ -124,6 +126,7 @@ export class OrderService {
       quantity: number;
       price: number;
       splitAll: boolean;
+      round: OrderRound;
       personIds?: string[];
     },
     lang: string,
@@ -135,6 +138,8 @@ export class OrderService {
         tableId: line.tableId,
         variantId: line.variantId,
         splitAll: line.splitAll,
+        round: line.round,
+        priceEdited: false,
       },
       include: { splits: { select: { personId: true } } },
     });
@@ -164,13 +169,14 @@ export class OrderService {
         quantity: line.quantity,
         price: line.price,
         splitAll: line.splitAll,
+        round: line.round,
         splits,
       },
       include: orderIncludeWithLang(lang),
     });
   }
 
-  async create(dto: CreateOrderDto, lang = "en") {
+  async create(dto: CreateOrderDto, round: OrderRound, lang = "en") {
     const [price, eventId] = await Promise.all([
       this.resolvePrice(dto.variantId),
       this.orderableTableEventId(dto.tableId),
@@ -185,6 +191,7 @@ export class OrderService {
           quantity: dto.quantity ?? 1,
           price,
           splitAll: dto.splitAll ?? true,
+          round,
           personIds: dto.personIds,
         },
         lang,
@@ -194,7 +201,7 @@ export class OrderService {
     return this.toResponseDto(order);
   }
 
-  async createBatch(dto: BatchCreateOrderDto, lang = "en") {
+  async createBatch(dto: BatchCreateOrderDto, round: OrderRound, lang = "en") {
     const eventId = await this.orderableTableEventId(dto.tableId);
     const splitAll = dto.splitAll ?? true;
     const priced = await Promise.all(
@@ -218,6 +225,7 @@ export class OrderService {
               quantity: item.quantity ?? 1,
               price,
               splitAll,
+              round,
               personIds: dto.personIds,
             },
             lang,
@@ -257,6 +265,10 @@ export class OrderService {
         data: {
           quantity: dto.quantity ?? order.quantity,
           splitAll,
+          ...(dto.price !== undefined && {
+            price: dto.price,
+            priceEdited: true,
+          }),
         },
         include: orderIncludeWithLang(lang),
       });

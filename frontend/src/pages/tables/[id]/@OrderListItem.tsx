@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Minus, Plus, Trash2, Users2 } from 'lucide-react'
+import { Minus, Pencil, Plus, Trash2, Users2 } from 'lucide-react'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
@@ -19,8 +19,10 @@ interface OrderListItemProps {
 	onEditSplit: () => void
 	onRemove: () => void
 	onQuantityChange: (quantity: number) => void
+	onEditPrice?: () => void
 	compact?: boolean
-	readOnly?: boolean
+	lockItems?: boolean
+	lockSplit?: boolean
 }
 
 export function OrderListItem({
@@ -29,8 +31,10 @@ export function OrderListItem({
 	onEditSplit,
 	onRemove,
 	onQuantityChange,
+	onEditPrice,
 	compact = false,
-	readOnly = false,
+	lockItems = false,
+	lockSplit = false,
 }: OrderListItemProps) {
 	const { t } = useTranslation()
 	const [quantityInput, setQuantityInput] = useState(String(order.quantity))
@@ -95,7 +99,7 @@ export function OrderListItem({
 			<button
 				type='button'
 				onClick={onEditSplit}
-				disabled={readOnly}
+				disabled={lockSplit}
 				className='min-w-0'
 			>
 				<Badge variant='outline' className='max-w-full gap-1 rounded-full'>
@@ -108,9 +112,17 @@ export function OrderListItem({
 					{t('orders.free_badge')}
 				</Badge>
 			)}
+			{order.priceEdited && (
+				<Badge
+					variant='secondary'
+					className='shrink-0 rounded-full text-[10px]'
+				>
+					{t('orders.price_edited')}
+				</Badge>
+			)}
 		</div>
 	)
-	const stepper = readOnly ? (
+	const stepper = lockItems ? (
 		<span
 			className={cn(
 				'shrink-0 text-sm font-medium text-muted-foreground',
@@ -164,18 +176,28 @@ export function OrderListItem({
 			</button>
 		</div>
 	)
-	const price = (
-		<span
+	const priceText = `${(order.price * (Number(quantityInput) || order.quantity)).toFixed(2)} ${order.currency}`
+	const priceClass = cn(
+		'shrink-0 text-sm font-medium tabular-nums',
+		order.shouldCalculate ? 'text-foreground' : 'text-foreground/50'
+	)
+	const price = onEditPrice ? (
+		<button
+			type='button'
+			onClick={onEditPrice}
+			aria-label={t('orders.edit_price')}
 			className={cn(
-				'shrink-0 text-sm font-medium tabular-nums',
-				order.shouldCalculate ? 'text-foreground' : 'text-foreground/50'
+				priceClass,
+				'flex items-center gap-1 rounded-full px-1.5 py-0.5 transition-colors hover:bg-primary/10 hover:text-primary'
 			)}
 		>
-			{(order.price * (Number(quantityInput) || order.quantity)).toFixed(2)}{' '}
-			{order.currency}
-		</span>
+			{priceText}
+			<Pencil className='size-3' />
+		</button>
+	) : (
+		<span className={priceClass}>{priceText}</span>
 	)
-	const removeButton = readOnly ? null : (
+	const removeButton = lockItems ? null : (
 		<button
 			type='button'
 			onClick={onRemove}

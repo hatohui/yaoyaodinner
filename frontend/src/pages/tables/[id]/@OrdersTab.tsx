@@ -10,8 +10,10 @@ import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNote } from './@IncludedNote'
-import { useConfig } from '@/hooks/useConfig'
-import { OrderingClosedNotice } from '@/components/common/OrderingClosedNotice'
+import { PriceDialog } from './@PriceDialog'
+import { OrderRoundSection } from './@OrderRoundSection'
+import { useOrderingStage } from '@/hooks/useOrderingStage'
+import { OrderingStageNotice } from '@/components/common/OrderingStageNotice'
 import {
 	groupOrders,
 	type OrderedLine,
@@ -26,19 +28,32 @@ interface OrdersTabProps {
 	canEdit: boolean
 }
 
+const linesTotal = (lines: OrderedLine[]) =>
+	lines.reduce(
+		(sum, o) => (o.shouldCalculate ? sum + o.price * o.quantity : sum),
+		0
+	)
+
 export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { t } = useTranslation()
 	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
 		table.id
 	)
-	const { ordersOpen: orderingOpen } = useConfig()
-	const canOrder = canEdit && orderingOpen
+	const { stage, canAdd, canSplit, canChangeItems, canEditPrice } =
+		useOrderingStage()
+	const canOrder = canEdit && canAdd
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
 	const lines = useMemo(() => groupOrders(orders), [orders])
+	const preLines = lines.filter(l => l.round === 'pre')
+	const dinnerLines = lines.filter(l => l.round === 'dinner')
+	const showRounds =
+		dinnerLines.length > 0 || stage === 'dinner' || stage === 'finalized'
+	const currency = orders[0]?.currency
 	const { personId: myPersonId } = useWhoAmI(table.id)
 	const [editing, setEditing] = useState<OrderedLine | null>(null)
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)
+	const [pricing, setPricing] = useState<OrderedLine | null>(null)
 
 	if (isLoading) {
 		return (
@@ -48,10 +63,31 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		)
 	}
 
+	const renderLines = (group: OrderedLine[]) => (
+		<ul className='flex flex-col gap-2'>
+			{group.map(line => (
+				<OrderListItem
+					key={line.key}
+					order={line}
+					people={people}
+					onEditSplit={() => setEditing(line)}
+					onRemove={() => setRemoving(line)}
+					onQuantityChange={quantity => updateLine(line.ids, { quantity })}
+					onEditPrice={
+						canEdit && canEditPrice(line) ? () => setPricing(line) : undefined
+					}
+					compact={compact}
+					lockItems={!canEdit || !canChangeItems(line)}
+					lockSplit={!canEdit || !canSplit}
+				/>
+			))}
+		</ul>
+	)
+
 	return (
 		<div className='flex flex-col gap-3'>
 			<IncludedNote />
-			{!orderingOpen && <OrderingClosedNotice />}
+			<OrderingStageNotice />
 
 			{people.length === 0 ? (
 				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
@@ -80,28 +116,43 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 				</div>
 			)}
 
-			{orders.length > 0 && (
-				<ul className='flex flex-col gap-2'>
-					{lines.map(line => (
-						<OrderListItem
-							key={line.key}
-							order={line}
-							people={people}
-							onEditSplit={() => setEditing(line)}
-							onRemove={() => setRemoving(line)}
-							onQuantityChange={quantity => updateLine(line.ids, { quantity })}
-							compact={compact}
-							readOnly={!canEdit}
-						/>
-					))}
-				</ul>
-			)}
+			{orders.length > 0 &&
+				(showRounds ? (
+					<>
+						{preLines.length > 0 && (
+							<OrderRoundSection
+								title={t('orders.round_pre')}
+								locked={stage !== 'open'}
+								subtotal={linesTotal(preLines)}
+								currency={currency}
+							>
+								{renderLines(preLines)}
+							</OrderRoundSection>
+						)}
+						<OrderRoundSection
+							title={t('orders.round_dinner')}
+							locked={stage === 'finalized'}
+							subtotal={linesTotal(dinnerLines)}
+							currency={currency}
+						>
+							{dinnerLines.length > 0 ? (
+								renderLines(dinnerLines)
+							) : (
+								<p className='rounded-2xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground'>
+									{t('orders.round_dinner_empty')}
+								</p>
+							)}
+						</OrderRoundSection>
+					</>
+				) : (
+					renderLines(lines)
+				))}
 
 			{orders.length > 0 && (
 				<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
 					<span>{t('orders.total')}</span>
 					<span>
-						{total.toFixed(2)} {orders[0]?.currency}
+						{total.toFixed(2)} {currency}
 					</span>
 				</div>
 			)}
@@ -114,13 +165,17 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 				initialSplitAll={editing?.splitAll ?? true}
 				myPersonId={myPersonId}
 				onConfirm={(splitAll, personIds) => {
-					if (editing)
-						updateLine(editing.ids, {
-							quantity: editing.quantity,
-							splitAll,
-							personIds,
-						})
+					if (editing) updateLine(editing.ids, { splitAll, personIds })
 					setEditing(null)
+				}}
+			/>
+
+			<PriceDialog
+				order={pricing}
+				onOpenChange={open => !open && setPricing(null)}
+				onSave={price => {
+					if (pricing) updateLine(pricing.ids, { price })
+					setPricing(null)
 				}}
 			/>
 

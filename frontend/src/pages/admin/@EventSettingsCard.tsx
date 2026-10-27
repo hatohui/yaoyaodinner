@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditableName } from '@/components/common/EditableName'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
+import { OrderingStageControl } from './@OrderingStageControl'
 
 type PendingAction = 'reroll' | 'activate' | 'delete' | null
 
@@ -57,6 +58,8 @@ export function EventSettingsCard() {
 						</Badge>
 					)}
 				</div>
+
+				<OrderingStageControl event={selectedEvent} isLive={isLive} />
 
 				<div className='flex flex-wrap gap-2 border-t border-border/60 pt-4'>
 					<Button

@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { useDebounce } from '@/hooks/useDebounce'
 import type { AppConfigDto } from '@/api/model'
 
+const DATETIME_KEYS = ['event.dinnerTime', 'orders.deadline']
+
 interface ConfigRowProps {
 	item: AppConfigDto
 	onSave: (key: string, value: string) => void
@@ -104,7 +106,7 @@ function TextEditor({
 						? 'password'
 						: item.type === 'number'
 							? 'number'
-							: item.key === 'event.dinnerTime'
+							: DATETIME_KEYS.includes(item.key)
 								? 'datetime-local'
 								: 'text'
 				}

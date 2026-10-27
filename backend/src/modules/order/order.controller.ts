@@ -45,8 +45,8 @@ export class OrderController {
     @Query('lang') lang = 'en',
   ) {
     await this.access.forTable(dto.tableId, headers);
-    await this.access.assertOrderingOpen(headers);
-    return this.order.create(dto, lang);
+    const round = await this.access.roundForNewOrder(dto.tableId, headers);
+    return this.order.create(dto, round, lang);
   }
 
   @Post('batch')
@@ -59,8 +59,8 @@ export class OrderController {
     @Query('lang') lang = 'en',
   ) {
     await this.access.forTable(dto.tableId, headers);
-    await this.access.assertOrderingOpen(headers);
-    return this.order.createBatch(dto, lang);
+    const round = await this.access.roundForNewOrder(dto.tableId, headers);
+    return this.order.createBatch(dto, round, lang);
   }
 
   @Patch(':id')
@@ -73,8 +73,10 @@ export class OrderController {
     @Headers() headers: Record<string, string>,
     @Query('lang') lang = 'en',
   ) {
-    await this.access.forOrder(id, headers);
-    if (dto.quantity !== undefined) await this.access.assertOrderingOpen(headers);
+    await this.access.forOrderChange(id, headers, {
+      items: dto.quantity !== undefined,
+      price: dto.price !== undefined,
+    });
     return this.order.update(id, dto, lang);
   }
 
@@ -84,7 +86,7 @@ export class OrderController {
     @Param('id') id: string,
     @Headers() headers: Record<string, string>,
   ) {
-    await this.access.forOrder(id, headers);
+    await this.access.forOrderChange(id, headers, { items: true });
     return this.order.remove(id);
   }
 }

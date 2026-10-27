@@ -247,7 +247,26 @@ declare module 'react-i18next' {
           description_placeholder: string
         }
         tabs: { people: string; orders: string; splits: string }
+        ordering: {
+          closed_title: string
+          closed_body: string
+          open_title: string
+          open_body: string
+          confirmed_title: string
+          confirmed_body: string
+          confirmed_body_time: string
+          dinner_title: string
+          dinner_body: string
+          finalized_title: string
+          finalized_body: string
+        }
         orders: {
+          round_pre: string
+          round_dinner: string
+          round_dinner_empty: string
+          edit_price: string
+          unit_price: string
+          price_edited: string
           add_order: string
           cart: string
           cart_empty: string
@@ -264,8 +283,6 @@ declare module 'react-i18next' {
           free: string
           free_limited: string
           included: string
-          ordering_closed: string
-          ordering_closed_body: string
           view_cart: string
           needs_people_title: string
           needs_people_body: string
@@ -290,6 +307,7 @@ declare module 'react-i18next' {
           free_badge: string
         }
         split: {
+          table_total: string
           people_count: string
           title: string
           just_me: string
@@ -336,6 +354,24 @@ declare module 'react-i18next' {
         health: Record<string, string>
         dev: Record<string, unknown>
         admin: {
+          ordering: {
+            title: string
+            stage_closed: string
+            stage_open: string
+            stage_confirmed: string
+            stage_dinner: string
+            stage_finalized: string
+            hint_auto_confirm: string
+            hint_dinner: string
+            open: string
+            confirm: string
+            finalize: string
+            confirm_title: string
+            confirm_body: string
+            finalize_title: string
+            finalize_body: string
+            updated: string
+          }
           event: {
             context: string
             viewing_past: string
@@ -519,6 +555,7 @@ declare module 'react-i18next' {
             empty: string
             category_auth: string
             category_event: string
+            category_orders: string
             category_tables: string
             category_feedback: string
             category_features: string

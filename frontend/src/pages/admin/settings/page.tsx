@@ -7,6 +7,7 @@ import { useAdminConfig } from './@useAdminConfig'
 const CATEGORY_LABELS: Record<string, string> = {
 	auth: 'admin.settings.category_auth',
 	event: 'admin.settings.category_event',
+	orders: 'admin.settings.category_orders',
 	tables: 'admin.settings.category_tables',
 	feedback: 'admin.settings.category_feedback',
 	features: 'admin.settings.category_features',

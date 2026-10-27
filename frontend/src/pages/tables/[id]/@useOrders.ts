@@ -34,6 +34,8 @@ export function useOrders(tableId: string) {
 									...o,
 									quantity: body.quantity ?? o.quantity,
 									splitAll: body.splitAll ?? o.splitAll,
+									price: body.price ?? o.price,
+									priceEdited: o.priceEdited || body.price !== undefined,
 									splits:
 										body.personIds !== undefined
 											? body.personIds.map(personId => ({ personId }))
@@ -73,13 +75,24 @@ export function useOrders(tableId: string) {
 	const remove = (id: string) => removeMutation.mutate({ id })
 
 	/**
-	 * Edits a grouped line: the change lands on its first order and any
-	 * duplicates are deleted, so older repeat rows fold into one as people edit.
+	 * Edits a grouped line. A quantity change lands on its first order and any
+	 * duplicates are deleted, so older repeat rows fold into one as people edit;
+	 * split and price changes touch every row and leave quantities alone, since
+	 * those stay editable after the items themselves are locked.
 	 */
 	const updateLine = (
 		ids: string[],
-		data: { quantity: number; splitAll?: boolean; personIds?: string[] }
+		data: {
+			quantity?: number
+			splitAll?: boolean
+			personIds?: string[]
+			price?: number
+		}
 	) => {
+		if (data.quantity === undefined) {
+			ids.forEach(id => updateMutation.mutate({ id, data }))
+			return
+		}
 		if (data.quantity < 1) return
 		const [primary, ...duplicates] = ids
 		updateMutation.mutate({ id: primary, data })

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ArrowLeft } from 'lucide-react'
-import { OrderingClosedNotice } from '@/components/common/OrderingClosedNotice'
+import { OrderingStageNotice } from '@/components/common/OrderingStageNotice'
 
 export function OrderingClosed({ tableId }: { tableId: string }) {
 	const { t } = useTranslation()
@@ -15,7 +15,7 @@ export function OrderingClosed({ tableId }: { tableId: string }) {
 				<ArrowLeft className='size-4' />
 				{t('orders.back_to_table')}
 			</Link>
-			<OrderingClosedNotice />
+			<OrderingStageNotice />
 		</div>
 	)
 }

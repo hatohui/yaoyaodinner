@@ -266,6 +266,19 @@
 		"orders": "Đơn hàng",
 		"splits": "Chia hóa đơn"
 	},
+	"ordering": {
+		"closed_title": "Chưa mở đặt món",
+		"closed_body": "Bạn có thể xem thực đơn và đặt món khi chủ tiệc mở đặt món.",
+		"open_title": "Đang mở đặt món",
+		"open_body": "Đặt món sẽ khóa lúc {{time}}.",
+		"confirmed_title": "Đã chốt đặt món",
+		"confirmed_body": "Bạn có thể thêm món gọi tại nhà hàng khi bữa tối bắt đầu.",
+		"confirmed_body_time": "Bạn có thể thêm món gọi tại nhà hàng từ {{time}}.",
+		"dinner_title": "Bữa tối đã bắt đầu",
+		"dinner_body": "Hãy thêm mọi món gọi tại nhà hàng để chia tiền cho công bằng.",
+		"finalized_title": "Sự kiện đã chốt sổ",
+		"finalized_body": "Tổng tiền là cuối cùng và không thể thay đổi."
+	},
 	"orders": {
 		"shared": "Chia sẻ",
 		"personal": "Cá nhân",
@@ -295,8 +308,6 @@
 		"free": "Miễn phí",
 		"free_limited": "Miễn phí · có hạn",
 		"included": "Đã bao gồm {{item}}",
-		"ordering_closed": "Chưa mở gọi món",
-		"ordering_closed_body": "Bạn có thể xem thực đơn ngay bây giờ và gọi món khi chủ tiệc mở gọi món.",
 		"view_cart": "Giỏ ({{count}})",
 		"needs_people_title": "Chưa có ai ngồi ở đây",
 		"needs_people_body": "Hãy thêm người vào bàn trước khi gọi món — món ăn thuộc về những người ngồi ở đó.",
@@ -306,7 +317,13 @@
 		"back_to_table": "Quay lại bàn",
 		"ordering_for": "Gọi món cho {{table}}",
 		"in_cart_count": "{{count}} trong giỏ",
-		"ordered_count": "Đã gọi {{count}}"
+		"ordered_count": "Đã gọi {{count}}",
+		"round_pre": "Đặt trước",
+		"round_dinner": "Gọi thêm trong bữa",
+		"round_dinner_empty": "Chưa gọi thêm món nào",
+		"edit_price": "Sửa giá",
+		"unit_price": "Giá mỗi món ({{currency}})",
+		"price_edited": "Đã sửa giá"
 	},
 	"split": {
 		"title": "Chia món này",
@@ -319,7 +336,8 @@
 		"set_menu": "Thực đơn trọn gói (chia đều)",
 		"your_share": "Phần của bạn",
 		"quantity": "Số lượng",
-		"people_count": "{{count}} người"
+		"people_count": "{{count}} người",
+		"table_total": "Tổng cả bàn"
 	},
 	"notes": {
 		"placeholder": "Thêm ghi chú mọi người đều thấy được, vd: \"không ăn được tôm\"",
@@ -568,7 +586,8 @@
 			"category_tables": "Bàn",
 			"category_feedback": "Phản hồi",
 			"category_features": "Tính năng",
-			"category_banner": "Thông báo"
+			"category_banner": "Thông báo",
+			"category_orders": "Đặt món"
 		},
 		"food": {
 			"title": "Danh mục món ăn",
@@ -655,6 +674,24 @@
 		"edit_mode": {
 			"label": "Chế độ chỉnh sửa",
 			"on": "Đang chỉnh sửa"
+		},
+		"ordering": {
+			"title": "Đặt món",
+			"stage_closed": "Chưa mở",
+			"stage_open": "Đang mở",
+			"stage_confirmed": "Đã chốt",
+			"stage_dinner": "Trong bữa",
+			"stage_finalized": "Đã chốt sổ",
+			"hint_auto_confirm": "Tự động chốt lúc {{time}}",
+			"hint_dinner": "Mở gọi thêm trong bữa lúc {{time}}",
+			"open": "Mở đặt món",
+			"confirm": "Chốt đặt món",
+			"finalize": "Chốt sổ sự kiện",
+			"confirm_title": "Chốt đặt món?",
+			"confirm_body": "Khách sẽ không thể thêm, sửa hay xóa món đặt trước. Họ vẫn có thể đổi cách chia tiền và thêm món khi bữa tối bắt đầu.",
+			"finalize_title": "Chốt sổ sự kiện này?",
+			"finalize_body": "Tổng tiền và cách chia sẽ bị khóa với tất cả mọi người, kể cả quản trị viên. Không thể hoàn tác.",
+			"updated": "Đã cập nhật đặt món"
 		}
 	},
 	"faq": {

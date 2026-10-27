@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsArray,
   IsString,
+  IsNumber,
   Min,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
@@ -14,6 +15,14 @@ export class UpdateOrderDto {
   @Min(1)
   @IsOptional()
   quantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Unit price actually charged, when it differs from the menu',
+  })
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @IsOptional()
+  price?: number;
 
   @ApiPropertyOptional()
   @IsBoolean()

@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { OrderingStage as StoredStage } from '@prisma/client';
 import { prisma } from '../../libs/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import { generatePin } from '@common/pin';
@@ -6,6 +11,12 @@ import { CacheService } from '@libs/redis';
 import { CacheSettings } from '@common/cache/constants';
 import { ConfigService } from '@modules/config/config.service';
 import { CONFIG_KEYS } from '@common/config/registry';
+import {
+  DEFAULT_TIMEZONE,
+  effectiveStage,
+  OrderingStage,
+  parseEventTime,
+} from '@common/ordering/stage';
 import { PublishEventDto } from './dto/publish-event.dto';
 
 type ActiveEventMeta = { id: string; pin: string };
@@ -57,6 +68,67 @@ export class EventService {
     return event.id;
   }
 
+  private async orderingTimes() {
+    const [timezone, deadline, dinnerTime, autoConfirm, dinnerPriceEditable] =
+      await Promise.all([
+        this.config.get<string>(CONFIG_KEYS.timezone),
+        this.config.get<string>(CONFIG_KEYS.ordersDeadline),
+        this.config.get<string>(CONFIG_KEYS.dinnerTime),
+        this.config.get<boolean>(CONFIG_KEYS.ordersAutoConfirm),
+        this.config.get<boolean>(CONFIG_KEYS.dinnerPriceEditable),
+      ]);
+    const zone = timezone?.trim() || DEFAULT_TIMEZONE;
+    return {
+      timezone: zone,
+      deadline: parseEventTime(deadline ?? '', zone),
+      dinnerTime: parseEventTime(dinnerTime ?? '', zone),
+      autoConfirm: autoConfirm !== false,
+      dinnerPriceEditable: dinnerPriceEditable !== false,
+    };
+  }
+
+  /** Tables not yet published into an event can't take guest orders. */
+  async stageOf(eventId: string | null): Promise<OrderingStage> {
+    if (!eventId) return 'closed';
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: { orderingStage: true },
+    });
+    if (!event) return 'closed';
+    return effectiveStage(event.orderingStage, await this.orderingTimes());
+  }
+
+  async getOrderingStatus() {
+    const [event, times] = await Promise.all([
+      prisma.event.findFirst({
+        where: { isActive: true },
+        select: { orderingStage: true },
+      }),
+      this.orderingTimes(),
+    ]);
+    return {
+      stage: event ? effectiveStage(event.orderingStage, times) : 'closed',
+      timezone: times.timezone,
+      deadline: times.deadline?.toISOString() ?? null,
+      dinnerTime: times.dinnerTime?.toISOString() ?? null,
+      autoConfirm: times.autoConfirm,
+      dinnerPriceEditable: times.dinnerPriceEditable,
+    };
+  }
+
+  /** Finalizing is one-way: totals stay locked for everyone afterwards. */
+  async setStage(id: string, stage: StoredStage) {
+    const event = await prisma.event.findUnique({ where: { id } });
+    if (!event) throw new NotFoundException('Event not found');
+    if (event.orderingStage === 'finalized' && stage !== 'finalized') {
+      throw new BadRequestException('This event is finalized');
+    }
+    return prisma.event.update({
+      where: { id },
+      data: { orderingStage: stage },
+    });
+  }
+
   async findPast() {
     const events = await prisma.event.findMany({
       where: { isActive: false },
@@ -82,7 +154,7 @@ export class EventService {
     const event = await prisma.$transaction(async (tx) => {
       await tx.event.updateMany({
         where: { isActive: true },
-        data: { isActive: false },
+        data: { isActive: false, orderingStage: 'finalized' },
       });
 
       const created = await tx.event.create({
@@ -175,6 +247,7 @@ export class EventService {
     name: string | null;
     isActive: boolean;
     presetMenuId: string | null;
+    orderingStage: StoredStage;
     createdAt: Date;
   }) {
     const [tables, people, orders] = await Promise.all([

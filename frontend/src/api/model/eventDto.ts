@@ -5,6 +5,7 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { StoredOrderingStage } from './storedOrderingStage';
 
 export interface EventDto {
   id: string;
@@ -14,5 +15,6 @@ export interface EventDto {
   isActive: boolean;
   /** @nullable */
   presetMenuId?: string | null;
+  orderingStage: StoredOrderingStage;
   createdAt: string;
 }

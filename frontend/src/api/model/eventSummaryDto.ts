@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 import type { EventStatsDto } from './eventStatsDto';
+import type { StoredOrderingStage } from './storedOrderingStage';
 
 export interface EventSummaryDto {
   id: string;
@@ -15,6 +16,7 @@ export interface EventSummaryDto {
   isActive: boolean;
   /** @nullable */
   presetMenuId?: string | null;
+  orderingStage: StoredOrderingStage;
   createdAt: string;
   stats: EventStatsDto;
 }

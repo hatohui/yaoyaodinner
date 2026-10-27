@@ -67,17 +67,31 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 		})
 	}
 
+	const shareOf = (items: OrderResponseDto[]) =>
+		items.reduce((sum, o) => (o.shouldCalculate ? sum + lineShare(o) : sum), 0)
+
 	const breakdown = people.map(person => {
 		const items = orders.filter(
 			(o: OrderResponseDto) =>
 				o.splitAll || o.splits.some(s => s.personId === person.id)
 		)
-		const total = items.reduce(
-			(sum, o) => (o.shouldCalculate ? sum + lineShare(o) : sum),
-			0
-		)
-		return { person, items, total: total + flatShare }
+		const rounds = [
+			{
+				key: 'pre',
+				label: t('orders.round_pre'),
+				items: items.filter(o => o.round === 'pre'),
+			},
+			{
+				key: 'dinner',
+				label: t('orders.round_dinner'),
+				items: items.filter(o => o.round === 'dinner'),
+			},
+		]
+			.filter(r => r.items.length > 0)
+			.map(r => ({ ...r, subtotal: shareOf(r.items) }))
+		return { person, rounds, total: shareOf(items) + flatShare }
 	})
+	const tableTotal = breakdown.reduce((sum, b) => sum + b.total, 0)
 
 	if (orders.length === 0 && flatPrice === 0) {
 		return (
@@ -91,8 +105,14 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 
 	return (
 		<>
+			<div className='mb-2 flex items-center justify-between rounded-2xl bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground'>
+				<span>{t('split.table_total')}</span>
+				<span className='tabular-nums'>
+					{tableTotal.toFixed(2)} {currency}
+				</span>
+			</div>
 			<ul className='flex flex-col gap-2'>
-				{breakdown.map(({ person, items, total }) => {
+				{breakdown.map(({ person, rounds, total }) => {
 					const isOpen = expanded.has(person.id)
 					return (
 						<li
@@ -135,56 +155,70 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 											</span>
 										</li>
 									)}
-									{items.map(o => (
-										<li key={o.id}>
-											<button
-												type='button'
-												onClick={() => setSelectedOrder(o)}
-												className='flex w-full items-center gap-2.5 rounded-xl px-1.5 py-1.5 text-left transition-colors hover:bg-muted/60'
-											>
-												<OrderThumb
-													imageKey={o.foodImageUrl}
-													alt={o.foodName}
-												/>
-												<span
-													className={cn(
-														'flex min-w-0 flex-1 flex-col',
-														!o.shouldCalculate && 'opacity-50'
-													)}
-												>
-													<span
-														className={cn(
-															'truncate text-sm font-medium',
-															o.shouldCalculate
-																? 'text-foreground'
-																: 'italic text-foreground'
-														)}
-													>
-														{o.quantity > 1 && `x${o.quantity} `}
-														{o.foodName}
-													</span>
-													<span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-														{o.variantLabel}
-														{!o.shouldCalculate && (
-															<Badge className='rounded-full border-accent/30 bg-accent/15 px-1.5 py-0 text-[10px] text-accent'>
-																{t('split.free_badge')}
-															</Badge>
-														)}
-													</span>
+									{rounds.map(r => (
+										<li key={r.key} className='flex flex-col gap-1'>
+											<div className='flex items-center justify-between gap-2 px-1.5 pt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+												<span>{r.label}</span>
+												<span className='tabular-nums'>
+													{r.subtotal.toFixed(2)} {currency}
 												</span>
-												<span
-													className={cn(
-														'shrink-0 text-sm font-medium',
-														o.shouldCalculate
-															? 'text-foreground'
-															: 'text-muted-foreground/50'
-													)}
-												>
-													{o.shouldCalculate ? lineShare(o).toFixed(2) : '0.00'}{' '}
-													{o.currency}
-												</span>
-												<ChevronRight className='size-4 shrink-0 text-muted-foreground/60' />
-											</button>
+											</div>
+											<ul className='flex flex-col gap-1'>
+												{r.items.map(o => (
+													<li key={o.id}>
+														<button
+															type='button'
+															onClick={() => setSelectedOrder(o)}
+															className='flex w-full items-center gap-2.5 rounded-xl px-1.5 py-1.5 text-left transition-colors hover:bg-muted/60'
+														>
+															<OrderThumb
+																imageKey={o.foodImageUrl}
+																alt={o.foodName}
+															/>
+															<span
+																className={cn(
+																	'flex min-w-0 flex-1 flex-col',
+																	!o.shouldCalculate && 'opacity-50'
+																)}
+															>
+																<span
+																	className={cn(
+																		'truncate text-sm font-medium',
+																		o.shouldCalculate
+																			? 'text-foreground'
+																			: 'italic text-foreground'
+																	)}
+																>
+																	{o.quantity > 1 && `x${o.quantity} `}
+																	{o.foodName}
+																</span>
+																<span className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+																	{o.variantLabel}
+																	{!o.shouldCalculate && (
+																		<Badge className='rounded-full border-accent/30 bg-accent/15 px-1.5 py-0 text-[10px] text-accent'>
+																			{t('split.free_badge')}
+																		</Badge>
+																	)}
+																</span>
+															</span>
+															<span
+																className={cn(
+																	'shrink-0 text-sm font-medium',
+																	o.shouldCalculate
+																		? 'text-foreground'
+																		: 'text-muted-foreground/50'
+																)}
+															>
+																{o.shouldCalculate
+																	? lineShare(o).toFixed(2)
+																	: '0.00'}{' '}
+																{o.currency}
+															</span>
+															<ChevronRight className='size-4 shrink-0 text-muted-foreground/60' />
+														</button>
+													</li>
+												))}
+											</ul>
 										</li>
 									))}
 								</ul>

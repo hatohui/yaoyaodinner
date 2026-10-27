@@ -266,6 +266,19 @@
 		"orders": "Orders",
 		"splits": "Splits"
 	},
+	"ordering": {
+		"closed_title": "Ordering hasn't opened yet",
+		"closed_body": "You can browse the menu now and order once the host opens ordering.",
+		"open_title": "Ordering is open",
+		"open_body": "Orders lock at {{time}}.",
+		"confirmed_title": "Orders are confirmed",
+		"confirmed_body": "You can add what you order at the restaurant once dinner starts.",
+		"confirmed_body_time": "You can add what you order at the restaurant from {{time}}.",
+		"dinner_title": "Dinner has started",
+		"dinner_body": "Add anything you order at the restaurant so the bill splits fairly.",
+		"finalized_title": "This event is finalized",
+		"finalized_body": "Totals are final and can't be changed."
+	},
 	"orders": {
 		"shared": "Shared",
 		"personal": "Personal",
@@ -295,8 +308,6 @@
 		"free": "Free",
 		"free_limited": "Free · limited",
 		"included": "{{item}} included",
-		"ordering_closed": "Ordering hasn't opened yet",
-		"ordering_closed_body": "You can browse the menu now and order once the host opens ordering.",
 		"view_cart": "Cart ({{count}})",
 		"needs_people_title": "Nobody is seated here yet",
 		"needs_people_body": "Add someone to this table before ordering — orders belong to the people sitting there.",
@@ -306,7 +317,13 @@
 		"back_to_table": "Back to table",
 		"ordering_for": "Ordering for {{table}}",
 		"in_cart_count": "{{count}} in cart",
-		"ordered_count": "{{count}} ordered"
+		"ordered_count": "{{count}} ordered",
+		"round_pre": "Pre-ordered",
+		"round_dinner": "Added at dinner",
+		"round_dinner_empty": "Nothing added at dinner yet",
+		"edit_price": "Edit price",
+		"unit_price": "Price per item ({{currency}})",
+		"price_edited": "Edited price"
 	},
 	"split": {
 		"title": "Split this item",
@@ -319,7 +336,8 @@
 		"set_menu": "Set menu (shared)",
 		"your_share": "Your share",
 		"quantity": "Quantity",
-		"people_count": "{{count}} people"
+		"people_count": "{{count}} people",
+		"table_total": "Table total"
 	},
 	"notes": {
 		"placeholder": "Add a note visible to everyone, e.g. \"can't eat shrimp\"",
@@ -568,7 +586,8 @@
 			"category_tables": "Tables",
 			"category_feedback": "Feedback",
 			"category_features": "Features",
-			"category_banner": "Banner"
+			"category_banner": "Banner",
+			"category_orders": "Orders"
 		},
 		"food": {
 			"title": "Food catalog",
@@ -655,6 +674,24 @@
 		"edit_mode": {
 			"label": "Edit mode",
 			"on": "Editing"
+		},
+		"ordering": {
+			"title": "Ordering",
+			"stage_closed": "Not open yet",
+			"stage_open": "Open",
+			"stage_confirmed": "Confirmed",
+			"stage_dinner": "Dinner",
+			"stage_finalized": "Finalized",
+			"hint_auto_confirm": "Confirms automatically at {{time}}",
+			"hint_dinner": "Dinner orders open at {{time}}",
+			"open": "Open orders",
+			"confirm": "Confirm orders",
+			"finalize": "Finalize event",
+			"confirm_title": "Confirm orders?",
+			"confirm_body": "Guests can no longer add, change or remove pre-orders. They can still change splits, and add what they order once dinner starts.",
+			"finalize_title": "Finalize this event?",
+			"finalize_body": "Totals and splits will be locked for everyone, admins included. This can't be undone.",
+			"updated": "Ordering updated"
 		}
 	},
 	"faq": {

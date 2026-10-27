@@ -13,6 +13,7 @@ import { EventService } from './event.service';
 import { PublishEventDto } from './dto/publish-event.dto';
 import { AssignPresetDto } from './dto/assign-preset.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { SetOrderingStageDto } from './dto/set-ordering-stage.dto';
 import {
   EventDto,
   EventSummaryDto,
@@ -65,6 +66,13 @@ export class EventController {
   @ApiResponse({ status: 200, type: EventDto })
   update(@Param('id') id: string, @Body() dto: UpdateEventDto) {
     return this.events.rename(id, dto.name ?? null);
+  }
+
+  @Patch(':id/ordering-stage')
+  @ApiOperation({ operationId: 'setEventOrderingStage' })
+  @ApiResponse({ status: 200, type: EventDto })
+  setStage(@Param('id') id: string, @Body() dto: SetOrderingStageDto) {
+    return this.events.setStage(id, dto.stage);
   }
 
   @Post(':id/pin/reroll')

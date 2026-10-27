@@ -29,6 +29,7 @@ import type {
   EventDto,
   EventSummaryDto,
   PublishEventDto,
+  SetOrderingStageDto,
   UpdateEventDto
 } from '../model';
 
@@ -522,6 +523,64 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getAssignEventPresetMutationOptions(options), queryClient);
+    }
+    export const setEventOrderingStage = (
+    id: string,
+    setOrderingStageDto: SetOrderingStageDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<EventDto>(
+      {url: `/api/events/${id}/ordering-stage`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: setOrderingStageDto, signal
+    },
+      );
+    }
+
+
+
+export const getSetEventOrderingStageMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setEventOrderingStage>>, TError,{id: string;data: SetOrderingStageDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof setEventOrderingStage>>, TError,{id: string;data: SetOrderingStageDto}, TContext> => {
+
+const mutationKey = ['setEventOrderingStage'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setEventOrderingStage>>, {id: string;data: SetOrderingStageDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  setEventOrderingStage(id,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetEventOrderingStageMutationResult = NonNullable<Awaited<ReturnType<typeof setEventOrderingStage>>>
+    export type SetEventOrderingStageMutationBody = SetOrderingStageDto
+    export type SetEventOrderingStageMutationError = unknown
+
+    export const useSetEventOrderingStage = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setEventOrderingStage>>, TError,{id: string;data: SetOrderingStageDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof setEventOrderingStage>>,
+        TError,
+        {id: string;data: SetOrderingStageDto},
+        TContext
+      > => {
+      return useMutation(getSetEventOrderingStageMutationOptions(options), queryClient);
     }
     export const rerollEventPin = (
     id: string,

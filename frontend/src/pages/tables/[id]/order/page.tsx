@@ -27,7 +27,7 @@ import { useTableOrdering } from './@useTableOrdering'
 import { useOrderCart } from '@/hooks/useOrderCart'
 import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
-import { useConfig } from '@/hooks/useConfig'
+import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useTableAccess } from '@/hooks/useTableCode'
 
 export default function TableOrderPage() {
@@ -51,7 +51,7 @@ export default function TableOrderPage() {
 	} = useTableOrdering()
 	const cart = useOrderCart(tableId)
 	const { canEdit } = useTableAccess(tableId)
-	const { ordersOpen: orderingOpen } = useConfig()
+	const { canAdd } = useOrderingStage()
 	const tableIsEmpty = (table?.seated ?? 0) === 0
 
 	const { data: orders = [] } = useGetOrders<OrderResponseDto[]>(
@@ -110,7 +110,7 @@ export default function TableOrderPage() {
 	}
 
 	if (!canEdit) return <OrderLocked tableId={tableId} />
-	if (!orderingOpen) return <OrderingClosed tableId={tableId} />
+	if (!canAdd) return <OrderingClosed tableId={tableId} />
 
 	return (
 		<div className='mx-auto max-w-6xl px-4 py-6'>

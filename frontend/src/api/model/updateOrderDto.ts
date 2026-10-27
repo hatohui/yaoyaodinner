@@ -8,6 +8,8 @@
 
 export interface UpdateOrderDto {
   quantity?: number;
+  /** Unit price actually charged, when it differs from the menu */
+  price?: number;
   splitAll?: boolean;
   personIds?: string[];
 }

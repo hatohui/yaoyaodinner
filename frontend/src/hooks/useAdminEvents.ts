@@ -8,10 +8,12 @@ import {
 	useRerollEventPin,
 	useActivateEvent,
 	useDeleteEvent,
+	useSetEventOrderingStage,
 	getGetActiveEventQueryKey,
 	getGetPastEventsQueryKey,
 } from '@/api/events/events'
-import type { EventSummaryDto } from '@/api/model'
+import type { EventSummaryDto, StoredOrderingStage } from '@/api/model'
+import { getGetOrderingStatusQueryKey } from '@/api/ordering/ordering'
 import { useAdminEvent } from '@/hooks/useAdminEvent'
 import { useToast } from '@/hooks/useToast'
 
@@ -78,6 +80,18 @@ export function useAdminEvents() {
 		},
 	})
 
+	const { mutate: stageMutate, isPending: settingStage } =
+		useSetEventOrderingStage({
+			mutation: {
+				onSuccess: () => {
+					invalidate()
+					qc.invalidateQueries({ queryKey: getGetOrderingStatusQueryKey() })
+					toast.success(t('admin.ordering.updated'))
+				},
+				onError,
+			},
+		})
+
 	const { mutate: deleteMutate, isPending: deleting } = useDeleteEvent({
 		mutation: {
 			onSuccess: () => {
@@ -108,6 +122,9 @@ export function useAdminEvents() {
 		rerolling,
 		activate: (id: string) => activateMutate({ id }),
 		activating,
+		setStage: (id: string, stage: StoredOrderingStage) =>
+			stageMutate({ id, data: { stage } }),
+		settingStage,
 		remove: (id: string) => deleteMutate({ id }),
 		deleting,
 	}

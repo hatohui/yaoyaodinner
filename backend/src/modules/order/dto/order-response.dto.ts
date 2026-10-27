@@ -23,6 +23,14 @@ export class OrderResponseDto {
   })
   shouldCalculate: boolean;
   @ApiProperty({ type: [OrderSplitDto] }) splits: OrderSplitDto[];
+  @ApiProperty({
+    enum: ['pre', 'dinner'],
+    enumName: 'OrderRound',
+    description: 'Pre-ordered, or added during the dinner',
+  })
+  round: 'pre' | 'dinner';
+  @ApiProperty({ description: 'Price was changed from the menu price' })
+  priceEdited: boolean;
   @ApiProperty() createdAt: Date;
   @ApiProperty() updatedAt: Date;
 }

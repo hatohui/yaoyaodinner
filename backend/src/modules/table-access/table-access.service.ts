@@ -6,7 +6,9 @@ import {
 import { prisma } from '../../libs/prisma';
 import { ADMIN_HEADER } from '@common/auth/admin';
 import { TABLE_ACCESS_HEADER } from '@common/auth/table-access';
+import { OrderRound } from '@prisma/client';
 import { ConfigService } from '@modules/config/config.service';
+import { EventService } from '@modules/event/event.service';
 import { CONFIG_KEYS } from '@common/config/registry';
 
 type Headers = Record<string, string | string[] | undefined>;
@@ -14,14 +16,20 @@ type Headers = Record<string, string | string[] | undefined>;
 const first = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value;
 
+const FINALIZED = 'This event is finalized';
+
 /**
  * Edits to a table's people, notes, orders and details need that table's code
- * (or the admin passphrase). Failures are 403, not 401: the client treats 401
- * as an expired event PIN and would send the guest back to the PIN screen.
+ * (or the admin passphrase), and nobody can edit once the event is finalized.
+ * Failures are 403, not 401: the client treats 401 as an expired event PIN and
+ * would send the guest back to the PIN screen.
  */
 @Injectable()
 export class TableAccessService {
-  constructor(private config: ConfigService) {}
+  constructor(
+    private config: ConfigService,
+    private events: EventService,
+  ) {}
 
   private async isAdmin(headers: Headers) {
     const provided = first(headers[ADMIN_HEADER]);
@@ -29,15 +37,62 @@ export class TableAccessService {
     return Boolean(provided && passphrase && provided === passphrase);
   }
 
-  /** Admins can still enter orders while guests wait for ordering to open. */
-  async assertOrderingOpen(headers: Headers) {
+  private async tableEventId(tableId: string) {
+    const table = await prisma.table.findUnique({
+      where: { id: tableId },
+      select: { eventId: true },
+    });
+    return table?.eventId ?? null;
+  }
+
+  /**
+   * New orders join the round the event is in: pre-orders until dinner, then
+   * dinner orders. Admins can add pre-orders while guests are locked out.
+   */
+  async roundForNewOrder(tableId: string, headers: Headers): Promise<OrderRound> {
+    const stage = await this.events.stageOf(await this.tableEventId(tableId));
+    if (stage === 'dinner') return 'dinner';
+    if (stage === 'open' || (await this.isAdmin(headers))) return 'pre';
+    throw new ForbiddenException(
+      stage === 'closed' ? "Ordering hasn't opened yet" : 'Orders are confirmed',
+    );
+  }
+
+  /** Splits stay editable; items and prices only while their round is open. */
+  async forOrderChange(
+    orderId: string,
+    headers: Headers,
+    change: { items?: boolean; price?: boolean },
+  ) {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { tableId: true, eventId: true, round: true },
+    });
+    if (!order) throw new NotFoundException('Order not found');
+    await this.forTable(order.tableId, headers);
+    if (!change.items && !change.price) return;
     if (await this.isAdmin(headers)) return;
-    if (!(await this.config.get<boolean>(CONFIG_KEYS.ordersOpen))) {
-      throw new ForbiddenException("Ordering hasn't opened yet");
+
+    const stage = await this.events.stageOf(
+      order.eventId ?? (await this.tableEventId(order.tableId)),
+    );
+    const roundOpen = order.round === 'pre' ? stage === 'open' : stage === 'dinner';
+    if (!roundOpen) throw new ForbiddenException('These orders are locked');
+
+    if (
+      change.price &&
+      (order.round !== 'dinner' ||
+        !(await this.config.get<boolean>(CONFIG_KEYS.dinnerPriceEditable)))
+    ) {
+      throw new ForbiddenException("This price can't be changed");
     }
   }
 
   async forTable(tableId: string | null | undefined, headers: Headers) {
+    if (tableId) {
+      const stage = await this.events.stageOf(await this.tableEventId(tableId));
+      if (stage === 'finalized') throw new ForbiddenException(FINALIZED);
+    }
     if (await this.isAdmin(headers)) return;
     // with codes off, the event PIN is the only gate on table edits
     if (!(await this.config.get<boolean>(CONFIG_KEYS.featureTableCodes))) return;
@@ -67,15 +122,6 @@ export class TableAccessService {
     });
     if (!person) throw new NotFoundException('Person not found');
     return this.forTable(person.tableId, headers);
-  }
-
-  async forOrder(orderId: string, headers: Headers) {
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      select: { tableId: true },
-    });
-    if (!order) throw new NotFoundException('Order not found');
-    return this.forTable(order.tableId, headers);
   }
 
   async forNote(noteId: string, headers: Headers) {

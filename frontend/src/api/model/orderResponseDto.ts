@@ -5,6 +5,7 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { OrderRound } from './orderRound';
 import type { OrderSplitDto } from './orderSplitDto';
 
 export interface OrderResponseDto {
@@ -25,6 +26,10 @@ export interface OrderResponseDto {
   /** Whether this order counts toward table/split totals. False for joke/gag menu items. */
   shouldCalculate: boolean;
   splits: OrderSplitDto[];
+  /** Pre-ordered, or added during the dinner */
+  round: OrderRound;
+  /** Price was changed from the menu price */
+  priceEdited: boolean;
   createdAt: string;
   updatedAt: string;
 }

@@ -266,6 +266,19 @@
 		"orders": "订单",
 		"splits": "分摊"
 	},
+	"ordering": {
+		"closed_title": "尚未开放点餐",
+		"closed_body": "你现在可以先浏览菜单，主办人开放后即可点餐。",
+		"open_title": "点餐已开放",
+		"open_body": "点餐将于 {{time}} 锁定。",
+		"confirmed_title": "订单已确认",
+		"confirmed_body": "晚餐开始后，可以添加在餐厅加点的菜。",
+		"confirmed_body_time": "从 {{time}} 起，可以添加在餐厅加点的菜。",
+		"dinner_title": "晚餐已开始",
+		"dinner_body": "请把在餐厅加点的菜都加进来，方便公平分账。",
+		"finalized_title": "活动已结算",
+		"finalized_body": "金额已最终确定，无法再修改。"
+	},
 	"orders": {
 		"shared": "共享",
 		"personal": "个人",
@@ -295,8 +308,6 @@
 		"free": "免费",
 		"free_limited": "免费 · 限量",
 		"included": "含 {{item}}",
-		"ordering_closed": "还未开放点餐",
-		"ordering_closed_body": "现在可以先浏览菜单，主办方开放点餐后即可下单。",
 		"view_cart": "购物车（{{count}}）",
 		"needs_people_title": "这桌还没有人",
 		"needs_people_body": "点单前请先把人加到这桌 — 点单属于坐在那里的人。",
@@ -306,7 +317,13 @@
 		"back_to_table": "返回桌子",
 		"ordering_for": "为 {{table}} 点单",
 		"in_cart_count": "购物车 {{count}}",
-		"ordered_count": "已点 {{count}}"
+		"ordered_count": "已点 {{count}}",
+		"round_pre": "预点",
+		"round_dinner": "席间加点",
+		"round_dinner_empty": "暂无席间加点",
+		"edit_price": "修改价格",
+		"unit_price": "单价（{{currency}}）",
+		"price_edited": "已改价"
 	},
 	"split": {
 		"title": "分摊此项",
@@ -319,7 +336,8 @@
 		"set_menu": "套餐（均摊）",
 		"your_share": "你的分摊",
 		"quantity": "数量",
-		"people_count": "{{count}} 人"
+		"people_count": "{{count}} 人",
+		"table_total": "本桌合计"
 	},
 	"notes": {
 		"placeholder": "添加所有人可见的备注，例如\"不吃虾\"",
@@ -568,7 +586,8 @@
 			"category_tables": "餐桌",
 			"category_feedback": "反馈",
 			"category_features": "功能",
-			"category_banner": "公告"
+			"category_banner": "公告",
+			"category_orders": "点餐"
 		},
 		"food": {
 			"title": "菜品目录",
@@ -655,6 +674,24 @@
 		"edit_mode": {
 			"label": "编辑模式",
 			"on": "编辑中"
+		},
+		"ordering": {
+			"title": "点餐",
+			"stage_closed": "未开放",
+			"stage_open": "开放中",
+			"stage_confirmed": "已确认",
+			"stage_dinner": "用餐中",
+			"stage_finalized": "已结算",
+			"hint_auto_confirm": "将于 {{time}} 自动确认",
+			"hint_dinner": "席间加点于 {{time}} 开放",
+			"open": "开放点餐",
+			"confirm": "确认订单",
+			"finalize": "结算活动",
+			"confirm_title": "确认订单？",
+			"confirm_body": "客人将无法再添加、修改或删除预点的菜。仍可调整分账，并在晚餐开始后添加加点。",
+			"finalize_title": "结算此活动？",
+			"finalize_body": "所有人（包括管理员）都将无法修改金额和分账。此操作无法撤销。",
+			"updated": "点餐状态已更新"
 		}
 	},
 	"faq": {

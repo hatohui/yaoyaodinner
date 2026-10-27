@@ -16,15 +16,13 @@ const FALLBACK: GetPublicConfig200 = {
 	'feature.ordering': true,
 	'feature.tables': true,
 	'feature.tableCodes': true,
-	'event.dinnerTime': '',
-	'orders.open': false,
 	'banner.enabled': false,
 	'banner.message': '',
 }
 
 export function useConfig() {
 	const { data } = useGetPublicConfig<GetPublicConfig200>({
-		// short so opening orders reaches guests quickly; the fallback alone never counts as fresh
+		// the fallback alone never counts as fresh
 		query: {
 			staleTime: 60_000,
 			initialData: FALLBACK,
@@ -46,8 +44,6 @@ export function useConfig() {
 		menu: cfg['feature.ordering'] !== false,
 		tables: cfg['feature.tables'] !== false,
 		tableCodes: cfg['feature.tableCodes'] !== false,
-		dinnerTime: String(cfg['event.dinnerTime'] ?? ''),
-		ordersOpen: cfg['orders.open'] === true,
 		bannerMessage:
 			cfg['banner.enabled'] === true
 				? String(cfg['banner.message'] ?? '').trim()
