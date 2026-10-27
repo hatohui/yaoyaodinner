@@ -22,6 +22,7 @@ export const CONFIG_KEYS = {
   featureFloorPlan: "feature.floorPlan",
   featureMenu: "feature.ordering",
   featureTables: "feature.tables",
+  featureTableCodes: "feature.tableCodes",
 } as const;
 
 export const CONFIG_DEFAULTS: ConfigDefault[] = [
@@ -119,6 +120,14 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     isPublic: true,
     category: "features",
     label: "Tables",
+    value: true,
+  },
+  {
+    key: CONFIG_KEYS.featureTableCodes,
+    type: "boolean",
+    isPublic: true,
+    category: "features",
+    label: "Table codes",
     value: true,
   },
 ];

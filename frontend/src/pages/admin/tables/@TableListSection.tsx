@@ -25,6 +25,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditableName } from '@/components/common/EditableName'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
+import { useConfig } from '@/hooks/useConfig'
 import { cn } from '@/utils/shadcn'
 import { TableCodeChip } from './@TableCodeChip'
 import { SwapNumberDialog } from './@SwapNumberDialog'
@@ -57,6 +58,7 @@ export function TableListSection({
 	const { t } = useTranslation()
 	const toast = useToast()
 	const navigate = useNavigate()
+	const { tableCodes } = useConfig()
 	const [selected, setSelected] = useState<Set<string>>(new Set())
 	const [confirmOpen, setConfirmOpen] = useState(false)
 	const [rerollIds, setRerollIds] = useState<string[] | null>(null)
@@ -150,10 +152,12 @@ export function TableListSection({
 									/>
 								</span>
 								<span className='flex flex-wrap items-center gap-2 pl-8'>
-									<TableCodeChip
-										code={codes[table.id]}
-										onReroll={() => setRerollIds([table.id])}
-									/>
+									{tableCodes && (
+										<TableCodeChip
+											code={codes[table.id]}
+											onReroll={() => setRerollIds([table.id])}
+										/>
+									)}
 									<span
 										className={cn(
 											'flex h-7 items-center gap-1 rounded-full pl-2.5 pr-1 text-xs font-medium tabular-nums',
@@ -253,30 +257,34 @@ export function TableListSection({
 							</span>
 						</Button>
 					)}
-					<Button
-						size='sm'
-						variant='outline'
-						className='gap-1.5 rounded-full'
-						onClick={copyCodes}
-						aria-label={t('admin.tables.copy_codes')}
-					>
-						<Copy className='size-3.5' />
-						<span className='hidden sm:inline'>
-							{t('admin.tables.copy_codes')}
-						</span>
-					</Button>
-					<Button
-						size='sm'
-						variant='outline'
-						className='gap-1.5 rounded-full'
-						onClick={() => setRerollIds([...selected])}
-						aria-label={t('admin.tables.reroll_codes')}
-					>
-						<KeyRound className='size-3.5' />
-						<span className='hidden sm:inline'>
-							{t('admin.tables.reroll_codes')}
-						</span>
-					</Button>
+					{tableCodes && (
+						<>
+							<Button
+								size='sm'
+								variant='outline'
+								className='gap-1.5 rounded-full'
+								onClick={copyCodes}
+								aria-label={t('admin.tables.copy_codes')}
+							>
+								<Copy className='size-3.5' />
+								<span className='hidden sm:inline'>
+									{t('admin.tables.copy_codes')}
+								</span>
+							</Button>
+							<Button
+								size='sm'
+								variant='outline'
+								className='gap-1.5 rounded-full'
+								onClick={() => setRerollIds([...selected])}
+								aria-label={t('admin.tables.reroll_codes')}
+							>
+								<KeyRound className='size-3.5' />
+								<span className='hidden sm:inline'>
+									{t('admin.tables.reroll_codes')}
+								</span>
+							</Button>
+						</>
+					)}
 					<Button
 						size='sm'
 						variant='destructive'

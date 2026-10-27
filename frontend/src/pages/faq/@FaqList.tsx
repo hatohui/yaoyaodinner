@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { ChevronDown } from 'lucide-react'
+import { useConfig } from '@/hooks/useConfig'
 
 const QUESTIONS = [
 	'wrong_identity',
@@ -14,10 +15,14 @@ const QUESTIONS = [
 
 export function FaqList() {
 	const { t } = useTranslation()
+	const { tableCodes } = useConfig()
+	const questions = tableCodes
+		? QUESTIONS
+		: QUESTIONS.filter(id => id !== 'table_code')
 
 	return (
 		<div className='flex flex-col gap-2'>
-			{QUESTIONS.map(id => (
+			{questions.map(id => (
 				<details
 					key={id}
 					className='group rounded-2xl border border-border bg-card shadow-sm transition-colors open:border-primary/40'

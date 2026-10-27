@@ -15,6 +15,7 @@ const FALLBACK: GetPublicConfig200 = {
 	'feature.floorPlan': true,
 	'feature.ordering': true,
 	'feature.tables': true,
+	'feature.tableCodes': true,
 	'event.dinnerTime': '',
 	'orders.open': false,
 	'banner.enabled': false,
@@ -44,6 +45,7 @@ export function useConfig() {
 		floorPlan: cfg['feature.floorPlan'] !== false,
 		menu: cfg['feature.ordering'] !== false,
 		tables: cfg['feature.tables'] !== false,
+		tableCodes: cfg['feature.tableCodes'] !== false,
 		dinnerTime: String(cfg['event.dinnerTime'] ?? ''),
 		ordersOpen: cfg['orders.open'] === true,
 		bannerMessage:

@@ -39,6 +39,8 @@ export class TableAccessService {
 
   async forTable(tableId: string | null | undefined, headers: Headers) {
     if (await this.isAdmin(headers)) return;
+    // with codes off, the event PIN is the only gate on table edits
+    if (!(await this.config.get<boolean>(CONFIG_KEYS.featureTableCodes))) return;
 
     const raw = first(headers[TABLE_ACCESS_HEADER]) ?? '';
     const split = raw.indexOf(':');

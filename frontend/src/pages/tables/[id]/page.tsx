@@ -43,7 +43,7 @@ export default function TableDetailPage() {
 	const showSplits = !orders || orderCount > 0
 	const activeTab = tab === 'split' && !showSplits ? 'orders' : tab
 	const [joining, setJoining] = useState(false)
-	const { floorPlan } = useConfig()
+	const { floorPlan, tableCodes } = useConfig()
 	const join = () => setJoining(true)
 
 	if (isLoading) {
@@ -96,7 +96,7 @@ export default function TableDetailPage() {
 					</span>
 				</div>
 				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
-					{canEdit && !isAdmin && <LeaveTableButton />}
+					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
 					{floorPlan && isOnMap(table) && (
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
@@ -121,12 +121,14 @@ export default function TableDetailPage() {
 				</div>
 			</div>
 
-			<TableCodeBar
-				tableId={id}
-				canEdit={canEdit}
-				isAdmin={isAdmin}
-				onJoin={join}
-			/>
+			{tableCodes && (
+				<TableCodeBar
+					tableId={id}
+					canEdit={canEdit}
+					isAdmin={isAdmin}
+					onJoin={join}
+				/>
+			)}
 
 			<Tabs value={activeTab} onValueChange={setTab}>
 				<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>

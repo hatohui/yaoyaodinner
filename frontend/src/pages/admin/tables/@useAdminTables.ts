@@ -22,6 +22,7 @@ import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useToast } from '@/hooks/useToast'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
+import { useConfig } from '@/hooks/useConfig'
 
 export function useAdminTables() {
 	const { t } = useTranslation()
@@ -49,7 +50,10 @@ export function useAdminTables() {
 	const { data: stagedTables = [], isLoading: stagedLoading } =
 		useGetStagedTables<TableDto[]>()
 
-	const { data: codeRows = [] } = useGetTableCodes<TableCodeResponseDto[]>()
+	const { tableCodes } = useConfig()
+	const { data: codeRows = [] } = useGetTableCodes<TableCodeResponseDto[]>({
+		query: { enabled: tableCodes },
+	})
 	const codes = Object.fromEntries(codeRows.map(c => [c.id, c.code]))
 
 	const invalidate = () => {
