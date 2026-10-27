@@ -10,7 +10,7 @@ import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNote } from './@IncludedNote'
-import { useOrderingOpen } from '@/hooks/useOrderingOpen'
+import { useConfig } from '@/hooks/useConfig'
 import { OrderingClosedNotice } from '@/components/common/OrderingClosedNotice'
 import { groupOrders, type OrderedLine } from './@groupOrders'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
@@ -28,7 +28,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
 		table.id
 	)
-	const orderingOpen = useOrderingOpen()
+	const { ordersOpen: orderingOpen } = useConfig()
 	const canOrder = canEdit && orderingOpen
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'

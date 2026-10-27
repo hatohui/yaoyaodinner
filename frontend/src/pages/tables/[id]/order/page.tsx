@@ -24,7 +24,7 @@ import { useTableOrdering } from './@useTableOrdering'
 import { useOrderCart } from './@useOrderCart'
 import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
-import { useOrderingOpen } from '@/hooks/useOrderingOpen'
+import { useConfig } from '@/hooks/useConfig'
 import { useTableAccess } from '@/hooks/useTableCode'
 
 export default function TableOrderPage() {
@@ -48,7 +48,7 @@ export default function TableOrderPage() {
 	} = useTableOrdering()
 	const cart = useOrderCart(tableId)
 	const { canEdit } = useTableAccess(tableId)
-	const orderingOpen = useOrderingOpen()
+	const { ordersOpen: orderingOpen } = useConfig()
 	const tableIsEmpty = (table?.seated ?? 0) === 0
 
 	const { data: orders = [] } = useGetOrders<OrderResponseDto[]>(
