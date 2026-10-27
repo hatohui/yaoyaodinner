@@ -16,8 +16,9 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 		isLoading,
 		isError,
 		availableVariants,
-		inCart,
-		toggleCart,
+		selectedVariantId,
+		selectVariant,
+		addToCart,
 		updateFood,
 		updateVariant,
 	} = useFoodDetail(id ?? undefined)
@@ -40,10 +41,11 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 					<FoodDetailView
 						food={food}
 						availableVariants={availableVariants}
-						inCart={inCart}
-						onToggleCart={() => {
-							if (!inCart) onOpenChange(false)
-							toggleCart()
+						selectedVariantId={selectedVariantId}
+						onSelectVariant={selectVariant}
+						onAddToCart={() => {
+							addToCart()
+							onOpenChange(false)
 						}}
 						onUpdateFood={updateFood}
 						onUpdateVariant={updateVariant}

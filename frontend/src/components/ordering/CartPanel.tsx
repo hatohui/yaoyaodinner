@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import type { PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { Button } from '@/components/ui/button'
-import { CartLine } from './@CartLine'
-import type { CartLine as CartLineData } from './@useOrderCart'
+import { CartLine } from './CartLine'
+import type { CartLine as CartLineData } from '@/hooks/useOrderCart'
 
 interface CartPanelProps {
 	lines: CartLineData[]

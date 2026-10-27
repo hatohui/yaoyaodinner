@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { PersonDto } from '@/api/model'
-import { OrderThumb } from '../@OrderThumb'
-import type { OrderedLine } from '../@groupOrders'
+import { OrderThumb } from './OrderThumb'
+import type { OrderedLine } from '@/components/ordering/groupOrders'
 
 interface OrderedListProps {
 	lines: OrderedLine[]

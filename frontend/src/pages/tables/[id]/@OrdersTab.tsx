@@ -12,7 +12,10 @@ import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNote } from './@IncludedNote'
 import { useConfig } from '@/hooks/useConfig'
 import { OrderingClosedNotice } from '@/components/common/OrderingClosedNotice'
-import { groupOrders, type OrderedLine } from './@groupOrders'
+import {
+	groupOrders,
+	type OrderedLine,
+} from '@/components/ordering/groupOrders'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'

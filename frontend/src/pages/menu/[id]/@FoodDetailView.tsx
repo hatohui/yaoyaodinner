@@ -17,8 +17,9 @@ import { cn } from '@/utils/shadcn'
 interface FoodDetailViewProps {
 	food: FoodDetailWithStatsDto
 	availableVariants: FoodVariantDto[]
-	inCart: boolean
-	onToggleCart: () => void
+	selectedVariantId: string | null
+	onSelectVariant: (variantId: string) => void
+	onAddToCart: () => void
 	onUpdateFood: (patch: {
 		name?: string
 		description?: string
@@ -35,8 +36,9 @@ interface FoodDetailViewProps {
 export function FoodDetailView({
 	food,
 	availableVariants,
-	inCart,
-	onToggleCart,
+	selectedVariantId,
+	onSelectVariant,
+	onAddToCart,
 	onUpdateFood,
 	onUpdateVariant,
 	variant = 'page',
@@ -161,28 +163,52 @@ export function FoodDetailView({
 						{t('food_detail.variants')}
 					</p>
 					<div className='flex flex-wrap gap-2'>
-						{availableVariants.map(v => (
-							<span
-								key={v.id}
-								className='flex items-center gap-1 rounded-full border border-border bg-control px-4 py-2 text-sm font-medium text-foreground'
-							>
-								<InlineEdit
-									value={v.label ?? ''}
-									onCommit={label => onUpdateVariant(v.id, { label })}
-									inputClassName='w-28'
-								/>
-								<span className='text-muted-foreground'>-</span>
-								<InlineEdit
-									type='number'
-									value={String(v.price ?? '')}
-									onCommit={price =>
-										onUpdateVariant(v.id, { price: Number(price) })
-									}
-									inputClassName='w-20'
-								/>
-								<span className='text-primary'>{v.currency}</span>
-							</span>
-						))}
+						{availableVariants.map(v =>
+							editing ? (
+								<span
+									key={v.id}
+									className='flex items-center gap-1 rounded-full border border-border bg-control px-4 py-2 text-sm font-medium text-foreground'
+								>
+									<InlineEdit
+										value={v.label ?? ''}
+										onCommit={label => onUpdateVariant(v.id, { label })}
+										inputClassName='w-28'
+									/>
+									<span className='text-muted-foreground'>-</span>
+									<InlineEdit
+										type='number'
+										value={String(v.price ?? '')}
+										onCommit={price =>
+											onUpdateVariant(v.id, { price: Number(price) })
+										}
+										inputClassName='w-20'
+									/>
+									<span className='text-primary'>{v.currency}</span>
+								</span>
+							) : (
+								<button
+									key={v.id}
+									type='button'
+									aria-pressed={v.id === selectedVariantId}
+									onClick={() => onSelectVariant(v.id)}
+									className={cn(
+										'flex cursor-pointer items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium transition-colors',
+										v.id === selectedVariantId
+											? 'border-primary bg-primary text-primary-foreground'
+											: 'border-border bg-control text-foreground hover:border-primary/40 hover:bg-primary/10'
+									)}
+								>
+									{v.label}
+									<span className='opacity-60'>-</span>
+									{v.price}
+									<span
+										className={cn(v.id !== selectedVariantId && 'text-primary')}
+									>
+										{v.currency}
+									</span>
+								</button>
+							)
+						)}
 					</div>
 				</div>
 			)}
@@ -194,15 +220,12 @@ export function FoodDetailView({
 			<div className='flex items-center gap-2'>
 				<Button
 					size='lg'
-					variant={inCart ? 'outline' : 'default'}
 					className='h-11 flex-1 gap-2 rounded-full'
 					disabled={availableVariants.length === 0 || !canOrder}
-					onClick={onToggleCart}
+					onClick={onAddToCart}
 				>
 					<ShoppingCart className='size-4' />
-					{inCart
-						? t('food_detail.remove_from_cart')
-						: t('food_detail.add_to_cart')}
+					{t('food_detail.add_to_cart')}
 				</Button>
 				{modal && shareButton}
 			</div>

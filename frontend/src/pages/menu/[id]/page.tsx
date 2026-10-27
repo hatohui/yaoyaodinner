@@ -12,8 +12,9 @@ export default function FoodDetailPage() {
 		isLoading,
 		isError,
 		availableVariants,
-		inCart,
-		toggleCart,
+		selectedVariantId,
+		selectVariant,
+		addToCart,
 		updateFood,
 		updateVariant,
 	} = useFoodDetail()
@@ -38,10 +39,11 @@ export default function FoodDetailPage() {
 		<FoodDetailView
 			food={food}
 			availableVariants={availableVariants}
-			inCart={inCart}
-			onToggleCart={() => {
-				toggleCart()
-				if (!inCart) navigate('/menu')
+			selectedVariantId={selectedVariantId}
+			onSelectVariant={selectVariant}
+			onAddToCart={() => {
+				addToCart()
+				navigate('/menu')
 			}}
 			onUpdateFood={updateFood}
 			onUpdateVariant={updateVariant}

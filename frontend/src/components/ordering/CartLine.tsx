@@ -8,7 +8,7 @@ import { SplitModeSelector } from '@/components/common/SplitModeSelector'
 import { StoredImage } from '@/components/common/StoredImage'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { cn } from '@/utils/shadcn'
-import type { CartLine as CartLineData } from './@useOrderCart'
+import type { CartLine as CartLineData } from '@/hooks/useOrderCart'
 
 interface CartLineProps {
 	line: CartLineData

@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dialog'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { cn } from '@/utils/shadcn'
-import { OrderThumb } from './@OrderThumb'
+import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { TabEmptyState } from './@TabEmptyState'
 
 interface SplitsTabProps {

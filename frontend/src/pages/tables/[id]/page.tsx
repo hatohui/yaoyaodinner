@@ -19,7 +19,7 @@ import { SplitsTab } from './@SplitsTab'
 import { TableBanner } from './@TableBanner'
 import { TableCodeBar } from './@TableCodeBar'
 import { TableCodeDialog } from './@TableCodeDialog'
-import { groupOrders } from './@groupOrders'
+import { groupOrders } from '@/components/ordering/groupOrders'
 import { LeaveTableButton } from './@LeaveTableButton'
 import { useTableDetail } from './@useTableDetail'
 

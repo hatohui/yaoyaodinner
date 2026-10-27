@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Check, Eye, EyeOff, Plus, Trash2 } from 'lucide-react'
+import { Check, Eye, EyeOff, Minus, Plus, Trash2 } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { FoodTags } from '@/components/common/FoodTags'
@@ -12,8 +12,10 @@ import { FoodImageButton } from './@FoodImageButton'
 interface FoodCardProps {
 	food: FoodItemDto
 	categoryName?: string
-	selected?: boolean
-	onToggleSelect?: () => void
+	quantity?: number
+	orderedQuantity?: number
+	onAdd?: () => void
+	onQuantityChange?: (quantity: number) => void
 	onQuickView?: (id: string) => void
 	onToggleAvailable?: () => void
 	onDelete?: () => void
@@ -23,8 +25,10 @@ interface FoodCardProps {
 export function FoodCard({
 	food,
 	categoryName,
-	selected = false,
-	onToggleSelect,
+	quantity = 0,
+	orderedQuantity = 0,
+	onAdd,
+	onQuantityChange,
 	onQuickView,
 	onToggleAvailable,
 	onDelete,
@@ -44,10 +48,15 @@ export function FoodCard({
 
 	const isEditing = Boolean(onToggleAvailable || onDelete || onImageChange)
 
-	const canSelect =
-		Boolean(onToggleSelect) &&
-		food.isAvailable &&
-		Boolean(food.defaultVariantId)
+	const canAdd =
+		Boolean(onAdd) && food.isAvailable && Boolean(food.defaultVariantId)
+
+	// controls sit inside the card's link, so they must not navigate
+	const press = (action?: () => void) => (e: MouseEvent) => {
+		e.preventDefault()
+		e.stopPropagation()
+		action?.()
+	}
 
 	return (
 		<div
@@ -55,7 +64,7 @@ export function FoodCard({
 				'group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-md',
 				'transition-all duration-300 hover:-translate-y-1 hover:shadow-xl',
 				!food.isAvailable && 'opacity-70',
-				selected && 'ring-2 ring-primary',
+				quantity > 0 && 'ring-2 ring-primary',
 				isEditing &&
 					'outline-2 outline-offset-2 outline-primary/60 outline-dashed'
 			)}
@@ -81,7 +90,12 @@ export function FoodCard({
 				<FoodTags
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
-					className='absolute left-2 top-2 max-w-[calc(100%-3.5rem)]'
+					className={cn(
+						'absolute left-2 top-2',
+						quantity > 0
+							? 'max-w-[calc(100%-7.5rem)]'
+							: 'max-w-[calc(100%-3.5rem)]'
+					)}
 				/>
 
 				{!food.isAvailable && (
@@ -104,30 +118,47 @@ export function FoodCard({
 					</span>
 				)}
 
-				{canSelect && (
-					<button
-						type='button'
-						aria-label={t('menu.select_item')}
-						aria-pressed={selected}
-						onClick={e => {
-							e.preventDefault()
-							e.stopPropagation()
-							onToggleSelect?.()
-						}}
-						className={cn(
-							'absolute right-2 top-2 flex size-8 items-center justify-center rounded-full border border-foreground/20 shadow-md ring-1 ring-background/70 backdrop-blur-sm transition-all hover:scale-110',
-							selected
-								? 'bg-primary text-primary-foreground'
-								: 'bg-card/90 text-primary hover:bg-primary hover:text-primary-foreground'
-						)}
-					>
-						{selected ? (
-							<Check className='size-4' strokeWidth={3} />
-						) : (
-							<Plus className='size-4' strokeWidth={3} />
-						)}
-					</button>
+				{orderedQuantity > 0 && !isEditing && (
+					<span className='absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-card/90 px-2 py-1 text-xs font-semibold text-foreground shadow-md backdrop-blur-sm'>
+						<Check className='size-3.5 text-primary' />
+						{t('orders.ordered_count', { count: orderedQuantity })}
+					</span>
 				)}
+
+				{canAdd &&
+					(quantity === 0 ? (
+						<button
+							type='button'
+							aria-label={t('orders.add')}
+							title={t('orders.add')}
+							onClick={press(onAdd)}
+							className='absolute right-2 top-2 flex size-8 items-center justify-center rounded-full border border-foreground/20 bg-card/90 text-primary shadow-md ring-1 ring-background/70 backdrop-blur-sm transition-all hover:scale-110 hover:bg-primary hover:text-primary-foreground'
+						>
+							<Plus className='size-4' strokeWidth={3} />
+						</button>
+					) : (
+						<div className='absolute right-2 top-2 flex items-center rounded-full bg-primary text-primary-foreground shadow-md ring-1 ring-background/70'>
+							<button
+								type='button'
+								aria-label={t('orders.decrease')}
+								onClick={press(() => onQuantityChange?.(quantity - 1))}
+								className='flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary-foreground/15'
+							>
+								<Minus className='size-4' strokeWidth={3} />
+							</button>
+							<span className='min-w-4 text-center text-sm font-bold tabular-nums'>
+								{quantity}
+							</span>
+							<button
+								type='button'
+								aria-label={t('orders.increase')}
+								onClick={press(() => onQuantityChange?.(quantity + 1))}
+								className='flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary-foreground/15'
+							>
+								<Plus className='size-4' strokeWidth={3} />
+							</button>
+						</div>
+					))}
 			</Link>
 
 			{isEditing && (

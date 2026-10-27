@@ -62,14 +62,22 @@ export function useOrderCart(tableId: string) {
 	const qc = useQueryClient()
 
 	const { personId: myPersonId } = useWhoAmI(tableId)
-	const { data: people = [] } = useGetTablePeople<PersonDto[]>(tableId)
+	const { data: people = [] } = useGetTablePeople<PersonDto[]>(tableId, {
+		query: { enabled: Boolean(tableId) },
+	})
 
 	const [lines, setLines] = useState<Map<string, CartLine>>(() =>
 		loadCart(tableId)
 	)
+	// the menu can switch which table it orders for; swap in that table's cart
+	const [loadedFor, setLoadedFor] = useState(tableId)
+	if (loadedFor !== tableId) {
+		setLoadedFor(tableId)
+		setLines(loadCart(tableId))
+	}
 
 	useEffect(() => {
-		saveCart(tableId, lines)
+		if (tableId) saveCart(tableId, lines)
 	}, [tableId, lines])
 
 	const mutate = (foodId: string, apply: (line: CartLine) => CartLine | null) =>

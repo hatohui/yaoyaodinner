@@ -7,11 +7,9 @@ import { useMenuSearchParams } from '@/utils/searchParams'
 import { FilterBar } from './@FilterBar'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FoodCard } from './@FoodCard'
-import { SelectionBar } from './@SelectionBar'
-import { TablePickerModal } from './@TablePickerModal'
-import { OrderConfigModal } from './@OrderConfigModal'
 import { FoodDetailModal } from './[id]/@FoodDetailModal'
-import { useMenuSelection } from './@useMenuSelection'
+import { MenuOrderingOverlays } from './@MenuOrderingOverlays'
+import { useMenuOrdering } from './@useMenuOrdering'
 import { LoadingView, LoadingSpinner } from './@LoadingView'
 import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
@@ -118,7 +116,7 @@ export default function MenuPage() {
 		setSearch('')
 	}
 
-	const selection = useMenuSelection(filteredFoods)
+	const ordering = useMenuOrdering()
 
 	return (
 		<div className='min-h-screen'>
@@ -158,9 +156,11 @@ export default function MenuPage() {
 												? categoryNames.get(food.categoryId)
 												: undefined
 										}
-										selected={selection.selected.has(food.id)}
-										onToggleSelect={
-											canOrder ? () => selection.toggle(food.id) : undefined
+										quantity={ordering.cart.quantityOf(food.id)}
+										orderedQuantity={ordering.orderedQuantityOf(food.id)}
+										onAdd={canOrder ? () => ordering.request(food) : undefined}
+										onQuantityChange={q =>
+											ordering.cart.setQuantity(food.id, q)
 										}
 										onQuickView={setQuickViewId}
 										onToggleAvailable={
@@ -193,30 +193,7 @@ export default function MenuPage() {
 				</div>
 			</div>
 
-			<SelectionBar
-				count={orderingOpen ? selection.count : 0}
-				onClear={selection.clear}
-				onAdd={selection.openPicker}
-			/>
-
-			<TablePickerModal
-				open={selection.pickerOpen}
-				onOpenChange={selection.setPickerOpen}
-				onSelect={selection.selectTable}
-			/>
-
-			<OrderConfigModal
-				open={selection.configOpen}
-				onOpenChange={selection.setConfigOpen}
-				tableId={selection.tableId}
-				foods={selection.selectedFoods.map(f => ({
-					id: f.id,
-					name: f.name,
-					defaultVariantId: f.defaultVariantId,
-				}))}
-				onSuccess={selection.handleDone}
-				onChangeTable={selection.changeTable}
-			/>
+			<MenuOrderingOverlays ordering={ordering} canOrder={canOrder} />
 
 			<ConfirmDialog
 				open={pendingDelete !== null}

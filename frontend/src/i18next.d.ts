@@ -196,18 +196,11 @@ declare module 'react-i18next' {
           sort_price_desc: string
           sort_popular: string
           count_all: string
-          select_item: string
           cart: string
           view_cart: string
           clear_selection: string
-          add_to_order: string
-          configure_title: string
-          ordering_for: string
           change_table: string
-          adding: string
           choose_table_title: string
-          added_to_order: string
-          add_failed: string
           pin_required: string
           admin: {
             title: string
@@ -249,7 +242,6 @@ declare module 'react-i18next' {
           back_to_menu: string
           variants: string
           add_to_cart: string
-          remove_from_cart: string
           ordered_by: string
           not_found: string
           description_placeholder: string

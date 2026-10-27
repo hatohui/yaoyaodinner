@@ -15,13 +15,16 @@ import {
 import { useGetOrders } from '@/api/orders/orders'
 import type { FoodItemDto, OrderResponseDto } from '@/api/model'
 import { ProductCard } from './@ProductCard'
-import { CartPanel } from './@CartPanel'
-import { OrderedList } from './@OrderedList'
-import { groupOrders } from '../@groupOrders'
-import { OrderSidePanel, type SidePanelTab } from './@OrderSidePanel'
-import { AddToCartModal } from './@AddToCartModal'
+import { CartPanel } from '@/components/ordering/CartPanel'
+import { OrderedList } from '@/components/ordering/OrderedList'
+import { groupOrders } from '@/components/ordering/groupOrders'
+import {
+	OrderSidePanel,
+	type SidePanelTab,
+} from '@/components/ordering/OrderSidePanel'
+import { AddToCartModal } from '@/components/ordering/AddToCartModal'
 import { useTableOrdering } from './@useTableOrdering'
-import { useOrderCart } from './@useOrderCart'
+import { useOrderCart } from '@/hooks/useOrderCart'
 import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
 import { useConfig } from '@/hooks/useConfig'

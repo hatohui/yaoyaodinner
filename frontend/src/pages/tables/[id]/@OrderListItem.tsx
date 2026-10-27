@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Minus, Plus, Trash2, Users2 } from 'lucide-react'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
-import { OrderThumb } from './@OrderThumb'
+import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { cn } from '@/utils/shadcn'
 
 const MIN_QUANTITY = 1
