@@ -141,7 +141,6 @@ declare module 'react-i18next' {
           filter_full: string
           view_card: string
           view_compact: string
-          view_people: string
           nobody_seated: string
           find_title: string
           search_placeholder: string
@@ -354,6 +353,7 @@ declare module 'react-i18next' {
             untitled: string
             pin_label: string
             live: string
+            people_tab: string
             past: string
             name_label: string
             name_placeholder: string

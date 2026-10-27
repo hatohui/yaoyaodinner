@@ -161,7 +161,6 @@
 		"filter_full": "Đã đầy",
 		"view_card": "Xem dạng thẻ",
 		"view_compact": "Xem gọn",
-		"view_people": "Xem theo người",
 		"nobody_seated": "Chưa có ai"
 	},
 	"roster": {
@@ -492,6 +491,7 @@
 			"capacity": "Sức chứa",
 			"staged": "Đang chuẩn bị",
 			"live": "Đang hoạt động",
+			"people_tab": "Người",
 			"empty": "Chưa có bàn nào",
 			"select_all": "Chọn tất cả",
 			"open_table": "Mở bàn",

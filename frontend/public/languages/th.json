@@ -161,7 +161,6 @@
 		"filter_full": "เต็ม",
 		"view_card": "มุมมองการ์ด",
 		"view_compact": "มุมมองกะทัดรัด",
-		"view_people": "มุมมองรายชื่อ",
 		"nobody_seated": "ยังไม่มีใคร"
 	},
 	"roster": {
@@ -492,6 +491,7 @@
 			"capacity": "ความจุ",
 			"staged": "เตรียมไว้",
 			"live": "ใช้งานอยู่",
+			"people_tab": "รายชื่อ",
 			"empty": "ยังไม่มีโต๊ะ",
 			"select_all": "เลือกทั้งหมด",
 			"open_table": "เปิดโต๊ะ",

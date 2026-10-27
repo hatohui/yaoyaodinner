@@ -6,6 +6,7 @@ import { CreateTableDialog } from './@CreateTableDialog'
 import { BulkCreateDialog } from './@BulkCreateDialog'
 import { TableListSection } from './@TableListSection'
 import { TableCodesDialog } from './@TableCodesDialog'
+import { PeopleOverview } from './@PeopleOverview'
 import { useAdminTables } from './@useAdminTables'
 
 export default function AdminTablesPage() {
@@ -48,6 +49,9 @@ export default function AdminTablesPage() {
 				<TabsList>
 					<TabsTrigger value='live'>{t('admin.tables.live')}</TabsTrigger>
 					<TabsTrigger value='staged'>{t('admin.tables.staged')}</TabsTrigger>
+					<TabsTrigger value='people'>
+						{t('admin.tables.people_tab')}
+					</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value='live' className='flex flex-col gap-4'>
@@ -71,6 +75,15 @@ export default function AdminTablesPage() {
 					<div className='flex justify-center'>
 						<PaginationBar pagination={pagination} />
 					</div>
+				</TabsContent>
+
+				<TabsContent value='people' className='flex flex-col gap-4'>
+					<SearchBar
+						value={search}
+						onChange={setSearch}
+						placeholder={t('tables.search_placeholder')}
+					/>
+					<PeopleOverview search={search} />
 				</TabsContent>
 
 				<TabsContent value='staged'>

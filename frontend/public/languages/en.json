@@ -161,7 +161,6 @@
 		"filter_full": "Full",
 		"view_card": "Card view",
 		"view_compact": "Compact view",
-		"view_people": "People view",
 		"nobody_seated": "Nobody here yet"
 	},
 	"roster": {
@@ -492,6 +491,7 @@
 			"capacity": "Capacity",
 			"staged": "Staged",
 			"live": "Live",
+			"people_tab": "People",
 			"empty": "No tables yet",
 			"select_all": "Select all",
 			"open_table": "Open table",

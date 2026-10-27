@@ -8,14 +8,8 @@ import { TableListSkeleton } from './@TableListSkeleton'
 import { useTableSearch } from './@useTableSearch'
 import { TableSortSelect } from './@TableSortSelect'
 import { useConfig } from '@/hooks/useConfig'
-import {
-	ViewToggle,
-	useListView,
-	type ListView,
-} from '@/components/common/ViewToggle'
+import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { TABLE_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
-
-const VIEWS: ListView[] = ['card', 'compact', 'people']
 
 export default function TablesPage() {
 	const { t } = useTranslation()
@@ -31,7 +25,7 @@ export default function TablesPage() {
 		pagination,
 	} = useTableSearch()
 	const { floorPlan } = useConfig()
-	const { view, setView } = useListView(TABLE_LIST_VIEW_STORAGE_KEY, VIEWS)
+	const { view, setView } = useListView(TABLE_LIST_VIEW_STORAGE_KEY)
 	const showTotal = sort === 'most_ordered' || sort === 'least_ordered'
 
 	return (
@@ -63,12 +57,12 @@ export default function TablesPage() {
 				</p>
 				<div className='flex items-center gap-2'>
 					<TableSortSelect value={sort} onChange={setSort} />
-					<ViewToggle view={view} onChange={setView} views={VIEWS} />
+					<ViewToggle view={view} onChange={setView} />
 				</div>
 			</div>
 
 			{isLoading ? (
-				<TableListSkeleton compact={view !== 'card'} />
+				<TableListSkeleton compact={view === 'compact'} />
 			) : isError ? (
 				<p className='py-16 text-center text-sm text-muted-foreground'>
 					{t('tables.load_error')}
@@ -77,11 +71,11 @@ export default function TablesPage() {
 				<p className='py-16 text-center text-sm text-muted-foreground'>
 					{t('tables.none_found')}
 				</p>
-			) : view !== 'card' ? (
-				<TableList tables={tables} view={view} showTotal={showTotal} />
+			) : view === 'compact' ? (
+				<TableList tables={tables} compact showTotal={showTotal} />
 			) : (
 				<>
-					<TableList tables={pagedTables} view='card' showTotal={showTotal} />
+					<TableList tables={pagedTables} showTotal={showTotal} />
 					<div className='mt-4 flex justify-center'>
 						<PaginationBar pagination={pagination} showPageSize />
 					</div>

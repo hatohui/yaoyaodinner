@@ -161,7 +161,6 @@
 		"filter_full": "已满",
 		"view_card": "卡片视图",
 		"view_compact": "紧凑视图",
-		"view_people": "人员视图",
 		"nobody_seated": "还没有人"
 	},
 	"roster": {
@@ -492,6 +491,7 @@
 			"capacity": "容量",
 			"staged": "待发布",
 			"live": "进行中",
+			"people_tab": "人员",
 			"empty": "暂无餐桌",
 			"select_all": "全选",
 			"open_table": "打开餐桌",
