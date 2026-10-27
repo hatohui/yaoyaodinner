@@ -58,34 +58,28 @@ export function AddToCartModal({
 			{ query: { enabled: open && !!food, staleTime: STALE_TIME_STATIC } }
 		)
 
-	const [variantId, setVariantId] = useState('')
+	const [pickedVariantId, setPickedVariantId] = useState<string | null>(null)
 	const [quantity, setQuantity] = useState(1)
 	const [mode, setMode] = useState<SplitMode>('table')
 	const [chosen, setChosen] = useState<Set<string>>(new Set())
 
 	const variants = detail?.variants ?? []
+	const availableVariants = variants.filter(v => v.isAvailable)
+	const variantId =
+		availableVariants.find(v => v.id === pickedVariantId)?.id ??
+		availableVariants.find(v => v.id === food?.defaultVariantId)?.id ??
+		availableVariants[0]?.id ??
+		food?.defaultVariantId ??
+		''
 
 	useEffect(() => {
 		if (open) {
+			setPickedVariantId(null)
 			setQuantity(1)
 			setMode('table')
 			setChosen(new Set())
-			if (food?.defaultVariantId) {
-				setVariantId(food.defaultVariantId)
-			}
 		}
 	}, [open, food])
-
-	useEffect(() => {
-		if (
-			open &&
-			variants.length > 0 &&
-			!variants.some(v => v.id === variantId)
-		) {
-			const firstAvailable = variants.find(v => v.isAvailable) ?? variants[0]
-			if (firstAvailable) setVariantId(firstAvailable.id)
-		}
-	}, [open, variants, variantId])
 
 	const toggleChosen = (personId: string) => {
 		setChosen(prev => {
@@ -145,30 +139,28 @@ export function AddToCartModal({
 						</div>
 					) : (
 						<div className='flex flex-col gap-5'>
-							{variants.length > 1 && (
+							{availableVariants.length > 1 && (
 								<div className='flex flex-col gap-2'>
 									<span className='text-sm font-medium'>
 										{t('menu.variant')}
 									</span>
 									<div className='flex flex-wrap gap-2'>
-										{variants
-											.filter(v => v.isAvailable)
-											.map(v => (
-												<button
-													key={v.id}
-													type='button'
-													onClick={() => setVariantId(v.id)}
-													className={cn(
-														'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-														variantId === v.id
-															? 'border-primary bg-primary text-primary-foreground'
-															: 'border-border/60 bg-card text-foreground hover:bg-muted'
-													)}
-												>
-													{v.label ? `${v.label} - ` : ''}
-													{v.price} {v.currency}
-												</button>
-											))}
+										{availableVariants.map(v => (
+											<button
+												key={v.id}
+												type='button'
+												onClick={() => setPickedVariantId(v.id)}
+												className={cn(
+													'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+													variantId === v.id
+														? 'border-primary bg-primary text-primary-foreground'
+														: 'border-border/60 bg-card text-foreground hover:bg-muted'
+												)}
+											>
+												{v.label ? `${v.label} - ` : ''}
+												{v.price} {v.currency}
+											</button>
+										))}
 									</div>
 								</div>
 							)}

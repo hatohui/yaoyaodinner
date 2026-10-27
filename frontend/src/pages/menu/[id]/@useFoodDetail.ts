@@ -23,8 +23,8 @@ export function useFoodDetail(idOverride?: string) {
 	const toast = useToast()
 	const qc = useQueryClient()
 	const request = useMenuOrderingStore(s => s.request)
-	const [picked, setPicked] = useState<{ foodId: string; variantId: string }>()
-	const pickedVariantId = picked?.foodId === id ? picked.variantId : undefined
+	const [picked, setPicked] = useState<Record<string, string>>({})
+	const pickedVariantId = id ? picked[id] : undefined
 
 	const {
 		data: food,
@@ -67,7 +67,8 @@ export function useFoodDetail(idOverride?: string) {
 		isError,
 		availableVariants,
 		selectedVariantId,
-		selectVariant: (variantId: string) => setPicked({ foodId: id, variantId }),
+		selectVariant: (variantId: string) =>
+			setPicked(prev => ({ ...prev, [id]: variantId })),
 		addToCart: () => {
 			const variant = availableVariants.find(v => v.id === selectedVariantId)
 			if (!food || !variant) return

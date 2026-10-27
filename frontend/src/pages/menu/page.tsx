@@ -15,7 +15,6 @@ import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
-import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditModeBanner } from './@EditModeBanner'
@@ -32,9 +31,8 @@ export default function MenuPage() {
 	const [total, setTotal] = useState(0)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 	const pin = useGuest(s => s.pin)
-	const { isAdmin } = useIsAdmin()
 	const { canAdd } = useOrderingStage()
-	const canOrder = (Boolean(pin) || isAdmin) && canAdd
+	const canOrder = Boolean(pin) && canAdd
 	const { editing, exitEditMode, deleteFood, setAvailable, setImage } =
 		useMenuAdmin()
 	const [pendingDelete, setPendingDelete] = useState<FoodItemDto | null>(null)
@@ -156,11 +154,15 @@ export default function MenuPage() {
 												? categoryNames.get(food.categoryId)
 												: undefined
 										}
-										quantity={ordering.cart.quantityOf(food.id)}
-										orderedQuantity={ordering.orderedQuantityOf(food.id)}
+										quantity={canOrder ? ordering.cart.quantityOf(food.id) : 0}
+										orderedQuantity={
+											canOrder ? ordering.orderedQuantityOf(food.id) : 0
+										}
 										onAdd={canOrder ? () => ordering.request(food) : undefined}
-										onQuantityChange={q =>
-											ordering.cart.setQuantity(food.id, q)
+										onQuantityChange={
+											canOrder
+												? q => ordering.cart.setQuantity(food.id, q)
+												: undefined
 										}
 										onQuickView={setQuickViewId}
 										onToggleAvailable={
@@ -193,7 +195,9 @@ export default function MenuPage() {
 				</div>
 			</div>
 
-			<MenuOrderingOverlays ordering={ordering} canOrder={canOrder} />
+			{canOrder && (
+				<MenuOrderingOverlays ordering={ordering} canOrder={canOrder} />
+			)}
 
 			<ConfirmDialog
 				open={pendingDelete !== null}

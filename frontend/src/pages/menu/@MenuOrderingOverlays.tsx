@@ -1,12 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Lock } from 'lucide-react'
 import {
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
-} from '@/components/ui/sheet'
-import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
@@ -45,19 +39,16 @@ export function MenuOrderingOverlays({
 				/>
 			)}
 
-			<Sheet open={ordering.sheetOpen} onOpenChange={ordering.setSheetOpen}>
-				<SheetContent
-					side='bottom'
-					className='scrollbar-thin mx-auto max-h-[85vh] max-w-2xl overflow-y-auto rounded-t-3xl'
-				>
-					<SheetHeader className='flex-row flex-wrap items-center gap-x-2 px-4'>
-						<SheetTitle className='text-base'>
+			<Dialog open={ordering.sheetOpen} onOpenChange={ordering.setSheetOpen}>
+				<DialogContent className='scrollbar-thin max-h-[85vh] overflow-y-auto rounded-3xl sm:max-w-lg max-sm:inset-x-0 max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-t-3xl max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:p-4 max-sm:pb-6 max-sm:data-[state=closed]:slide-out-to-bottom max-sm:data-[state=closed]:zoom-out-100 max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=open]:zoom-in-100'>
+					<DialogHeader className='flex-row flex-wrap items-center gap-x-2 pr-6 text-left'>
+						<DialogTitle className='text-base'>
 							{table
 								? t('orders.ordering_for', {
 										table: `${table.no}. ${table.name}`,
 									})
 								: t('orders.cart')}
-						</SheetTitle>
+						</DialogTitle>
 						{ordering.canChangeTable && (
 							<button
 								type='button'
@@ -67,40 +58,35 @@ export function MenuOrderingOverlays({
 								{t('menu.change_table')}
 							</button>
 						)}
-					</SheetHeader>
-					<div className='px-4 pb-6'>
-						<OrderSidePanel
-							tab={ordering.panelTab}
-							onTabChange={ordering.setPanelTab}
-							cartCount={cart.itemCount}
-							orderedCount={ordering.orderedLines.length}
-							cart={
-								<CartPanel
-									lines={cart.lines}
-									people={cart.people}
-									myPersonId={cart.myPersonId}
-									total={cart.total}
-									currency={cart.currency}
-									isPlacing={cart.isPlacing}
-									onQuantityChange={cart.setQuantity}
-									onModeChange={cart.setMode}
-									onTogglePerson={cart.togglePerson}
-									onVariantChange={cart.setVariant}
-									onRemove={cart.remove}
-									onClear={cart.clear}
-									onCheckout={ordering.checkout}
-								/>
-							}
-							ordered={
-								<OrderedList
-									lines={ordering.orderedLines}
-									people={cart.people}
-								/>
-							}
-						/>
-					</div>
-				</SheetContent>
-			</Sheet>
+					</DialogHeader>
+					<OrderSidePanel
+						tab={ordering.panelTab}
+						onTabChange={ordering.setPanelTab}
+						cartCount={cart.itemCount}
+						orderedCount={ordering.orderedLines.length}
+						cart={
+							<CartPanel
+								lines={cart.lines}
+								people={cart.people}
+								myPersonId={cart.myPersonId}
+								total={cart.total}
+								currency={cart.currency}
+								isPlacing={cart.isPlacing}
+								onQuantityChange={cart.setQuantity}
+								onModeChange={cart.setMode}
+								onTogglePerson={cart.togglePerson}
+								onVariantChange={cart.setVariant}
+								onRemove={cart.remove}
+								onClear={cart.clear}
+								onCheckout={ordering.checkout}
+							/>
+						}
+						ordered={
+							<OrderedList lines={ordering.orderedLines} people={cart.people} />
+						}
+					/>
+				</DialogContent>
+			</Dialog>
 
 			<TablePickerModal
 				open={ordering.pickerOpen}

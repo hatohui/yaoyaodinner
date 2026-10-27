@@ -7,7 +7,6 @@ import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
 import { FoodTags } from '@/components/common/FoodTags'
 import { useGuest } from '@/hooks/useGuest'
-import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useStageTitle } from '@/hooks/useStageTitle'
 import { useEditMode } from '@/hooks/useEditMode'
@@ -47,11 +46,11 @@ export function FoodDetailView({
 	const { t } = useTranslation()
 	const toast = useToast()
 	const pin = useGuest(s => s.pin)
-	const { isAdmin } = useIsAdmin()
 	const { editing } = useEditMode()
 	const { canAdd } = useOrderingStage()
 	const stageTitle = useStageTitle()
-	const canOrder = (Boolean(pin) || isAdmin) && canAdd
+	const hasPin = Boolean(pin)
+	const canOrder = hasPin && canAdd
 	const modal = variant === 'modal'
 
 	const shareLink = () => {
@@ -187,7 +186,7 @@ export function FoodDetailView({
 									/>
 									<span className='text-primary'>{v.currency}</span>
 								</span>
-							) : (
+							) : canOrder ? (
 								<button
 									key={v.id}
 									type='button'
@@ -209,6 +208,16 @@ export function FoodDetailView({
 										{v.currency}
 									</span>
 								</button>
+							) : (
+								<span
+									key={v.id}
+									className='flex items-center gap-1 rounded-full border border-border bg-control px-4 py-2 text-sm font-medium text-foreground'
+								>
+									{v.label}
+									<span className='text-muted-foreground'>-</span>
+									{v.price}
+									<span className='text-primary'>{v.currency}</span>
+								</span>
 							)
 						)}
 					</div>
@@ -217,7 +226,7 @@ export function FoodDetailView({
 		</>
 	)
 
-	const actions = (
+	const actions = hasPin ? (
 		<div className='flex flex-col gap-2'>
 			<div className='flex items-center gap-2'>
 				<Button
@@ -233,11 +242,13 @@ export function FoodDetailView({
 			</div>
 			{!canOrder && (
 				<p className='text-center text-xs text-muted-foreground'>
-					{canAdd ? t('menu.pin_required') : stageTitle}
+					{stageTitle}
 				</p>
 			)}
 		</div>
-	)
+	) : modal ? (
+		<div className='flex justify-end'>{shareButton}</div>
+	) : null
 
 	if (modal) {
 		return (
@@ -247,9 +258,11 @@ export function FoodDetailView({
 					<div className='scrollbar-thin flex flex-1 flex-col gap-4 overflow-y-auto p-5 sm:p-6'>
 						{details}
 					</div>
-					<div className='border-t border-border bg-background p-4 sm:px-6'>
-						{actions}
-					</div>
+					{actions && (
+						<div className='border-t border-border bg-background p-4 sm:px-6'>
+							{actions}
+						</div>
+					)}
 				</div>
 			</div>
 		)

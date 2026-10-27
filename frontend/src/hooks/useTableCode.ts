@@ -70,8 +70,8 @@ export function useTableAccess(tableId: string) {
 		if (data && !data.valid) release()
 	}, [data, release])
 
-	const canEdit =
-		isAdmin || (tableCodes ? Boolean(code) : claimedTableId === tableId)
+	const open = !tableCodes && (!claimedTableId || claimedTableId === tableId)
+	const canEdit = isAdmin || (tableCodes ? Boolean(code) : open)
 
 	return {
 		isAdmin,
