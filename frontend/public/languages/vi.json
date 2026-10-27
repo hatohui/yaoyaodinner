@@ -484,6 +484,7 @@
 			"field_foods": "Món ăn",
 			"field_variant": "Cỡ / tuỳ chọn",
 			"field_quantity": "Số lượng",
+			"field_dinner": "Gọi thêm trong bữa",
 			"tables": "Bàn ({{count}}/{{total}})",
 			"select_none": "Bỏ chọn tất cả",
 			"food_count": "Số món: {{count}}",

@@ -484,6 +484,7 @@
 			"field_foods": "菜品",
 			"field_variant": "规格 / 选项",
 			"field_quantity": "数量",
+			"field_dinner": "席间加点",
 			"tables": "桌子（{{count}}/{{total}}）",
 			"select_none": "全部取消",
 			"food_count": "菜品数：{{count}}",

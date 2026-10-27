@@ -8,5 +8,9 @@
 
 export type ExportTablesParams = {
 eventId?: string;
+/**
+ * Also list items added during the dinner
+ */
+includeDinner?: boolean;
 lang?: string;
 };

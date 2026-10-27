@@ -11,6 +11,7 @@ export const EXPORT_FIELDS = [
 	'foods',
 	'variant',
 	'quantity',
+	'dinner',
 ] as const
 
 export type ExportField = (typeof EXPORT_FIELDS)[number]
@@ -26,7 +27,7 @@ export function useOrdersExport(open: boolean, eventName: string) {
 	const [excluded, setExcluded] = useState<Set<string>>(new Set())
 
 	const { data: tables = [], isLoading } = useExportTables<TableExportDto[]>(
-		{ lang: i18n.language },
+		{ lang: i18n.language, includeDinner: fields.has('dinner') },
 		{ query: { enabled: open } }
 	)
 

@@ -2,6 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TableExportFoodDto {
   @ApiProperty() variantId: string;
+  @ApiProperty({ enum: ['pre', 'dinner'], enumName: 'OrderRound' })
+  round: 'pre' | 'dinner';
   @ApiProperty() foodName: string;
   @ApiProperty() variantLabel: string;
   @ApiProperty() quantity: number;

@@ -457,6 +457,7 @@ declare module 'react-i18next' {
             field_foods: string
             field_variant: string
             field_quantity: string
+            field_dinner: string
             tables: string
             select_none: string
             food_count: string

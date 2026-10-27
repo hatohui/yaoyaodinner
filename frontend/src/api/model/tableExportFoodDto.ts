@@ -5,9 +5,11 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { OrderRound } from './orderRound';
 
 export interface TableExportFoodDto {
   variantId: string;
+  round: OrderRound;
   foodName: string;
   variantLabel: string;
   quantity: number;

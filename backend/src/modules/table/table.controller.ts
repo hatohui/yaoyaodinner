@@ -78,12 +78,19 @@ export class TableController {
   @ApiOperation({ operationId: 'exportTables' })
   @ApiQuery({ name: 'eventId', required: false, type: String })
   @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
+  @ApiQuery({
+    name: 'includeDinner',
+    required: false,
+    type: Boolean,
+    description: 'Also list items added during the dinner',
+  })
   @ApiResponse({ status: 200, type: [TableExportDto] })
   exportTables(
     @Query('eventId') eventId?: string,
     @Query('lang') lang = 'en',
+    @Query('includeDinner') includeDinner?: string,
   ) {
-    return this.table.exportForEvent(eventId, lang);
+    return this.table.exportForEvent(eventId, lang, includeDinner === 'true');
   }
 
   @Get('codes')

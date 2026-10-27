@@ -37,7 +37,8 @@ export function ExportOrdersDialog({ eventName }: ExportOrdersDialogProps) {
 	} = useOrdersExport(open, eventName)
 
 	const needsFoods = (field: string) =>
-		(field === 'variant' || field === 'quantity') && !fields.has('foods')
+		(field === 'variant' || field === 'quantity' || field === 'dinner') &&
+		!fields.has('foods')
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>

@@ -484,6 +484,7 @@
 			"field_foods": "Foods",
 			"field_variant": "Size / option",
 			"field_quantity": "Quantity",
+			"field_dinner": "Added at dinner",
 			"tables": "Tables ({{count}}/{{total}})",
 			"select_none": "Select none",
 			"food_count": "Dishes: {{count}}",

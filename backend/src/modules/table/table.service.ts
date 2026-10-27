@@ -3,6 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from "@nestjs/common";
+import { OrderRound } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { generatePin } from "@common/pin";
@@ -247,7 +248,7 @@ export class TableService {
   }
 
   /** Who sits where and what they ordered, for printing; prices are left out. */
-  async exportForEvent(forEventId?: string, lang = "en") {
+  async exportForEvent(forEventId?: string, lang = "en", includeDinner = false) {
     const eventId = await this.events.resolveEventId(forEventId);
     if (!eventId) return [];
 
@@ -257,12 +258,13 @@ export class TableService {
       include: {
         slot: { select: { name: true } },
         people: { select: { id: true, name: true }, orderBy: { name: "asc" } },
-        // the export is the pre-order list sent to the restaurant
+        // the export is mainly the pre-order list sent to the restaurant
         orders: {
-          where: { round: "pre" },
+          where: includeDinner ? undefined : { round: "pre" },
           orderBy: { createdAt: "asc" },
           select: {
             quantity: true,
+            round: true,
             variant: {
               select: {
                 id: true,
@@ -290,15 +292,18 @@ export class TableService {
         string,
         {
           variantId: string;
+          round: OrderRound;
           foodName: string;
           variantLabel: string;
           quantity: number;
         }
       >();
       for (const o of r.orders) {
-        const prev = foods.get(o.variant.id);
-        foods.set(o.variant.id, {
+        const key = `${o.round}|${o.variant.id}`;
+        const prev = foods.get(key);
+        foods.set(key, {
           variantId: o.variant.id,
+          round: o.round,
           foodName: o.variant.food.translations[0]?.name ?? "",
           variantLabel: o.variant.translations[0]?.label ?? "",
           quantity: (prev?.quantity ?? 0) + o.quantity,

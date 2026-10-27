@@ -484,6 +484,7 @@
 			"field_foods": "อาหาร",
 			"field_variant": "ขนาด / ตัวเลือก",
 			"field_quantity": "จำนวน",
+			"field_dinner": "สั่งเพิ่มระหว่างมื้อ",
 			"tables": "โต๊ะ ({{count}}/{{total}})",
 			"select_none": "ไม่เลือกทั้งหมด",
 			"food_count": "จำนวนเมนู: {{count}}",
