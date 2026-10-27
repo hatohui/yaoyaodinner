@@ -174,6 +174,7 @@
 		"copy_link": "复制链接",
 		"not_found": "未找到餐桌",
 		"add_failed": "无法添加 - 此桌可能已满",
+		"name_taken": "这桌已经有人叫这个名字了",
 		"remove_failed": "移除失败，请重试",
 		"update_failed": "无法更新餐桌",
 		"this_is_me": "这是我",

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ConflictException,
 } from '@nestjs/common';
 import { prisma } from '../../libs/prisma';
 import { v4 as uuidv4 } from 'uuid';
@@ -38,12 +39,35 @@ export class PeopleService {
     return table;
   }
 
+  private async assertNameFree(
+    tableId: string,
+    names: string[],
+    exceptIds: string[] = [],
+  ) {
+    const taken = await prisma.people.findFirst({
+      where: {
+        tableId,
+        id: { notIn: exceptIds },
+        OR: names.map((name) => ({
+          name: { equals: name.trim(), mode: 'insensitive' as const },
+        })),
+      },
+      select: { id: true },
+    });
+    const lowered = names.map((n) => n.trim().toLowerCase());
+    if (taken || new Set(lowered).size !== lowered.length) {
+      throw new ConflictException('Someone at this table already has that name');
+    }
+  }
+
   async create(dto: CreatePersonDto) {
     const table = await this.assertCapacity(dto.tableId);
+    const name = dto.name.trim();
+    await this.assertNameFree(table.id, [name]);
     return prisma.people.create({
       data: {
         id: uuidv4(),
-        name: dto.name,
+        name,
         tableId: table.id,
         eventId: table.eventId,
       },
@@ -53,7 +77,13 @@ export class PeopleService {
   async update(id: string, dto: UpdatePersonDto) {
     const person = await prisma.people.findUnique({ where: { id } });
     if (!person) throw new NotFoundException('Person not found');
-    return prisma.people.update({ where: { id }, data: dto });
+    if (dto.name !== undefined && person.tableId) {
+      await this.assertNameFree(person.tableId, [dto.name], [id]);
+    }
+    return prisma.people.update({
+      where: { id },
+      data: dto.name === undefined ? dto : { ...dto, name: dto.name.trim() },
+    });
   }
 
   async updatePfp(id: string, dto: UpdatePersonPfpDto) {
@@ -89,6 +119,15 @@ export class PeopleService {
     if (table._count.people + ids.length > table.capacity) {
       throw new BadRequestException('Not enough room at the target table');
     }
+    const moving = await prisma.people.findMany({
+      where: { id: { in: ids } },
+      select: { name: true },
+    });
+    await this.assertNameFree(
+      tableId,
+      moving.map((p) => p.name),
+      ids,
+    );
     await prisma.people.updateMany({
       where: { id: { in: ids } },
       data: { tableId, eventId: table.eventId },

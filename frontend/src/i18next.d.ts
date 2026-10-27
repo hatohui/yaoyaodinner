@@ -160,6 +160,7 @@ declare module 'react-i18next' {
           copy_link: string
           not_found: string
           add_failed: string
+          name_taken: string
           remove_failed: string
           update_failed: string
           this_is_me: string

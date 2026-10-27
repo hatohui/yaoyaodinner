@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import {
@@ -14,6 +15,9 @@ import {
 } from '@/api/tables/tables'
 import { useToast } from '@/hooks/useToast'
 import type { PersonDto } from '@/api/model'
+
+const isNameTaken = (e: unknown) =>
+	isAxiosError(e) && e.response?.status === 409
 
 export function useRoster(tableId: string) {
 	const { t } = useTranslation()
@@ -48,9 +52,11 @@ export function useRoster(tableId: string) {
 				])
 				return { prev }
 			},
-			onError: (_e, _v, ctx) => {
+			onError: (e, _v, ctx) => {
 				qc.setQueryData(peopleKey, ctx?.prev)
-				toast.error(t('roster.add_failed'))
+				toast.error(
+					isNameTaken(e) ? t('roster.name_taken') : t('roster.add_failed')
+				)
 			},
 			onSettled: invalidate,
 		},
@@ -106,17 +112,26 @@ export function useRoster(tableId: string) {
 				)
 				return { prev }
 			},
-			onError: (_e, _v, ctx) => {
+			onError: (e, _v, ctx) => {
 				qc.setQueryData(peopleKey, ctx?.prev)
-				toast.error(t('roster.update_failed'))
+				toast.error(
+					isNameTaken(e) ? t('roster.name_taken') : t('roster.update_failed')
+				)
 			},
 			onSettled: invalidate,
 		},
 	})
 
+	const nameTaken = (name: string, exceptId?: string) =>
+		(data ?? []).some(
+			p =>
+				p.id !== exceptId && p.name.trim().toLowerCase() === name.toLowerCase()
+		)
+
 	const add = (name: string) => {
 		const trimmed = name.trim()
 		if (!trimmed) return
+		if (nameTaken(trimmed)) return toast.error(t('roster.name_taken'))
 		addMutation.mutate({ data: { name: trimmed, tableId } })
 	}
 
@@ -125,8 +140,10 @@ export function useRoster(tableId: string) {
 	const updatePfp = (id: string, pfpUrl: string | null) =>
 		pfpMutation.mutate({ id, data: { pfpUrl } })
 
-	const rename = (id: string, name: string) =>
+	const rename = (id: string, name: string) => {
+		if (nameTaken(name.trim(), id)) return toast.error(t('roster.name_taken'))
 		renameMutation.mutate({ id, data: { name } })
+	}
 
 	return { people: data ?? [], isLoading, add, remove, updatePfp, rename }
 }
