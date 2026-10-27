@@ -257,7 +257,9 @@ export class TableService {
       include: {
         slot: { select: { name: true } },
         people: { select: { id: true, name: true }, orderBy: { name: "asc" } },
+        // the export is the pre-order list sent to the restaurant
         orders: {
+          where: { round: "pre" },
           orderBy: { createdAt: "asc" },
           select: {
             quantity: true,
