@@ -42,7 +42,7 @@ export function useConfig() {
 			DEFAULT_REACTIONS,
 		feedbackWall: cfg['feature.feedbackWall'] !== false,
 		floorPlan: cfg['feature.floorPlan'] !== false,
-		ordering: cfg['feature.ordering'] !== false,
+		menu: cfg['feature.ordering'] !== false,
 		tables: cfg['feature.tables'] !== false,
 		dinnerTime: String(cfg['event.dinnerTime'] ?? ''),
 		ordersOpen: cfg['orders.open'] === true,

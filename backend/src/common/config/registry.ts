@@ -20,7 +20,7 @@ export const CONFIG_KEYS = {
   suggestedReactions: "feedback.suggestedReactions",
   featureFeedbackWall: "feature.feedbackWall",
   featureFloorPlan: "feature.floorPlan",
-  featureOrdering: "feature.ordering",
+  featureMenu: "feature.ordering",
   featureTables: "feature.tables",
 } as const;
 
@@ -106,11 +106,11 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     value: true,
   },
   {
-    key: CONFIG_KEYS.featureOrdering,
+    key: CONFIG_KEYS.featureMenu,
     type: "boolean",
     isPublic: true,
     category: "features",
-    label: "Ordering",
+    label: "Menu",
     value: true,
   },
   {

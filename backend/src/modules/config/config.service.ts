@@ -28,8 +28,14 @@ export class ConfigService {
     );
     if (cached) return cached;
 
-    const stored = await prisma.appConfig.findMany({
-      orderBy: [{ category: "asc" }, { key: "asc" }],
+    const stored = (
+      await prisma.appConfig.findMany({
+        orderBy: [{ category: "asc" }, { key: "asc" }],
+      })
+    ).map((r) => {
+      // labels and grouping follow the registry, so renames don't need a reseed
+      const meta = CONFIG_DEFAULTS.find((d) => d.key === r.key);
+      return meta ? { ...r, label: meta.label, category: meta.category } : r;
     });
     // keys added to the registry after the DB was seeded still show, at their default
     const missing = CONFIG_DEFAULTS.filter(
