@@ -19,7 +19,6 @@ import { STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useConfig } from '@/hooks/useConfig'
-import { OrderingClosedNotice } from '@/components/common/OrderingClosedNotice'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditModeBanner } from './@EditModeBanner'
 import { useMenuAdmin } from './@useMenuAdmin'
@@ -137,7 +136,6 @@ export default function MenuPage() {
 				/>
 
 				{editing && <EditModeBanner onExit={exitEditMode} />}
-				{!orderingOpen && <OrderingClosedNotice className='mt-4' />}
 
 				<div className='py-8'>
 					{isLoading && !data ? (
