@@ -15,6 +15,7 @@ import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditModeBanner } from './@EditModeBanner'
@@ -31,8 +32,9 @@ export default function MenuPage() {
 	const [total, setTotal] = useState(0)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 	const pin = useGuest(s => s.pin)
+	const { isAdmin } = useIsAdmin()
 	const { canAdd } = useOrderingStage()
-	const canOrder = Boolean(pin) && canAdd
+	const canOrder = (Boolean(pin) || isAdmin) && canAdd
 	const { editing, exitEditMode, deleteFood, setAvailable, setImage } =
 		useMenuAdmin()
 	const [pendingDelete, setPendingDelete] = useState<FoodItemDto | null>(null)

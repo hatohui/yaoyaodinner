@@ -1,14 +1,17 @@
 import React from 'react'
 import { useGuest } from '@/hooks/useGuest'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { PinUnlock } from '@/components/common/PinUnlock'
 
 const FeedbackLayout = ({
 	children,
 }: {
 	children: React.ReactNode
-}): React.ReactElement => {
+}): React.ReactElement | null => {
 	const pin = useGuest(s => s.pin)
-	if (!pin) return <PinUnlock />
+	const { isAdmin, isVerifying } = useIsAdmin()
+	if (!pin && isVerifying) return null
+	if (!pin && !isAdmin) return <PinUnlock />
 	return <>{children}</>
 }
 

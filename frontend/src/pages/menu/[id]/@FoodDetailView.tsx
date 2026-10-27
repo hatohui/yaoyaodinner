@@ -7,6 +7,7 @@ import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
 import { FoodTags } from '@/components/common/FoodTags'
 import { useGuest } from '@/hooks/useGuest'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useStageTitle } from '@/hooks/useStageTitle'
 import { useEditMode } from '@/hooks/useEditMode'
@@ -46,11 +47,12 @@ export function FoodDetailView({
 	const { t } = useTranslation()
 	const toast = useToast()
 	const pin = useGuest(s => s.pin)
+	const { isAdmin } = useIsAdmin()
 	const { editing } = useEditMode()
 	const { canAdd } = useOrderingStage()
 	const stageTitle = useStageTitle()
-	const hasPin = Boolean(pin)
-	const canOrder = hasPin && canAdd
+	const hasAccess = Boolean(pin) || isAdmin
+	const canOrder = hasAccess && canAdd
 	const modal = variant === 'modal'
 
 	const shareLink = () => {
@@ -226,7 +228,7 @@ export function FoodDetailView({
 		</>
 	)
 
-	const actions = hasPin ? (
+	const actions = hasAccess ? (
 		<div className='flex flex-col gap-2'>
 			<div className='flex items-center gap-2'>
 				<Button
