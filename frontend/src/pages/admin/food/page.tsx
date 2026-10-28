@@ -59,7 +59,7 @@ export default function AdminFoodPage() {
 					className='flex-1'
 				/>
 				<Select value={categoryId} onValueChange={setCategoryId}>
-					<SelectTrigger className='rounded-full'>
+					<SelectTrigger className='rounded-full border-border/80 bg-card font-medium text-foreground shadow-sm hover:border-primary/50'>
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -75,8 +75,8 @@ export default function AdminFoodPage() {
 					value={sort}
 					onValueChange={val => setSort(val as AdminFoodSort)}
 				>
-					<SelectTrigger className='rounded-full'>
-						<ArrowUpDown className='size-3.5 shrink-0 text-muted-foreground' />
+					<SelectTrigger className='rounded-full border-border/80 bg-card font-medium text-foreground shadow-sm hover:border-primary/50'>
+						<ArrowUpDown className='size-3.5 shrink-0 text-primary' />
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>

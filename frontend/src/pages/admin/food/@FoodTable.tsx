@@ -196,7 +196,7 @@ export function FoodTable({
 		<Button
 			size='icon-sm'
 			variant={active ? 'default' : 'outline'}
-			className='rounded-full'
+			className={cn('rounded-full', !active && 'bg-card shadow-sm')}
 			aria-label={label}
 			aria-pressed={active}
 			onClick={onClick}
