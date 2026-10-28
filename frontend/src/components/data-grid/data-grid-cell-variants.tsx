@@ -965,11 +965,11 @@ export function SelectCell<TData>({
           open={isEditing}
           onOpenChange={onOpenChange}
         >
-          <SelectTrigger className="size-full items-start border-none p-0 shadow-none focus-visible:ring-0 dark:bg-transparent [&_svg]:hidden">
+          <SelectTrigger className="size-full items-start border-none bg-transparent p-0 shadow-none focus-visible:ring-0 dark:bg-transparent [&_svg]:hidden">
             {displayLabel ? (
               <Badge
                 variant="secondary"
-                className="whitespace-pre-wrap px-1.5 py-px"
+                className="whitespace-pre-wrap border border-primary/25 bg-primary/10 px-2 py-0.5 font-medium text-foreground"
               >
                 <SelectValue />
               </Badge>
@@ -998,7 +998,7 @@ export function SelectCell<TData>({
         <Badge
           data-slot="grid-cell-content"
           variant="secondary"
-          className="whitespace-pre-wrap px-1.5 py-px"
+          className="whitespace-pre-wrap border border-primary/25 bg-primary/10 px-2 py-0.5 font-medium text-foreground"
         >
           {displayLabel}
         </Badge>
