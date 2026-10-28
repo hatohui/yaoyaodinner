@@ -209,8 +209,8 @@
 	--selection: oklch(0.8 0.17 150);
 	--selection-foreground: oklch(0.2 0.05 150);
 
-	--bg-paw-opacity: 0.03;
-	--bg-dot: color-mix(in oklch, var(--primary) 25%, transparent);
+	--bg-paw-opacity: 0.055;
+	--bg-dot: color-mix(in oklch, var(--primary) 22%, transparent);
 	/* Printed exports stay light whatever the screen theme is */
 	--paper: oklch(1 0 0);
 	--paper-foreground: oklch(0.18 0.015 305);
@@ -294,7 +294,7 @@
 
 	--selection-foreground: oklch(0.16 0.04 150);
 
-	--bg-paw-opacity: 0.02;
+	--bg-paw-opacity: 0.035;
 	--bg-dot: color-mix(in oklch, var(--primary) 9%, transparent);
 }
 
@@ -333,11 +333,25 @@
 		content: "";
 		position: fixed;
 		inset: 0;
+		z-index: -2;
+		background:
+			radial-gradient(ellipse 65% 50% at 12% 8%, color-mix(in oklch, var(--primary) 22%, transparent), transparent 70%),
+			radial-gradient(ellipse 55% 45% at 88% 18%, color-mix(in oklch, var(--primary) 18%, transparent), transparent 70%),
+			radial-gradient(ellipse 70% 60% at 50% 92%, color-mix(in oklch, var(--primary) 15%, transparent), transparent 75%),
+			radial-gradient(circle, var(--bg-dot) 1.2px, transparent 1.2px);
+		background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px;
+		pointer-events: none;
+	}
+
+	body::after {
+		content: "";
+		position: fixed;
+		inset: 0;
 		z-index: -1;
 		background-color: var(--primary);
 		opacity: var(--bg-paw-opacity);
-		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M84 76a20 20 0 1 1-20-20 20 20 0 0 1 20 20Zm44-44a20 20 0 1 0 20 20 20 20 0 0 0-20-20Zm44 24a20 20 0 1 0 20 20 20 20 0 0 0-20-20Zm30.8 111.92a40.09 40.09 0 0 0-31.5-27.13 52 52 0 0 0-85.8 0 40.11 40.11 0 0 0-31.5 27.13c-5.83 18.23-2.58 37.16 9.15 53.37 12 16.59 34 26.71 58.62 26.71h12.46c24.62 0 46.66-10.12 58.62-26.71 11.73-16.21 15-35.14 9.15-53.37Z'/%3E%3C/svg%3E");
-		mask-size: 100px 100px;
+		mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20240%20240'%3E%3Cg%20transform%3D'translate(18%2C%2016)%20scale(0.26)%20rotate(15%20128%20128)'%3E%3Cpath%20d%3D'M84%2076a20%2020%200%201%201-20-20%2020%2020%200%200%201%2020%2020Zm44-44a20%2020%200%201%200%2020%2020%2020%2020%200%200%200-20-20Zm44%2024a20%2020%200%201%200%2020%2020%2020%2020%200%200%200-20-20Zm30.8%20111.92a40.09%2040.09%200%200%200-31.5-27.13%2052%2052%200%200%200-85.8%200%2040.11%2040.11%200%200%200-31.5%2027.13c-5.83%2018.23-2.58%2037.16%209.15%2053.37%2012%2016.59%2034%2026.71%2058.62%2026.71h12.46c24.62%200%2046.66-10.12%2058.62-26.71%2011.73-16.21%2015-35.14%209.15-53.37Z'%2F%3E%3C%2Fg%3E%3Cg%20transform%3D'translate(136%2C%20126)%20scale(0.2)%20rotate(-22%20128%20128)'%3E%3Cpath%20d%3D'M84%2076a20%2020%200%201%201-20-20%2020%2020%200%200%201%2020%2020Zm44-44a20%2020%200%201%200%2020%2020%2020%2020%200%200%200-20-20Zm44%2024a20%2020%200%201%200%2020%2020%2020%2020%200%200%200-20-20Zm30.8%20111.92a40.09%2040.09%200%200%200-31.5-27.13%2052%2052%200%200%200-85.8%200%2040.11%2040.11%200%200%200-31.5%2027.13c-5.83%2018.23-2.58%2037.16%209.15%2053.37%2012%2016.59%2034%2026.71%2058.62%2026.71h12.46c24.62%200%2046.66-10.12%2058.62-26.71%2011.73-16.21%2015-35.14%209.15-53.37Z'%2F%3E%3C%2Fg%3E%3Cpath%20d%3D'M185%2042%20c0%207%203%209%2010%209%20c-7%200%20-10%202%20-10%209%20c0%20-7%20-3%20-9%20-10%20-9%20c7%200%2010%20-2%2010%20-9%20Z'%2F%3E%3Cpath%20d%3D'M52%20178%20c0%206%202%208%208%208%20c-6%200%20-8%202%20-8%208%20c0%20-6%20-2%20-8%20-8%20-8%20c6%200%208%20-2%208%20-8%20Z'%2F%3E%3Ccircle%20cx%3D'108'%20cy%3D'98'%20r%3D'2.5'%2F%3E%3Ccircle%20cx%3D'212'%20cy%3D'122'%20r%3D'2'%2F%3E%3Ccircle%20cx%3D'34'%20cy%3D'118'%20r%3D'2'%2F%3E%3Ccircle%20cx%3D'145'%20cy%3D'38'%20r%3D'1.8'%2F%3E%3Ccircle%20cx%3D'82'%20cy%3D'215'%20r%3D'1.8'%2F%3E%3C%2Fsvg%3E");
+		mask-size: 200px 200px;
 		mask-repeat: repeat;
 		pointer-events: none;
 	}
