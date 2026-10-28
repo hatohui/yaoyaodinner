@@ -44,6 +44,7 @@ export function useConfig() {
 		menu: cfg['feature.ordering'] !== false,
 		tables: cfg['feature.tables'] !== false,
 		tableCodes: cfg['feature.tableCodes'] !== false,
+		bannerEnabled: cfg['banner.enabled'] === true,
 		bannerMessage:
 			cfg['banner.enabled'] === true
 				? String(cfg['banner.message'] ?? '').trim()

@@ -6,6 +6,7 @@ import {
 	CircleHelp,
 	FlaskConical,
 	Info,
+	LayoutDashboard,
 	Loader2,
 	Menu,
 	MessageSquareHeart,
@@ -130,7 +131,23 @@ export function Navbar() {
 				/>
 
 				<div className='flex shrink-0 items-center gap-0.5 sm:gap-1'>
-					{!pathname.startsWith('/admin') && <AdminMenu />}
+					{isAdmin && (
+						<Link
+							to='/admin'
+							onClick={() => handleNavClick('/admin')}
+							aria-label={t('admin.nav.dashboard')}
+							title={t('admin.nav.dashboard')}
+							className={cn(
+								'flex size-8 shrink-0 items-center justify-center rounded-full transition-colors',
+								pathname.startsWith('/admin')
+									? 'bg-primary text-primary-foreground shadow-sm'
+									: 'text-foreground hover:bg-accent'
+							)}
+						>
+							<LayoutDashboard className='size-4' />
+						</Link>
+					)}
+					<AdminMenu />
 					<div className='hidden items-center gap-1 sm:flex'>
 						<LanguageSelector />
 						<ThemeToggle />
