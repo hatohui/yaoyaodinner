@@ -152,59 +152,63 @@
 :root {
 	--radius: 0.625rem;
 
-	/* 60% Dominant (Neutral Canvas) */
-	--background: oklch(0.965 0.006 280);
-	--foreground: oklch(0.18 0.015 280);
+	/* 60% Dominant (Canvas: #F9F8FC - off-white with subtle purple warmth) */
+	--background: oklch(0.981 0.005 298);
+	--foreground: oklch(0.212 0.03 296);
+	/* #1A1625: ultra-dark purple-tinted charcoal body text */
 
-	/* 30% Secondary (Structure - Cards, Surface, Borders, Secondary text) */
+	/* 30% Secondary (Surfaces: #FFFFFF pure white cards & structural blocks) */
 	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.18 0.015 280);
+	--card-foreground: oklch(0.212 0.03 296);
 
 	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.18 0.015 280);
+	--popover-foreground: oklch(0.212 0.03 296);
 
 	--control: oklch(1 0 0);
 
-	--secondary: oklch(0.925 0.008 280);
-	--secondary-foreground: oklch(0.22 0.015 280);
+	/* Accent Subtle: #EEF2FF (soft lavender tint for buttons, tags, pills) */
+	--secondary: oklch(0.962 0.018 272);
+	--secondary-foreground: oklch(0.32 0.12 292.6);
 
-	--muted: oklch(0.92 0.008 280);
-	--muted-foreground: oklch(0.45 0.02 280);
+	--muted: oklch(0.95 0.01 296);
+	--muted-foreground: oklch(0.467 0.044 296.5);
+	/* #5C5570: muted violet-gray for subtitles, captions, and metadata */
 
-	--accent: oklch(0.9 0.012 280);
-	--accent-foreground: oklch(0.18 0.02 280);
+	--accent: oklch(0.94 0.02 292.6);
+	--accent-foreground: oklch(0.212 0.03 296);
 
-	--border: oklch(0.88 0.008 280);
-	--input: oklch(0.88 0.008 280);
+	/* Crisp 1px structural borders (#E8E5F0) */
+	--border: oklch(0.915 0.015 298);
+	--input: oklch(0.915 0.015 298);
 
-	--sidebar: oklch(0.98 0.005 280);
-	--sidebar-foreground: oklch(0.18 0.015 280);
-	--sidebar-accent: oklch(0.93 0.01 280);
-	--sidebar-accent-foreground: oklch(0.2 0.015 280);
-	--sidebar-border: oklch(0.88 0.008 280);
+	--sidebar: oklch(0.985 0.005 298);
+	--sidebar-foreground: oklch(0.212 0.03 296);
+	--sidebar-accent: oklch(0.962 0.018 272);
+	--sidebar-accent-foreground: oklch(0.212 0.03 296);
+	--sidebar-border: oklch(0.915 0.015 298);
 
-	/* 10% Accent (Intent - Action points only) */
-	--primary: oklch(0.48 0.19 295);
+	/* 10% Accent Intent: #6D28D9 (Deep, rich amethyst CTA) */
+	--primary: oklch(0.491 0.241 292.6);
 	--primary-foreground: oklch(0.99 0 0);
-	--ring: oklch(0.48 0.19 295);
-	--sidebar-primary: oklch(0.48 0.19 295);
+	--ring: oklch(0.491 0.241 292.6);
+	--sidebar-primary: oklch(0.491 0.241 292.6);
 	--sidebar-primary-foreground: oklch(0.99 0 0);
-	--sidebar-ring: oklch(0.48 0.19 295);
+	--sidebar-ring: oklch(0.491 0.241 292.6);
 
-	/* Semantic System Colors (Independent of Brand) */
+	/* Semantic System Colors */
 	--destructive: oklch(0.55 0.22 25);
 	--success: oklch(0.55 0.16 145);
 
-	--chart-1: oklch(0.48 0.19 295);
-	--chart-2: oklch(0.52 0.12 280);
-	--chart-3: oklch(0.62 0.12 280);
+	--chart-1: oklch(0.491 0.241 292.6);
+	--chart-2: oklch(0.55 0.12 280);
+	--chart-3: oklch(0.65 0.12 280);
 	--chart-4: oklch(0.3 0.06 280);
 	--chart-5: oklch(0.72 0.16 65);
 
-	--selection: oklch(0.82 0.14 145);
-	--selection-foreground: oklch(0.18 0.04 145);
+	--selection: oklch(0.88 0.1 290);
+	--selection-foreground: oklch(0.2 0.05 290);
 
-	--bg-paw-opacity: 0.045;
+	--bg-paw-opacity: 0.04;
 	--bg-dot: color-mix(in oklch, var(--foreground) 6%, transparent);
 	/* Printed exports stay light whatever the screen theme is */
 	--paper: oklch(1 0 0);
