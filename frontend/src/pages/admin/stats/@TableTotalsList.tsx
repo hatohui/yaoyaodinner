@@ -55,7 +55,7 @@ export function TableTotalsList({ totals, isLoading }: TableTotalsListProps) {
 							</span>
 							<div className='flex shrink-0 items-center gap-1.5'>
 								<span className='text-sm font-semibold tabular-nums text-foreground'>
-									{row.total.toFixed(2)}
+									{row.total.toFixed(2)} RM
 								</span>
 								{row.isOutlier && (
 									<Badge

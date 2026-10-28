@@ -164,7 +164,7 @@ export default function AdminDashboardPage() {
 															#{row.no} · {row.name}
 														</span>
 														<span className='flex shrink-0 items-center gap-1.5 tabular-nums text-foreground'>
-															{row.total.toFixed(2)}
+															{row.total.toFixed(2)} RM
 															{row.isOutlier && (
 																<Badge
 																	variant='outline'

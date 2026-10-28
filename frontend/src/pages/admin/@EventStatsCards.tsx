@@ -53,13 +53,13 @@ export function EventStatsCards({
 		{
 			key: 'spend',
 			label: t('admin.stats.totals_title'),
-			value: totalSpend.toFixed(2),
+			value: `${totalSpend.toFixed(2)} RM`,
 			icon: Coins,
 		},
 		{
 			key: 'avg',
 			label: `Avg / ${t('admin.people.table')}`,
-			value: avgPerTable.toFixed(2),
+			value: `${avgPerTable.toFixed(2)} RM`,
 			icon: Calculator,
 		},
 	]

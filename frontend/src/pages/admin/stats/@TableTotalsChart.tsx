@@ -63,7 +63,7 @@ export function TableTotalsChart({ totals, isLoading }: TableTotalsChartProps) {
 			<ChartContainer config={chartConfig} className='aspect-auto h-52 w-full'>
 				<BarChart
 					data={totals}
-					margin={{ top: 12, left: -12, right: 12, bottom: 0 }}
+					margin={{ top: 12, left: 4, right: 12, bottom: 0 }}
 				>
 					<CartesianGrid vertical={false} />
 					<XAxis
@@ -77,8 +77,9 @@ export function TableTotalsChart({ totals, isLoading }: TableTotalsChartProps) {
 						tickLine={false}
 						axisLine={false}
 						tickMargin={8}
+						width={64}
 						fontSize={12}
-						tickFormatter={value => `${value}`}
+						tickFormatter={value => `${value} RM`}
 					/>
 					{avg > 0 && (
 						<ReferenceLine
@@ -90,7 +91,24 @@ export function TableTotalsChart({ totals, isLoading }: TableTotalsChartProps) {
 					)}
 					<ChartTooltip
 						cursor={false}
-						content={<ChartTooltipContent hideLabel />}
+						content={
+							<ChartTooltipContent
+								labelFormatter={(_label, payload) => {
+									const row = payload?.[0]?.payload as TableTotalDto | undefined
+									return row ? `#${row.no} · ${row.name}` : _label
+								}}
+								formatter={value => (
+									<div className='flex flex-1 items-center justify-between gap-3 leading-none'>
+										<span className='text-muted-foreground'>
+											{t('orders.total')}
+										</span>
+										<span className='font-mono font-semibold tabular-nums text-foreground'>
+											{Number(value).toFixed(2)} RM
+										</span>
+									</div>
+								)}
+							/>
+						}
 					/>
 					<Bar dataKey='total' radius={8} maxBarSize={44}>
 						{totals.map((entry, index) => (

@@ -68,7 +68,7 @@ export function PopularItemsChart({
 				<PieChart>
 					<ChartTooltip
 						cursor={false}
-						content={<ChartTooltipContent hideLabel />}
+						content={<ChartTooltipContent nameKey='name' />}
 					/>
 					<Pie
 						data={chartData}

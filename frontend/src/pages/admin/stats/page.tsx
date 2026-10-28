@@ -67,7 +67,7 @@ export default function AdminStatsPage() {
 						</span>
 					</div>
 					<span className='text-2xl font-bold tabular-nums text-foreground'>
-						{totalSpend.toFixed(2)}
+						{totalSpend.toFixed(2)} RM
 					</span>
 					<span className='text-xs text-muted-foreground'>
 						{activeTablesCount}/{tableTotals.length}{' '}
@@ -83,7 +83,7 @@ export default function AdminStatsPage() {
 						</span>
 					</div>
 					<span className='text-2xl font-bold tabular-nums text-foreground'>
-						{avgPerTable.toFixed(2)}
+						{avgPerTable.toFixed(2)} RM
 					</span>
 					<span className='text-xs text-muted-foreground'>
 						{outliersCount} {t('admin.stats.outlier').toLowerCase()}
