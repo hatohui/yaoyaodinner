@@ -250,6 +250,7 @@ export class FoodService {
     count = 20,
     categoryId = "all",
     search?: string,
+    sort = "name_asc",
   ) {
     const offset = (page - 1) * count;
     const where = {
@@ -263,26 +264,51 @@ export class FoodService {
         : {}),
     };
 
-    const [rawFoods, total, popularIds, perFood] = await Promise.all([
+    const [rawFoods, popularIds, perFood] = await Promise.all([
       prisma.food.findMany({
         where,
-        skip: offset,
-        take: count,
         orderBy: { id: "asc" },
         include: this.foodDetailInclude(lang),
       }),
-      prisma.food.count({ where }),
       this.getPopularFoodIds(),
       this.getPopularityMap(),
     ]);
 
+    const allFoods = rawFoods.map((f) => ({
+      ...this.toDetailDto(f, popularIds.has(f.id)),
+      orderCount: perFood.get(f.id) ?? 0,
+    }));
+
+    allFoods.sort((a, b) => {
+      if (sort === "most_ordered") {
+        return b.orderCount - a.orderCount || a.name.localeCompare(b.name);
+      }
+      if (sort === "least_ordered") {
+        return a.orderCount - b.orderCount || a.name.localeCompare(b.name);
+      }
+      if (sort === "price_asc") {
+        const av = a.variants[0]?.price ?? Number.POSITIVE_INFINITY;
+        const bv = b.variants[0]?.price ?? Number.POSITIVE_INFINITY;
+        return av - bv || a.name.localeCompare(b.name);
+      }
+      if (sort === "price_desc") {
+        const av = a.variants[0]?.price ?? Number.NEGATIVE_INFINITY;
+        const bv = b.variants[0]?.price ?? Number.NEGATIVE_INFINITY;
+        return bv - av || a.name.localeCompare(b.name);
+      }
+      if (sort === "name_desc") {
+        return b.name.localeCompare(a.name);
+      }
+      return a.name.localeCompare(b.name);
+    });
+
+    const total = allFoods.length;
+    const foods = allFoods.slice(offset, offset + count);
+
     return {
-      foods: rawFoods.map((f) => ({
-        ...this.toDetailDto(f, popularIds.has(f.id)),
-        orderCount: perFood.get(f.id) ?? 0,
-      })),
+      foods,
       page,
-      count: rawFoods.length,
+      count: foods.length,
       total,
     };
   }

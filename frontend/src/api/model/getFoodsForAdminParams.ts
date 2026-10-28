@@ -9,6 +9,7 @@
 export type GetFoodsForAdminParams = {
 search?: string;
 category?: string;
+sort?: string;
 count?: number;
 page?: number;
 lang?: string;

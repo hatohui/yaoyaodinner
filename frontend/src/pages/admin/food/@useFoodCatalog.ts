@@ -31,6 +31,14 @@ export type FoodGridRow = FoodAdminItemDto & {
 	variantId: string | null
 }
 
+export type AdminFoodSort =
+	| 'name_asc'
+	| 'name_desc'
+	| 'most_ordered'
+	| 'least_ordered'
+	| 'price_asc'
+	| 'price_desc'
+
 export function useFoodCatalog() {
 	const { t, i18n } = useTranslation()
 	const toast = useToast()
@@ -38,6 +46,7 @@ export function useFoodCatalog() {
 
 	const [search, setSearch] = React.useState('')
 	const [categoryId, setCategoryId] = React.useState('all')
+	const [sort, setSort] = React.useState<AdminFoodSort>('name_asc')
 	const [total, setTotal] = React.useState(0)
 	const debouncedSearch = useDebounce(search, 300)
 	const pagination = usePagination({ total, initialCount: 12 })
@@ -52,13 +61,17 @@ export function useFoodCatalog() {
 		lang: i18n.language,
 	})
 
-	const { data, isLoading } = useGetFoodsForAdmin<GetFoodsForAdminResponseDto>({
+	const queryParams = {
 		lang: i18n.language,
 		page: pagination.page,
 		count: pagination.count,
 		category: categoryId,
 		search: debouncedSearch || undefined,
-	})
+		sort,
+	}
+
+	const { data, isLoading } =
+		useGetFoodsForAdmin<GetFoodsForAdminResponseDto>(queryParams)
 	const foods: FoodGridRow[] = React.useMemo(
 		() =>
 			(data?.foods ?? []).map(f => ({
@@ -74,13 +87,7 @@ export function useFoodCatalog() {
 		if (data?.total !== undefined) setTotal(data.total)
 	}, [data?.total])
 
-	const listKey = getGetFoodsForAdminQueryKey({
-		lang: i18n.language,
-		page: pagination.page,
-		count: pagination.count,
-		category: categoryId,
-		search: debouncedSearch || undefined,
-	})
+	const listKey = getGetFoodsForAdminQueryKey(queryParams)
 
 	const invalidate = () =>
 		qc.invalidateQueries({ queryKey: getGetFoodsForAdminQueryKey() })
@@ -192,6 +199,8 @@ export function useFoodCatalog() {
 		setSearch,
 		categoryId,
 		setCategoryId,
+		sort,
+		setSort,
 		categories,
 		pagination,
 		foods,

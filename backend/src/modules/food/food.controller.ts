@@ -85,6 +85,18 @@ export class FoodController {
   @ApiQuery({ name: 'count', required: false, type: Number, example: 20 })
   @ApiQuery({ name: 'category', required: false, type: String, example: 'all' })
   @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({
+    name: 'sort',
+    required: false,
+    enum: [
+      'name_asc',
+      'name_desc',
+      'most_ordered',
+      'least_ordered',
+      'price_asc',
+      'price_desc',
+    ],
+  })
   @ApiResponse({ status: 200, type: GetFoodsForAdminResponseDto })
   findAllForAdmin(
     @Query('lang') lang = 'en',
@@ -92,10 +104,18 @@ export class FoodController {
     @Query('count') count = '20',
     @Query('category') category = 'all',
     @Query('search') search?: string,
+    @Query('sort') sort = 'name_asc',
   ) {
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const countNum = Math.min(100, Math.max(1, parseInt(count, 10) || 20));
-    return this.food.findAllForAdmin(lang, pageNum, countNum, category, search);
+    return this.food.findAllForAdmin(
+      lang,
+      pageNum,
+      countNum,
+      category,
+      search,
+      sort,
+    );
   }
 
   @Get(':id')

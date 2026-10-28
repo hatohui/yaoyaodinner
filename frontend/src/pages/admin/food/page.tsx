@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { ArrowUpDown } from 'lucide-react'
 import { SearchBar } from '@/components/common/SearchBar'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import {
@@ -10,7 +11,7 @@ import {
 } from '@/components/ui/select'
 import { CreateFoodDialog } from './@CreateFoodDialog'
 import { FoodTable } from './@FoodTable'
-import { useFoodCatalog } from './@useFoodCatalog'
+import { useFoodCatalog, type AdminFoodSort } from './@useFoodCatalog'
 import { ManualTranslationDialog } from '@/components/common/ManualTranslationDialog'
 
 export default function AdminFoodPage() {
@@ -20,6 +21,8 @@ export default function AdminFoodPage() {
 		setSearch,
 		categoryId,
 		setCategoryId,
+		sort,
+		setSort,
 		categories,
 		pagination,
 		foods,
@@ -66,6 +69,33 @@ export default function AdminFoodPage() {
 								{c.name}
 							</SelectItem>
 						))}
+					</SelectContent>
+				</Select>
+				<Select
+					value={sort}
+					onValueChange={val => setSort(val as AdminFoodSort)}
+				>
+					<SelectTrigger className='rounded-full'>
+						<ArrowUpDown className='size-3.5 shrink-0 text-muted-foreground' />
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value='name_asc'>
+							{t('tables.sort.name_asc')}
+						</SelectItem>
+						<SelectItem value='name_desc'>
+							{t('tables.sort.name_desc')}
+						</SelectItem>
+						<SelectItem value='most_ordered'>
+							{t('tables.sort.most_ordered')}
+						</SelectItem>
+						<SelectItem value='least_ordered'>
+							{t('tables.sort.least_ordered')}
+						</SelectItem>
+						<SelectItem value='price_asc'>{t('menu.sort_price')}</SelectItem>
+						<SelectItem value='price_desc'>
+							{t('menu.sort_price_desc')}
+						</SelectItem>
 					</SelectContent>
 				</Select>
 			</div>
