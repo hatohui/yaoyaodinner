@@ -105,14 +105,7 @@ export function Navbar() {
 			: pathname === to
 
 	return (
-		<header
-			className='fixed top-0 z-50 w-full border-b border-border/40 bg-background/80 shadow-sm backdrop-blur-xl'
-			style={{
-				backgroundImage:
-					'radial-gradient(circle, var(--bg-dot) 1px, transparent 0)',
-				backgroundSize: '28px 28px',
-			}}
-		>
+		<header className='fixed top-0 z-50 w-full border-b border-border bg-card/90 dark:bg-card/75 shadow-sm backdrop-blur-xl'>
 			<div className='mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-3 sm:px-4'>
 				<Link
 					to='/'

@@ -36,7 +36,7 @@ export function ProductCard({
 					alt={food.name}
 					className='size-full object-cover'
 					fallback={
-						<div className='flex size-full items-center justify-center bg-gradient-to-br from-primary/30 to-primary/10 text-4xl'>
+						<div className='flex size-full items-center justify-center bg-secondary/70 text-4xl'>
 							🍽️
 						</div>
 					}

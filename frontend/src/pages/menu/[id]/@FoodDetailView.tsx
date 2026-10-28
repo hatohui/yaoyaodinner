@@ -107,7 +107,7 @@ export function FoodDetailView({
 				fallback={
 					<div
 						className={cn(
-							'flex aspect-[4/3] w-full items-center justify-center bg-gradient-to-br from-primary/30 to-primary/10',
+							'flex aspect-[4/3] w-full items-center justify-center bg-secondary/70',
 							modal && 'md:aspect-auto md:h-full'
 						)}
 					>

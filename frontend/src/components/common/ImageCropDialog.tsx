@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { getCroppedImageBlob } from '@/utils/cropImage'
 import { cn } from '@/utils/shadcn'
 
+const MIN_ZOOM = 0.1
 const MAX_ZOOM = 4
 
 const ASPECT_PRESETS = [
@@ -70,9 +71,10 @@ export function ImageCropDialog({
 		activeAspect / originalAspect,
 		originalAspect / activeAspect
 	)
-	// zoom at which the whole image sits inside the crop frame; null until the image loads
-	const minZoom = media ? Math.min(1, fitRatio) : 1
-	const zoom = Math.max(minZoom, zoomOverride ?? minZoom)
+	// Initial zoom fits the entire image inside the crop frame
+	const initialZoom = media ? Math.min(1, fitRatio) : 1
+	const minZoom = Math.min(MIN_ZOOM, initialZoom)
+	const zoom = Math.max(minZoom, zoomOverride ?? initialZoom)
 
 	const rotate = (delta: number) => {
 		setRotation(r => (r + delta + 360) % 360)

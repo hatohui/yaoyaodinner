@@ -79,7 +79,7 @@ export function FoodCard({
 					alt={food.name}
 					className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
 					fallback={
-						<div className='flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/30 to-primary/10'>
+						<div className='flex h-full w-full items-center justify-center bg-secondary/70'>
 							<span className='text-5xl'>🍽️</span>
 						</div>
 					}
