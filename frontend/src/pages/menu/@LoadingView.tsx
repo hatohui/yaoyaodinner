@@ -9,7 +9,7 @@ export function LoadingView() {
 					key={i}
 					className='flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-md'
 				>
-					<div className='relative aspect-[4/3] bg-muted'>
+					<div className='relative aspect-[4/3] border-b border-border bg-muted'>
 						<Skeleton className='size-full rounded-none' />
 						<Skeleton className='absolute bottom-2 right-2 h-7 w-16 rounded-full bg-card/90' />
 					</div>

@@ -73,7 +73,7 @@ export function ProductGridSkeleton({ count = 6 }: { count?: number }) {
 					key={i}
 					className='flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm'
 				>
-					<Skeleton className='aspect-[4/3] w-full rounded-none' />
+					<Skeleton className='aspect-[4/3] w-full rounded-none border-b border-border' />
 					<div className='flex flex-col gap-2 p-3'>
 						<Skeleton className='h-4 w-4/5 rounded-full' />
 						<div className='mt-1 flex items-center justify-between'>

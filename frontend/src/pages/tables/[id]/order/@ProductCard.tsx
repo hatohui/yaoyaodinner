@@ -30,7 +30,7 @@ export function ProductCard({
 				quantity > 0 && 'border-primary ring-2 ring-primary/40'
 			)}
 		>
-			<div className='relative aspect-[4/3] w-full overflow-hidden bg-muted'>
+			<div className='relative aspect-[4/3] w-full overflow-hidden border-b border-border bg-muted'>
 				<StoredImage
 					imageKey={food.imageUrl}
 					alt={food.name}

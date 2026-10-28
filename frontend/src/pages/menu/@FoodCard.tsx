@@ -72,7 +72,7 @@ export function FoodCard({
 			<Link
 				to={`/menu/${food.id}`}
 				onClick={handleLinkClick}
-				className='relative aspect-[4/3] overflow-hidden bg-muted'
+				className='relative aspect-[4/3] overflow-hidden border-b border-border bg-muted'
 			>
 				<StoredImage
 					imageKey={food.imageUrl}
