@@ -669,7 +669,8 @@
 			"activate_confirm_body": "Guests will see the tables of \"{{name}}\" and need PIN {{pin}}. The event that is live now becomes a past event.",
 			"delete": "Delete event",
 			"delete_confirm_title": "Delete this event?",
-			"delete_confirm_body": "\"{{name}}\" and all of its tables, people, orders and feedback will be deleted for good. This can't be undone.",
+			"delete_confirm_body": "\"{{name}}\" and all of its tables, people, orders and feedback will be deleted for good. Enter the owner passphrase to confirm.",
+			"owner_passphrase_placeholder": "Owner passphrase",
 			"deleted": "Event deleted"
 		},
 		"edit_mode": {
@@ -688,10 +689,13 @@
 			"open": "Open pre-orders",
 			"confirm": "Confirm pre-orders",
 			"finalize": "Finalize event",
+			"reopen": "Re-open event",
 			"confirm_title": "Confirm pre-orders?",
 			"confirm_body": "Guests can no longer add, change or remove pre-orders. They can still change splits, and add what they order once dinner starts.",
 			"finalize_title": "Finalize this event?",
-			"finalize_body": "Totals and splits will be locked for everyone, admins included. This can't be undone.",
+			"finalize_body": "Totals and splits will be locked for everyone, and a new versioned read-only backup of this event will be saved to S3.",
+			"reopen_title": "Re-open this finalized event?",
+			"reopen_body": "This unlocks the event so orders and splits can be adjusted before re-finalizing. Enter the owner passphrase to confirm.",
 			"updated": "Ordering updated"
 		}
 	},

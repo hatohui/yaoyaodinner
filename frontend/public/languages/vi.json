@@ -669,7 +669,8 @@
 			"activate_confirm_body": "Khách sẽ thấy các bàn của \"{{name}}\" và cần mã PIN {{pin}}. Sự kiện đang diễn ra hiện tại sẽ thành sự kiện đã qua.",
 			"delete": "Xóa sự kiện",
 			"delete_confirm_title": "Xóa sự kiện này?",
-			"delete_confirm_body": "\"{{name}}\" cùng toàn bộ bàn, người, đơn hàng và phản hồi sẽ bị xóa vĩnh viễn. Không thể hoàn tác.",
+			"delete_confirm_body": "\"{{name}}\" cùng toàn bộ bàn, người, đơn hàng và phản hồi sẽ bị xóa vĩnh viễn. Nhập mật khẩu chủ sở hữu để xác nhận.",
+			"owner_passphrase_placeholder": "Mật khẩu chủ sở hữu",
 			"deleted": "Đã xóa sự kiện"
 		},
 		"edit_mode": {
@@ -688,10 +689,13 @@
 			"open": "Mở đặt trước",
 			"confirm": "Chốt đặt trước",
 			"finalize": "Chốt sổ sự kiện",
+			"reopen": "Mở lại sự kiện",
 			"confirm_title": "Chốt đặt trước?",
 			"confirm_body": "Khách sẽ không thể thêm, sửa hay xóa món đặt trước. Họ vẫn có thể đổi cách chia tiền và thêm món khi bữa tối bắt đầu.",
 			"finalize_title": "Chốt sổ sự kiện này?",
-			"finalize_body": "Tổng tiền và cách chia sẽ bị khóa với tất cả mọi người, kể cả quản trị viên. Không thể hoàn tác.",
+			"finalize_body": "Tổng tiền và cách chia sẽ bị khóa với tất cả mọi người, và một bản sao lưu chỉ đọc có đánh số phiên bản mới sẽ được lưu lên S3.",
+			"reopen_title": "Mở lại sự kiện đã chốt sổ?",
+			"reopen_body": "Thao tác này mở khóa sự kiện để chỉnh sửa đơn hàng và chia tiền trước khi chốt sổ lại. Nhập mật khẩu chủ sở hữu để xác nhận.",
 			"updated": "Đã cập nhật đặt món"
 		}
 	},

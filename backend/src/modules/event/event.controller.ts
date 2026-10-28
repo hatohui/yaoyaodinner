@@ -6,6 +6,8 @@ import {
   Delete,
   Body,
   Param,
+  Headers,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -72,7 +74,7 @@ export class EventController {
   @ApiOperation({ operationId: 'setEventOrderingStage' })
   @ApiResponse({ status: 200, type: EventDto })
   setStage(@Param('id') id: string, @Body() dto: SetOrderingStageDto) {
-    return this.events.setStage(id, dto.stage);
+    return this.events.setStage(id, dto.stage, dto.passphrase);
   }
 
   @Post(':id/pin/reroll')
@@ -91,7 +93,11 @@ export class EventController {
 
   @Delete(':id')
   @ApiOperation({ operationId: 'deleteEvent' })
-  remove(@Param('id') id: string) {
-    return this.events.remove(id);
+  remove(
+    @Param('id') id: string,
+    @Headers('x-owner-passphrase') headerPassphrase?: string,
+    @Query('passphrase') queryPassphrase?: string,
+  ) {
+    return this.events.remove(id, headerPassphrase ?? queryPassphrase);
   }
 }

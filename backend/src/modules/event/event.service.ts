@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,6 +10,7 @@ import { generatePin } from '@common/pin';
 import { CacheService } from '@libs/redis';
 import { CacheSettings } from '@common/cache/constants';
 import { ConfigService } from '@modules/config/config.service';
+import { ImagesService } from '@modules/images/images.service';
 import { CONFIG_KEYS } from '@common/config/registry';
 import {
   DEFAULT_TIMEZONE,
@@ -23,7 +24,17 @@ type ActiveEventMeta = { id: string; pin: string };
 
 @Injectable()
 export class EventService {
-  constructor(private config: ConfigService) {}
+  constructor(
+    private config: ConfigService,
+    private images: ImagesService,
+  ) {}
+
+  private verifyOwnerPassphrase(passphrase?: string) {
+    const expected = process.env.DESTRUCTIVE_PASSPHRASE ?? 'hatohui@gmail.com';
+    if (!passphrase || passphrase.trim() !== expected) {
+      throw new ForbiddenException('Invalid owner passphrase');
+    }
+  }
 
   getActive() {
     return prisma.event.findFirst({ where: { isActive: true } });
@@ -116,17 +127,24 @@ export class EventService {
     };
   }
 
-  /** Finalizing is one-way: totals stay locked for everyone afterwards. */
-  async setStage(id: string, stage: StoredStage) {
+  /**
+   * Finalizing locks totals and writes a new versioned, read-only snapshot to S3.
+   * Re-opening a finalized event requires the owner passphrase.
+   */
+  async setStage(id: string, stage: StoredStage, passphrase?: string) {
     const event = await prisma.event.findUnique({ where: { id } });
     if (!event) throw new NotFoundException('Event not found');
     if (event.orderingStage === 'finalized' && stage !== 'finalized') {
-      throw new BadRequestException('This event is finalized');
+      this.verifyOwnerPassphrase(passphrase);
     }
-    return prisma.event.update({
+    const updated = await prisma.event.update({
       where: { id },
       data: { orderingStage: stage },
     });
+    if (stage === 'finalized') {
+      await this.backupEventSnapshot(id);
+    }
+    return updated;
   }
 
   async findPast() {
@@ -150,6 +168,7 @@ export class EventService {
   }
 
   async publish(dto: PublishEventDto) {
+    const previousActive = await this.getActive();
     const pinLength = await this.config.get<number>(CONFIG_KEYS.pinLength);
     const event = await prisma.$transaction(async (tx) => {
       await tx.event.updateMany({
@@ -176,6 +195,9 @@ export class EventService {
     });
 
     await this.invalidateActive();
+    if (previousActive && previousActive.orderingStage !== 'finalized') {
+      await this.backupEventSnapshot(previousActive.id);
+    }
     return event;
   }
 
@@ -229,12 +251,159 @@ export class EventService {
     return updated;
   }
 
-  async remove(id: string) {
+  async remove(id: string, passphrase?: string) {
+    this.verifyOwnerPassphrase(passphrase);
     const event = await prisma.event.findUnique({ where: { id } });
     if (!event) throw new NotFoundException('Event not found');
 
     await prisma.event.delete({ where: { id } });
     if (event.isActive) await this.invalidateActive();
+  }
+
+  private async backupEventSnapshot(eventId: string) {
+    const full = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        presetMenu: {
+          include: {
+            translations: true,
+            foods: {
+              include: {
+                variant: {
+                  include: {
+                    translations: true,
+                    food: { include: { translations: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+        tables: {
+          where: { isStaging: false },
+          orderBy: { no: 'asc' },
+          include: {
+            slot: true,
+            people: {
+              include: { personalNotes: true },
+              orderBy: { name: 'asc' },
+            },
+            orders: {
+              orderBy: { createdAt: 'asc' },
+              include: {
+                splits: {
+                  include: { person: { select: { id: true, name: true } } },
+                },
+                variant: {
+                  include: {
+                    translations: true,
+                    food: { include: { translations: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+        people: {
+          where: { tableId: null },
+          include: { personalNotes: true },
+        },
+        feedbacks: {
+          orderBy: { createdAt: 'asc' },
+          include: { reactions: true },
+        },
+      },
+    });
+    if (!full) return null;
+
+    const tables = full.tables.map((t) => {
+      const tableTotal = t.orders.reduce(
+        (sum, o) =>
+          o.variant.food.shouldCalculate
+            ? sum + Number(o.price) * o.quantity
+            : sum,
+        0,
+      );
+      return {
+        id: t.id,
+        no: t.no,
+        name: t.slot?.name ?? `Table ${t.no}`,
+        slotId: t.slotId,
+        x: t.slot?.x ?? null,
+        y: t.slot?.y ?? null,
+        capacity: t.capacity,
+        code: t.code,
+        bannerUrl: t.bannerUrl,
+        tableLeaderId: t.tableLeaderId,
+        total: Number(tableTotal.toFixed(2)),
+        people: t.people.map((p) => ({
+          id: p.id,
+          name: p.name,
+          pfpUrl: p.pfpUrl,
+          isHost: p.id === t.tableLeaderId,
+          notes: p.personalNotes.map((n) => n.content),
+        })),
+        orders: t.orders.map((o) => ({
+          id: o.id,
+          variantId: o.variantId,
+          foodId: o.variant.foodId,
+          foodNames: o.variant.food.translations.reduce<Record<string, string>>(
+            (acc, tr) => {
+              acc[tr.language] = tr.name;
+              return acc;
+            },
+            {},
+          ),
+          variantLabels: o.variant.translations.reduce<Record<string, string>>(
+            (acc, tr) => {
+              acc[tr.language] = tr.label;
+              return acc;
+            },
+            {},
+          ),
+          quantity: o.quantity,
+          price: Number(o.price),
+          currency: o.variant.currency,
+          shouldCalculate: o.variant.food.shouldCalculate,
+          round: o.round,
+          splitAll: o.splitAll,
+          priceEdited: o.priceEdited,
+          createdAt: o.createdAt,
+          splits: o.splits.map((s) => ({
+            personId: s.personId,
+            personName: s.person.name,
+          })),
+        })),
+      };
+    });
+
+    const totalSpend = tables.reduce((sum, t) => sum + t.total, 0);
+    const totalPeople =
+      tables.reduce((sum, t) => sum + t.people.length, 0) + full.people.length;
+    const totalOrders = tables.reduce((sum, t) => sum + t.orders.length, 0);
+
+    return this.images.saveEventBackup(eventId, {
+      event: {
+        id: full.id,
+        name: full.name,
+        pin: full.pin,
+        isActive: full.isActive,
+        orderingStage: full.orderingStage,
+        presetMenuId: full.presetMenuId,
+        createdAt: full.createdAt,
+      },
+      summary: {
+        tablesCount: tables.length,
+        peopleCount: totalPeople,
+        ordersCount: totalOrders,
+        totalSpend: Number(totalSpend.toFixed(2)),
+        currency: 'RM',
+      },
+      presetMenu: full.presetMenu,
+      tables,
+      unassignedPeople: full.people,
+      feedbacks: full.feedbacks,
+    });
   }
 
   private invalidateActive() {

@@ -9,4 +9,5 @@ import type { StoredOrderingStage } from './storedOrderingStage';
 
 export interface SetOrderingStageDto {
   stage: StoredOrderingStage;
+  passphrase?: string;
 }

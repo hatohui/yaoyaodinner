@@ -669,7 +669,8 @@
 			"activate_confirm_body": "客人将看到“{{name}}”的餐桌，并需要 PIN 码 {{pin}}。当前进行中的活动将变为过往活动。",
 			"delete": "删除活动",
 			"delete_confirm_title": "删除此活动？",
-			"delete_confirm_body": "“{{name}}”及其所有餐桌、人员、订单和反馈将被永久删除，此操作无法撤销。",
+			"delete_confirm_body": "“{{name}}”及其所有餐桌、人员、订单和反馈将被永久删除。请输入所有者口令确认。",
+			"owner_passphrase_placeholder": "所有者口令",
 			"deleted": "活动已删除"
 		},
 		"edit_mode": {
@@ -688,10 +689,13 @@
 			"open": "开放预订",
 			"confirm": "确认预订",
 			"finalize": "结算活动",
+			"reopen": "重新开放活动",
 			"confirm_title": "确认预订？",
 			"confirm_body": "客人将无法再添加、修改或删除预点的菜。仍可调整分账，并在晚餐开始后添加加点。",
 			"finalize_title": "结算此活动？",
-			"finalize_body": "所有人（包括管理员）都将无法修改金额和分账。此操作无法撤销。",
+			"finalize_body": "所有人（包括管理员）都将无法修改金额和分账，同时会将新版本的只读备份保存至 S3。",
+			"reopen_title": "重新开放已结算的活动？",
+			"reopen_body": "这将解锁活动以便在重新结算前调整订单与分账。请输入所有者口令确认。",
 			"updated": "点餐状态已更新"
 		}
 	},

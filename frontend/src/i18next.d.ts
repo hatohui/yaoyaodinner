@@ -392,11 +392,33 @@ declare module 'react-i18next' {
             delete: string
             delete_confirm_title: string
             delete_confirm_body: string
+            owner_passphrase_placeholder: string
             deleted: string
           }
           edit_mode: {
             label: string
             on: string
+          }
+          ordering: {
+            title: string
+            stage_closed: string
+            stage_open: string
+            stage_confirmed: string
+            stage_dinner: string
+            stage_finalized: string
+            hint_auto_confirm: string
+            hint_dinner: string
+            open: string
+            confirm: string
+            finalize: string
+            reopen: string
+            confirm_title: string
+            confirm_body: string
+            finalize_title: string
+            finalize_body: string
+            reopen_title: string
+            reopen_body: string
+            updated: string
           }
           gate: {
             title: string

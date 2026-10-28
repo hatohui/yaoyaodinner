@@ -134,8 +134,9 @@ export function EventSettingsCard() {
 				title={t('admin.event.delete_confirm_title')}
 				description={t('admin.event.delete_confirm_body', { name: eventLabel })}
 				confirmLabel={t('admin.event.delete')}
-				onConfirm={() => {
-					remove(selectedEvent.id)
+				requirePassphrase
+				onConfirm={passphrase => {
+					remove(selectedEvent.id, passphrase)
 					setPending(null)
 				}}
 			/>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CheckCircle2, Lock, ShoppingCart } from 'lucide-react'
+import { CheckCircle2, Lock, RotateCcw, ShoppingCart } from 'lucide-react'
 import type { EventSummaryDto, StoredOrderingStage } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -14,6 +14,8 @@ interface OrderingStageControlProps {
 	isLive: boolean
 }
 
+type PendingStageAction = StoredOrderingStage | 'reopen' | null
+
 export function OrderingStageControl({
 	event,
 	isLive,
@@ -21,7 +23,7 @@ export function OrderingStageControl({
 	const { t, i18n } = useTranslation()
 	const { setStage, settingStage } = useAdminEvents()
 	const status = useOrderingStage()
-	const [pending, setPending] = useState<StoredOrderingStage | null>(null)
+	const [pending, setPending] = useState<PendingStageAction>(null)
 
 	// only the live event's deadline and dinner time move it along on its own
 	const stage = isLive ? status.stage : event.orderingStage
@@ -49,8 +51,8 @@ export function OrderingStageControl({
 				? t('admin.ordering.hint_dinner', { time: dinner })
 				: null
 
-	const confirm = (next: StoredOrderingStage) => {
-		setStage(event.id, next)
+	const confirm = (next: StoredOrderingStage, passphrase?: string) => {
+		setStage(event.id, next, passphrase)
 		setPending(null)
 	}
 
@@ -66,44 +68,54 @@ export function OrderingStageControl({
 			</div>
 			{hint && <p className='text-xs text-muted-foreground'>{hint}</p>}
 
-			{stored !== 'finalized' && (
-				<div className='flex flex-wrap gap-2'>
-					{stored === 'closed' && (
-						<Button
-							type='button'
-							disabled={settingStage}
-							onClick={() => confirm('open')}
-							className='gap-1.5 rounded-full'
-						>
-							<ShoppingCart className='size-4' />
-							{t('admin.ordering.open')}
-						</Button>
-					)}
-					{stored === 'open' && stage === 'open' && (
-						<Button
-							type='button'
-							disabled={settingStage}
-							onClick={() => setPending('confirmed')}
-							className='gap-1.5 rounded-full'
-						>
-							<Lock className='size-4' />
-							{t('admin.ordering.confirm')}
-						</Button>
-					)}
-					{stored !== 'closed' && (
-						<Button
-							type='button'
-							variant='outline'
-							disabled={settingStage}
-							onClick={() => setPending('finalized')}
-							className='gap-1.5 rounded-full'
-						>
-							<CheckCircle2 className='size-4' />
-							{t('admin.ordering.finalize')}
-						</Button>
-					)}
-				</div>
-			)}
+			<div className='flex flex-wrap gap-2'>
+				{stored === 'closed' && (
+					<Button
+						type='button'
+						disabled={settingStage}
+						onClick={() => confirm('open')}
+						className='gap-1.5 rounded-full'
+					>
+						<ShoppingCart className='size-4' />
+						{t('admin.ordering.open')}
+					</Button>
+				)}
+				{stored === 'open' && stage === 'open' && (
+					<Button
+						type='button'
+						disabled={settingStage}
+						onClick={() => setPending('confirmed')}
+						className='gap-1.5 rounded-full'
+					>
+						<Lock className='size-4' />
+						{t('admin.ordering.confirm')}
+					</Button>
+				)}
+				{stored !== 'closed' && stored !== 'finalized' && (
+					<Button
+						type='button'
+						variant='outline'
+						disabled={settingStage}
+						onClick={() => setPending('finalized')}
+						className='gap-1.5 rounded-full'
+					>
+						<CheckCircle2 className='size-4' />
+						{t('admin.ordering.finalize')}
+					</Button>
+				)}
+				{stored === 'finalized' && (
+					<Button
+						type='button'
+						variant='outline'
+						disabled={settingStage}
+						onClick={() => setPending('reopen')}
+						className='gap-1.5 rounded-full'
+					>
+						<RotateCcw className='size-4' />
+						{t('admin.ordering.reopen')}
+					</Button>
+				)}
+			</div>
 
 			<ConfirmDialog
 				open={pending === 'confirmed'}
@@ -121,6 +133,16 @@ export function OrderingStageControl({
 				description={t('admin.ordering.finalize_body')}
 				confirmLabel={t('admin.ordering.finalize')}
 				onConfirm={() => confirm('finalized')}
+			/>
+
+			<ConfirmDialog
+				open={pending === 'reopen'}
+				onOpenChange={open => !open && setPending(null)}
+				title={t('admin.ordering.reopen_title')}
+				description={t('admin.ordering.reopen_body')}
+				confirmLabel={t('admin.ordering.reopen')}
+				requirePassphrase
+				onConfirm={passphrase => confirm('confirmed', passphrase)}
 			/>
 		</div>
 	)

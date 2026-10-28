@@ -122,10 +122,11 @@ export function useAdminEvents() {
 		rerolling,
 		activate: (id: string) => activateMutate({ id }),
 		activating,
-		setStage: (id: string, stage: StoredOrderingStage) =>
-			stageMutate({ id, data: { stage } }),
+		setStage: (id: string, stage: StoredOrderingStage, passphrase?: string) =>
+			stageMutate({ id, data: { stage, passphrase } }),
 		settingStage,
-		remove: (id: string) => deleteMutate({ id }),
+		remove: (id: string, passphrase?: string) =>
+			deleteMutate({ id, passphrase }),
 		deleting,
 	}
 }
