@@ -35,25 +35,28 @@ export function EventSettingsCard() {
 		selectedEvent.name || format(new Date(selectedEvent.createdAt), 'PP')
 
 	return (
-		<div className='flex flex-col gap-2'>
+		<div className='flex flex-col gap-1.5'>
 			<p className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 				{t('admin.settings.category_event')}
 			</p>
 
-			<Card className='flex flex-col gap-4 px-4 py-4'>
-				<div className='flex items-center justify-between gap-3'>
+			<Card className='gap-0 divide-y divide-border/60 overflow-hidden rounded-2xl p-0'>
+				<div className='flex items-center justify-between gap-3 px-4 py-3.5'>
 					<EditableName
 						value={eventLabel}
 						onSave={name => rename(selectedEvent.id, name)}
-						className='text-sm font-medium text-foreground'
+						className='text-base font-semibold text-foreground'
 					/>
 					{isLive ? (
-						<Badge className='shrink-0 gap-1 rounded-full'>
+						<Badge className='shrink-0 gap-1 rounded-full px-2.5 py-0.5'>
 							<Radio className='size-3' />
 							{t('admin.event.live')}
 						</Badge>
 					) : (
-						<Badge variant='secondary' className='shrink-0 rounded-full'>
+						<Badge
+							variant='secondary'
+							className='shrink-0 rounded-full px-2.5 py-0.5'
+						>
 							{t('admin.event.past')}
 						</Badge>
 					)}
@@ -61,37 +64,46 @@ export function EventSettingsCard() {
 
 				<OrderingStageControl event={selectedEvent} isLive={isLive} />
 
-				<div className='flex flex-wrap gap-2 border-t border-border/60 pt-4'>
+				<div
+					className={
+						isLive
+							? 'grid grid-cols-2 gap-2 px-4 py-3.5'
+							: 'grid grid-cols-1 gap-2 px-4 py-3.5 sm:grid-cols-3'
+					}
+				>
 					<Button
 						type='button'
+						size='sm'
 						variant='outline'
 						disabled={rerolling}
 						onClick={() => setPending('reroll')}
-						className='gap-1.5 rounded-full'
+						className='h-9 w-full gap-1.5 rounded-xl'
 					>
-						<Dices className='size-4' />
+						<Dices className='size-4 text-primary' />
 						{t('admin.event.reroll_pin')}
 					</Button>
 
 					{!isLive && (
 						<Button
 							type='button'
+							size='sm'
 							variant='outline'
 							disabled={activating}
 							onClick={() => setPending('activate')}
-							className='gap-1.5 rounded-full'
+							className='h-9 w-full gap-1.5 rounded-xl'
 						>
-							<Radio className='size-4' />
+							<Radio className='size-4 text-primary' />
 							{t('admin.event.make_live')}
 						</Button>
 					)}
 
 					<Button
 						type='button'
+						size='sm'
 						variant='outline'
 						disabled={deleting}
 						onClick={() => setPending('delete')}
-						className='gap-1.5 rounded-full text-destructive hover:text-destructive'
+						className='h-9 w-full gap-1.5 rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive'
 					>
 						<Trash2 className='size-4' />
 						{t('admin.event.delete')}

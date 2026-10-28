@@ -56,48 +56,64 @@ export function OrderingStageControl({
 		setPending(null)
 	}
 
+	const showConfirm = stored === 'open' && stage === 'open'
+	const showFinalize = stored !== 'closed' && stored !== 'finalized'
+	const twoActions = showConfirm && showFinalize
+
 	return (
-		<div className='flex flex-col gap-3 border-t border-border/60 pt-4'>
-			<div className='flex flex-wrap items-center justify-between gap-2'>
-				<span className='text-sm font-medium text-foreground'>
-					{t('admin.ordering.title')}
-				</span>
-				<Badge variant='secondary' className='rounded-full'>
+		<div className='flex flex-col gap-3 px-4 py-3.5'>
+			<div className='flex items-center justify-between gap-2'>
+				<div className='flex flex-col gap-0.5'>
+					<span className='text-sm font-medium text-foreground'>
+						{t('admin.ordering.title')}
+					</span>
+					{hint && <p className='text-xs text-muted-foreground'>{hint}</p>}
+				</div>
+				<Badge
+					variant='secondary'
+					className='shrink-0 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-0.5 font-medium text-primary'
+				>
 					{stageLabel}
 				</Badge>
 			</div>
-			{hint && <p className='text-xs text-muted-foreground'>{hint}</p>}
 
-			<div className='flex flex-wrap gap-2'>
+			<div
+				className={
+					twoActions ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-1 gap-2'
+				}
+			>
 				{stored === 'closed' && (
 					<Button
 						type='button'
+						size='sm'
 						disabled={settingStage}
 						onClick={() => confirm('open')}
-						className='gap-1.5 rounded-full'
+						className='h-9 w-full gap-1.5 rounded-xl'
 					>
 						<ShoppingCart className='size-4' />
 						{t('admin.ordering.open')}
 					</Button>
 				)}
-				{stored === 'open' && stage === 'open' && (
+				{showConfirm && (
 					<Button
 						type='button'
+						size='sm'
 						disabled={settingStage}
 						onClick={() => setPending('confirmed')}
-						className='gap-1.5 rounded-full'
+						className='h-9 w-full gap-1.5 rounded-xl'
 					>
 						<Lock className='size-4' />
 						{t('admin.ordering.confirm')}
 					</Button>
 				)}
-				{stored !== 'closed' && stored !== 'finalized' && (
+				{showFinalize && (
 					<Button
 						type='button'
+						size='sm'
 						variant='outline'
 						disabled={settingStage}
 						onClick={() => setPending('finalized')}
-						className='gap-1.5 rounded-full'
+						className='h-9 w-full gap-1.5 rounded-xl'
 					>
 						<CheckCircle2 className='size-4' />
 						{t('admin.ordering.finalize')}
@@ -106,10 +122,11 @@ export function OrderingStageControl({
 				{stored === 'finalized' && (
 					<Button
 						type='button'
+						size='sm'
 						variant='outline'
 						disabled={settingStage}
 						onClick={() => setPending('reopen')}
-						className='gap-1.5 rounded-full'
+						className='h-9 w-full gap-1.5 rounded-xl'
 					>
 						<RotateCcw className='size-4' />
 						{t('admin.ordering.reopen')}
