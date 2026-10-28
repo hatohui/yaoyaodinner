@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Dices, Radio, Trash2 } from 'lucide-react'
+import { Dices, Radio } from 'lucide-react'
 import { format } from 'date-fns'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ import { EditableName } from '@/components/common/EditableName'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
 import { OrderingStageControl } from './@OrderingStageControl'
 
-type PendingAction = 'reroll' | 'activate' | 'delete' | null
+type PendingAction = 'reroll' | 'activate' | null
 
 export function EventSettingsCard() {
 	const { t } = useTranslation()
@@ -22,8 +22,6 @@ export function EventSettingsCard() {
 		rerolling,
 		activate,
 		activating,
-		remove,
-		deleting,
 	} = useAdminEvents()
 
 	const [pending, setPending] = useState<PendingAction>(null)
@@ -64,13 +62,7 @@ export function EventSettingsCard() {
 
 				<OrderingStageControl event={selectedEvent} isLive={isLive} />
 
-				<div
-					className={
-						isLive
-							? 'flex flex-wrap gap-2 px-4 py-3.5'
-							: 'flex flex-wrap gap-2 px-4 py-3.5'
-					}
-				>
+				<div className='flex flex-wrap gap-2 px-4 py-3.5'>
 					<Button
 						type='button'
 						size='sm'
@@ -96,18 +88,6 @@ export function EventSettingsCard() {
 							{t('admin.event.make_live')}
 						</Button>
 					)}
-
-					<Button
-						type='button'
-						size='sm'
-						variant='outline'
-						disabled={deleting}
-						onClick={() => setPending('delete')}
-						className='h-9 min-w-fit flex-1 gap-1.5 whitespace-nowrap rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive'
-					>
-						<Trash2 className='size-4 shrink-0' />
-						{t('admin.event.delete')}
-					</Button>
 				</div>
 			</Card>
 
@@ -136,19 +116,6 @@ export function EventSettingsCard() {
 				confirmLabel={t('admin.event.make_live')}
 				onConfirm={() => {
 					activate(selectedEvent.id)
-					setPending(null)
-				}}
-			/>
-
-			<ConfirmDialog
-				open={pending === 'delete'}
-				onOpenChange={open => !open && setPending(null)}
-				title={t('admin.event.delete_confirm_title')}
-				description={t('admin.event.delete_confirm_body', { name: eventLabel })}
-				confirmLabel={t('admin.event.delete')}
-				requirePassphrase
-				onConfirm={passphrase => {
-					remove(selectedEvent.id, passphrase)
 					setPending(null)
 				}}
 			/>

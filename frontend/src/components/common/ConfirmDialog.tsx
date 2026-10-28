@@ -21,6 +21,7 @@ interface ConfirmDialogProps {
 	description?: string
 	confirmLabel?: string
 	destructive?: boolean
+	actionClassName?: string
 	requirePassphrase?: boolean
 	onConfirm: (passphrase?: string) => void
 }
@@ -32,6 +33,7 @@ export function ConfirmDialog({
 	description,
 	confirmLabel,
 	destructive = true,
+	actionClassName,
 	requirePassphrase = false,
 	onConfirm,
 }: ConfirmDialogProps) {
@@ -83,7 +85,10 @@ export function ConfirmDialog({
 						onClick={handleConfirm}
 						className={cn(
 							'rounded-full',
-							destructive && buttonVariants({ variant: 'destructive' })
+							destructive
+								? buttonVariants({ variant: 'destructive' })
+								: buttonVariants({ variant: 'default' }),
+							actionClassName
 						)}
 					>
 						{confirmLabel ?? t('common.confirm')}
