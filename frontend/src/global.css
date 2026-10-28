@@ -152,8 +152,8 @@
 :root {
 	--radius: 0.625rem;
 
-	/* 60% Dominant (Canvas: #F9F8FC - off-white with subtle purple warmth) */
-	--background: oklch(0.981 0.005 298);
+	/* 60% Dominant (Canvas: #ECE8F4 - soft neutral with purple warmth for clear card separation) */
+	--background: oklch(0.935 0.016 295);
 	--foreground: oklch(0.212 0.03 296);
 	/* #1A1625: ultra-dark purple-tinted charcoal body text */
 
@@ -170,22 +170,22 @@
 	--secondary: oklch(0.962 0.018 272);
 	--secondary-foreground: oklch(0.32 0.12 292.6);
 
-	--muted: oklch(0.95 0.01 296);
+	--muted: oklch(0.915 0.018 295);
 	--muted-foreground: oklch(0.467 0.044 296.5);
 	/* #5C5570: muted violet-gray for subtitles, captions, and metadata */
 
-	--accent: oklch(0.94 0.02 292.6);
+	--accent: oklch(0.93 0.022 292.6);
 	--accent-foreground: oklch(0.212 0.03 296);
 
-	/* Crisp 1px structural borders (#E8E5F0) */
-	--border: oklch(0.915 0.015 298);
-	--input: oklch(0.915 0.015 298);
+	/* Defined 1px structural borders (#D1CCE0) so cards clearly pop against canvas */
+	--border: oklch(0.85 0.022 295);
+	--input: oklch(0.85 0.022 295);
 
-	--sidebar: oklch(0.985 0.005 298);
+	--sidebar: oklch(0.965 0.01 295);
 	--sidebar-foreground: oklch(0.212 0.03 296);
 	--sidebar-accent: oklch(0.962 0.018 272);
 	--sidebar-accent-foreground: oklch(0.212 0.03 296);
-	--sidebar-border: oklch(0.915 0.015 298);
+	--sidebar-border: oklch(0.85 0.022 295);
 
 	/* 10% Accent Intent: #6D28D9 (Deep, rich amethyst CTA) */
 	--primary: oklch(0.491 0.241 292.6);
@@ -208,7 +208,7 @@
 	--selection: oklch(0.88 0.1 290);
 	--selection-foreground: oklch(0.2 0.05 290);
 
-	--bg-paw-opacity: 0.04;
+	--bg-paw-opacity: 0.035;
 	--bg-dot: color-mix(in oklch, var(--foreground) 6%, transparent);
 	/* Printed exports stay light whatever the screen theme is */
 	--paper: oklch(1 0 0);
