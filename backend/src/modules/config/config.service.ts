@@ -22,21 +22,25 @@ type ConfigRow = {
 
 @Injectable()
 export class ConfigService {
-  private async loadAll(): Promise<ConfigRow[]> {
-    const cached = await CacheService.get<ConfigRow[]>(
-      CacheSettings.config.all.key,
-    );
-    if (cached) return cached;
-
-    const stored = (
-      await prisma.appConfig.findMany({
-        orderBy: [{ category: "asc" }, { key: "asc" }],
-      })
-    ).map((r) => {
+  private withRegistryMeta(rows: ConfigRow[]): ConfigRow[] {
+    return rows.map((r) => {
       // labels and grouping follow the registry, so renames don't need a reseed
       const meta = CONFIG_DEFAULTS.find((d) => d.key === r.key);
       return meta ? { ...r, label: meta.label, category: meta.category } : r;
     });
+  }
+
+  private async loadAll(): Promise<ConfigRow[]> {
+    const cached = await CacheService.get<ConfigRow[]>(
+      CacheSettings.config.all.key,
+    );
+    if (cached) return this.withRegistryMeta(cached);
+
+    const stored = this.withRegistryMeta(
+      await prisma.appConfig.findMany({
+        orderBy: [{ category: "asc" }, { key: "asc" }],
+      }),
+    );
     // keys added to the registry after the DB was seeded still show, at their default
     const missing = CONFIG_DEFAULTS.filter(
       (d) => !stored.some((r) => r.key === d.key),

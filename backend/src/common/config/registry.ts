@@ -66,7 +66,7 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     type: "string",
     isPublic: true,
     category: "orders",
-    label: "Order deadline (event time zone)",
+    label: "Pre-order deadline (event time zone)",
     value: "",
   },
   {
@@ -74,7 +74,7 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     type: "boolean",
     isPublic: true,
     category: "orders",
-    label: "Confirm orders at the deadline",
+    label: "Confirm pre-orders at the deadline",
     value: true,
   },
   {
