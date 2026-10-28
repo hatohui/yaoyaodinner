@@ -49,7 +49,7 @@ export function TableCodeBar({
 
 	if (!canEdit) {
 		return (
-			<div className='flex items-center justify-between gap-3 rounded-2xl border border-primary/40 bg-primary/15 px-4 py-3 shadow-sm'>
+			<div className='flex items-center justify-between gap-3 rounded-2xl border border-primary/35 bg-brand-muted px-4 py-3 shadow-2xs'>
 				<p className='flex items-start gap-2 text-sm font-medium text-foreground'>
 					<Armchair className='mt-0.5 size-4 shrink-0 text-primary' />
 					{t('table_code.locked')}

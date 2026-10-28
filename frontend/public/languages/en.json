@@ -677,6 +677,9 @@
 			"label": "Edit mode",
 			"on": "Editing"
 		},
+		"features": {
+			"menu": "Menu & ordering"
+		},
 		"ordering": {
 			"title": "Ordering",
 			"stage_closed": "Not open yet",
@@ -687,9 +690,15 @@
 			"hint_auto_confirm": "Pre-orders confirm automatically at {{time}}",
 			"hint_dinner": "Dinner orders open at {{time}}",
 			"open": "Open pre-orders",
+			"pause": "Pause pre-orders",
+			"pause_title": "Pause pre-orders?",
+			"pause_body": "Guests will temporarily not be able to submit or change pre-orders until you re-open them.",
 			"confirm": "Confirm pre-orders",
 			"finalize": "Finalize event",
 			"reopen": "Re-open event",
+			"reopen_orders": "Re-open pre-orders",
+			"reopen_orders_title": "Re-open pre-orders?",
+			"reopen_orders_body": "Guests will be able to submit and modify pre-orders again.",
 			"confirm_title": "Confirm pre-orders?",
 			"confirm_body": "Guests can no longer add, change or remove pre-orders. They can still change splits, and add what they order once dinner starts.",
 			"finalize_title": "Finalize this event?",

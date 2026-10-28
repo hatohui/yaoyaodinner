@@ -40,12 +40,12 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 					}
 				/>
 				<span className='pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent ring-1 ring-inset ring-black/10 dark:ring-white/15' />
-				<span className='absolute bottom-2.5 left-2.5 flex h-8 min-w-8 items-center justify-center rounded-full bg-card/95 px-2.5 text-sm font-bold tabular-nums text-foreground shadow-md ring-1 ring-black/5 backdrop-blur-sm'>
+				<span className='absolute bottom-2.5 left-2.5 flex h-8 min-w-8 items-center justify-center rounded-full border border-border/80 bg-card/95 px-2.5 text-sm font-bold tabular-nums text-foreground shadow-md backdrop-blur-sm'>
 					{table.no}
 				</span>
 
 				{isMine && (
-					<span className='absolute left-2 top-2 flex items-center gap-1 rounded-full bg-card px-2.5 py-0.5 text-xs font-semibold text-primary shadow'>
+					<span className='absolute left-2 top-2 flex items-center gap-1 rounded-full border border-border/60 bg-card px-2.5 py-0.5 text-xs font-semibold text-primary shadow'>
 						<MapPin className='size-3.5 fill-current' />
 						{t('tables.your_table')}
 					</span>

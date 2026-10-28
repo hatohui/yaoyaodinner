@@ -10,7 +10,6 @@ import {
 	Loader2,
 	Menu,
 	MessageSquareHeart,
-	PencilLine,
 	ShieldCheck,
 	UtensilsCrossed,
 } from 'lucide-react'
@@ -19,6 +18,7 @@ import { ThemeToggle } from './ThemeToggle'
 import { LanguageSelector } from './LanguageSelector'
 import { AdminMenu } from './AdminMenu'
 import { IdentityMenu } from './IdentityMenu'
+import { AppLogo } from './AppLogo'
 import {
 	Sheet,
 	SheetContent,
@@ -28,7 +28,6 @@ import {
 } from '@/components/ui/sheet'
 import { cn } from '@/utils/shadcn'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
-import { useEditMode } from '@/hooks/useEditMode'
 import { useConfig } from '@/hooks/useConfig'
 import { ADMIN_GATE_TAPS, ADMIN_GATE_WINDOW_MS } from '@/common/constants'
 
@@ -37,7 +36,6 @@ export function Navbar() {
 	const { pathname } = useLocation()
 	const navigate = useNavigate()
 	const { isAdmin } = useIsAdmin()
-	const { editing, toggle: toggleEditMode } = useEditMode()
 	const { feedbackWall, menu, tables } = useConfig()
 	const tapCount = useRef(0)
 	const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -112,11 +110,7 @@ export function Navbar() {
 					onClick={handleLogoClick}
 					className='flex min-w-0 shrink items-center gap-1.5 font-bold tracking-tight text-foreground transition-opacity hover:opacity-70'
 				>
-					<img
-						src='/images/logo.png'
-						className='h-5 w-auto object-contain dark:invert'
-						alt='Logo'
-					/>
+					<AppLogo className='h-5 w-auto' />
 				</Link>
 
 				<DesktopNav
@@ -128,41 +122,20 @@ export function Navbar() {
 
 				<div className='flex shrink-0 items-center gap-0.5 sm:gap-1'>
 					{isAdmin && (
-						<>
-							<Link
-								to='/admin'
-								onClick={() => handleNavClick('/admin')}
-								aria-label={t('admin.nav.dashboard')}
-								title={t('admin.nav.dashboard')}
-								className={cn(
-									'flex size-8 shrink-0 items-center justify-center rounded-full transition-colors',
-									pathname.startsWith('/admin')
-										? 'bg-primary text-primary-foreground shadow-sm'
-										: 'text-foreground hover:bg-card/85 hover:text-primary dark:hover:bg-accent/50'
-								)}
-							>
-								<LayoutDashboard className='size-4' />
-							</Link>
-							<button
-								type='button'
-								onClick={toggleEditMode}
-								aria-label={
-									editing ? t('admin.edit_mode.on') : t('admin.edit_mode.label')
-								}
-								title={
-									editing ? t('admin.edit_mode.on') : t('admin.edit_mode.label')
-								}
-								aria-pressed={editing}
-								className={cn(
-									'flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors',
-									editing
-										? 'bg-primary text-primary-foreground shadow-sm ring-2 ring-primary/40'
-										: 'text-foreground hover:bg-card/85 hover:text-primary dark:hover:bg-accent/50'
-								)}
-							>
-								<PencilLine className='size-4' />
-							</button>
-						</>
+						<Link
+							to='/admin'
+							onClick={() => handleNavClick('/admin')}
+							aria-label={t('admin.nav.dashboard')}
+							title={t('admin.nav.dashboard')}
+							className={cn(
+								'flex size-8 shrink-0 items-center justify-center rounded-full transition-colors',
+								pathname.startsWith('/admin')
+									? 'bg-primary text-primary-foreground shadow-sm'
+									: 'text-foreground hover:bg-primary/10 hover:text-primary dark:hover:bg-accent/50'
+							)}
+						>
+							<LayoutDashboard className='size-4' />
+						</Link>
 					)}
 					<AdminMenu />
 					<div className='hidden items-center gap-1 sm:flex'>
@@ -176,7 +149,7 @@ export function Navbar() {
 							<button
 								type='button'
 								aria-label={t('nav.open_menu')}
-								className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-card/85 hover:text-primary sm:hidden dark:hover:bg-accent/50'
+								className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary/10 hover:text-primary sm:hidden dark:hover:bg-accent/50'
 							>
 								<Menu className='size-5' />
 							</button>
@@ -184,11 +157,7 @@ export function Navbar() {
 						<SheetContent side='right' className='w-64'>
 							<SheetHeader>
 								<SheetTitle className='flex items-center gap-1.5'>
-									<img
-										src='/images/logo.png'
-										className='h-4 w-auto object-contain dark:invert'
-										alt='Logo'
-									/>
+									<AppLogo className='h-4 w-auto' />
 									{t('menu.restaurant_name')}
 								</SheetTitle>
 							</SheetHeader>

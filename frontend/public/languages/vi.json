@@ -677,6 +677,9 @@
 			"label": "Chế độ chỉnh sửa",
 			"on": "Đang chỉnh sửa"
 		},
+		"features": {
+			"menu": "Thực đơn & đặt món"
+		},
 		"ordering": {
 			"title": "Đặt món",
 			"stage_closed": "Chưa mở",
@@ -687,9 +690,15 @@
 			"hint_auto_confirm": "Tự động chốt đặt trước lúc {{time}}",
 			"hint_dinner": "Mở gọi thêm trong bữa lúc {{time}}",
 			"open": "Mở đặt trước",
+			"pause": "Tạm dừng đặt trước",
+			"pause_title": "Tạm dừng đặt trước?",
+			"pause_body": "Khách sẽ tạm thời không thể gửi hoặc sửa đơn đặt trước cho đến khi bạn mở lại.",
 			"confirm": "Chốt đặt trước",
 			"finalize": "Chốt sổ sự kiện",
 			"reopen": "Mở lại sự kiện",
+			"reopen_orders": "Mở lại đặt trước",
+			"reopen_orders_title": "Mở lại đặt trước?",
+			"reopen_orders_body": "Khách sẽ có thể tiếp tục gửi và chỉnh sửa đơn đặt trước.",
 			"confirm_title": "Chốt đặt trước?",
 			"confirm_body": "Khách sẽ không thể thêm, sửa hay xóa món đặt trước. Họ vẫn có thể đổi cách chia tiền và thêm món khi bữa tối bắt đầu.",
 			"finalize_title": "Chốt sổ sự kiện này?",

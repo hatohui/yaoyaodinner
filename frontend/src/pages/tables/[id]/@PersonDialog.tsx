@@ -134,7 +134,7 @@ export function PersonDialog({
 				</div>
 
 				{canSetHost && (
-					<label className='flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-sm'>
+					<label className='flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-input bg-muted/40 px-4 py-3 text-sm transition-colors hover:bg-muted/60 dark:border-border/80 dark:bg-background/80 dark:hover:bg-background'>
 						<span className='flex items-center gap-2'>
 							<Crown className='size-4 text-primary' />
 							{t('roster.host_label')}
@@ -146,7 +146,7 @@ export function PersonDialog({
 				{canClaim && (
 					<Button
 						variant='outline'
-						className='gap-1.5 rounded-full border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary'
+						className='gap-1.5 rounded-full border border-primary/50 bg-primary/15 font-semibold text-primary hover:bg-primary/25 hover:text-primary dark:border-primary/60 dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30'
 						onClick={onClaim}
 					>
 						<UserCheck className='size-4' />

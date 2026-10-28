@@ -677,6 +677,9 @@
 			"label": "编辑模式",
 			"on": "编辑中"
 		},
+		"features": {
+			"menu": "菜单与点餐"
+		},
 		"ordering": {
 			"title": "点餐",
 			"stage_closed": "未开放",
@@ -687,9 +690,15 @@
 			"hint_auto_confirm": "预订将于 {{time}} 自动确认",
 			"hint_dinner": "席间加点于 {{time}} 开放",
 			"open": "开放预订",
+			"pause": "暂停预订",
+			"pause_title": "暂停预订？",
+			"pause_body": "在您重新开放前，客人将暂时无法提交或修改预订单。",
 			"confirm": "确认预订",
 			"finalize": "结算活动",
 			"reopen": "重新开放活动",
+			"reopen_orders": "重新开放预订",
+			"reopen_orders_title": "重新开放预订？",
+			"reopen_orders_body": "客人将可以重新提交和修改预订单。",
 			"confirm_title": "确认预订？",
 			"confirm_body": "客人将无法再添加、修改或删除预点的菜。仍可调整分账，并在晚餐开始后添加加点。",
 			"finalize_title": "结算此活动？",

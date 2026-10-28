@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CheckCircle2, Lock, RotateCcw, ShoppingCart } from 'lucide-react'
+import { CheckCircle2, Lock, PauseCircle, RotateCcw, ShoppingCart } from 'lucide-react'
 import type { EventSummaryDto, StoredOrderingStage } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -14,7 +14,11 @@ interface OrderingStageControlProps {
 	isLive: boolean
 }
 
-type PendingStageAction = StoredOrderingStage | 'reopen' | null
+type PendingStageAction =
+	| StoredOrderingStage
+	| 'reopen'
+	| 'reopen_orders'
+	| null
 
 export function OrderingStageControl({
 	event,
@@ -77,35 +81,79 @@ export function OrderingStageControl({
 				</Badge>
 			</div>
 
-			<div
-				className={
-					twoActions ? 'grid grid-cols-2 gap-2' : 'grid grid-cols-1 gap-2'
-				}
-			>
-				{stored === 'closed' && (
-					<Button
-						type='button'
-						size='sm'
-						disabled={settingStage}
-						onClick={() => confirm('open')}
-						className='h-9 w-full gap-1.5 rounded-xl'
-					>
-						<ShoppingCart className='size-4' />
-						{t('admin.ordering.open')}
-					</Button>
-				)}
-				{showConfirm && (
-					<Button
-						type='button'
-						size='sm'
-						disabled={settingStage}
-						onClick={() => setPending('confirmed')}
-						className='h-9 w-full gap-1.5 rounded-xl'
-					>
-						<Lock className='size-4' />
-						{t('admin.ordering.confirm')}
-					</Button>
-				)}
+			<div className='flex flex-col gap-2'>
+				<div
+					className={
+						stored === 'open' || stored === 'confirmed'
+							? 'grid grid-cols-2 gap-2'
+							: 'grid grid-cols-1 gap-2'
+					}
+				>
+					{stored === 'closed' && (
+						<Button
+							type='button'
+							size='sm'
+							disabled={settingStage}
+							onClick={() => confirm('open')}
+							className='h-9 w-full gap-1.5 rounded-xl'
+						>
+							<ShoppingCart className='size-4' />
+							{t('admin.ordering.open')}
+						</Button>
+					)}
+					{stored === 'open' && (
+						<Button
+							type='button'
+							size='sm'
+							variant='outline'
+							disabled={settingStage}
+							onClick={() => setPending('closed')}
+							className='h-9 w-full gap-1.5 rounded-xl'
+						>
+							<PauseCircle className='size-4' />
+							{t('admin.ordering.pause')}
+						</Button>
+					)}
+					{showConfirm && (
+						<Button
+							type='button'
+							size='sm'
+							disabled={settingStage}
+							onClick={() => setPending('confirmed')}
+							className='h-9 w-full gap-1.5 rounded-xl'
+						>
+							<Lock className='size-4' />
+							{t('admin.ordering.confirm')}
+						</Button>
+					)}
+					{stored === 'confirmed' && (
+						<Button
+							type='button'
+							size='sm'
+							variant='outline'
+							disabled={settingStage}
+							onClick={() => setPending('reopen_orders')}
+							className='h-9 w-full gap-1.5 rounded-xl'
+						>
+							<RotateCcw className='size-4' />
+							{t('admin.ordering.reopen_orders')}
+						</Button>
+					)}
+					{stored === 'finalized' && (
+						<Button
+							type='button'
+							size='sm'
+							variant='outline'
+							disabled={settingStage}
+							onClick={() => setPending('reopen')}
+							className='h-9 w-full gap-1.5 rounded-xl'
+						>
+							<RotateCcw className='size-4' />
+							{t('admin.ordering.reopen')}
+						</Button>
+					)}
+				</div>
+
 				{showFinalize && (
 					<Button
 						type='button'
@@ -118,20 +166,27 @@ export function OrderingStageControl({
 						{t('admin.ordering.finalize')}
 					</Button>
 				)}
-				{stored === 'finalized' && (
-					<Button
-						type='button'
-						size='sm'
-						variant='outline'
-						disabled={settingStage}
-						onClick={() => setPending('reopen')}
-						className='h-9 w-full gap-1.5 rounded-xl'
-					>
-						<RotateCcw className='size-4' />
-						{t('admin.ordering.reopen')}
-					</Button>
-				)}
 			</div>
+
+			<ConfirmDialog
+				open={pending === 'closed'}
+				onOpenChange={open => !open && setPending(null)}
+				title={t('admin.ordering.pause_title')}
+				description={t('admin.ordering.pause_body')}
+				confirmLabel={t('admin.ordering.pause')}
+				destructive={false}
+				onConfirm={() => confirm('closed')}
+			/>
+
+			<ConfirmDialog
+				open={pending === 'reopen_orders'}
+				onOpenChange={open => !open && setPending(null)}
+				title={t('admin.ordering.reopen_orders_title')}
+				description={t('admin.ordering.reopen_orders_body')}
+				confirmLabel={t('admin.ordering.reopen_orders')}
+				destructive={false}
+				onConfirm={() => confirm('open')}
+			/>
 
 			<ConfirmDialog
 				open={pending === 'confirmed'}

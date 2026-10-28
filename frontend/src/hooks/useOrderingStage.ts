@@ -16,7 +16,12 @@ export function useOrderingStage() {
 	const { isAdmin } = useIsAdmin()
 	const { data } = useGetOrderingStatus<OrderingStatusDto>({
 		// the stage moves on its own at the deadline and dinner time
-		query: { staleTime: 60_000, refetchInterval: 60_000 },
+		query: {
+			staleTime: 60_000,
+			refetchInterval: 60_000,
+			retry: false,
+			meta: { silent: true },
+		},
 	})
 	const status = data ?? FALLBACK
 	const { stage } = status

@@ -88,7 +88,7 @@ export function Roster({
 			</div>
 
 			{canJoin && people.length > 0 && !me && (
-				<p className='flex items-start gap-2 rounded-2xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-medium text-foreground shadow-sm'>
+				<p className='flex items-start gap-2 rounded-2xl border border-primary/35 bg-brand-muted backdrop-blur-md px-4 py-3 text-sm font-medium text-foreground shadow-2xs'>
 					<UserCheck className='mt-0.5 size-4 shrink-0 text-primary' />
 					{t('roster.pick_yourself')}
 				</p>

@@ -399,6 +399,9 @@ declare module 'react-i18next' {
             label: string
             on: string
           }
+          features: {
+            menu: string
+          }
           ordering: {
             title: string
             stage_closed: string
@@ -409,9 +412,15 @@ declare module 'react-i18next' {
             hint_auto_confirm: string
             hint_dinner: string
             open: string
+            pause: string
+            pause_title: string
+            pause_body: string
             confirm: string
             finalize: string
             reopen: string
+            reopen_orders: string
+            reopen_orders_title: string
+            reopen_orders_body: string
             confirm_title: string
             confirm_body: string
             finalize_title: string

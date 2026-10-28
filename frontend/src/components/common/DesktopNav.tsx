@@ -85,7 +85,7 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 						'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200',
 						target === link.to
 							? 'font-semibold text-primary'
-							: 'text-foreground/75 hover:bg-card/85 hover:text-primary hover:shadow-2xs dark:hover:bg-accent/50'
+							: 'text-foreground/75 hover:bg-primary/10 hover:text-primary dark:hover:bg-accent/50'
 					)}
 				>
 					<link.icon className='size-4 shrink-0' strokeWidth={1.75} />

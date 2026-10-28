@@ -120,19 +120,19 @@ export default function MenuPage() {
 
 	return (
 		<div className='min-h-screen'>
-			<div className='mx-auto max-w-[1400px] px-4'>
-				<FilterBar
-					search={search}
-					onSearchChange={setSearch}
-					activeCategory={category}
-					categories={categories}
-					sort={sort}
-					onSortChange={setSort}
-					popular={popular}
-					recommended={recommended}
-					onFilterChange={setFilter}
-				/>
+			<FilterBar
+				search={search}
+				onSearchChange={setSearch}
+				activeCategory={category}
+				categories={categories}
+				sort={sort}
+				onSortChange={setSort}
+				popular={popular}
+				recommended={recommended}
+				onFilterChange={setFilter}
+			/>
 
+			<div className='mx-auto max-w-[1400px] px-4'>
 				{editing && <EditModeBanner onExit={exitEditMode} />}
 
 				<div className='py-8'>

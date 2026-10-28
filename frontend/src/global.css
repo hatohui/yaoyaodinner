@@ -152,54 +152,53 @@
 :root {
 	--radius: 0.625rem;
 
-	/* 60% Dominant (Canvas: #E5DCEB - dimmed daytime pastel lilac surface, zero glare) */
-	--background: oklch(0.905 0.022 312);
-	--foreground: oklch(0.212 0.03 296);
-	/* #1A1625: ultra-dark purple-tinted charcoal body text */
+	/* 60% Dominant (Canvas: #e2d8e1 - Yao Yao inspired daytime pastel surface) */
+	--background: oklch(0.893 0.016 328.8);
+	--foreground: oklch(0.2 0.015 292);
+	/* #1d1c23: deep charcoal black body text with enhanced contrast */
 
-	/* 30% Secondary (Surfaces: #F5F2F7 - soft milky pastel cards, toned down from stark white) */
-	--card: oklch(0.965 0.008 312);
-	--card-foreground: oklch(0.212 0.03 296);
+	/* 30% Secondary (Surfaces: crisp pure white cards popped against #e2d8e1 canvas) */
+	--card: oklch(0.99 0.003 329);
+	--card-foreground: oklch(0.2 0.015 292);
 
-	--popover: oklch(0.965 0.008 312);
-	--popover-foreground: oklch(0.212 0.03 296);
+	--popover: oklch(0.99 0.003 329);
+	--popover-foreground: oklch(0.2 0.015 292);
 
-	--control: oklch(0.965 0.008 312);
+	--control: oklch(0.99 0.003 329);
 
-	/* Accent Subtle: soft, gentle orchid-magenta tint */
-	--secondary: oklch(0.92 0.035 332);
-	--secondary-foreground: oklch(0.32 0.10 332);
+	/* Accent Subtle (Filter pills, soft tags) */
+	--secondary: oklch(0.93 0.025 332);
+	--secondary-foreground: oklch(0.25 0.08 332);
 
-	--muted: oklch(0.89 0.022 312);
-	--muted-foreground: oklch(0.467 0.044 296.5);
-	/* #5C5570: muted violet-gray for subtitles, captions, and metadata */
+	--muted: oklch(0.87 0.02 329);
+	--muted-foreground: oklch(0.42 0.03 292);
 
-	--accent: oklch(0.92 0.035 332);
-	--accent-foreground: oklch(0.212 0.03 296);
+	--accent: oklch(0.93 0.025 332);
+	--accent-foreground: oklch(0.2 0.015 292);
 
-	/* Structural borders (#CBBFD3) cleanly framing the toned-down cards */
-	--border: oklch(0.82 0.03 312);
-	--input: oklch(0.82 0.03 312);
+	/* High-contrast structural borders cleanly framing the cards */
+	--border: oklch(0.77 0.03 329);
+	--input: oklch(0.77 0.03 329);
 
-	--sidebar: oklch(0.94 0.015 312);
-	--sidebar-foreground: oklch(0.212 0.03 296);
-	--sidebar-accent: oklch(0.92 0.035 332);
-	--sidebar-accent-foreground: oklch(0.212 0.03 296);
-	--sidebar-border: oklch(0.82 0.03 312);
+	--sidebar: oklch(0.93 0.015 329);
+	--sidebar-foreground: oklch(0.2 0.015 292);
+	--sidebar-accent: oklch(0.91 0.035 332);
+	--sidebar-accent-foreground: oklch(0.2 0.015 292);
+	--sidebar-border: oklch(0.77 0.03 329);
 
-	/* 10% Accent Intent: Warm Orchid-Magenta Purple (#b15ba5) */
-	--primary: oklch(0.60 0.145 333);
+	/* 10% Accent Intent: Purple (#a7389d - Yao Yao's signature purple) */
+	--primary: oklch(0.537 0.186 331.6);
 	--primary-foreground: oklch(0.99 0 0);
-	--ring: oklch(0.60 0.145 333);
-	--sidebar-primary: oklch(0.60 0.145 333);
+	--ring: oklch(0.537 0.186 331.6);
+	--sidebar-primary: oklch(0.537 0.186 331.6);
 	--sidebar-primary-foreground: oklch(0.99 0 0);
-	--sidebar-ring: oklch(0.60 0.145 333);
+	--sidebar-ring: oklch(0.537 0.186 331.6);
 
 	/* Semantic System Colors */
 	--destructive: oklch(0.55 0.22 25);
 	--success: oklch(0.55 0.16 145);
 
-	--chart-1: oklch(0.60 0.145 333);
+	--chart-1: oklch(0.537 0.186 331.6);
 	--chart-2: oklch(0.55 0.12 280);
 	--chart-3: oklch(0.65 0.12 280);
 	--chart-4: oklch(0.3 0.06 280);
@@ -208,7 +207,7 @@
 	--selection: oklch(0.85 0.08 312);
 	--selection-foreground: oklch(0.2 0.04 312);
 
-	--bg-paw-opacity: 0.035;
+	--bg-paw-opacity: 0.045;
 	--bg-dot: color-mix(in oklch, var(--foreground) 6%, transparent);
 	/* Printed exports stay light whatever the screen theme is */
 	--paper: oklch(1 0 0);
@@ -218,83 +217,64 @@
 }
 
 [data-theme='dark'] {
-	--background: oklch(0.17 0.012 305);
+	/* Background: Deep Midnight Navy (#0c1938 - Aster inspired deep base) */
+	--background: oklch(0.18 0.055 264.7);
 
-	--foreground: oklch(0.98 0.005 305);
+	/* Highlight Silver / Foreground: #d5d8d6 (boosted for crisp reading) */
+	--foreground: oklch(0.92 0.005 157.2);
 
-	--card: oklch(0.225 0.006 56.043);
+	/* Lifted navy card surface with clear separation from canvas */
+	--card: oklch(0.27 0.055 264.7);
+	--card-foreground: oklch(0.92 0.005 157.2);
 
-	--card-foreground: oklch(0.98 0.005 305);
+	--popover: oklch(0.27 0.055 264.7);
+	--popover-foreground: oklch(0.92 0.005 157.2);
 
-	--popover: oklch(0.24 0.04 333);
+	/* Primary Accent: Warm Gold (#d6b67d - Aster's gold markings) */
+	--primary: oklch(0.81 0.115 82);
+	--primary-foreground: oklch(0.12 0.05 264.7);
 
-	--popover-foreground: oklch(0.98 0.005 305);
+	/* Accent 2: Vibrant Cyan (#03abd3 - Aster's cyan accents) */
+	--secondary: oklch(0.3 0.05 264.7);
+	--secondary-foreground: oklch(0.9 0.01 264.7);
 
-	/* Warm Orchid-Magenta Purple (#b15ba5) matching light mode */
-	--primary: oklch(0.60 0.145 333);
+	/* Enhanced contrast subtitles and captions */
+	--muted: oklch(0.32 0.045 264.7);
+	--muted-foreground: oklch(0.76 0.025 264.7);
 
-	--primary-foreground: oklch(0.99 0 0);
+	--control: oklch(0.27 0.055 264.7);
 
-	--secondary: oklch(0.50 0.12 333);
-
-	--secondary-foreground: oklch(0.98 0.005 305);
-
-	--muted: oklch(0.3 0.06 333);
-
-	--muted-foreground: oklch(0.82 0.025 305);
-
-	--control: oklch(0.27 0.03 305);
-
-	--accent: oklch(0.40 0.09 333);
-	/* Mid-range accent */
-
-	--accent-foreground: oklch(0.98 0.005 305);
+	--accent: oklch(0.688 0.127 222.5);
+	--accent-foreground: oklch(0.14 0.05 264.7);
 
 	--destructive: oklch(0.704 0.191 22.216);
-
 	--success: oklch(0.74 0.16 150);
 
-	--border: oklch(1 0 0 / 20%);
+	/* Well-defined structural card and input borders */
+	--border: oklch(0.38 0.045 264.7);
+	--input: oklch(0.38 0.045 264.7);
 
-	--input: oklch(1 0 0 / 20%);
+	--ring: oklch(0.81 0.115 82);
 
-	--ring: oklch(0.60 0.145 333);
-	/* Ring matches primary */
+	--chart-1: oklch(0.81 0.115 82);
+	--chart-2: oklch(0.688 0.127 222.5);
+	--chart-3: oklch(0.6 0.09 81.5);
+	--chart-4: oklch(0.55 0.1 222.5);
+	--chart-5: oklch(0.879 0.004 157.2);
 
-	--chart-1: oklch(0.60 0.145 333);
-	/* Brightest - primary */
+	--sidebar: oklch(0.2 0.06 264.7);
+	--sidebar-foreground: oklch(0.92 0.005 157.2);
+	--sidebar-primary: oklch(0.81 0.115 82);
+	--sidebar-primary-foreground: oklch(0.14 0.05 264.7);
+	--sidebar-accent: oklch(0.32 0.05 264.7);
+	--sidebar-accent-foreground: oklch(0.92 0.005 157.2);
+	--sidebar-border: oklch(0.36 0.045 264.7);
+	--sidebar-ring: oklch(0.81 0.115 82);
 
-	--chart-2: oklch(0.52 0.12 333);
-	/* Medium */
+	--selection: oklch(0.688 0.127 222.5 / 40%);
+	--selection-foreground: oklch(0.99 0 0);
 
-	--chart-3: oklch(0.40 0.09 333);
-	/* Darkest */
-
-	--chart-4: oklch(0.70 0.14 333);
-
-	--chart-5: oklch(0.645 0.246 16.439);
-
-	--sidebar: oklch(0.22 0.03 333);
-
-	--sidebar-foreground: oklch(0.985 0.001 106.423);
-
-	--sidebar-primary: oklch(0.60 0.145 333);
-
-	--sidebar-primary-foreground: oklch(0.99 0 0);
-
-	--sidebar-accent: oklch(0.28 0.05 333);
-
-	--sidebar-accent-foreground: oklch(0.985 0.001 106.423);
-
-	--sidebar-border: oklch(1 0 0 / 10%);
-
-	--sidebar-ring: oklch(0.60 0.145 333);
-
-	--selection: oklch(0.78 0.18 150);
-
-	--selection-foreground: oklch(0.16 0.04 150);
-
-	--bg-paw-opacity: 0.02;
+	--bg-paw-opacity: 0.045;
 	--bg-dot: color-mix(in oklch, var(--primary) 9%, transparent);
 }
 
@@ -329,23 +309,13 @@
 		margin: 0;
 	}
 
-	/* Light mode: simple monochromatic ambient color blobs in random areas */
+	/* Dark mode clean paw pattern overlay */
 	body::before {
-		content: "";
+		content: '';
 		position: fixed;
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
-		background:
-			radial-gradient(ellipse 500px 380px at 10% 12%, color-mix(in oklch, var(--primary) 15%, transparent) 0%, transparent 70%),
-			radial-gradient(ellipse 460px 520px at 90% 40%, color-mix(in oklch, var(--primary) 13%, transparent) 0%, transparent 70%),
-			radial-gradient(ellipse 440px 360px at 15% 85%, color-mix(in oklch, var(--primary) 12%, transparent) 0%, transparent 70%),
-			radial-gradient(ellipse 380px 320px at 82% 92%, color-mix(in oklch, var(--primary) 10%, transparent) 0%, transparent 70%);
-	}
-
-	/* Dark mode clean paw pattern from screenshot */
-	[data-theme='dark'] body::before {
-		background: none;
 		background-color: var(--primary);
 		opacity: var(--bg-paw-opacity);
 		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M84 76a20 20 0 1 1-20-20 20 20 0 0 1 20 20Zm44-44a20 20 0 1 0 20 20 20 20 0 0 0-20-20Zm44 24a20 20 0 1 0 20 20 20 20 0 0 0-20-20Zm30.8 111.92a40.09 40.09 0 0 0-31.5-27.13 52 52 0 0 0-85.8 0 40.11 40.11 0 0 0-31.5 27.13c-5.83 18.23-2.58 37.16 9.15 53.37 12 16.59 34 26.71 58.62 26.71h12.46c24.62 0 46.66-10.12 58.62-26.71 11.73-16.21 15-35.14 9.15-53.37Z'/%3E%3C/svg%3E");

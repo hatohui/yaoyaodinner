@@ -24,7 +24,11 @@ const useTanstackConfig = (
 	}
 
 	return {
-		queryCache: new QueryCache({ onError: handleError }),
+		queryCache: new QueryCache({
+			onError: (error, query) => {
+				if (!query.meta?.silent) handleError(error)
+			},
+		}),
 		mutationCache: new MutationCache({
 			onError: (error, _variables, _context, mutation) => {
 				if (!mutation.meta?.ownErrorToast) handleError(error)

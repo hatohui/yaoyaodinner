@@ -36,7 +36,7 @@ export function OrderingStageNotice({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				'flex items-center gap-3 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3',
+				'flex items-center gap-3 rounded-2xl border border-primary/35 bg-brand-muted px-4 py-3 shadow-2xs',
 				className
 			)}
 		>

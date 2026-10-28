@@ -3,6 +3,7 @@ import { ASSET_URL } from '@/common/app'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import VideoPlayer from '@/components/common/VideoPlayer'
+import { AppLogo } from '@/components/common/AppLogo'
 import QuoteSection from '@/config/quotes'
 import { DinnerTime } from './@DinnerTime'
 
@@ -23,10 +24,9 @@ const LandingPage = (): React.JSX.Element => {
 			</div>
 
 			<div className='relative z-10 flex min-h-[calc(100dvh-3.5rem)] flex-col items-center justify-center px-4 text-center'>
-				<img
-					src='/images/logo.png'
-					className='mb-6 h-12 w-auto object-contain invert drop-shadow-lg sm:h-16'
-					alt='Logo'
+				<AppLogo
+					className='mb-6 h-12 w-auto drop-shadow-lg sm:h-16'
+					alwaysInvert
 				/>
 				<h1 className='mb-4 text-4xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-6xl lg:text-7xl'>
 					{t('menu.restaurant_name')}
