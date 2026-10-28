@@ -1,9 +1,17 @@
 import { useTranslation } from 'react-i18next'
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from 'recharts'
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	XAxis,
+	YAxis,
+	Cell,
+	ReferenceLine,
+} from 'recharts'
 import type { TableTotalDto } from '@/api/model'
 import { Spinner } from '@/components/ui/spinner'
 import {
-	ChartConfig,
+	type ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
@@ -33,45 +41,66 @@ export function TableTotalsChart({ totals, isLoading }: TableTotalsChartProps) {
 		)
 	}
 
+	const active = totals.filter(r => r.total > 0)
+	const avg =
+		active.length > 0
+			? active.reduce((sum, r) => sum + r.total, 0) / active.length
+			: 0
+
 	const chartConfig = {
 		total: {
-			label: 'Total spent',
+			label: 'Total',
 			color: 'var(--primary)',
 		},
 		outlier: {
-			label: 'Outlier',
+			label: t('admin.stats.outlier'),
 			color: 'var(--destructive)',
 		},
 	} satisfies ChartConfig
 
 	return (
-		<div className='flex min-h-[300px] w-full flex-col justify-center rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
-			<ChartContainer config={chartConfig} className='w-full'>
-				<BarChart data={totals} margin={{ top: 20, left: -20, right: 10, bottom: 0 }}>
+		<div className='flex w-full flex-col justify-center gap-2 rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
+			<ChartContainer config={chartConfig} className='aspect-auto h-52 w-full'>
+				<BarChart
+					data={totals}
+					margin={{ top: 12, left: -12, right: 12, bottom: 0 }}
+				>
 					<CartesianGrid vertical={false} />
 					<XAxis
 						dataKey='name'
 						tickLine={false}
-						tickMargin={10}
+						tickMargin={8}
 						axisLine={false}
 						fontSize={12}
 					/>
 					<YAxis
 						tickLine={false}
 						axisLine={false}
-						tickMargin={10}
+						tickMargin={8}
 						fontSize={12}
-						tickFormatter={value => `$${value}`}
+						tickFormatter={value => `${value}`}
 					/>
+					{avg > 0 && (
+						<ReferenceLine
+							y={avg}
+							stroke='var(--muted-foreground)'
+							strokeDasharray='4 4'
+							strokeOpacity={0.6}
+						/>
+					)}
 					<ChartTooltip
 						cursor={false}
 						content={<ChartTooltipContent hideLabel />}
 					/>
-					<Bar dataKey='total' radius={8}>
+					<Bar dataKey='total' radius={8} maxBarSize={44}>
 						{totals.map((entry, index) => (
 							<Cell
 								key={`cell-${index}`}
-								fill={entry.isOutlier ? 'var(--color-outlier)' : 'var(--color-total)'}
+								fill={
+									entry.isOutlier
+										? 'var(--color-outlier)'
+										: 'var(--color-total)'
+								}
 							/>
 						))}
 					</Bar>

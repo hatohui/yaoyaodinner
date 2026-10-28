@@ -16,13 +16,22 @@ export function useAdminStats() {
 	const [allOpen, setAllOpen] = useState(false)
 	const { data: allOrdered = [], isLoading: allLoading } = useGetPopularItems<
 		PopularItemDto[]
-	>(
-		{ scope, lang: i18n.language, eventId: scopedEventId, limit: 0 },
-		{ query: { enabled: allOpen } }
-	)
+	>({ scope, lang: i18n.language, eventId: scopedEventId, limit: 0 })
 
 	const { data: tableTotals = [], isLoading: totalsLoading } =
 		useGetTableTotals<TableTotalDto[]>({ eventId: scopedEventId })
+
+	const totalSpend = tableTotals.reduce((sum, row) => sum + row.total, 0)
+	const activeTablesCount = tableTotals.filter(row => row.total > 0).length
+	const avgPerTable = activeTablesCount > 0 ? totalSpend / activeTablesCount : 0
+	const outliersCount = tableTotals.filter(row => row.isOutlier).length
+	const sourceItems = allOrdered.length > 0 ? allOrdered : popular
+	const totalOrderedCount = sourceItems.reduce(
+		(sum, item) => sum + item.count,
+		0
+	)
+	const uniqueDishesCount = sourceItems.length
+	const topItem = popular[0] ?? null
 
 	return {
 		scope,
@@ -35,5 +44,12 @@ export function useAdminStats() {
 		allLoading,
 		tableTotals,
 		totalsLoading,
+		totalSpend,
+		activeTablesCount,
+		avgPerTable,
+		outliersCount,
+		totalOrderedCount,
+		uniqueDishesCount,
+		topItem,
 	}
 }

@@ -11,20 +11,42 @@ import {
 	getGetTablesQueryKey,
 	getGetStagedTablesQueryKey,
 } from '@/api/tables/tables'
-import type { EventSummaryDto, PublishEventDto } from '@/api/model'
+import { useGetPopularItems, useGetTableTotals } from '@/api/stats/stats'
+import type {
+	EventSummaryDto,
+	PopularItemDto,
+	PublishEventDto,
+	TableTotalDto,
+} from '@/api/model'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
 import { useToast } from '@/hooks/useToast'
 
 export function useAdminDashboard() {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
-	const { selectedEvent } = useAdminEvents()
+	const { selectedEvent, scopedEventId, selectEvent } = useAdminEvents()
 
 	const { data: activeEvent, isLoading: activeLoading } =
 		useGetActiveEvent<EventSummaryDto | null>()
 	const { data: pastEvents = [], isLoading: pastLoading } =
 		useGetPastEvents<EventSummaryDto[]>()
+
+	const { data: popular = [], isLoading: popularLoading } = useGetPopularItems<
+		PopularItemDto[]
+	>({
+		scope: 'event',
+		lang: i18n.language,
+		eventId: scopedEventId,
+		limit: 5,
+	})
+
+	const { data: tableTotals = [], isLoading: totalsLoading } =
+		useGetTableTotals<TableTotalDto[]>({ eventId: scopedEventId })
+
+	const totalSpend = tableTotals.reduce((sum, row) => sum + row.total, 0)
+	const activeTablesCount = tableTotals.filter(row => row.total > 0).length
+	const avgPerTable = activeTablesCount > 0 ? totalSpend / activeTablesCount : 0
 
 	const { mutate, isPending: publishing } = usePublishEvent({
 		mutation: {
@@ -49,9 +71,16 @@ export function useAdminDashboard() {
 	return {
 		activeEvent: activeEvent ?? null,
 		selectedEvent,
+		selectEvent,
 		activeLoading,
 		pastEvents,
 		pastLoading,
+		popular,
+		popularLoading,
+		tableTotals,
+		totalsLoading,
+		totalSpend,
+		avgPerTable,
 		publish,
 		publishing,
 		copyPin,
