@@ -85,7 +85,7 @@ export function Roster({
 			</div>
 
 			{canJoin && people.length > 0 && !me && (
-				<p className='flex items-start gap-2 rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
+				<p className='flex items-start gap-2 rounded-2xl border border-primary/40 bg-primary/15 px-4 py-3 text-sm font-medium text-foreground shadow-sm'>
 					<UserCheck className='mt-0.5 size-4 shrink-0 text-primary' />
 					{t('roster.pick_yourself')}
 				</p>
@@ -124,7 +124,7 @@ export function Roster({
 					ref={inputRef}
 					onKeyDown={handleKeyDown}
 					placeholder={t('roster.add_placeholder')}
-					className='rounded-2xl border border-dashed border-border bg-transparent px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary sm:px-5 sm:py-4'
+					className='rounded-2xl border border-dashed border-primary/40 bg-card/60 px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:bg-card sm:px-5 sm:py-4'
 				/>
 			)}
 
@@ -312,8 +312,8 @@ function RosterItem({
 					type='button'
 					onClick={onClaim}
 					className={cn(
-						'relative inline-flex shrink-0 items-center gap-1 rounded-full border border-border bg-control font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary',
-						compact ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs'
+						'relative inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border border-primary/35 bg-primary/12 font-semibold text-primary shadow-xs transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground',
+						compact ? 'px-2.5 py-0.5 text-[11px]' : 'px-3 py-1 text-xs'
 					)}
 				>
 					{!compact && <UserCheck className='size-3.5' />}
