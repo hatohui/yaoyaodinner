@@ -1,12 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import {
-	Armchair,
-	Users,
-	ClipboardList,
-	DoorOpen,
-	Coins,
-	Calculator,
-} from 'lucide-react'
+import { Armchair, Users, ClipboardList, Coins, Calculator } from 'lucide-react'
 import type { EventStatsDto } from '@/api/model'
 import { Card } from '@/components/ui/card'
 
@@ -22,8 +15,6 @@ export function EventStatsCards({
 	avgPerTable = 0,
 }: EventStatsCardsProps) {
 	const { t } = useTranslation()
-	const occupancyPct =
-		stats.tables > 0 ? Math.round((stats.occupied / stats.tables) * 100) : 0
 
 	const items = [
 		{
@@ -31,12 +22,6 @@ export function EventStatsCards({
 			label: t('admin.dashboard.stat_tables'),
 			value: String(stats.tables),
 			icon: Armchair,
-		},
-		{
-			key: 'occupied',
-			label: t('admin.dashboard.stat_occupied'),
-			value: `${stats.occupied} (${occupancyPct}%)`,
-			icon: DoorOpen,
 		},
 		{
 			key: 'people',
@@ -65,7 +50,7 @@ export function EventStatsCards({
 	]
 
 	return (
-		<div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6'>
+		<div className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5'>
 			{items.map(item => {
 				const Icon = item.icon
 				return (
