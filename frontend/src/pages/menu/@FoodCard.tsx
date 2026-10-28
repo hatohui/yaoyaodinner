@@ -132,7 +132,7 @@ export function FoodCard({
 							aria-label={t('orders.add')}
 							title={t('orders.add')}
 							onClick={press(onAdd)}
-							className='absolute right-2 top-2 flex size-8 items-center justify-center rounded-full border border-foreground/20 bg-card/90 text-primary shadow-md ring-1 ring-background/70 backdrop-blur-sm transition-all hover:scale-110 hover:bg-primary hover:text-primary-foreground'
+							className='absolute right-2 top-2 flex size-8 items-center justify-center rounded-full border-2 border-primary/70 bg-card text-primary shadow-md ring-1 ring-black/10 transition-all hover:scale-110 hover:border-primary hover:bg-primary hover:text-primary-foreground'
 						>
 							<Plus className='size-4' strokeWidth={3} />
 						</button>

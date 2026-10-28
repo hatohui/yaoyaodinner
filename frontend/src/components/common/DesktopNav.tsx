@@ -71,7 +71,7 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 			<span
 				ref={pillRef}
 				aria-hidden
-				className='invisible absolute inset-y-0 left-0 rounded-full bg-primary/12 opacity-0'
+				className='invisible absolute inset-y-0 left-0 rounded-full border border-primary/25 bg-primary/18 opacity-0 shadow-2xs'
 			/>
 			{links.map(link => (
 				<Link
@@ -84,8 +84,8 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 					className={cn(
 						'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200',
 						target === link.to
-							? 'text-primary'
-							: 'text-muted-foreground hover:bg-accent/60 hover:text-foreground'
+							? 'font-semibold text-primary'
+							: 'text-foreground/75 hover:bg-card/85 hover:text-primary hover:shadow-2xs dark:hover:bg-accent/50'
 					)}
 				>
 					<link.icon className='size-4 shrink-0' strokeWidth={1.75} />

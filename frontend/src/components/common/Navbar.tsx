@@ -141,7 +141,7 @@ export function Navbar() {
 								'flex size-8 shrink-0 items-center justify-center rounded-full transition-colors',
 								pathname.startsWith('/admin')
 									? 'bg-primary text-primary-foreground shadow-sm'
-									: 'text-foreground hover:bg-accent'
+									: 'text-foreground hover:bg-card/85 hover:text-primary dark:hover:bg-accent/50'
 							)}
 						>
 							<LayoutDashboard className='size-4' />
@@ -159,7 +159,7 @@ export function Navbar() {
 							<button
 								type='button'
 								aria-label={t('nav.open_menu')}
-								className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent sm:hidden'
+								className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-card/85 hover:text-primary sm:hidden dark:hover:bg-accent/50'
 							>
 								<Menu className='size-5' />
 							</button>

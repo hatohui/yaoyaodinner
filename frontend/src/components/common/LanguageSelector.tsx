@@ -19,7 +19,7 @@ export const LanguageSelector = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className='flex h-8 w-auto items-center gap-1.5 rounded-full border-none bg-transparent px-2.5 outline-none shadow-none transition-colors hover:bg-accent focus:ring-0 focus:outline-none'>
+			<DropdownMenuTrigger className='flex h-8 w-auto items-center gap-1.5 rounded-full border-none bg-transparent px-2.5 outline-none shadow-none transition-colors hover:bg-card/85 hover:text-primary focus:ring-0 focus:outline-none dark:hover:bg-accent/50'>
 				<Globe className='size-3.5 shrink-0 text-muted-foreground' />
 				<span className='text-xs font-semibold uppercase'>{lang}</span>
 			</DropdownMenuTrigger>

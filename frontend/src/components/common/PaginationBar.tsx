@@ -15,8 +15,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { useTranslation } from 'react-i18next'
-import { MENU_PAGE_SIZE_ALL, MENU_PAGE_SIZE_OPTIONS } from '@/common/constants'
 import { cn } from '@/utils/shadcn'
 
 interface PaginationBarProps {
@@ -28,7 +26,6 @@ export function PaginationBar({
 	pagination,
 	showPageSize,
 }: PaginationBarProps) {
-	const { t } = useTranslation()
 	const {
 		page,
 		getPageNumbers,
@@ -38,8 +35,6 @@ export function PaginationBar({
 		canGoNext,
 		canGoPrevious,
 		totalPages,
-		count,
-		setCount,
 	} = pagination
 
 	if (totalPages <= 1 && !showPageSize) return null
@@ -54,8 +49,8 @@ export function PaginationBar({
 								onClick={goToPreviousPage}
 								aria-disabled={!canGoPrevious}
 								className={cn(
-									'cursor-pointer rounded-full bg-muted/60 transition-colors hover:bg-muted',
-									!canGoPrevious && 'pointer-events-none opacity-40'
+									'cursor-pointer rounded-full border border-border bg-card font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary',
+									!canGoPrevious && 'pointer-events-none opacity-45'
 								)}
 							/>
 						</PaginationItem>
@@ -76,7 +71,7 @@ export function PaginationBar({
 									>
 										<SelectTrigger
 											className={cn(
-												'h-9 w-9 justify-center gap-0 rounded-full border-primary bg-primary p-0 text-sm font-medium text-primary-foreground [&>svg]:hidden',
+												'h-9 w-9 justify-center gap-0 rounded-full border-primary bg-primary p-0 text-sm font-semibold text-primary-foreground shadow-sm [&>svg]:hidden',
 												'cursor-pointer transition-colors hover:bg-primary/90'
 											)}
 										>
@@ -97,7 +92,7 @@ export function PaginationBar({
 								<PaginationItem key={pageNum} className='hidden sm:block'>
 									<PaginationLink
 										onClick={() => handlePageChange(pageNum)}
-										className='cursor-pointer rounded-full bg-muted/60 transition-colors hover:bg-muted'
+										className='cursor-pointer rounded-full border border-border bg-card font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 									>
 										{pageNum}
 									</PaginationLink>
@@ -110,8 +105,8 @@ export function PaginationBar({
 								onClick={goToNextPage}
 								aria-disabled={!canGoNext}
 								className={cn(
-									'cursor-pointer rounded-full bg-muted/60 transition-colors hover:bg-muted',
-									!canGoNext && 'pointer-events-none opacity-40'
+									'cursor-pointer rounded-full border border-border bg-card font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary',
+									!canGoNext && 'pointer-events-none opacity-45'
 								)}
 							/>
 						</PaginationItem>

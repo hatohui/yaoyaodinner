@@ -86,12 +86,12 @@ export function CartLine({
 								: t('orders.free')}
 						</span>
 
-						<div className='flex items-center gap-1 rounded-full border border-border/60'>
+						<div className='flex items-center gap-1 rounded-full border border-border bg-muted/50'>
 							<button
 								type='button'
 								onClick={() => onQuantityChange(line.quantity - 1)}
 								aria-label={t('orders.decrease')}
-								className='flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+								className='flex size-7 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary/10 hover:text-primary'
 							>
 								<Minus className='size-3.5' />
 							</button>
@@ -102,7 +102,7 @@ export function CartLine({
 								type='button'
 								onClick={() => onQuantityChange(line.quantity + 1)}
 								aria-label={t('orders.increase')}
-								className='flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+								className='flex size-7 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary/10 hover:text-primary'
 							>
 								<Plus className='size-3.5' />
 							</button>

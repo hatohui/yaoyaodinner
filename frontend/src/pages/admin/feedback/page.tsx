@@ -18,7 +18,7 @@ export default function AdminFeedbackPage() {
 			</h1>
 
 			<div className='flex flex-wrap items-center justify-end gap-2'>
-				<div className='flex items-center gap-1 rounded-full border border-border/60 p-0.5'>
+				<div className='flex items-center gap-1 rounded-full border border-border/80 bg-card p-1 shadow-xs'>
 					{(['recent', 'top'] as const).map(s => (
 						<button
 							key={s}
@@ -27,8 +27,8 @@ export default function AdminFeedbackPage() {
 							className={cn(
 								'rounded-full px-3 py-1 text-xs font-medium transition-colors',
 								sort === s
-									? 'bg-primary text-primary-foreground'
-									: 'text-muted-foreground hover:text-foreground'
+									? 'bg-primary text-primary-foreground shadow-sm'
+									: 'text-muted-foreground hover:bg-primary/10 hover:text-primary'
 							)}
 						>
 							{s === 'recent'

@@ -60,7 +60,10 @@ export default function AdminPresetsPage() {
 							<TabsTrigger key={preset.id} value={preset.id}>
 								{t('admin.presets.menu_label', { idx: idx + 1 })}
 								{preset.isActive && (
-									<Badge variant='default' className='ml-2 text-[10px]'>
+									<Badge
+										variant='outline'
+										className='ml-1.5 border-emerald-500/35 bg-emerald-500/15 text-[10px] text-emerald-700 group-data-[state=active]/trigger:border-white/30 group-data-[state=active]/trigger:bg-white/20 group-data-[state=active]/trigger:text-white dark:text-emerald-300'
+									>
 										{t('admin.presets.active')}
 									</Badge>
 								)}

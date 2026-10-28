@@ -75,7 +75,7 @@ export function AdminMenu() {
 						'flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors',
 						editing
 							? 'bg-primary text-primary-foreground shadow-sm'
-							: 'text-destructive hover:bg-accent'
+							: 'text-destructive hover:bg-card/85 dark:hover:bg-accent/50'
 					)}
 				>
 					{editing ? (

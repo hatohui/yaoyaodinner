@@ -91,7 +91,7 @@ export function PresetItemsList({
 								<Button
 									size='icon-xs'
 									variant='outline'
-									className='rounded-full'
+									className='rounded-full border-border bg-muted/60 text-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 									disabled={item.quantity <= 1}
 									onClick={() =>
 										onQuantityChange(item.variantId, item.quantity - 1)
@@ -105,7 +105,7 @@ export function PresetItemsList({
 								<Button
 									size='icon-xs'
 									variant='outline'
-									className='rounded-full'
+									className='rounded-full border-border bg-muted/60 text-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 									onClick={() =>
 										onQuantityChange(item.variantId, item.quantity + 1)
 									}

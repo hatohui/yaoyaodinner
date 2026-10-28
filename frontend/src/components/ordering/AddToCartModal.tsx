@@ -174,7 +174,7 @@ export function AddToCartModal({
 										type='button'
 										onClick={() => setQuantity(q => Math.max(1, q - 1))}
 										disabled={quantity <= 1}
-										className='flex size-9 items-center justify-center rounded-full border border-border/60 text-foreground transition-colors hover:bg-muted disabled:opacity-40'
+										className='flex size-9 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
 									>
 										<Minus className='size-4' />
 									</button>
@@ -184,7 +184,7 @@ export function AddToCartModal({
 									<button
 										type='button'
 										onClick={() => setQuantity(q => q + 1)}
-										className='flex size-9 items-center justify-center rounded-full border border-border/60 text-foreground transition-colors hover:bg-muted'
+										className='flex size-9 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 									>
 										<Plus className='size-4' />
 									</button>

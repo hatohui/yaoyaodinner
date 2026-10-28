@@ -81,7 +81,7 @@ export function OrderListItem({
 			: splitNames.join(', ') || t('orders.personal')
 
 	const stepButton =
-		'flex items-center justify-center rounded-full border border-border bg-control text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+		'flex items-center justify-center rounded-full border border-border bg-muted/60 text-foreground shadow-2xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
 	const title = (
 		<span
 			className={cn(

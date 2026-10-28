@@ -166,18 +166,18 @@
 
 	--primary-foreground: oklch(0.98 0.002 320);
 
-	--secondary: oklch(0.87 0.02 310);
+	--secondary: oklch(0.83 0.035 308);
 	/* Subtle tinted purple-gray */
 
-	--secondary-foreground: oklch(0.25 0.05 305);
+	--secondary-foreground: oklch(0.22 0.05 305);
 
-	--muted: oklch(0.86 0.02 310);
-	--muted-foreground: oklch(0.38 0.04 305);
+	--muted: oklch(0.83 0.025 310);
+	--muted-foreground: oklch(0.36 0.04 305);
 
 	/* Surface for inputs, selects and filter pills */
 	--control: oklch(1 0 0);
 
-	--accent: oklch(0.82 0.03 310);
+	--accent: oklch(0.79 0.045 308);
 	/* Stronger hover state */
 
 	--accent-foreground: oklch(0.2 0.05 305);

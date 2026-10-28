@@ -76,7 +76,7 @@ export function AdminSidebar({
 							rowClass,
 							active
 								? 'bg-primary text-primary-foreground shadow-sm'
-								: 'text-muted-foreground hover:bg-accent hover:text-foreground'
+								: 'text-foreground/75 hover:bg-card hover:text-primary hover:shadow-xs dark:hover:bg-accent/50'
 						)}
 					>
 						<Icon className='size-4 shrink-0' />
@@ -94,7 +94,7 @@ export function AdminSidebar({
 				aria-label={collapsed ? t('admin.nav.exit') : undefined}
 				className={cn(
 					rowClass,
-					'text-muted-foreground hover:bg-accent hover:text-foreground'
+					'text-foreground/75 hover:bg-card hover:text-primary hover:shadow-xs dark:hover:bg-accent/50'
 				)}
 			>
 				<ExternalLink className='size-4 shrink-0' />

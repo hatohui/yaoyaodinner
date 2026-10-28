@@ -40,6 +40,7 @@ export function TableCodesDialog({ codes }: TableCodesDialogProps) {
 	return (
 		<>
 			<Button
+				size='sm'
 				variant='outline'
 				className='gap-1.5 rounded-full'
 				onClick={() => setOpen(true)}
