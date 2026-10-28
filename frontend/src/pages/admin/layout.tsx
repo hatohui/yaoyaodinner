@@ -33,12 +33,7 @@ const AdminLayout = ({
 	if (!isAdmin) return <AdminUnlock />
 
 	return (
-		<div
-			className={cn(
-				'mx-auto flex gap-6 px-4 py-6 transition-[max-width] duration-200 lg:pl-0',
-				collapsed ? 'max-w-[90rem]' : 'max-w-6xl'
-			)}
-		>
+		<div className='mx-auto flex max-w-6xl gap-6 px-4 py-6 lg:pl-0'>
 			<aside
 				className={cn(
 					'hidden shrink-0 transition-[width] duration-200 lg:block',
