@@ -12,6 +12,7 @@ export default function AdminDashboardPage() {
 	const { t } = useTranslation()
 	const {
 		activeEvent,
+		selectedEvent,
 		activeLoading,
 		pastEvents,
 		pastLoading,
@@ -27,9 +28,11 @@ export default function AdminDashboardPage() {
 					{t('admin.dashboard.title')}
 				</h1>
 				<div className='flex flex-wrap items-center gap-2'>
-					{activeEvent && (
+					{selectedEvent && (
 						<ExportOrdersDialog
-							eventName={activeEvent.name || t('admin.dashboard.unnamed_event')}
+							eventName={
+								selectedEvent.name || t('admin.dashboard.unnamed_event')
+							}
 						/>
 					)}
 					<PublishEventDialog
@@ -44,14 +47,14 @@ export default function AdminDashboardPage() {
 				<div className='flex justify-center py-16'>
 					<Spinner />
 				</div>
-			) : activeEvent ? (
+			) : selectedEvent ? (
 				<div className='flex flex-col gap-4'>
 					<PinCard
-						pin={activeEvent.pin}
-						name={activeEvent.name}
-						onCopy={() => copyPin(activeEvent.pin)}
+						pin={selectedEvent.pin}
+						name={selectedEvent.name}
+						onCopy={() => copyPin(selectedEvent.pin)}
 					/>
-					<EventStatsCards stats={activeEvent.stats} />
+					<EventStatsCards stats={selectedEvent.stats} />
 				</div>
 			) : (
 				<p className='rounded-2xl border border-dashed border-border/60 px-5 py-8 text-center text-sm text-muted-foreground'>

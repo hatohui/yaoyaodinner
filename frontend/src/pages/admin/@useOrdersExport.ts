@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useExportTables } from '@/api/tables/tables'
 import type { TableExportDto } from '@/api/model'
+import { useAdminEvents } from '@/hooks/useAdminEvents'
 
 export const EXPORT_FIELDS = [
 	'no',
@@ -25,9 +26,14 @@ export function useOrdersExport(open: boolean, eventName: string) {
 	)
 	// Tracks what was unticked so tables added after opening are included.
 	const [excluded, setExcluded] = useState<Set<string>>(new Set())
+	const { scopedEventId } = useAdminEvents()
 
 	const { data: tables = [], isLoading } = useExportTables<TableExportDto[]>(
-		{ lang: i18n.language, includeDinner: fields.has('dinner') },
+		{
+			lang: i18n.language,
+			includeDinner: fields.has('dinner'),
+			eventId: scopedEventId,
+		},
 		{ query: { enabled: open } }
 	)
 

@@ -12,12 +12,14 @@ import {
 	getGetStagedTablesQueryKey,
 } from '@/api/tables/tables'
 import type { EventSummaryDto, PublishEventDto } from '@/api/model'
+import { useAdminEvents } from '@/hooks/useAdminEvents'
 import { useToast } from '@/hooks/useToast'
 
 export function useAdminDashboard() {
 	const { t } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
+	const { selectedEvent } = useAdminEvents()
 
 	const { data: activeEvent, isLoading: activeLoading } =
 		useGetActiveEvent<EventSummaryDto | null>()
@@ -46,6 +48,7 @@ export function useAdminDashboard() {
 
 	return {
 		activeEvent: activeEvent ?? null,
+		selectedEvent,
 		activeLoading,
 		pastEvents,
 		pastLoading,

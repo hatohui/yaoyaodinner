@@ -8,14 +8,15 @@ import {
 	getGetTablesQueryKey,
 } from '@/api/tables/tables'
 import type { TableListDto } from '@/api/model'
-
-const PARAMS = { count: 100 }
+import { useAdminEvents } from '@/hooks/useAdminEvents'
 
 export function useAdminFloorPlan() {
 	const { t } = useTranslation()
 	const qc = useQueryClient()
-	const queryKey = getGetTablesQueryKey(PARAMS)
-	const { data, isLoading, isError } = useGetTables<TableListDto>(PARAMS)
+	const { scopedEventId } = useAdminEvents()
+	const params = { count: 100, eventId: scopedEventId }
+	const queryKey = getGetTablesQueryKey(params)
+	const { data, isLoading, isError } = useGetTables<TableListDto>(params)
 
 	const tables = data?.tables ?? []
 
