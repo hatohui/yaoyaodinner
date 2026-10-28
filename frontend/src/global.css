@@ -152,40 +152,40 @@
 :root {
 	--radius: 0.625rem;
 
-	/* 60% Dominant (Canvas: #F5F0FA - clean off-white with Pixelied purple warmth) */
-	--background: oklch(0.955 0.016 311);
+	/* 60% Dominant (Canvas: #E5DCEB - dimmed daytime pastel lilac surface, zero glare) */
+	--background: oklch(0.905 0.022 312);
 	--foreground: oklch(0.212 0.03 296);
 	/* #1A1625: ultra-dark purple-tinted charcoal body text */
 
-	/* 30% Secondary (Surfaces: #FFFFFF pure white cards & structural blocks) */
-	--card: oklch(1 0 0);
+	/* 30% Secondary (Surfaces: #F5F2F7 - soft milky pastel cards, toned down from stark white) */
+	--card: oklch(0.965 0.008 312);
 	--card-foreground: oklch(0.212 0.03 296);
 
-	--popover: oklch(1 0 0);
+	--popover: oklch(0.965 0.008 312);
 	--popover-foreground: oklch(0.212 0.03 296);
 
-	--control: oklch(1 0 0);
+	--control: oklch(0.965 0.008 312);
 
 	/* Accent Subtle: #E8D6F2 (soft pastel lavender tint from user palette) */
 	--secondary: oklch(0.899 0.042 313.7);
 	--secondary-foreground: oklch(0.32 0.12 305);
 
-	--muted: oklch(0.925 0.02 311);
+	--muted: oklch(0.89 0.022 312);
 	--muted-foreground: oklch(0.467 0.044 296.5);
 	/* #5C5570: muted violet-gray for subtitles, captions, and metadata */
 
 	--accent: oklch(0.899 0.042 313.7);
 	--accent-foreground: oklch(0.212 0.03 296);
 
-	/* Defined 1px structural borders (#DFD4E9) cleanly framing #FFFFFF cards */
-	--border: oklch(0.87 0.025 311);
-	--input: oklch(0.87 0.025 311);
+	/* Structural borders (#CBBFD3) cleanly framing the toned-down cards */
+	--border: oklch(0.82 0.03 312);
+	--input: oklch(0.82 0.03 312);
 
-	--sidebar: oklch(0.975 0.01 311);
+	--sidebar: oklch(0.94 0.015 312);
 	--sidebar-foreground: oklch(0.212 0.03 296);
 	--sidebar-accent: oklch(0.899 0.042 313.7);
 	--sidebar-accent-foreground: oklch(0.212 0.03 296);
-	--sidebar-border: oklch(0.87 0.025 311);
+	--sidebar-border: oklch(0.82 0.03 312);
 
 	/* 10% Accent Intent: #AE6FD3 / #9F4ECE (Pixelied pastel orchid purple) */
 	--primary: oklch(0.635 0.165 312);
@@ -205,7 +205,7 @@
 	--chart-4: oklch(0.3 0.06 280);
 	--chart-5: oklch(0.72 0.16 65);
 
-	--selection: oklch(0.88 0.08 312);
+	--selection: oklch(0.85 0.08 312);
 	--selection-foreground: oklch(0.2 0.04 312);
 
 	--bg-paw-opacity: 0.035;
