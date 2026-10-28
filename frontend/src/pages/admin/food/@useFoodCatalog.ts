@@ -48,8 +48,21 @@ export function useFoodCatalog() {
 	const [categoryId, setCategoryId] = React.useState('all')
 	const [sort, setSort] = React.useState<AdminFoodSort>('name_asc')
 	const [total, setTotal] = React.useState(0)
+	const [pageSize, setPageSize] = React.useState(() =>
+		typeof window !== 'undefined' &&
+		window.matchMedia('(min-width: 1280px)').matches
+			? 15
+			: 12
+	)
+	React.useEffect(() => {
+		const mql = window.matchMedia('(min-width: 1280px)')
+		const onChange = (e: MediaQueryListEvent) =>
+			setPageSize(e.matches ? 15 : 12)
+		mql.addEventListener('change', onChange)
+		return () => mql.removeEventListener('change', onChange)
+	}, [])
 	const debouncedSearch = useDebounce(search, 300)
-	const pagination = usePagination({ total, initialCount: 12 })
+	const pagination = usePagination({ total, initialCount: pageSize })
 
 	const [failedTranslationFood, setFailedTranslationFood] = React.useState<{
 		id: string
