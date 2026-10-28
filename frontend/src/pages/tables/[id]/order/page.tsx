@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ArrowLeft, ReceiptText, ShoppingCart, UserPlus } from 'lucide-react'
-import { Spinner } from '@/components/ui/spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { ProductGridSkeleton } from '../@Skeletons'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FilterBar } from '@/pages/menu/@FilterBar'
 import {
@@ -35,6 +36,7 @@ export default function TableOrderPage() {
 	const {
 		tableId,
 		table,
+		tableLoading,
 		search,
 		setSearch,
 		category,
@@ -122,10 +124,12 @@ export default function TableOrderPage() {
 					<ArrowLeft className='size-4' />
 					{t('orders.back_to_table')}
 				</Link>
-				{table && (
+				{table ? (
 					<h1 className='text-xl font-bold text-foreground'>
 						{t('orders.ordering_for', { table: `${table.no}. ${table.name}` })}
 					</h1>
+				) : (
+					tableLoading && <Skeleton className='mt-1 h-7 w-64 rounded-full' />
 				)}
 			</div>
 
@@ -161,9 +165,7 @@ export default function TableOrderPage() {
 						/>
 
 						{isLoading ? (
-							<div className='flex justify-center py-16'>
-								<Spinner />
-							</div>
+							<ProductGridSkeleton count={pagination.count} />
 						) : isError ? (
 							<p className='py-16 text-center text-sm text-muted-foreground'>
 								{t('tables.load_error')}

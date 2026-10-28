@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { ArrowLeft, Link as LinkIcon, Map, Users } from 'lucide-react'
-import { Spinner } from '@/components/ui/spinner'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useGetTablePeople } from '@/api/tables/tables'
 import { useGetOrders } from '@/api/orders/orders'
@@ -22,6 +22,7 @@ import { TableCodeDialog } from './@TableCodeDialog'
 import { groupOrders } from '@/components/ordering/groupOrders'
 import { LeaveTableButton } from './@LeaveTableButton'
 import { useTableDetail } from './@useTableDetail'
+import { RosterSkeleton } from './@Skeletons'
 
 const tabTrigger =
 	'rounded-full text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
@@ -48,8 +49,21 @@ export default function TableDetailPage() {
 
 	if (isLoading) {
 		return (
-			<div className='flex justify-center py-20'>
-				<Spinner />
+			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10'>
+				<Skeleton className='h-4 w-24 rounded-full' />
+				<Skeleton className='h-40 w-full rounded-2xl sm:h-52' />
+				<div className='flex items-center justify-between gap-2'>
+					<div className='flex items-center gap-2'>
+						<Skeleton className='h-7 w-48 rounded-full' />
+						<Skeleton className='h-6 w-12 rounded-full bg-primary/15' />
+					</div>
+					<div className='flex gap-2'>
+						<Skeleton className='size-9 rounded-full sm:w-28' />
+						<Skeleton className='size-9 rounded-full sm:w-28' />
+					</div>
+				</div>
+				<Skeleton className='h-10 w-full rounded-full' />
+				<RosterSkeleton />
 			</div>
 		)
 	}

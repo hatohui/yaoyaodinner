@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useGetTables } from '@/api/tables/tables'
 import type { TableListDto } from '@/api/model'
-import { Spinner } from '@/components/ui/spinner'
+import { CardGridSkeleton } from '@/components/common/ListSkeletons'
 import { TablePeopleCard } from '@/components/common/TablePeopleCard'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
 import { useDebounce } from '@/hooks/useDebounce'
@@ -20,9 +20,11 @@ export function PeopleOverview({ search }: { search: string }) {
 
 	if (isLoading) {
 		return (
-			<div className='flex justify-center py-16'>
-				<Spinner />
-			</div>
+			<CardGridSkeleton
+				count={8}
+				lines={2}
+				className='lg:grid-cols-3 2xl:grid-cols-4'
+			/>
 		)
 	}
 

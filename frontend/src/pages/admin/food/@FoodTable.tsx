@@ -7,7 +7,7 @@ import { DataGrid } from '@/components/data-grid/data-grid'
 import { getDataGridSelectColumn } from '@/components/data-grid/data-grid-select-column'
 import { useDataGrid } from '@/hooks/use-data-grid'
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { DataGridSkeleton } from '@/components/common/ListSkeletons'
 import { LayoutGrid, Table2, UtensilsCrossed } from 'lucide-react'
 import { StoredImage } from '@/components/common/StoredImage'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -172,11 +172,7 @@ export function FoodTable({
 	const selectedIds = selected.map(r => r.original.id)
 
 	if (isLoading) {
-		return (
-			<div className='flex justify-center py-16'>
-				<Spinner />
-			</div>
-		)
+		return <DataGridSkeleton rows={12} columns={6} />
 	}
 
 	if (foods.length === 0) {

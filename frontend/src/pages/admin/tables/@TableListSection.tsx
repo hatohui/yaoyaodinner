@@ -14,7 +14,7 @@ import {
 import type { TableDto } from '@/api/model'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { CardGridSkeleton } from '@/components/common/ListSkeletons'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -88,11 +88,7 @@ export function TableListSection({
 	}
 
 	if (isLoading) {
-		return (
-			<div className='flex justify-center py-10'>
-				<Spinner />
-			</div>
-		)
+		return <CardGridSkeleton count={8} lines={1} />
 	}
 
 	if (tables.length === 0) {

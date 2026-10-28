@@ -22,6 +22,7 @@ import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { cn } from '@/utils/shadcn'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { TabEmptyState } from './@TabEmptyState'
+import { SplitsSkeleton } from './@Skeletons'
 
 interface SplitsTabProps {
 	table: TableDto
@@ -36,14 +37,14 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 	const [selectedOrder, setSelectedOrder] = useState<OrderResponseDto | null>(
 		null
 	)
-	const { data: orders = [] } = useQuery(
+	const { data: orders = [], isLoading: ordersLoading } = useQuery(
 		getGetOrdersQueryOptions<OrderResponseDto[]>({
 			tableId: table.id,
 			lang: i18n.language,
 		})
 	)
 
-	const { data: presets = [] } = useQuery(
+	const { data: presets = [], isLoading: presetsLoading } = useQuery(
 		getGetPresetMenusQueryOptions<PresetMenuDto[]>({ lang: i18n.language })
 	)
 	const flatPrice = presets.find(p => p.isActive)?.price ?? 0
@@ -92,6 +93,10 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 		return { person, rounds, total: shareOf(items) + flatShare }
 	})
 	const tableTotal = breakdown.reduce((sum, b) => sum + b.total, 0)
+
+	if (ordersLoading || presetsLoading) {
+		return <SplitsSkeleton rows={Math.min(Math.max(people.length, 2), 6)} />
+	}
 
 	if (orders.length === 0 && flatPrice === 0) {
 		return (

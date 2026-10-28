@@ -7,7 +7,7 @@ import { DataGrid } from '@/components/data-grid/data-grid'
 import { getDataGridSelectColumn } from '@/components/data-grid/data-grid-select-column'
 import { useDataGrid } from '@/hooks/use-data-grid'
 import { Badge } from '@/components/ui/badge'
-import { Spinner } from '@/components/ui/spinner'
+import { DataGridSkeleton } from '@/components/common/ListSkeletons'
 
 interface PeopleTableProps {
 	people: PersonRowDto[]
@@ -98,11 +98,7 @@ export function PeopleTable({
 	})
 
 	if (isLoading) {
-		return (
-			<div className='flex justify-center py-16'>
-				<Spinner />
-			</div>
-		)
+		return <DataGridSkeleton rows={12} columns={4} />
 	}
 
 	if (people.length === 0) {

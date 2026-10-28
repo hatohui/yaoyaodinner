@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Spinner } from '@/components/ui/spinner'
+import { CardGridSkeleton } from '@/components/common/ListSkeletons'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { useDeleteFeedback } from '@/hooks/useDeleteFeedback'
 import { cn } from '@/utils/shadcn'
@@ -40,9 +40,7 @@ export default function AdminFeedbackPage() {
 			</div>
 
 			{isLoading ? (
-				<div className='flex justify-center py-16'>
-					<Spinner />
-				</div>
+				<CardGridSkeleton count={6} lines={3} />
 			) : feedback.length === 0 ? (
 				<p className='py-16 text-center text-sm text-muted-foreground'>
 					{t('feedback.empty')}

@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ImageViewer } from '@/components/common/ImageViewer'
 import { StoredImage } from '@/components/common/StoredImage'
 import { TruncatedText } from '@/components/common/TruncatedText'
+import { RosterSkeleton } from './@Skeletons'
 import { cn } from '@/utils/shadcn'
 import { useGuest } from '@/hooks/useGuest'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
@@ -29,7 +30,9 @@ export function Roster({
 	onSetHost,
 }: RosterProps) {
 	const { t } = useTranslation()
-	const { people, add, remove, updatePfp, rename } = useRoster(table.id)
+	const { people, isLoading, add, remove, updatePfp, rename } = useRoster(
+		table.id
+	)
 	const me = useGuest(s => s.me)
 	const setMe = useGuest(s => s.setMe)
 	const clearMe = useGuest(s => s.clearMe)
@@ -91,7 +94,9 @@ export function Roster({
 				</p>
 			)}
 
-			{people.length === 0 ? (
+			{isLoading ? (
+				<RosterSkeleton rows={Math.min(Math.max(table.seated, 2), 6)} />
+			) : people.length === 0 ? (
 				<p className='py-6 text-center text-sm text-muted-foreground'>
 					{t('roster.empty')}
 				</p>

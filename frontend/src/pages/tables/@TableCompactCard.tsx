@@ -22,7 +22,7 @@ export function TableCompactCard({
 }: TableCompactCardProps) {
 	const { t } = useTranslation()
 	const chip =
-		table.bannerUrl && 'rounded-full bg-card/90 px-2 py-0.5 backdrop-blur-sm'
+		table.bannerUrl && 'rounded-full bg-card px-2.5 py-0.5 shadow-sm ring-1 ring-inset ring-border'
 
 	return (
 		<Link to={`/tables/${table.id}`} className={tableCardClass(isMine)}>
@@ -49,11 +49,11 @@ export function TableCompactCard({
 				<div className='flex items-center justify-between gap-1.5'>
 					<span
 						className={cn(
-							'flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary ring-1 ring-inset ring-primary/25',
-							table.bannerUrl && 'bg-card/90 backdrop-blur-sm'
+							'flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary ring-1 ring-inset ring-primary/25',
+							table.bannerUrl && 'bg-card shadow-sm ring-primary/30'
 						)}
 					>
-						<Users className='size-3' />
+						<Users className='size-3 shrink-0' />
 						{table.seated}
 					</span>
 					{table.tableLeaderName ? (

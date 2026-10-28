@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Spinner } from '@/components/ui/spinner'
+import { CardGridSkeleton } from '@/components/common/ListSkeletons'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FeedbackForm } from './@FeedbackForm'
 import { FeedbackCard } from './@FeedbackCard'
@@ -50,9 +50,7 @@ export default function FeedbackPage() {
 			</div>
 
 			{isLoading ? (
-				<div className='flex justify-center py-10'>
-					<Spinner />
-				</div>
+				<CardGridSkeleton count={4} lines={3} className='sm:grid-cols-1' />
 			) : feedback.length === 0 ? (
 				<p className='py-10 text-center text-sm text-muted-foreground'>
 					{t('feedback.empty')}

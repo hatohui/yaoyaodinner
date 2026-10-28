@@ -67,8 +67,8 @@ export function EventSettingsCard() {
 				<div
 					className={
 						isLive
-							? 'grid grid-cols-2 gap-2 px-4 py-3.5'
-							: 'grid grid-cols-1 gap-2 px-4 py-3.5 sm:grid-cols-3'
+							? 'flex flex-wrap gap-2 px-4 py-3.5'
+							: 'flex flex-wrap gap-2 px-4 py-3.5'
 					}
 				>
 					<Button
@@ -77,9 +77,9 @@ export function EventSettingsCard() {
 						variant='outline'
 						disabled={rerolling}
 						onClick={() => setPending('reroll')}
-						className='h-9 w-full gap-1.5 rounded-xl'
+						className='h-9 min-w-fit flex-1 gap-1.5 whitespace-nowrap rounded-xl'
 					>
-						<Dices className='size-4 text-primary' />
+						<Dices className='size-4 shrink-0 text-primary' />
 						{t('admin.event.reroll_pin')}
 					</Button>
 
@@ -90,9 +90,9 @@ export function EventSettingsCard() {
 							variant='outline'
 							disabled={activating}
 							onClick={() => setPending('activate')}
-							className='h-9 w-full gap-1.5 rounded-xl'
+							className='h-9 min-w-fit flex-1 gap-1.5 whitespace-nowrap rounded-xl'
 						>
-							<Radio className='size-4 text-primary' />
+							<Radio className='size-4 shrink-0 text-primary' />
 							{t('admin.event.make_live')}
 						</Button>
 					)}
@@ -103,9 +103,9 @@ export function EventSettingsCard() {
 						variant='outline'
 						disabled={deleting}
 						onClick={() => setPending('delete')}
-						className='h-9 w-full gap-1.5 rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive'
+						className='h-9 min-w-fit flex-1 gap-1.5 whitespace-nowrap rounded-xl border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive'
 					>
-						<Trash2 className='size-4' />
+						<Trash2 className='size-4 shrink-0' />
 						{t('admin.event.delete')}
 					</Button>
 				</div>

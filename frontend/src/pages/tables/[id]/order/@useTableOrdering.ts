@@ -34,7 +34,7 @@ export function useTableOrdering() {
 		setPage(1)
 	}, [debouncedSearch, category, sort, popular, recommended, setPage])
 
-	const { data: table } = useGetTableById<TableDto>(id)
+	const { data: table, isLoading: tableLoading } = useGetTableById<TableDto>(id)
 
 	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>(
 		{ lang: i18n.language },
@@ -83,6 +83,7 @@ export function useTableOrdering() {
 	return {
 		tableId: id,
 		table,
+		tableLoading,
 		search,
 		setSearch,
 		category,

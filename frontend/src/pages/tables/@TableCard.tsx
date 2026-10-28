@@ -26,7 +26,7 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 
 	return (
 		<Link to={`/tables/${table.id}`} className={tableCardClass(isMine)}>
-			<div className='relative h-28 w-full overflow-hidden sm:h-32'>
+			<div className='relative aspect-[16/9] w-full overflow-hidden border-b border-border'>
 				<StoredImage
 					imageKey={table.bannerUrl}
 					className={bannerClass}
@@ -39,7 +39,8 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 						/>
 					}
 				/>
-				<span className='absolute bottom-2 left-2 flex h-8 min-w-8 items-center justify-center rounded-full bg-card/90 px-2.5 text-sm font-bold tabular-nums text-foreground shadow backdrop-blur-sm'>
+				<span className='pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent ring-1 ring-inset ring-black/10 dark:ring-white/15' />
+				<span className='absolute bottom-2.5 left-2.5 flex h-8 min-w-8 items-center justify-center rounded-full bg-card/95 px-2.5 text-sm font-bold tabular-nums text-foreground shadow-md ring-1 ring-black/5 backdrop-blur-sm'>
 					{table.no}
 				</span>
 
@@ -54,17 +55,17 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 				)}
 			</div>
 
-			<div className='flex flex-1 flex-col gap-3 px-4 pb-3 pt-3.5'>
+			<div className='flex flex-1 flex-col gap-3 px-4 pb-4 pt-3.5'>
 				<TruncatedText
 					text={table.name}
-					className='text-lg font-bold tracking-tight text-foreground'
+					className='text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg'
 				/>
 
 				<MatchedPeople names={matchedPeople(table)} />
 
-				<div className='mt-auto flex items-center justify-between gap-3 border-t border-border pt-2.5 text-xs'>
+				<div className='mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-3 text-sm'>
 					<span className='flex min-w-0 items-center gap-1.5'>
-						<Crown className='size-3.5 shrink-0 text-primary' />
+						<Crown className='size-4 shrink-0 text-primary' />
 						{table.tableLeaderName ? (
 							<TruncatedText
 								text={table.tableLeaderName}
@@ -78,9 +79,9 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 					</span>
 					<span
 						aria-label={t('split.people_count', { count: table.seated })}
-						className='flex shrink-0 items-center gap-1 font-semibold tabular-nums text-foreground'
+						className='flex shrink-0 items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold tabular-nums text-primary'
 					>
-						<Users className='size-3.5 text-primary' />
+						<Users className='size-3.5' />
 						{table.seated}
 					</span>
 				</div>

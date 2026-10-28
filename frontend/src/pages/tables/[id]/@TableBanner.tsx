@@ -33,7 +33,8 @@ export function TableBanner({ table, canEdit, onChange }: TableBannerProps) {
 				imageKey={table.bannerUrl}
 				onChange={onChange}
 				fallback={fallback}
-				className='sm:h-48'
+				aspect={16 / 9}
+				className='aspect-video h-auto ring-1 ring-black/10 dark:ring-white/15'
 			/>
 		)
 	}
@@ -42,9 +43,10 @@ export function TableBanner({ table, canEdit, onChange }: TableBannerProps) {
 		<div className='relative'>
 			<StoredImage
 				imageKey={table.bannerUrl}
-				className='h-32 w-full rounded-2xl object-cover sm:h-48'
-				fallback={<div className='h-32 sm:h-48'>{fallback}</div>}
+				className='aspect-video w-full rounded-2xl object-cover'
+				fallback={<div className='aspect-video'>{fallback}</div>}
 			/>
+			<span className='pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/15' />
 			{table.bannerUrl && (
 				<>
 					<button

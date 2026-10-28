@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useOrders } from './@useOrders'
@@ -11,6 +12,7 @@ import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNote } from './@IncludedNote'
 import { PriceDialog } from './@PriceDialog'
+import { OrderListSkeleton } from './@Skeletons'
 import { OrderRoundSection } from './@OrderRoundSection'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { OrderingStageNotice } from '@/components/common/OrderingStageNotice'
@@ -57,9 +59,13 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 
 	if (isLoading) {
 		return (
-			<p className='py-10 text-center text-sm text-muted-foreground'>
-				{t('common.loading')}
-			</p>
+			<div className='flex flex-col gap-3'>
+				<div className='flex items-center justify-between'>
+					<Skeleton className='h-9 w-32 rounded-full bg-primary/15' />
+					<Skeleton className='h-8 w-16 rounded-full' />
+				</div>
+				<OrderListSkeleton />
+			</div>
 		)
 	}
 
