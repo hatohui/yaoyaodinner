@@ -1,7 +1,14 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 
 export type MenuSort = 'name' | 'price' | 'price_desc' | 'popular'
+
+function getResponsiveMenuCount(): number {
+	if (typeof window === 'undefined') return 15
+	if (window.matchMedia('(min-width: 1536px)').matches) return 15 // 5 cols × 3 rows
+	if (window.matchMedia('(min-width: 1280px)').matches) return 16 // 4 cols × 4 rows
+	return 12 // 3 cols × 4 rows (lg) or 2 cols × 6 rows (mobile)
+}
 
 export interface MenuSearchParams {
 	page?: number
@@ -14,16 +21,34 @@ export interface MenuSearchParams {
 }
 
 const isMenuSort = (value: string | null): value is MenuSort =>
-	value === 'name' || value === 'price' || value === 'price_desc' || value === 'popular'
+	value === 'name' ||
+	value === 'price' ||
+	value === 'price_desc' ||
+	value === 'popular'
 
 export function useMenuSearchParams() {
 	const [searchParams, setSearchParams] = useSearchParams()
+	const [defaultCount, setDefaultCount] = useState(getResponsiveMenuCount)
+
+	useEffect(() => {
+		const update = () => setDefaultCount(getResponsiveMenuCount())
+		const mql2xl = window.matchMedia('(min-width: 1536px)')
+		const mqlXl = window.matchMedia('(min-width: 1280px)')
+		mql2xl.addEventListener('change', update)
+		mqlXl.addEventListener('change', update)
+		return () => {
+			mql2xl.removeEventListener('change', update)
+			mqlXl.removeEventListener('change', update)
+		}
+	}, [])
 
 	const pageParam = parseInt(searchParams.get('page') || '1', 10)
 	const page = Number.isFinite(pageParam) ? Math.max(1, pageParam) : 1
-	
-	const countParam = parseInt(searchParams.get('count') || '16', 10)
-	const count = Number.isFinite(countParam) && countParam > 0 ? countParam : 16
+
+	const rawCount = searchParams.get('count')
+	const countParam = rawCount ? parseInt(rawCount, 10) : defaultCount
+	const count =
+		Number.isFinite(countParam) && countParam > 0 ? countParam : defaultCount
 	const category = searchParams.get('category') || 'all'
 	const sort = isMenuSort(searchParams.get('sort'))
 		? (searchParams.get('sort') as MenuSort)
@@ -157,7 +182,7 @@ export function parseMenuSearchParams(
 ): MenuSearchParams {
 	const pageParam = parseInt(searchParams.get('page') || '1', 10)
 	const countParam = parseInt(searchParams.get('count') || '20', 10)
-	
+
 	return {
 		page: Number.isFinite(pageParam) ? Math.max(1, pageParam) : 1,
 		count: Number.isFinite(countParam) && countParam > 0 ? countParam : 20,
