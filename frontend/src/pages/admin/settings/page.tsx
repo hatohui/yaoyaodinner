@@ -19,8 +19,8 @@ export default function AdminSettingsPage() {
 	const { groups, isLoading, save } = useAdminConfig()
 
 	return (
-		<div className='flex flex-col gap-6'>
-			<div className='flex flex-col gap-1'>
+		<div className='flex flex-col gap-4'>
+			<div className='flex flex-col gap-0.5'>
 				<h1 className='text-xl font-bold text-foreground'>
 					{t('admin.settings.title')}
 				</h1>
@@ -39,13 +39,13 @@ export default function AdminSettingsPage() {
 				</p>
 			) : (
 				groups.map(([category, items]) => (
-					<div key={category} className='flex flex-col gap-2'>
+					<div key={category} className='flex flex-col gap-1.5'>
 						<p className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 							{CATEGORY_LABELS[category]
 								? t(CATEGORY_LABELS[category])
 								: category}
 						</p>
-						<Card className='divide-y divide-border/60 px-4 py-1'>
+						<Card className='gap-0 divide-y divide-border/60 px-4 py-1'>
 							{items.map(item => (
 								<ConfigRow key={item.key} item={item} onSave={save} />
 							))}

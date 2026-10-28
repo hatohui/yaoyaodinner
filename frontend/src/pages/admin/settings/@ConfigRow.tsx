@@ -28,7 +28,7 @@ export function ConfigRow({ item, onSave }: ConfigRowProps) {
 
 	if (item.type === 'boolean') {
 		return (
-			<div className='flex items-center justify-between gap-3 py-3'>
+			<div className='flex items-center justify-between gap-3 py-2.5'>
 				{label}
 				<Switch
 					checked={item.value === 'true'}
@@ -39,7 +39,7 @@ export function ConfigRow({ item, onSave }: ConfigRowProps) {
 	}
 
 	return (
-		<div className='flex flex-col gap-2 py-3'>
+		<div className='flex flex-col gap-1.5 py-2.5'>
 			{label}
 			<TextEditor
 				item={item}
