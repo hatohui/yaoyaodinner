@@ -55,7 +55,7 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 				)}
 			</div>
 
-			<div className='flex flex-1 flex-col gap-3 px-4 pb-4 pt-3.5'>
+			<div className='flex flex-1 flex-col gap-3 px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-3.5'>
 				<TruncatedText
 					text={table.name}
 					className='text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg'
@@ -63,7 +63,7 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 
 				<MatchedPeople names={matchedPeople(table)} />
 
-				<div className='mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-3 text-sm'>
+				<div className='mt-auto flex items-center justify-between gap-2 border-t border-border/50 pt-3 text-sm'>
 					<span className='flex min-w-0 items-center gap-1.5'>
 						<Crown className='size-4 shrink-0 text-primary' />
 						{table.tableLeaderName ? (
