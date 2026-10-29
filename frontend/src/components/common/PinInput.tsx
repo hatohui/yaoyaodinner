@@ -63,9 +63,13 @@ export function PinInput({
 					onKeyDown={e => handleKeyDown(i, e)}
 					onPaste={handlePaste}
 					className={cn(
-						'size-12 rounded-2xl border bg-card text-center text-xl font-semibold text-foreground shadow-sm outline-none transition-colors',
+						'size-12 rounded-2xl border-2 bg-control text-center text-xl font-semibold text-foreground shadow-sm outline-none transition-colors',
 						'focus:border-primary focus:ring-2 focus:ring-ring/40',
-						invalid ? 'border-destructive' : 'border-border',
+						invalid
+							? 'border-destructive'
+							: value[i]
+								? 'border-primary bg-primary/10'
+								: 'border-input',
 						disabled && 'opacity-60'
 					)}
 				/>
