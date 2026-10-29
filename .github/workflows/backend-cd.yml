@@ -51,8 +51,6 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # public.ecr.aws rate-limits shared runner IPs (429) when pulling the Lambda adapter
-          for attempt in 1 2 3 4; do
             docker build \
               --cache-from $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
               --build-arg BUILDKIT_INLINE_CACHE=1 \
@@ -60,9 +58,6 @@ jobs:
               -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG \
               -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
               backend/ && break
-            if [ "$attempt" = 4 ]; then exit 1; fi
-            sleep $((attempt * 20))
-          done
           docker push $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG
           docker push $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest
           echo "image=$ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
