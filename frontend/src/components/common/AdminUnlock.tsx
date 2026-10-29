@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
-import { ArrowLeft, ShieldCheck } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { UnlockLayout } from '@/components/common/UnlockLayout'
 import { useAdminUnlock } from '@/hooks/useAdminUnlock'
 
 export function AdminUnlock() {
@@ -10,42 +10,25 @@ export function AdminUnlock() {
 	const { passphrase, onChange, submit, invalid, isPending } = useAdminUnlock()
 
 	return (
-		<div className='mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-md flex-col px-4 py-6'>
-			<Link
-				to='/'
-				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
-			>
-				<ArrowLeft className='size-4' />
-				{t('access.back')}
-			</Link>
-
+		<UnlockLayout
+			icon={ShieldCheck}
+			title={t('admin.gate.title')}
+			subtitle={t('admin.gate.subtitle')}
+		>
 			<form
 				onSubmit={e => {
 					e.preventDefault()
 					submit()
 				}}
-				className='flex flex-1 flex-col items-center justify-center gap-6 text-center'
+				className='flex w-full flex-col items-center gap-6'
 			>
-				<div className='flex size-14 items-center justify-center rounded-2xl bg-brand-muted text-primary'>
-					<ShieldCheck className='size-6' />
-				</div>
-
-				<div className='space-y-1.5'>
-					<h1 className='text-2xl font-bold text-foreground'>
-						{t('admin.gate.title')}
-					</h1>
-					<p className='text-sm text-muted-foreground'>
-						{t('admin.gate.subtitle')}
-					</p>
-				</div>
-
 				<Input
 					type='password'
 					value={passphrase}
 					onChange={e => onChange(e.target.value)}
 					placeholder={t('admin.gate.placeholder')}
 					autoFocus
-					className='rounded-full text-center'
+					className='h-11 rounded-full border-2 border-input bg-control text-center'
 				/>
 
 				{invalid && (
@@ -57,12 +40,12 @@ export function AdminUnlock() {
 				<Button
 					type='submit'
 					size='lg'
-					className='w-44 rounded-full'
+					className='w-full rounded-full'
 					disabled={!passphrase || isPending}
 				>
 					{isPending ? t('admin.gate.unlocking') : t('admin.gate.unlock')}
 				</Button>
 			</form>
-		</div>
+		</UnlockLayout>
 	)
 }
