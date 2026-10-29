@@ -45,21 +45,23 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push image
         id: build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build \
-            --cache-from $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
-            --build-arg BUILDKIT_INLINE_CACHE=1 \
+          docker buildx build \
+            --platform linux/amd64 \
+            --provenance=false \
             -f backend/Dockerfile \
             -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG \
             -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
+            --push \
             backend/
-          docker push $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest
           echo "image=$ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Update Lambda function code
