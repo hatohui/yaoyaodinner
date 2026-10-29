@@ -11,6 +11,7 @@ import {
 	DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { getCroppedImageBlob } from '@/utils/cropImage'
 import { cn } from '@/utils/shadcn'
 
@@ -131,6 +132,11 @@ export function ImageCropDialog({
 						onCropComplete={onCropComplete}
 						onMediaLoaded={setMedia}
 					/>
+					{!media && (
+						<div className='absolute inset-0 flex items-center justify-center bg-muted'>
+							<Spinner className='size-6 text-primary' />
+						</div>
+					)}
 				</div>
 
 				{aspect === undefined && (
@@ -227,6 +233,7 @@ export function ImageCropDialog({
 						onClick={confirm}
 						disabled={!croppedPixels || isSaving}
 					>
+						{isSaving && <Spinner />}
 						{t('common.crop_confirm')}
 					</Button>
 				</DialogFooter>
