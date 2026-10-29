@@ -7,8 +7,6 @@ import {
 	FlaskConical,
 	Info,
 	LayoutDashboard,
-	Loader2,
-	Menu,
 	MessageSquareHeart,
 	ShieldCheck,
 	UtensilsCrossed,
@@ -19,13 +17,7 @@ import { LanguageSelector } from './LanguageSelector'
 import { AdminMenu } from './AdminMenu'
 import { IdentityMenu } from './IdentityMenu'
 import { AppLogo } from './AppLogo'
-import {
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from '@/components/ui/sheet'
+import { MobileNav } from './MobileNav'
 import { cn } from '@/utils/shadcn'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useConfig } from '@/hooks/useConfig'
@@ -144,55 +136,14 @@ export function Navbar() {
 					</div>
 					{!pathname.startsWith('/admin') && <IdentityMenu />}
 
-					<Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-						<SheetTrigger asChild>
-							<button
-								type='button'
-								aria-label={t('nav.open_menu')}
-								className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary/10 hover:text-primary sm:hidden dark:hover:bg-accent/50'
-							>
-								<Menu className='size-5' />
-							</button>
-						</SheetTrigger>
-						<SheetContent side='right' className='w-64'>
-							<SheetHeader>
-								<SheetTitle className='flex items-center gap-1.5'>
-									<AppLogo className='h-4 w-auto' />
-									{t('menu.restaurant_name')}
-								</SheetTitle>
-							</SheetHeader>
-							<nav className='flex flex-col gap-1 px-4 pb-4'>
-								{navLinks.map(link => (
-									<Link
-										key={link.to}
-										to={link.to}
-										onClick={() => {
-											handleNavClick(link.to)
-											setMobileOpen(false)
-										}}
-										aria-busy={pendingTo === link.to}
-										className={cn(
-											'flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
-											isActive(link.to)
-												? 'bg-primary/90 text-primary-foreground shadow-sm'
-												: 'text-muted-foreground hover:bg-accent hover:text-foreground'
-										)}
-									>
-										{pendingTo === link.to ? (
-											<Loader2 className='size-4 animate-spin shrink-0' />
-										) : (
-											<link.icon className='size-4 shrink-0' />
-										)}
-										{link.label}
-									</Link>
-								))}
-							</nav>
-							<div className='mt-auto flex items-center justify-between gap-2 border-t border-border px-4 py-3'>
-								<LanguageSelector />
-								<ThemeToggle />
-							</div>
-						</SheetContent>
-					</Sheet>
+					<MobileNav
+						open={mobileOpen}
+						onOpenChange={setMobileOpen}
+						links={navLinks}
+						isActive={isActive}
+						pendingTo={pendingTo}
+						onNavigate={handleNavClick}
+					/>
 				</div>
 			</div>
 		</header>
