@@ -109,7 +109,7 @@ export function ImageCropDialog({
 
 	return (
 		<Dialog open onOpenChange={open => !open && onCancel()}>
-			<DialogContent className='gap-4 rounded-3xl sm:max-w-xl'>
+			<DialogContent className='grid-cols-[minmax(0,1fr)] gap-4 rounded-3xl sm:max-w-xl'>
 				<DialogHeader>
 					<DialogTitle>{t('common.crop_image')}</DialogTitle>
 					<DialogDescription>{t('common.crop_hint')}</DialogDescription>
@@ -161,58 +161,61 @@ export function ImageCropDialog({
 					</div>
 				)}
 
-				<div className='flex items-center gap-2'>
-					<button
-						type='button'
-						onClick={() => setZoom(Math.max(minZoom, zoom - 0.25))}
-						aria-label={t('common.crop_zoom_out')}
-						className={toolButton}
-					>
-						<ZoomOut className='size-4' />
-					</button>
-					<input
-						type='range'
-						min={minZoom}
-						max={MAX_ZOOM}
-						step={0.01}
-						value={zoom}
-						onChange={e => setZoom(Number(e.target.value))}
-						className='h-2 flex-1 cursor-pointer accent-primary'
-						aria-label={t('common.crop_zoom')}
-					/>
-					<button
-						type='button'
-						onClick={() => setZoom(Math.min(MAX_ZOOM, zoom + 0.25))}
-						aria-label={t('common.crop_zoom_in')}
-						className={toolButton}
-					>
-						<ZoomIn className='size-4' />
-					</button>
-					<span className='mx-1 h-6 w-px bg-border' />
-					<button
-						type='button'
-						onClick={() => rotate(-90)}
-						aria-label={t('common.crop_rotate_left')}
-						className={toolButton}
-					>
-						<RotateCcw className='size-4' />
-					</button>
-					<button
-						type='button'
-						onClick={() => rotate(90)}
-						aria-label={t('common.crop_rotate_right')}
-						className={toolButton}
-					>
-						<RotateCw className='size-4' />
-					</button>
-					<button
-						type='button'
-						onClick={reset}
-						aria-label={t('common.crop_reset')}
-						className={toolButton}
-					>
-						<Undo2 className='size-4' />
-					</button>
+				<div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-3'>
+					<div className='flex min-w-0 basis-full items-center gap-2 sm:basis-0 sm:flex-1'>
+						<button
+							type='button'
+							onClick={() => setZoom(Math.max(minZoom, zoom - 0.25))}
+							aria-label={t('common.crop_zoom_out')}
+							className={toolButton}
+						>
+							<ZoomOut className='size-4' />
+						</button>
+						<input
+							type='range'
+							min={minZoom}
+							max={MAX_ZOOM}
+							step={0.01}
+							value={zoom}
+							onChange={e => setZoom(Number(e.target.value))}
+							className='h-2 min-w-0 flex-1 cursor-pointer accent-primary'
+							aria-label={t('common.crop_zoom')}
+						/>
+						<button
+							type='button'
+							onClick={() => setZoom(Math.min(MAX_ZOOM, zoom + 0.25))}
+							aria-label={t('common.crop_zoom_in')}
+							className={toolButton}
+						>
+							<ZoomIn className='size-4' />
+						</button>
+					</div>
+					<div className='flex items-center gap-2'>
+						<button
+							type='button'
+							onClick={() => rotate(-90)}
+							aria-label={t('common.crop_rotate_left')}
+							className={toolButton}
+						>
+							<RotateCcw className='size-4' />
+						</button>
+						<button
+							type='button'
+							onClick={() => rotate(90)}
+							aria-label={t('common.crop_rotate_right')}
+							className={toolButton}
+						>
+							<RotateCw className='size-4' />
+						</button>
+						<button
+							type='button'
+							onClick={reset}
+							aria-label={t('common.crop_reset')}
+							className={toolButton}
+						>
+							<Undo2 className='size-4' />
+						</button>
+					</div>
 				</div>
 
 				<DialogFooter>
