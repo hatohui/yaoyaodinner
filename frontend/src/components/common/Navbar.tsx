@@ -21,7 +21,11 @@ import { MobileNav } from './MobileNav'
 import { cn } from '@/utils/shadcn'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useConfig } from '@/hooks/useConfig'
-import { ADMIN_GATE_TAPS, ADMIN_GATE_WINDOW_MS } from '@/common/constants'
+import {
+	ADMIN_GATE_LOCK_MS,
+	ADMIN_GATE_TAPS,
+	ADMIN_GATE_WINDOW_MS,
+} from '@/common/constants'
 
 export function Navbar() {
 	const { t } = useTranslation()
@@ -31,6 +35,7 @@ export function Navbar() {
 	const { feedbackWall, menu, tables } = useConfig()
 	const tapCount = useRef(0)
 	const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+	const gateOpenedAt = useRef(0)
 	const [mobileOpen, setMobileOpen] = useState(false)
 	const [pending, setPending] = useState<{ to: string; from: string } | null>(
 		null
@@ -42,11 +47,17 @@ export function Navbar() {
 	}
 
 	const handleLogoClick = (e: React.MouseEvent) => {
+		if (Date.now() - gateOpenedAt.current < ADMIN_GATE_LOCK_MS) {
+			e.preventDefault()
+			return
+		}
+
 		tapCount.current += 1
 		if (tapTimer.current) clearTimeout(tapTimer.current)
 
 		if (tapCount.current >= ADMIN_GATE_TAPS) {
 			tapCount.current = 0
+			gateOpenedAt.current = Date.now()
 			e.preventDefault()
 			navigate('/admin')
 			return

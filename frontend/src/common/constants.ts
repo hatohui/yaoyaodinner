@@ -19,6 +19,7 @@ export const ADMIN_HEADER = 'x-admin-secret'
 export const TABLE_ACCESS_HEADER = 'x-table-access'
 export const ADMIN_GATE_TAPS = 5
 export const ADMIN_GATE_WINDOW_MS = 1500
+export const ADMIN_GATE_LOCK_MS = 3000
 
 export const STALE_TIME_STATIC = 1000 * 60 * 30
 
