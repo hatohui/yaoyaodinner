@@ -51,13 +51,13 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-            docker build \
-              --cache-from $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
-              --build-arg BUILDKIT_INLINE_CACHE=1 \
-              -f backend/Dockerfile \
-              -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG \
-              -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
-              backend/ && break
+          docker build \
+            --cache-from $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            -f backend/Dockerfile \
+            -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG \
+            -t $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest \
+            backend/
           docker push $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG
           docker push $ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:latest
           echo "image=$ECR_REGISTRY/${{ env.LAMBDA_FUNCTION_NAME }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
