@@ -69,7 +69,6 @@ export function Navbar() {
 	}
 
 	const navLinks = [
-		{ to: '/about', label: t('nav.about'), icon: Info, show: true },
 		{
 			to: '/menu',
 			label: t('nav.menu'),
@@ -84,6 +83,7 @@ export function Navbar() {
 			show: feedbackWall,
 		},
 		{ to: '/faq', label: t('nav.faq'), icon: CircleHelp, show: true },
+		{ to: '/about', label: t('nav.about'), icon: Info, show: true },
 		{
 			to: '/dev',
 			label: t('nav.dev'),
