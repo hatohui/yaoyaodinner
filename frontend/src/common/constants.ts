@@ -10,6 +10,7 @@ export const ORDER_CART_STORAGE_KEY = 'order_cart_by_table'
 export const ORDER_LIST_VIEW_STORAGE_KEY = 'order_list_view'
 export const TABLE_LIST_VIEW_STORAGE_KEY = 'table_list_view'
 export const MENU_VIEW_STORAGE_KEY = 'menu_view'
+export const SPLIT_VIEW_STORAGE_KEY = 'split_view'
 export const TABLE_FETCH_ALL_COUNT = 100
 export const ADMIN_PASSPHRASE_STORAGE_KEY = 'admin_passphrase'
 export const ADMIN_EVENT_ID_STORAGE_KEY = 'admin_event_id'
@@ -25,6 +26,8 @@ export const ADMIN_GATE_LOCK_MS = 3000
 export const LOCATION_ADDRESS =
 	'43, Jln SS 15/4E, Ss 15, 47500 Subang Jaya, Selangor, Malaysia'
 export const LOCATION_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(LOCATION_ADDRESS)}`
+
+export const DEFAULT_CURRENCY = 'RM'
 
 export const STALE_TIME_STATIC = 1000 * 60 * 30
 // tables are shared, so keep other guests' orders and seats fresh while open

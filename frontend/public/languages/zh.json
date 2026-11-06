@@ -346,7 +346,13 @@
 		"your_share": "你的分摊",
 		"quantity": "数量",
 		"people_count": "{{count}} 人",
-		"table_total": "本桌合计"
+		"table_total": "本桌合计",
+		"view_people": "按人",
+		"view_receipt": "账单",
+		"everyone_else": "其他人",
+		"everyone": "所有人",
+		"bill_title": "{{table}} · 账单",
+		"total": "合计"
 	},
 	"notes": {
 		"placeholder": "添加所有人可见的备注，例如\"不吃虾\"",

@@ -29,7 +29,7 @@ export function EventContextSwitcher() {
 				value={selectedEvent?.id ?? ''}
 				onValueChange={id => selectEvent(id === activeEvent?.id ? null : id)}
 			>
-				<SelectTrigger className='rounded-full'>
+				<SelectTrigger className='w-full rounded-full border-border bg-card font-medium shadow-xs dark:border-primary/40 dark:bg-card dark:hover:bg-card'>
 					<SelectValue />
 				</SelectTrigger>
 				<SelectContent>

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { PersonDto } from '@/api/model'
 import { OrderThumb } from './OrderThumb'
 import type { OrderedLine } from '@/components/ordering/groupOrders'
+import { billingCurrency } from '@/utils/money'
 
 interface OrderedListProps {
 	lines: OrderedLine[]
@@ -23,7 +24,7 @@ export function OrderedList({ lines, people }: OrderedListProps) {
 		(sum, o) => (o.shouldCalculate ? sum + o.price * o.quantity : sum),
 		0
 	)
-	const currency = lines.find(o => o.currency)?.currency ?? ''
+	const currency = billingCurrency(lines)
 
 	return (
 		<div className='flex flex-col gap-3'>

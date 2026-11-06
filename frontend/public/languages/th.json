@@ -346,7 +346,13 @@
 		"your_share": "ส่วนของคุณ",
 		"quantity": "จำนวน",
 		"people_count": "{{count}} คน",
-		"table_total": "ยอดรวมทั้งโต๊ะ"
+		"table_total": "ยอดรวมทั้งโต๊ะ",
+		"view_people": "ตามคน",
+		"view_receipt": "ใบเสร็จ",
+		"everyone_else": "คนอื่น ๆ",
+		"everyone": "ทุกคน",
+		"bill_title": "{{table}} · บิล",
+		"total": "รวม"
 	},
 	"notes": {
 		"placeholder": "เพิ่มโน้ตที่ทุกคนมองเห็นได้ เช่น \"กินกุ้งไม่ได้\"",

@@ -9,6 +9,7 @@ import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useToast } from '@/hooks/useToast'
 import { localStorage } from '@/utils/localstorage'
 import { ORDER_CART_STORAGE_KEY } from '@/common/constants'
+import { billingCurrency } from '@/utils/money'
 
 export interface CartLine {
 	foodId: string
@@ -180,7 +181,7 @@ export function useOrderCart(tableId: string) {
 		(sum, l) => (l.shouldCalculate ? sum + l.price * l.quantity : sum),
 		0
 	)
-	const currency = items.find(l => l.currency)?.currency ?? ''
+	const currency = billingCurrency(items)
 
 	const { mutateAsync: createBatch, isPending } = useCreateOrderBatch()
 

@@ -339,6 +339,12 @@ declare module 'react-i18next' {
 					set_menu: string
 					your_share: string
 					quantity: string
+					view_people: string
+					view_receipt: string
+					everyone_else: string
+					everyone: string
+					bill_title: string
+					total: string
 				}
 				notes: { title: string; placeholder: string; empty: string }
 				feedback: {

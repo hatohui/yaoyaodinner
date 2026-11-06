@@ -87,7 +87,7 @@ export function OrderListItem({
 			className={cn(
 				'font-medium',
 				compact && 'truncate text-sm',
-				order.shouldCalculate ? 'text-foreground' : 'text-foreground/50 italic'
+				order.shouldCalculate ? 'text-foreground' : 'text-muted-foreground'
 			)}
 		>
 			{order.foodName}
@@ -108,7 +108,7 @@ export function OrderListItem({
 				</Badge>
 			</button>
 			{!order.shouldCalculate && (
-				<Badge className='rounded-full border-accent/30 bg-accent/15 text-[10px] text-accent'>
+				<Badge className='rounded-full border-border bg-muted text-[10px] text-muted-foreground'>
 					{t('orders.free_badge')}
 				</Badge>
 			)}

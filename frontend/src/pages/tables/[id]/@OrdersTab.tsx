@@ -23,6 +23,7 @@ import {
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
+import { billingCurrency } from '@/utils/money'
 
 interface OrdersTabProps {
 	table: TableDto
@@ -51,7 +52,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const dinnerLines = lines.filter(l => l.round === 'dinner')
 	const showRounds =
 		dinnerLines.length > 0 || stage === 'dinner' || stage === 'finalized'
-	const currency = orders[0]?.currency
+	const currency = billingCurrency(orders)
 	const { personId: myPersonId } = useWhoAmI(table.id)
 	const [editing, setEditing] = useState<OrderedLine | null>(null)
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)

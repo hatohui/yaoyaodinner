@@ -346,7 +346,13 @@
 		"your_share": "Phần của bạn",
 		"quantity": "Số lượng",
 		"people_count": "{{count}} người",
-		"table_total": "Tổng cả bàn"
+		"table_total": "Tổng cả bàn",
+		"view_people": "Theo người",
+		"view_receipt": "Hóa đơn",
+		"everyone_else": "Mọi người khác",
+		"everyone": "Mọi người",
+		"bill_title": "{{table}} · hóa đơn",
+		"total": "Tổng"
 	},
 	"notes": {
 		"placeholder": "Thêm ghi chú mọi người đều thấy được, vd: \"không ăn được tôm\"",

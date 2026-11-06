@@ -40,7 +40,8 @@ const AdminLayout = ({
 					collapsed ? 'w-14' : 'w-56'
 				)}
 			>
-				<div className='sticky top-20 flex flex-col gap-4'>
+				{/* solid in light mode so it reads over the background blobs */}
+				<div className='sticky top-20 flex flex-col gap-4 rounded-2xl border border-border bg-card px-2 py-3 shadow-sm dark:border-transparent dark:bg-transparent dark:px-0 dark:py-0 dark:shadow-none'>
 					<div
 						className={cn(
 							'flex items-center gap-1',

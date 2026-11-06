@@ -346,7 +346,13 @@
 		"your_share": "Your share",
 		"quantity": "Quantity",
 		"people_count": "{{count}} people",
-		"table_total": "Table total"
+		"table_total": "Table total",
+		"view_people": "By person",
+		"view_receipt": "Receipt",
+		"everyone_else": "Everyone else",
+		"everyone": "Everyone",
+		"bill_title": "{{table}} · bill",
+		"total": "Total"
 	},
 	"notes": {
 		"placeholder": "Add a note visible to everyone, e.g. \"can't eat shrimp\"",
