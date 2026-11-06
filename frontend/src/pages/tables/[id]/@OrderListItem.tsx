@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Minus, Pencil, Plus, Trash2, Users2 } from 'lucide-react'
+import { Minus, Pencil, Plus, Trash2 } from 'lucide-react'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
-import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { cn } from '@/utils/shadcn'
 
 const MIN_QUANTITY = 1
@@ -20,9 +19,6 @@ interface OrderListItemProps {
 	onRemove: () => void
 	onQuantityChange: (quantity: number) => void
 	onEditPrice?: () => void
-	compact?: boolean
-	/** Inside a dish group the photo is already in the group header */
-	hideThumb?: boolean
 	lockItems?: boolean
 	lockSplit?: boolean
 }
@@ -34,8 +30,6 @@ export function OrderListItem({
 	onRemove,
 	onQuantityChange,
 	onEditPrice,
-	compact = false,
-	hideThumb = false,
 	lockItems = false,
 	lockSplit = false,
 }: OrderListItemProps) {
@@ -79,72 +73,23 @@ export function OrderListItem({
 	)
 	const splitLabel = order.splitAll
 		? t('orders.shared')
-		: splitNames.length > 2
-			? `${splitNames.slice(0, 2).join(', ')} +${splitNames.length - 2}`
-			: splitNames.join(', ') || t('orders.personal')
+		: splitNames.join(', ') || t('orders.personal')
 
 	const stepButton =
-		'flex items-center justify-center rounded-full border border-border bg-muted/60 text-foreground shadow-2xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
-	const fullName = `${order.foodName}${order.variantLabel ? ` - ${order.variantLabel}` : ''}`
-	const title = (
-		<span
-			title={fullName}
-			className={cn(
-				'truncate font-medium',
-				compact && 'text-sm',
-				order.shouldCalculate ? 'text-foreground' : 'text-muted-foreground'
-			)}
-		>
-			{fullName}
-		</span>
-	)
-	const splitBadge = (
-		<div className='flex min-w-0 items-center gap-1.5'>
-			<button
-				type='button'
-				onClick={onEditSplit}
-				disabled={lockSplit}
-				className='min-w-0'
-			>
-				<Badge variant='outline' className='max-w-full gap-1 rounded-full'>
-					<Users2 className='size-3 shrink-0' />
-					<span className='truncate'>{splitLabel}</span>
-				</Badge>
-			</button>
-			{!order.shouldCalculate && (
-				<Badge className='rounded-full border-border bg-muted text-[10px] text-muted-foreground'>
-					{t('orders.free_badge')}
-				</Badge>
-			)}
-			{order.priceEdited && (
-				<Badge
-					variant='secondary'
-					className='shrink-0 rounded-full text-[10px]'
-				>
-					{t('orders.price_edited')}
-				</Badge>
-			)}
-		</div>
-	)
+		'flex size-6 items-center justify-center rounded-full border border-border bg-muted/60 text-foreground shadow-2xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+
 	const stepper = lockItems ? (
-		<span
-			className={cn(
-				'shrink-0 text-sm font-medium text-muted-foreground',
-				compact ? 'w-7 text-center' : ''
-			)}
-		>
-			x{order.quantity}
+		<span className='w-7 shrink-0 text-center text-sm font-medium text-muted-foreground'>
+			×{order.quantity}
 		</span>
 	) : (
-		<div
-			className={cn('flex shrink-0 items-center', compact ? 'gap-1' : 'gap-2')}
-		>
+		<div className='flex shrink-0 items-center gap-1'>
 			<button
 				type='button'
 				onClick={() => stepQuantity(-1)}
 				disabled={Number(quantityInput) <= MIN_QUANTITY}
 				aria-label={t('orders.decrease')}
-				className={cn(stepButton, compact ? 'size-6' : 'size-7')}
+				className={stepButton}
 			>
 				<Minus className='size-3.5' />
 			</button>
@@ -164,27 +109,25 @@ export function OrderListItem({
 					if (e.key === 'Enter') e.currentTarget.blur()
 				}}
 				aria-label={t('orders.quantity')}
-				className={cn(
-					'rounded-md border border-transparent bg-transparent text-center text-sm font-medium text-foreground transition-colors hover:border-border focus:border-border focus:outline-none',
-					compact ? 'w-7' : 'w-9'
-				)}
+				className='w-7 rounded-md border border-transparent bg-transparent text-center text-sm font-medium text-foreground transition-colors hover:border-border focus:border-border focus:outline-none'
 			/>
 			<button
 				type='button'
 				onClick={() => stepQuantity(1)}
 				disabled={Number(quantityInput) >= MAX_QUANTITY}
 				aria-label={t('orders.increase')}
-				className={cn(stepButton, compact ? 'size-6' : 'size-7')}
+				className={stepButton}
 			>
 				<Plus className='size-3.5' />
 			</button>
 		</div>
 	)
-	const priceText = `${(order.price * (Number(quantityInput) || order.quantity)).toFixed(2)} ${order.currency}`
-	const priceClass = cn(
-		'shrink-0 text-sm font-medium tabular-nums',
-		order.shouldCalculate ? 'text-foreground' : 'text-foreground/50'
-	)
+
+	const priceText = order.shouldCalculate
+		? `${(order.price * (Number(quantityInput) || order.quantity)).toFixed(2)} ${order.currency}`
+		: t('orders.free')
+	const priceClass =
+		'min-w-[4.5rem] shrink-0 text-right text-sm font-medium tabular-nums text-foreground'
 	const price = onEditPrice ? (
 		<button
 			type='button'
@@ -192,7 +135,7 @@ export function OrderListItem({
 			aria-label={t('orders.edit_price')}
 			className={cn(
 				priceClass,
-				'flex items-center gap-1 rounded-full px-1.5 py-0.5 transition-colors hover:bg-primary/10 hover:text-primary'
+				'flex items-center justify-end gap-1 rounded-full px-1.5 py-0.5 transition-colors hover:bg-primary/10 hover:text-primary'
 			)}
 		>
 			{priceText}
@@ -201,52 +144,39 @@ export function OrderListItem({
 	) : (
 		<span className={priceClass}>{priceText}</span>
 	)
-	const removeButton = lockItems ? null : (
-		<button
-			type='button'
-			onClick={onRemove}
-			aria-label={t('orders.remove')}
-			className='shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive'
-		>
-			<Trash2 className='size-4' />
-		</button>
-	)
-	if (compact) {
-		return (
-			<li className='flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2 shadow-sm'>
-				{!hideThumb && (
-					<OrderThumb
-						imageKey={order.foodImageUrl}
-						alt={order.foodName}
-						className='size-9 rounded-lg'
-					/>
-				)}
-				<div className='flex min-w-0 flex-1 flex-col gap-0.5'>
-					{!hideThumb && title}
-					{splitBadge}
-				</div>
-				{stepper}
-				{price}
-				{removeButton}
-			</li>
-		)
-	}
+
 	return (
-		<li className='flex flex-col gap-1.5 rounded-2xl border border-border bg-card px-3 py-2.5 shadow-sm sm:gap-2 sm:px-4 sm:py-3'>
-			<div className='flex items-start justify-between gap-2'>
-				<div className='flex min-w-0 items-start gap-3'>
-					<OrderThumb imageKey={order.foodImageUrl} alt={order.foodName} />
-					<div className='flex min-w-0 flex-col gap-1'>
-						{title}
-						{splitBadge}
-					</div>
-				</div>
-				{removeButton}
+		<li className='flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-2.5'>
+			<div className='flex min-w-0 flex-1 items-center gap-1.5'>
+				<button
+					type='button'
+					onClick={onEditSplit}
+					disabled={lockSplit}
+					className='min-w-0 truncate text-left text-sm font-medium text-primary transition-opacity hover:underline disabled:pointer-events-none'
+				>
+					{splitLabel}
+				</button>
+				{order.priceEdited && (
+					<Badge
+						variant='secondary'
+						className='shrink-0 rounded-full text-[10px]'
+					>
+						{t('orders.price_edited')}
+					</Badge>
+				)}
 			</div>
-			<div className='flex items-center justify-between'>
-				{stepper}
-				{price}
-			</div>
+			{stepper}
+			{price}
+			{!lockItems && (
+				<button
+					type='button'
+					onClick={onRemove}
+					aria-label={t('orders.remove')}
+					className='shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive'
+				>
+					<Trash2 className='size-4' />
+				</button>
+			)}
 		</li>
 	)
 }

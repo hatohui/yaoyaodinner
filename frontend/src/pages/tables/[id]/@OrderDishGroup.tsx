@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown } from 'lucide-react'
 import type { PersonDto } from '@/api/model'
@@ -10,6 +10,7 @@ interface OrderDishGroupProps {
 	lines: OrderedLine[]
 	people: PersonDto[]
 	currency: string
+	compact?: boolean
 	children: ReactNode
 }
 
@@ -18,15 +19,24 @@ const startsOpen = () =>
 	typeof window !== 'undefined' &&
 	window.matchMedia('(min-width: 640px)').matches
 
-/** One dish ordered under several splits, folded into a card that drops down its rows. */
+/** One dish and its splits, folded into a card that drops down its rows. */
 export function OrderDishGroup({
 	lines,
 	people,
 	currency,
+	compact = false,
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
 	const [open, setOpen] = useState(startsOpen)
+	const prevCompact = useRef(compact)
+
+	useEffect(() => {
+		if (prevCompact.current !== compact) {
+			prevCompact.current = compact
+			setOpen(!compact)
+		}
+	}, [compact])
 	const head = lines[0]
 	const quantity = lines.reduce((sum, l) => sum + l.quantity, 0)
 	const total = lines.reduce(
@@ -73,16 +83,15 @@ export function OrderDishGroup({
 					<span className='text-sm font-semibold tabular-nums text-foreground'>
 						×{quantity}
 					</span>
-					<span
-						className={cn(
-							'text-xs tabular-nums',
-							head.shouldCalculate ? 'text-foreground' : 'text-muted-foreground'
-						)}
-					>
-						{head.shouldCalculate
-							? `${total.toFixed(2)} ${currency}`
-							: t('orders.free')}
-					</span>
+					{head.shouldCalculate ? (
+						<span className='text-xs tabular-nums text-muted-foreground'>
+							{total.toFixed(2)} {currency}
+						</span>
+					) : (
+						<span className='rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground'>
+							{t('orders.free')}
+						</span>
+					)}
 				</span>
 				<ChevronDown
 					className={cn(
@@ -92,7 +101,7 @@ export function OrderDishGroup({
 				/>
 			</button>
 			{open && (
-				<ul className='m-0 flex list-none flex-col gap-1.5 border-t border-border/60 bg-muted/20 p-2'>
+				<ul className='m-0 flex list-none flex-col divide-y divide-border/60 border-t border-border/60 p-0'>
 					{children}
 				</ul>
 			)}

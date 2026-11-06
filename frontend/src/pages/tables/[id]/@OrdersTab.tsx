@@ -82,7 +82,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		)
 	}
 
-	const renderLine = (line: OrderedLine, inGroup = false) => (
+	const renderLine = (line: OrderedLine) => (
 		<OrderListItem
 			key={line.key}
 			order={line}
@@ -93,8 +93,6 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 			onEditPrice={
 				canEdit && canEditPrice(line) ? () => setPricing(line) : undefined
 			}
-			compact={compact || inGroup}
-			hideThumb={inGroup}
 			lockItems={!canEdit || !canChangeItems(line)}
 			lockSplit={!canEdit || !canSplit}
 		/>
@@ -102,20 +100,17 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 
 	const renderLines = (group: OrderedLine[]) => (
 		<ul className='flex flex-col gap-2'>
-			{groupByDish(group).map(dish =>
-				dish.length === 1 ? (
-					renderLine(dish[0])
-				) : (
-					<OrderDishGroup
-						key={dishKey(dish[0])}
-						lines={dish}
-						people={people}
-						currency={currency}
-					>
-						{dish.map(line => renderLine(line, true))}
-					</OrderDishGroup>
-				)
-			)}
+			{groupByDish(group).map(dish => (
+				<OrderDishGroup
+					key={dishKey(dish[0])}
+					lines={dish}
+					people={people}
+					currency={currency}
+					compact={compact}
+				>
+					{dish.map(renderLine)}
+				</OrderDishGroup>
+			))}
 		</ul>
 	)
 
