@@ -1,13 +1,15 @@
 import type { MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Check, Eye, EyeOff, Minus, Plus, Trash2 } from 'lucide-react'
+import { Check, Eye, EyeOff, Trash2 } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { FoodTags } from '@/components/common/FoodTags'
 import { cn } from '@/utils/shadcn'
 import { StoredImage } from '@/components/common/StoredImage'
 import { FoodImageButton } from './@FoodImageButton'
+import { FoodPrice } from './@FoodPrice'
+import { AddControl } from './@AddControl'
 import { usePrefetchFood } from '@/hooks/usePrefetchFood'
 
 interface FoodCardProps {
@@ -47,19 +49,10 @@ export function FoodCard({
 		onQuickView(food.id)
 	}
 
-	const hasPrice = food.price !== null && food.price !== undefined
-
 	const isEditing = Boolean(onToggleAvailable || onDelete || onImageChange)
 
 	const canAdd =
 		Boolean(onAdd) && food.isAvailable && Boolean(food.defaultVariantId)
-
-	// controls sit inside the card's link, so they must not navigate
-	const press = (action?: () => void) => (e: MouseEvent) => {
-		e.preventDefault()
-		e.stopPropagation()
-		action?.()
-	}
 
 	return (
 		<div
@@ -93,15 +86,14 @@ export function FoodCard({
 
 				<div className='absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
 
+				{(food.isPopular || food.isRecommended) && (
+					// keeps the tags readable on bright or busy photos
+					<div className='pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/35 to-transparent' />
+				)}
 				<FoodTags
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
-					className={cn(
-						'absolute left-2 top-2',
-						quantity > 0
-							? 'max-w-[calc(100%-7.5rem)]'
-							: 'max-w-[calc(100%-3.5rem)]'
-					)}
+					className='absolute left-2 top-2 max-w-[calc(100%-1rem)]'
 				/>
 
 				{!food.isAvailable && (
@@ -115,56 +107,12 @@ export function FoodCard({
 					</div>
 				)}
 
-				{hasPrice && (
-					<span className='absolute bottom-2 right-2 rounded-full bg-card/90 px-2.5 py-1 text-sm font-bold tabular-nums text-foreground shadow-md backdrop-blur-sm'>
-						{food.price}{' '}
-						<span className='text-xs font-semibold text-primary'>
-							{food.currency}
-						</span>
-					</span>
-				)}
-
 				{orderedQuantity > 0 && !isEditing && (
 					<span className='absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-card/90 px-2 py-1 text-xs font-semibold text-foreground shadow-md backdrop-blur-sm'>
 						<Check className='size-3.5 text-primary' />
 						{t('orders.ordered_count', { count: orderedQuantity })}
 					</span>
 				)}
-
-				{canAdd &&
-					(quantity === 0 ? (
-						<button
-							type='button'
-							aria-label={t('orders.add')}
-							title={t('orders.add')}
-							onClick={press(onAdd)}
-							className='absolute right-2 top-2 flex size-8 items-center justify-center rounded-full border-2 border-primary/70 bg-card text-primary shadow-md ring-1 ring-black/10 transition-all hover:scale-110 hover:border-primary hover:bg-primary hover:text-primary-foreground'
-						>
-							<Plus className='size-4' strokeWidth={3} />
-						</button>
-					) : (
-						<div className='absolute right-2 top-2 flex items-center rounded-full bg-primary text-primary-foreground shadow-md ring-1 ring-background/70'>
-							<button
-								type='button'
-								aria-label={t('orders.decrease')}
-								onClick={press(() => onQuantityChange?.(quantity - 1))}
-								className='flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary-foreground/15'
-							>
-								<Minus className='size-4' strokeWidth={3} />
-							</button>
-							<span className='min-w-4 text-center text-sm font-bold tabular-nums'>
-								{quantity}
-							</span>
-							<button
-								type='button'
-								aria-label={t('orders.increase')}
-								onClick={press(() => onQuantityChange?.(quantity + 1))}
-								className='flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary-foreground/15'
-							>
-								<Plus className='size-4' strokeWidth={3} />
-							</button>
-						</div>
-					))}
 			</Link>
 
 			{isEditing && (
@@ -223,12 +171,22 @@ export function FoodCard({
 						{categoryName}
 					</span>
 				)}
-				<h3 className='line-clamp-2 min-h-[2lh] text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base'>
+				<h3
+					title={food.name}
+					className='truncate text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base'
+				>
 					{food.name}
 				</h3>
-				<p className='hidden min-h-[2lh] text-sm leading-snug text-muted-foreground sm:line-clamp-2'>
-					{food.description}
-				</p>
+				<div className='mt-auto flex items-end justify-between gap-2 pt-2'>
+					<FoodPrice food={food} />
+					{canAdd && (
+						<AddControl
+							quantity={quantity}
+							onAdd={onAdd}
+							onQuantityChange={onQuantityChange}
+						/>
+					)}
+				</div>
 			</Link>
 		</div>
 	)

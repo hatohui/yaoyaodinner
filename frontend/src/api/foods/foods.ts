@@ -30,6 +30,7 @@ import type {
   CreateFoodDto,
   FoodDetailDto,
   FoodDetailWithStatsDto,
+  FoodSuggestionDto,
   FoodVariantDto,
   GetFoodByIdParams,
   GetFoodsForAdminParams,
@@ -37,6 +38,7 @@ import type {
   GetFoodsParams,
   GetFoodsResponseDto,
   IdsDto,
+  SuggestFoodsParams,
   UpdateFoodDto,
   UpdateFoodVariantDto
 } from '../model';
@@ -266,6 +268,93 @@ export function useGetFoodsForAdmin<TData = Awaited<ReturnType<typeof getFoodsFo
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetFoodsForAdminQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+export const suggestFoods = (
+    params: SuggestFoodsParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<FoodSuggestionDto[]>(
+      {url: `/api/foods/suggest`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getSuggestFoodsQueryKey = (params?: SuggestFoodsParams,) => {
+    return [
+    `/api/foods/suggest`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSuggestFoodsQueryOptions = <TData = Awaited<ReturnType<typeof suggestFoods>>, TError = unknown>(params: SuggestFoodsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof suggestFoods>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSuggestFoodsQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof suggestFoods>>> = ({ signal }) => suggestFoods(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof suggestFoods>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SuggestFoodsQueryResult = NonNullable<Awaited<ReturnType<typeof suggestFoods>>>
+export type SuggestFoodsQueryError = unknown
+
+
+export function useSuggestFoods<TData = Awaited<ReturnType<typeof suggestFoods>>, TError = unknown>(
+ params: SuggestFoodsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof suggestFoods>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof suggestFoods>>,
+          TError,
+          Awaited<ReturnType<typeof suggestFoods>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSuggestFoods<TData = Awaited<ReturnType<typeof suggestFoods>>, TError = unknown>(
+ params: SuggestFoodsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof suggestFoods>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof suggestFoods>>,
+          TError,
+          Awaited<ReturnType<typeof suggestFoods>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSuggestFoods<TData = Awaited<ReturnType<typeof suggestFoods>>, TError = unknown>(
+ params: SuggestFoodsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof suggestFoods>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useSuggestFoods<TData = Awaited<ReturnType<typeof suggestFoods>>, TError = unknown>(
+ params: SuggestFoodsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof suggestFoods>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSuggestFoodsQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

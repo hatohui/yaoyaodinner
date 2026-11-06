@@ -3,6 +3,8 @@ import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import { cn } from '@/utils/shadcn'
 
+gsap.registerPlugin(useGSAP)
+
 interface BlobSpec {
 	id: string
 	sizeStyle: { width: string; height: string }
@@ -117,13 +119,15 @@ const BLOBS: BlobSpec[] = [
 	},
 ]
 
-export function AnimatedBlobs({ className }: { className?: string }) {
+export default function AnimatedBlobs({ className }: { className?: string }) {
 	const containerRef = useRef<HTMLDivElement>(null)
 	const parallaxRefs = useRef<(HTMLDivElement | null)[]>([])
 
 	useGSAP(
 		() => {
-			const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+			const reduce = window.matchMedia(
+				'(prefers-reduced-motion: reduce)'
+			).matches
 			if (reduce) return
 
 			BLOBS.forEach(blob => {
@@ -154,7 +158,7 @@ export function AnimatedBlobs({ className }: { className?: string }) {
 				// Continuous random breathing scale
 				const pulseRandomly = () => {
 					const nextScaleX = gsap.utils.random(0.92, 1.14)
-					const nextScaleY = gsap.utils.random(0.90, 1.12)
+					const nextScaleY = gsap.utils.random(0.9, 1.12)
 					const duration = gsap.utils.random(5, 9)
 
 					gsap.to(morphEl, {
@@ -197,7 +201,9 @@ export function AnimatedBlobs({ className }: { className?: string }) {
 
 	useEffect(() => {
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-		const hasHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+		const hasHover = window.matchMedia(
+			'(hover: hover) and (pointer: fine)'
+		).matches
 		if (reduce || !hasHover) return
 
 		const quickSetters = BLOBS.map((_, i) => {

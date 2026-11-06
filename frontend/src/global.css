@@ -125,6 +125,7 @@
 	--color-destructive: var(--destructive);
 
 	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
 
 	--color-border: var(--border);
 
@@ -212,6 +213,7 @@
 	/* Semantic System Colors */
 	--destructive: oklch(0.55 0.22 25);
 	--success: oklch(0.55 0.16 145);
+	--success-foreground: oklch(0.99 0.003 329);
 
 	--chart-1: oklch(0.537 0.186 331.6);
 	--chart-2: oklch(0.55 0.12 280);
@@ -265,6 +267,7 @@
 
 	--destructive: oklch(0.704 0.191 22.216);
 	--success: oklch(0.74 0.16 150);
+	--success-foreground: oklch(0.14 0.05 264.7);
 
 	/* Well-defined structural card and input borders */
 	--border: oklch(0.38 0.045 264.7);
@@ -297,6 +300,12 @@
 @layer base {
 	html {
 		scrollbar-gutter: stable;
+	}
+	/* The gutter already keeps the scrollbar's space when Radix locks scroll for
+	   menus and dialogs; its own compensation would add a second gap. */
+	html body[data-scroll-locked] {
+		--removed-body-scroll-bar-size: 0px !important;
+		margin-right: 0 !important;
 	}
 	* {
 		@apply border-border outline-ring/50;

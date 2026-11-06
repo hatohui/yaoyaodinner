@@ -78,8 +78,10 @@ export class FoodService {
     sortOrder: "asc" | "desc" = "asc",
     popularOnly = false,
     recommendedOnly = false,
+    search = "",
   ) {
     const offset = (page - 1) * count;
+    const query = search.trim().toLowerCase();
 
     const cacheKey = CacheSettings.food.all.key(
       lang,
@@ -90,6 +92,7 @@ export class FoodService {
       sortOrder,
       popularOnly ? "1" : "0",
       recommendedOnly ? "1" : "0",
+      query,
     );
 
     const cachedFoods = await CacheService.get(cacheKey);
@@ -113,7 +116,7 @@ export class FoodService {
       },
     });
 
-    const allFoods = rawFoods.map((f) => {
+    const mapped = rawFoods.map((f) => {
       const t = f.translations[0];
       const defaultVariant = f.variants[0] ?? null;
       return {
@@ -128,9 +131,19 @@ export class FoodService {
         defaultVariantId: defaultVariant?.id ?? null,
         price: defaultVariant?.price ? Number(defaultVariant.price) : null,
         currency: defaultVariant?.currency ?? null,
+        variantCount: f.variants.length,
         shouldCalculate: f.shouldCalculate,
       };
     });
+
+    // matched on the translated text, so a search finds dishes on every page
+    const allFoods = query
+      ? mapped.filter(
+          (f) =>
+            f.name.toLowerCase().includes(query) ||
+            f.description?.toLowerCase().includes(query),
+        )
+      : mapped;
 
     const dir = sortOrder === "desc" ? -1 : 1;
     allFoods.sort((a, b) => {
@@ -155,6 +168,30 @@ export class FoodService {
     await CacheService.set(cacheKey, result, CacheSettings.food.all.ttl);
 
     return result;
+  }
+
+  /** Name matches for search-as-you-type; prefix matches rank first. */
+  async suggest(query: string, lang = "en", limit = 8) {
+    const q = query.trim();
+    if (!q) return [];
+
+    const rows = await prisma.foodTranslation.findMany({
+      where: {
+        language: lang,
+        name: { contains: q, mode: "insensitive" },
+        food: { isAvailable: true },
+      },
+      select: { foodId: true, name: true, food: { select: { imageUrl: true } } },
+      orderBy: { name: "asc" },
+      take: limit * 3,
+    });
+
+    const lower = q.toLowerCase();
+    const rank = (name: string) => (name.toLowerCase().startsWith(lower) ? 0 : 1);
+    return rows
+      .sort((a, b) => rank(a.name) - rank(b.name))
+      .slice(0, limit)
+      .map((r) => ({ id: r.foodId, name: r.name, imageUrl: r.food.imageUrl }));
   }
 
   private foodDetailInclude(lang: string) {

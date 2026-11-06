@@ -96,7 +96,8 @@
 		"services_monitored": "Dịch Vụ Được Giám Sát",
 		"healthy_services": "Dịch Vụ Khỏe Mạnh",
 		"last_checked": "Kiểm Tra Lần Cuối",
-		"loading": "Đang tải sức khỏe hệ thống..."
+		"loading": "Đang tải sức khỏe hệ thống...",
+		"fetch_failed": "Không tải được trạng thái hệ thống"
 	},
 	"nav": {
 		"faq": "Hỏi đáp",
@@ -244,7 +245,9 @@
 			"shown": "Món đã hiện lại trên thực đơn",
 			"update_failed": "Không thể cập nhật món",
 			"image_updated": "Đã cập nhật ảnh"
-		}
+		},
+		"suggestions": "Gợi ý",
+		"price_from": "Từ"
 	},
 	"about": {
 		"hero_tag": "Một đêm tiệc furry",

@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Navbar } from '@/components/common/Navbar'
 import { useGuestSession } from '@/hooks/useGuestSession'
 import { AnnouncementBanner } from './@AnnouncementBanner'
-import { AnimatedBlobs } from '@/components/common/AnimatedBlobs'
 import { NavigationProgress } from '@/components/common/NavigationProgress'
+
+// decorative and GSAP-heavy, so it loads after the page instead of with it
+const AnimatedBlobs = lazy(() => import('@/components/common/AnimatedBlobs'))
 
 const MainLayout = ({
 	children,
@@ -15,7 +17,9 @@ const MainLayout = ({
 	return (
 		<div className='relative min-h-screen'>
 			<NavigationProgress />
-			<AnimatedBlobs />
+			<Suspense fallback={null}>
+				<AnimatedBlobs />
+			</Suspense>
 			<Navbar />
 			<main className='pt-14 relative z-10'>
 				<AnnouncementBanner />

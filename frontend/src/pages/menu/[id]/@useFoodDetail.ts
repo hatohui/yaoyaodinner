@@ -84,6 +84,7 @@ export function useFoodDetail(idOverride?: string) {
 				isRecommended: food.isRecommended,
 				shouldCalculate: food.shouldCalculate,
 				defaultVariantId: variant.id,
+				variantCount: availableVariants.length,
 				price: variant.price,
 				currency: variant.currency,
 			}

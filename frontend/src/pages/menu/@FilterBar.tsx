@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { ArrowUpDown, Flame, Search, Sparkles, X } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { ArrowUpDown, Flame, Sparkles } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
 	Select,
@@ -10,7 +9,9 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/utils/shadcn'
-import type { CategoryItemDto } from '@/api/model'
+import type { CategoryItemDto, FoodSuggestionDto } from '@/api/model'
+import { SearchSuggest } from './@SearchSuggest'
+import { ViewToggle, type ListView } from '@/components/common/ViewToggle'
 import type { MenuSort } from '@/utils/searchParams'
 
 interface MenuFilter {
@@ -35,6 +36,7 @@ const PILL_SKELETON_WIDTHS = [
 interface FilterBarProps {
 	search: string
 	onSearchChange: (value: string) => void
+	onSuggestionSelect?: (suggestion: FoodSuggestionDto) => void
 	activeCategory: string
 	categories: CategoryItemDto[]
 	categoriesState: CategoriesState
@@ -43,11 +45,14 @@ interface FilterBarProps {
 	popular: boolean
 	recommended: boolean
 	onFilterChange: (filter: MenuFilter) => void
+	view?: ListView
+	onViewChange?: (view: ListView) => void
 }
 
 export function FilterBar({
 	search,
 	onSearchChange,
+	onSuggestionSelect,
 	activeCategory,
 	categories,
 	categoriesState,
@@ -56,39 +61,21 @@ export function FilterBar({
 	popular,
 	recommended,
 	onFilterChange,
+	view,
+	onViewChange,
 }: FilterBarProps) {
 	const { t } = useTranslation()
 
 	return (
-		<div className='sticky top-14 z-20 w-full border-b border-border/90 bg-card/90 backdrop-blur-xl shadow-xs transition-colors dark:border-white/15 dark:bg-card/85'>
-			{/* Ambient soft glow highlights */}
-			<div className='pointer-events-none absolute inset-0 -z-10 overflow-hidden'>
-				<div className='absolute -left-16 -top-16 size-72 rounded-full bg-primary/10 blur-3xl' />
-				<div className='absolute right-8 -top-16 size-72 rounded-full bg-amber-500/10 blur-3xl' />
-			</div>
-
+		<div className='sticky top-14 z-20 w-full border-b border-border bg-card shadow-xs'>
 			<div className='relative mx-auto max-w-[1400px] px-4 py-3 sm:py-3.5'>
 				{/* Search & Sort Controls (Desktop has Sort next to Search) */}
 				<div className='flex items-center gap-2 sm:gap-3'>
-					<div className='relative flex-1'>
-						<Search className='absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-foreground/60 transition-colors' />
-						<Input
-							placeholder={t('menu.search_placeholder')}
-							value={search}
-							onChange={e => onSearchChange(e.target.value)}
-							className='h-10 rounded-full border border-border/90 bg-background/90 pl-9.5 pr-8 text-sm text-foreground shadow-xs transition-all placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:placeholder:text-white/50'
-						/>
-						{search && (
-							<button
-								type='button'
-								onClick={() => onSearchChange('')}
-								className='absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors'
-								aria-label={t('a11y.clear_search')}
-							>
-								<X className='size-3.5' />
-							</button>
-						)}
-					</div>
+					<SearchSuggest
+						value={search}
+						onChange={onSearchChange}
+						onSelect={onSuggestionSelect}
+					/>
 
 					{/* Desktop-only Sort dropdown in Row 1 */}
 					<div className='hidden shrink-0 sm:flex'>
@@ -96,7 +83,7 @@ export function FilterBar({
 							value={sort}
 							onValueChange={val => onSortChange(val as MenuSort)}
 						>
-							<SelectTrigger className='*:data-[slot=select-value]:flex-1 data-[size=default]:h-10 w-44 gap-1.5 rounded-full border border-border/90 bg-background/90 px-3.5 text-sm font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
+							<SelectTrigger className='*:data-[slot=select-value]:flex-1 data-[size=default]:h-10 w-44 gap-1.5 rounded-full border border-border bg-card px-3.5 text-sm font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
 								<ArrowUpDown className='size-3.5 shrink-0 text-foreground/75' />
 								<SelectValue />
 							</SelectTrigger>
@@ -112,6 +99,11 @@ export function FilterBar({
 							</SelectContent>
 						</Select>
 					</div>
+					{view && onViewChange && (
+						<div className='hidden shrink-0 sm:flex'>
+							<ViewToggle view={view} onChange={onViewChange} />
+						</div>
+					)}
 				</div>
 
 				{/* Desktop: Wrapped Category Pills */}
@@ -130,7 +122,6 @@ export function FilterBar({
 									<CategoryPill
 										label={t('menu.popular')}
 										icon={Flame}
-										variant='popular'
 										active={popular}
 										onClick={() =>
 											onFilterChange({
@@ -143,7 +134,6 @@ export function FilterBar({
 									<CategoryPill
 										label={t('menu.recommended')}
 										icon={Sparkles}
-										variant='recommended'
 										active={recommended}
 										onClick={() =>
 											onFilterChange({
@@ -185,12 +175,19 @@ export function FilterBar({
 				</div>
 
 				{/* Mobile: 2-column Grid for Sort and Category Selects */}
-				<div className='mt-2.5 grid grid-cols-2 gap-2 sm:hidden'>
+				<div
+					className={cn(
+						'mt-2.5 grid gap-2 sm:hidden',
+						view && onViewChange
+							? 'grid-cols-[1fr_1fr_auto] items-center'
+							: 'grid-cols-2'
+					)}
+				>
 					<Select
 						value={sort}
 						onValueChange={val => onSortChange(val as MenuSort)}
 					>
-						<SelectTrigger className='*:data-[slot=select-value]:flex-1 data-[size=default]:h-9.5 w-full rounded-full border border-border/90 bg-background/90 px-3 text-xs font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
+						<SelectTrigger className='*:data-[slot=select-value]:flex-1 data-[size=default]:h-9.5 w-full rounded-full border border-border bg-card px-3 text-xs font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
 							<ArrowUpDown className='size-3.5 shrink-0 text-foreground/75' />
 							<SelectValue />
 						</SelectTrigger>
@@ -221,15 +218,15 @@ export function FilterBar({
 						<SelectTrigger
 							className={cn(
 								'*:data-[slot=select-value]:flex-1 data-[size=default]:h-9.5 w-full rounded-full border px-3 text-xs font-semibold shadow-xs transition-all',
-								'border-border/90 bg-background/90 text-foreground hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15',
+								'border-border bg-card text-foreground hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15',
 								(activeCategory !== 'all' || popular || recommended) &&
 									'border-primary/60 bg-primary/10 text-primary dark:border-primary/60 dark:bg-primary/20 dark:text-primary-foreground'
 							)}
 						>
 							{popular ? (
-								<Flame className='size-3.5 shrink-0 text-orange-500' />
+								<Flame className='size-3.5 shrink-0 text-primary' />
 							) : recommended ? (
-								<Sparkles className='size-3.5 shrink-0 text-purple-400' />
+								<Sparkles className='size-3.5 shrink-0 text-primary' />
 							) : null}
 							<SelectValue />
 						</SelectTrigger>
@@ -238,13 +235,13 @@ export function FilterBar({
 								<>
 									<SelectItem value='popular'>
 										<span className='flex items-center gap-1.5'>
-											<Flame className='size-3.5 text-orange-500' />
+											<Flame className='size-3.5 text-primary' />
 											{t('menu.popular')}
 										</span>
 									</SelectItem>
 									<SelectItem value='recommended'>
 										<span className='flex items-center gap-1.5'>
-											<Sparkles className='size-3.5 text-purple-500' />
+											<Sparkles className='size-3.5 text-primary' />
 											{t('menu.recommended')}
 										</span>
 									</SelectItem>
@@ -258,6 +255,9 @@ export function FilterBar({
 							))}
 						</SelectContent>
 					</Select>
+					{view && onViewChange && (
+						<ViewToggle view={view} onChange={onViewChange} />
+					)}
 				</div>
 			</div>
 		</div>
@@ -268,28 +268,18 @@ function CategoryPill({
 	label,
 	icon: Icon,
 	active,
-	variant,
 	onClick,
 }: {
 	label: string
 	icon?: typeof Flame
 	active: boolean
-	variant?: 'popular' | 'recommended'
 	onClick: () => void
 }) {
 	const activeClass =
-		variant === 'popular'
-			? 'border-transparent bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm shadow-orange-500/25'
-			: variant === 'recommended'
-				? 'border-transparent bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-sm shadow-purple-500/25'
-				: 'border-transparent bg-primary text-primary-foreground shadow-sm shadow-primary/20'
+		'border-transparent bg-primary text-primary-foreground shadow-sm shadow-primary/20'
 
 	const inactiveClass =
-		variant === 'popular'
-			? 'border-border/90 bg-background/90 text-foreground/90 hover:border-orange-500/50 hover:bg-orange-500/15 hover:text-orange-500 dark:border-white/20 dark:bg-white/10 dark:hover:border-orange-400/60 dark:hover:bg-orange-500/20 dark:hover:text-orange-300'
-			: variant === 'recommended'
-				? 'border-border/90 bg-background/90 text-foreground/90 hover:border-purple-500/50 hover:bg-purple-500/15 hover:text-purple-500 dark:border-white/20 dark:bg-white/10 dark:hover:border-purple-400/60 dark:hover:bg-purple-500/20 dark:hover:text-purple-300'
-				: 'border-border/90 bg-background/90 text-foreground/90 hover:border-primary/50 hover:bg-primary/15 hover:text-primary dark:border-white/20 dark:bg-white/10 dark:hover:border-primary/60 dark:hover:bg-primary/20 dark:hover:text-primary'
+		'border-border bg-card text-foreground/90 hover:border-primary/50 hover:bg-primary/15 hover:text-primary dark:border-white/20 dark:bg-white/10 dark:hover:border-primary/60 dark:hover:bg-primary/20 dark:hover:text-primary'
 
 	return (
 		<button

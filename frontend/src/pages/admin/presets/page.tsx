@@ -62,7 +62,7 @@ export default function AdminPresetsPage() {
 								{preset.isActive && (
 									<Badge
 										variant='outline'
-										className='ml-1.5 border-emerald-500/35 bg-emerald-500/15 text-[10px] text-emerald-700 group-data-[state=active]/trigger:border-white/30 group-data-[state=active]/trigger:bg-white/20 group-data-[state=active]/trigger:text-white dark:text-emerald-300'
+										className='ml-1.5 border-success/35 bg-success/15 text-[10px] text-success group-data-[state=active]/trigger:border-primary-foreground/30 group-data-[state=active]/trigger:bg-primary-foreground/20 group-data-[state=active]/trigger:text-primary-foreground'
 									>
 										{t('admin.presets.active')}
 									</Badge>

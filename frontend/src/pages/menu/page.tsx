@@ -4,10 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { useGetFoods } from '@/api/foods/foods'
 import { useGetCategories } from '@/api/categories/categories'
 import { usePagination } from '@/hooks/usePagination'
+import { useDebounce } from '@/hooks/useDebounce'
 import { useMenuSearchParams } from '@/utils/searchParams'
 import { FilterBar } from './@FilterBar'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FoodCard } from './@FoodCard'
+import { FoodRow } from './@FoodRow'
+import { useListView } from '@/components/common/ViewToggle'
 import { FoodDetailModal } from './[id]/@FoodDetailModal'
 import { MenuOrderingOverlays } from './@MenuOrderingOverlays'
 import { useMenuOrdering } from './@useMenuOrdering'
@@ -15,7 +18,7 @@ import { LoadingView } from './@LoadingView'
 import { cn } from '@/utils/shadcn'
 import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
-import { STALE_TIME_STATIC } from '@/common/constants'
+import { MENU_VIEW_STORAGE_KEY, STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
@@ -31,6 +34,7 @@ import type {
 export default function MenuPage() {
 	const { t, i18n } = useTranslation()
 	const [search, setSearch] = useState('')
+	const debouncedSearch = useDebounce(search, 300)
 	const [total, setTotal] = useState(0)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 	const pin = useGuest(s => s.pin)
@@ -76,6 +80,7 @@ export default function MenuPage() {
 				sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
 				popular: popular || undefined,
 				recommended: recommended || undefined,
+				search: debouncedSearch.trim() || undefined,
 			},
 			{
 				query: {
@@ -115,16 +120,7 @@ export default function MenuPage() {
 		[categories]
 	)
 
-	const filteredFoods = useMemo(() => {
-		if (!data?.foods) return []
-		if (!search.trim()) return data.foods
-		const q = search.toLowerCase()
-		return data.foods.filter(
-			(f: FoodItemDto) =>
-				f.name.toLowerCase().includes(q) ||
-				f.description?.toLowerCase().includes(q)
-		)
-	}, [data?.foods, search])
+	const filteredFoods = data?.foods ?? []
 
 	const hasFilters =
 		category !== 'all' || search.trim() !== '' || popular || recommended
@@ -135,12 +131,20 @@ export default function MenuPage() {
 	}
 
 	const ordering = useMenuOrdering()
+	const { view, setView } = useListView(MENU_VIEW_STORAGE_KEY)
+	// edit mode needs the photo for image and visibility controls
+	const compact = view === 'compact' && !editing
 
 	return (
 		<div className='min-h-screen'>
 			<FilterBar
 				search={search}
-				onSearchChange={setSearch}
+				onSuggestionSelect={s => setQuickViewId(s.id)}
+				onSearchChange={value => {
+					setSearch(value)
+					// results for a new search start from the first page
+					if (page !== 1) pagination.setPage(1)
+				}}
 				activeCategory={category}
 				categories={categories}
 				categoriesState={
@@ -151,6 +155,8 @@ export default function MenuPage() {
 				popular={popular}
 				recommended={recommended}
 				onFilterChange={setFilter}
+				view={view}
+				onViewChange={setView}
 			/>
 
 			<div className='mx-auto max-w-[1400px] px-4'>
@@ -168,43 +174,49 @@ export default function MenuPage() {
 							<div
 								aria-busy={isPlaceholderData}
 								className={cn(
-									'grid grid-cols-2 gap-3 transition-opacity sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5',
+									'grid transition-opacity',
+									compact
+										? 'gap-3 md:grid-cols-2 xl:grid-cols-3'
+										: 'grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5',
 									isPlaceholderData && 'opacity-60'
 								)}
 							>
-								{filteredFoods.map((food: FoodItemDto) => (
-									<FoodCard
-										key={food.id}
-										food={food}
-										categoryName={
-											food.categoryId
-												? categoryNames.get(food.categoryId)
-												: undefined
-										}
-										quantity={canOrder ? ordering.cart.quantityOf(food.id) : 0}
-										orderedQuantity={
-											canOrder ? ordering.orderedQuantityOf(food.id) : 0
-										}
-										onAdd={canOrder ? () => ordering.request(food) : undefined}
-										onQuantityChange={
-											canOrder
-												? q => ordering.cart.setQuantity(food.id, q)
-												: undefined
-										}
-										onQuickView={setQuickViewId}
-										onToggleAvailable={
-											editing
-												? () => setAvailable(food.id, !food.isAvailable)
-												: undefined
-										}
-										onDelete={
-											editing ? () => setPendingDelete(food) : undefined
-										}
-										onImageChange={
-											editing ? key => setImage(food.id, key) : undefined
-										}
-									/>
-								))}
+								{filteredFoods.map((food: FoodItemDto) => {
+									const shared = {
+										food,
+										categoryName: food.categoryId
+											? categoryNames.get(food.categoryId)
+											: undefined,
+										quantity: canOrder ? ordering.cart.quantityOf(food.id) : 0,
+										orderedQuantity: canOrder
+											? ordering.orderedQuantityOf(food.id)
+											: 0,
+										onAdd: canOrder ? () => ordering.request(food) : undefined,
+										onQuantityChange: canOrder
+											? (q: number) => ordering.cart.setQuantity(food.id, q)
+											: undefined,
+										onQuickView: setQuickViewId,
+									}
+									return compact ? (
+										<FoodRow key={food.id} {...shared} />
+									) : (
+										<FoodCard
+											key={food.id}
+											{...shared}
+											onToggleAvailable={
+												editing
+													? () => setAvailable(food.id, !food.isAvailable)
+													: undefined
+											}
+											onDelete={
+												editing ? () => setPendingDelete(food) : undefined
+											}
+											onImageChange={
+												editing ? key => setImage(food.id, key) : undefined
+											}
+										/>
+									)
+								})}
 							</div>
 
 							<div className='mt-10 flex flex-col items-center gap-3'>

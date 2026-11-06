@@ -25,6 +25,8 @@ export interface FoodItemDto {
   price: number | null;
   /** @nullable */
   currency: string | null;
+  /** Number of available variants; above 1 the price is the cheapest ("from"). */
+  variantCount: number;
   /** Whether orders of this food count toward table/split totals. False for joke/gag menu items that still show a price and can be ordered, but are free. */
   shouldCalculate: boolean;
   aiTranslationFailed?: boolean;

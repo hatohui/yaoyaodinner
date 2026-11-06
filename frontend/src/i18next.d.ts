@@ -199,6 +199,8 @@ declare module 'react-i18next' {
 					restaurant_en: string
 					restaurant_location: string
 					search_placeholder: string
+					suggestions: string
+					price_from: string
 					all_categories: string
 					no_dishes_title: string
 					no_dishes_desc: string

@@ -9,6 +9,7 @@ export const ROSTER_VIEW_STORAGE_KEY = 'roster_view'
 export const ORDER_CART_STORAGE_KEY = 'order_cart_by_table'
 export const ORDER_LIST_VIEW_STORAGE_KEY = 'order_list_view'
 export const TABLE_LIST_VIEW_STORAGE_KEY = 'table_list_view'
+export const MENU_VIEW_STORAGE_KEY = 'menu_view'
 export const TABLE_FETCH_ALL_COUNT = 100
 export const ADMIN_PASSPHRASE_STORAGE_KEY = 'admin_passphrase'
 export const ADMIN_EVENT_ID_STORAGE_KEY = 'admin_event_id'

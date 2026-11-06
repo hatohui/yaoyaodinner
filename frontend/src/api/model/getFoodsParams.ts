@@ -13,6 +13,7 @@ sortBy?: GetFoodsSortBy;
 sortOrder?: GetFoodsSortOrder;
 popular?: boolean;
 recommended?: boolean;
+search?: string;
 category?: string;
 count?: number;
 page?: number;

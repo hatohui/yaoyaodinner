@@ -229,9 +229,9 @@ export function AdminMenu() {
 										e.preventDefault()
 										setTimeout(() => setPendingStage('finalized'), 0)
 									}}
-									className='font-medium text-emerald-700 dark:text-emerald-300'
+									className='font-medium text-success'
 								>
-									<CheckCircle2 className='size-4 text-emerald-600 dark:text-emerald-400' />
+									<CheckCircle2 className='size-4 text-success' />
 									{t('admin.ordering.finalize')}…
 								</DropdownMenuItem>
 							)}
@@ -414,7 +414,7 @@ export function AdminMenu() {
 				description={t('admin.ordering.finalize_body')}
 				confirmLabel={t('admin.ordering.finalize')}
 				destructive={false}
-				actionClassName='bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-sm'
+				actionClassName='bg-success text-success-foreground hover:bg-success/90 font-semibold shadow-sm'
 				onConfirm={() => confirmStage('finalized')}
 			/>
 

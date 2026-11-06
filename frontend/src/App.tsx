@@ -1,19 +1,19 @@
-import React, { Suspense, useState } from 'react'
-import registerGSAPPlugins from './config/registerGSAPPlugins'
+import React, { Suspense, lazy, useState } from 'react'
 import { RouterProvider } from 'react-router'
 import router from './config/dynamicRouter'
 import LanguageProvider from './config/i18n'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 import ThemeProvider from './config/theme'
 import { Toaster } from './components/ui/sonner'
 import { TooltipProvider } from './components/ui/tooltip'
 import tanstackConfig from './config/tanstack'
-import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { GlobalLoading } from './components/common/GlobalLoading'
 import { AppErrorBoundary } from './components/common/AppErrorBoundary'
 
-registerGSAPPlugins()
+// dev-only, and lazy so the devtools never ship in the production bundle
+const DevTools = import.meta.env.DEV
+	? lazy(() => import('./components/common/DevTools'))
+	: null
 
 const AppContent = (): React.ReactNode => {
 	const [client] = useState(() => new QueryClient(tanstackConfig))
@@ -26,16 +26,10 @@ const AppContent = (): React.ReactNode => {
 					<Toaster richColors position='bottom-right' />
 				</TooltipProvider>
 			</ThemeProvider>
-			{import.meta.env.DEV && (
-				<TanStackDevtools
-					plugins={[
-						{
-							name: 'TanStack Query',
-							render: <ReactQueryDevtoolsPanel />,
-							defaultOpen: true,
-						},
-					]}
-				/>
+			{DevTools && (
+				<Suspense fallback={null}>
+					<DevTools />
+				</Suspense>
 			)}
 		</QueryClientProvider>
 	)

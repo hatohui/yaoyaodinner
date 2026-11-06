@@ -1,5 +1,5 @@
 import { keepPreviousData } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useGetFoods } from '@/api/foods/foods'
@@ -8,7 +8,6 @@ import type { CategoriesState } from '@/pages/menu/@FilterBar'
 import { useGetTableById } from '@/api/tables/tables'
 import type {
 	CategoryItemDto,
-	FoodItemDto,
 	GetFoodsResponseDto,
 	TableDto,
 } from '@/api/model'
@@ -69,6 +68,7 @@ export function useTableOrdering() {
 				sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
 				popular: popular || undefined,
 				recommended: recommended || undefined,
+				search: debouncedSearch.trim() || undefined,
 			},
 			{
 				query: {
@@ -82,16 +82,7 @@ export function useTableOrdering() {
 		if (data?.total !== undefined) setTotal(data.total)
 	}, [data?.total])
 
-	const foods = useMemo(() => {
-		const all = data?.foods ?? []
-		const q = debouncedSearch.trim().toLowerCase()
-		if (!q) return all
-		return all.filter(
-			(f: FoodItemDto) =>
-				f.name.toLowerCase().includes(q) ||
-				f.description?.toLowerCase().includes(q)
-		)
-	}, [data?.foods, debouncedSearch])
+	const foods = data?.foods ?? []
 
 	const setFilter = (filter: {
 		category: string

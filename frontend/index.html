@@ -21,9 +21,29 @@
 				} catch (e) {}
 			})()
 		</script>
+		<style>
+			/* Shown until React's first render replaces #root. global.css hasn't loaded
+			   yet, so these mirror its --background and --primary tokens. The colour goes
+			   on body, not html, so it still becomes the canvas behind the -z blobs. */
+			body { background: oklch(0.893 0.016 328.8); }
+			html[data-theme='dark'] body { background: oklch(0.18 0.055 264.7); }
+			.boot { display: flex; min-height: 100vh; align-items: center; justify-content: center; }
+			.boot span {
+				width: 28px; height: 28px; border-radius: 50%;
+				border: 3px solid oklch(0.537 0.186 331.6 / 0.2);
+				border-top-color: oklch(0.537 0.186 331.6);
+				animation: boot-spin 0.8s linear infinite;
+			}
+			html[data-theme='dark'] .boot span {
+				border-color: oklch(0.81 0.115 82 / 0.2);
+				border-top-color: oklch(0.81 0.115 82);
+			}
+			@keyframes boot-spin { to { transform: rotate(360deg); } }
+			@media (prefers-reduced-motion: reduce) { .boot span { animation-duration: 2.4s; } }
+		</style>
 	</head>
 	<body>
-		<div id="root"></div>
+		<div id="root"><div class="boot" role="status" aria-label="Loading"><span></span></div></div>
 		<script type="module" src="/src/main.tsx"></script>
 	</body>
 </html>

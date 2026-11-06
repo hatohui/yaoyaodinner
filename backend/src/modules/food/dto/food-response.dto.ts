@@ -18,10 +18,21 @@ export class FoodItemDto {
   @ApiProperty({ nullable: true, type: String }) currency: string | null;
   @ApiProperty({
     description:
+      'Number of available variants; above 1 the price is the cheapest ("from").',
+  })
+  variantCount: number;
+  @ApiProperty({
+    description:
       'Whether orders of this food count toward table/split totals. False for joke/gag menu items that still show a price and can be ordered, but are free.',
   })
   shouldCalculate: boolean;
   @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
+}
+
+export class FoodSuggestionDto {
+  @ApiProperty() id: string;
+  @ApiProperty() name: string;
+  @ApiProperty({ nullable: true, type: String }) imageUrl: string | null;
 }
 
 export class GetFoodsResponseDto {

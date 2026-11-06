@@ -18,18 +18,23 @@ export function FoodTags({
 	if (!isPopular && !isRecommended) return null
 
 	const base =
-		'flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold shadow backdrop-blur-sm'
+		'flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-md'
 
 	return (
 		<div className={cn('flex flex-wrap items-center gap-1.5', className)}>
 			{isPopular && (
-				<span className={cn(base, 'bg-primary/90 text-primary-foreground')}>
+				<span
+					className={cn(
+						base,
+						'border-primary-foreground/30 bg-primary text-primary-foreground'
+					)}
+				>
 					<Flame className='size-3.5' />
 					{t('menu.popular')}
 				</span>
 			)}
 			{isRecommended && (
-				<span className={cn(base, 'bg-accent/90 text-accent-foreground')}>
+				<span className={cn(base, 'border-primary/40 bg-card text-primary')}>
 					<Sparkles className='size-3.5' />
 					{t('menu.recommended')}
 				</span>

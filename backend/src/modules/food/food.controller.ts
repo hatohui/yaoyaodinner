@@ -21,6 +21,7 @@ import {
   FoodDetailDto,
   FoodDetailWithStatsDto,
   FoodVariantDto,
+  FoodSuggestionDto,
 } from './dto/food-response.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
 import { BulkToggleDto } from '@common/dto/bulk-toggle.dto';
@@ -51,6 +52,7 @@ export class FoodController {
   })
   @ApiQuery({ name: 'popular', required: false, type: Boolean })
   @ApiQuery({ name: 'recommended', required: false, type: Boolean })
+  @ApiQuery({ name: 'search', required: false, type: String })
   @ApiResponse({ status: 200, type: GetFoodsResponseDto })
   findAll(
     @Query('lang') lang = 'en',
@@ -61,6 +63,7 @@ export class FoodController {
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
     @Query('popular') popular?: string,
     @Query('recommended') recommended?: string,
+    @Query('search') search?: string,
   ) {
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const countNum = Math.min(500, Math.max(1, parseInt(count, 10) || 20));
@@ -74,6 +77,7 @@ export class FoodController {
       order,
       popular === 'true',
       recommended === 'true',
+      search ?? '',
     );
   }
 
@@ -116,6 +120,21 @@ export class FoodController {
       search,
       sort,
     );
+  }
+
+  @Get('suggest')
+  @ApiOperation({ operationId: 'suggestFoods' })
+  @ApiQuery({ name: 'q', required: true, type: String })
+  @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 8 })
+  @ApiResponse({ status: 200, type: [FoodSuggestionDto] })
+  suggest(
+    @Query('q') q = '',
+    @Query('lang') lang = 'en',
+    @Query('limit') limit = '8',
+  ) {
+    const take = Math.min(20, Math.max(1, parseInt(limit, 10) || 8));
+    return this.food.suggest(q.slice(0, 100), lang, take);
   }
 
   @Get(':id')

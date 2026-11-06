@@ -9,7 +9,12 @@ export function useIsAdmin() {
 
 	const { isSuccess, isError, isLoading } =
 		useGetActiveEvent<EventSummaryDto | null>({
-			query: { enabled: Boolean(passphrase), retry: false },
+			// a stale passphrase is just cleared below; no need to alarm anyone
+			query: {
+				enabled: Boolean(passphrase),
+				retry: false,
+				meta: { silent: true },
+			},
 		})
 
 	useEffect(() => {

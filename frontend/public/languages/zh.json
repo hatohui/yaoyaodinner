@@ -96,7 +96,8 @@
 		"services_monitored": "监控的服务",
 		"healthy_services": "健康服务",
 		"last_checked": "最后检查",
-		"loading": "正在加载系统健康状态..."
+		"loading": "正在加载系统健康状态...",
+		"fetch_failed": "无法加载运行状态"
 	},
 	"nav": {
 		"faq": "问答",
@@ -244,7 +245,9 @@
 			"shown": "菜品已重新上架",
 			"update_failed": "无法更新菜品",
 			"image_updated": "图片已更新"
-		}
+		},
+		"suggestions": "建议",
+		"price_from": "起价"
 	},
 	"about": {
 		"hero_tag": "一场兽迷聚餐之夜",

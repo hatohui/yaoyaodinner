@@ -165,7 +165,7 @@ export function OrderingStageControl({
 						size='sm'
 						disabled={settingStage}
 						onClick={() => setPending('finalized')}
-						className='h-9 w-full gap-1.5 rounded-xl border-2 border-emerald-600/50 bg-emerald-600/10 font-semibold text-emerald-700 shadow-xs transition-all hover:border-emerald-600 hover:bg-emerald-600 hover:text-white dark:border-emerald-500/50 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-600 dark:hover:text-white'
+						className='h-9 w-full gap-1.5 rounded-xl border-2 border-success/50 bg-success/10 font-semibold text-success shadow-xs transition-all hover:border-success hover:bg-success hover:text-success-foreground'
 					>
 						<CheckCircle2 className='size-4' />
 						{t('admin.ordering.finalize')}
@@ -209,7 +209,7 @@ export function OrderingStageControl({
 				description={t('admin.ordering.finalize_body')}
 				confirmLabel={t('admin.ordering.finalize')}
 				destructive={false}
-				actionClassName='bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-sm'
+				actionClassName='bg-success text-success-foreground hover:bg-success/90 font-semibold shadow-sm'
 				onConfirm={() => confirm('finalized')}
 			/>
 

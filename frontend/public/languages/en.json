@@ -96,7 +96,8 @@
 		"services_monitored": "Services Monitored",
 		"healthy_services": "Healthy Services",
 		"last_checked": "Last Checked",
-		"loading": "Loading system health..."
+		"loading": "Loading system health...",
+		"fetch_failed": "Couldn't load the health status"
 	},
 	"nav": {
 		"faq": "Q&A",
@@ -244,7 +245,9 @@
 			"shown": "Dish is back on the menu",
 			"update_failed": "Couldn't update the dish",
 			"image_updated": "Picture updated"
-		}
+		},
+		"suggestions": "Suggestions",
+		"price_from": "From"
 	},
 	"about": {
 		"hero_tag": "A furry dinner night",
