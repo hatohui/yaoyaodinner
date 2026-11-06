@@ -39,7 +39,7 @@ export function PersonaCard({ name, image, socials }: PersonaCardProps) {
 								rel='noopener noreferrer'
 								aria-label={label}
 								title={label}
-								className='flex size-8 items-center justify-center rounded-full bg-card/90 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-primary hover:text-primary-foreground'
+								className='flex size-8 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground'
 							>
 								<Icon className='size-4' />
 							</a>

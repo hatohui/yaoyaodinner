@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet } from 'react-router'
 import type { ComponentType } from 'react'
+import { RouteError } from '@/components/common/RouteError'
 
 type PageModule = { default: ComponentType<Record<string, unknown>> }
 type GlobImport = Record<string, () => Promise<PageModule>>
@@ -145,6 +146,8 @@ if (globalNotFoundKey) {
 // across navigation, and catches failures before a page's own errorElement
 // exists, such as a lazy chunk that no longer exists after a deploy.
 const rootRoute = {
+	// bundled, not lazy, so it still shows if the root layout's own chunk fails
+	errorElement: <RouteError />,
 	lazy: async () => {
 		const Layout = layoutLoaders[rootLayoutKey]
 			? (await layoutLoaders[rootLayoutKey]()).default

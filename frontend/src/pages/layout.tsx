@@ -6,7 +6,11 @@ import { NavigationProgress } from '@/components/common/NavigationProgress'
 import { ScrollRestoration } from 'react-router'
 
 // decorative and GSAP-heavy, so it loads after the page instead of with it
-const AnimatedBlobs = lazy(() => import('@/components/common/AnimatedBlobs'))
+const AnimatedBlobs = lazy(() =>
+	import('@/components/common/AnimatedBlobs').catch(() => ({
+		default: () => <></>,
+	}))
+)
 
 const MainLayout = ({
 	children,

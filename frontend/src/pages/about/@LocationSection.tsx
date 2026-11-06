@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import { MapPin, Navigation } from 'lucide-react'
+import { Copy, MapPin, Navigation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LOCATION_ADDRESS, LOCATION_MAPS_URL } from '@/common/constants'
+import { useCopyAddress } from '@/hooks/useCopyAddress'
 
 export function LocationSection() {
 	const { t } = useTranslation()
+	const copyAddress = useCopyAddress()
 
 	return (
 		<section className='overflow-hidden rounded-3xl border border-border bg-card shadow-md md:grid md:grid-cols-[2fr_3fr]'>
@@ -30,12 +32,26 @@ export function LocationSection() {
 					</p>
 				</div>
 
-				<Button asChild className='mt-auto w-fit gap-1.5 rounded-full'>
-					<a href={LOCATION_MAPS_URL} target='_blank' rel='noopener noreferrer'>
-						<Navigation className='size-3.5' />
-						{t('about.get_directions')}
-					</a>
-				</Button>
+				<div className='mt-auto flex flex-wrap gap-2'>
+					<Button asChild className='gap-1.5 rounded-full'>
+						<a
+							href={LOCATION_MAPS_URL}
+							target='_blank'
+							rel='noopener noreferrer'
+						>
+							<Navigation className='size-3.5' />
+							{t('about.get_directions')}
+						</a>
+					</Button>
+					<Button
+						variant='outline'
+						className='gap-1.5 rounded-full'
+						onClick={copyAddress}
+					>
+						<Copy className='size-3.5' />
+						{t('nav.copy_address')}
+					</Button>
+				</div>
 			</div>
 
 			<iframe
