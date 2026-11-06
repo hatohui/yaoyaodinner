@@ -7,7 +7,7 @@ const QuoteSection = () => {
 	const randomIndex = Math.floor(Math.random() * quoteKeys.length)
 
 	return (
-		<p className='mx-auto max-w-2xl text-lg font-medium text-white/90 drop-shadow-sm sm:text-xl'>
+		<p className='m-0 text-lg font-medium text-white/90 drop-shadow-sm sm:text-xl'>
 			{t(quoteKeys[randomIndex])}
 		</p>
 	)

@@ -202,7 +202,7 @@
 	"menu": {
 		"restaurant_name": "高人馆",
 		"restaurant_en": "Gao Ren Guan",
-		"restaurant_location": "Puchong Jaya",
+		"restaurant_location": "Subang Jaya",
 		"search_placeholder": "搜索菜肴…",
 		"all_categories": "全部",
 		"no_dishes_title": "未找到菜肴",
@@ -253,7 +253,6 @@
 		"hero_tag": "一场兽迷聚餐之夜",
 		"location_title": "我们在这里",
 		"address_label": "地址",
-		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "获取路线",
 		"details_tag": "内幕消息",
 		"details_title": "认识一下 Chee Yao (Yao Yao)",
@@ -757,6 +756,8 @@
 		"clear_search": "清除搜索"
 	},
 	"landing": {
-		"created_by": "网站制作："
+		"created_by": "网站制作：",
+		"order_by": "预订截止",
+		"where": "地点"
 	}
 }

@@ -99,7 +99,7 @@ export function SearchSuggest({
 				onFocus={() => setOpen(true)}
 				onBlur={() => setOpen(false)}
 				onKeyDown={handleKeyDown}
-				className='h-10 rounded-full border border-border bg-card pl-9.5 pr-8 text-sm text-foreground shadow-xs transition-all placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:placeholder:text-white/50'
+				className='h-10 rounded-full border border-border bg-card focus:bg-card dark:focus:bg-white/10 pl-9.5 pr-8 text-sm text-foreground shadow-xs transition-all placeholder:text-muted-foreground/80 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:placeholder:text-white/50'
 			/>
 			{value && (
 				<button

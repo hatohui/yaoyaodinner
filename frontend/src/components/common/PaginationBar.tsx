@@ -72,7 +72,9 @@ export function PaginationBar({
 										<SelectTrigger
 											className={cn(
 												'h-9 w-9 justify-center gap-0 rounded-full border-primary bg-primary p-0 text-sm font-semibold text-primary-foreground shadow-sm [&>svg]:hidden',
-												'cursor-pointer transition-colors hover:bg-primary/90'
+												'cursor-pointer transition-colors hover:bg-primary/90',
+												// the select's own dark:bg-input/30 would otherwise win in dark mode
+												'dark:bg-primary dark:hover:bg-primary/90'
 											)}
 										>
 											<SelectValue />

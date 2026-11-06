@@ -72,6 +72,8 @@ declare module 'react-i18next' {
 				}
 				landing: {
 					created_by: string
+					order_by: string
+					where: string
 				}
 				nav: {
 					faq: string
@@ -247,7 +249,6 @@ declare module 'react-i18next' {
 					hero_tag: string
 					location_title: string
 					address_label: string
-					address: string
 					get_directions: string
 					details_tag: string
 					details_title: string

@@ -202,7 +202,7 @@
 	"menu": {
 		"restaurant_name": "高人馆",
 		"restaurant_en": "Gao Ren Guan",
-		"restaurant_location": "Puchong Jaya",
+		"restaurant_location": "Subang Jaya",
 		"search_placeholder": "Search dishes…",
 		"all_categories": "All",
 		"no_dishes_title": "No dishes found",
@@ -253,7 +253,6 @@
 		"hero_tag": "A furry dinner night",
 		"location_title": "Where to find us",
 		"address_label": "Address",
-		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "Get directions",
 		"details_tag": "The tea",
 		"details_title": "Meet Chee Yao (Yao Yao)",
@@ -757,6 +756,8 @@
 		"clear_search": "Clear search"
 	},
 	"landing": {
-		"created_by": "Website created by"
+		"created_by": "Website created by",
+		"order_by": "Order by",
+		"where": "Where"
 	}
 }

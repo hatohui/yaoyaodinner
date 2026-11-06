@@ -202,7 +202,7 @@
 	"menu": {
 		"restaurant_name": "高人馆",
 		"restaurant_en": "Gao Ren Guan",
-		"restaurant_location": "Puchong Jaya",
+		"restaurant_location": "Subang Jaya",
 		"search_placeholder": "ค้นหาเมนู…",
 		"all_categories": "ทั้งหมด",
 		"no_dishes_title": "ไม่พบเมนู",
@@ -253,7 +253,6 @@
 		"hero_tag": "คืนดินเนอร์สายเฟอร์รี่",
 		"location_title": "หาเราเจอได้ที่นี่",
 		"address_label": "ที่อยู่",
-		"address": "12 Jalan Furries 3/4, Puchong Jaya, 47100 Selangor, Malaysia",
 		"get_directions": "นำทาง",
 		"details_tag": "เรื่องวงใน",
 		"details_title": "ทำความรู้จักกับ Chee Yao (Yao Yao)",
@@ -757,6 +756,8 @@
 		"clear_search": "ล้างการค้นหา"
 	},
 	"landing": {
-		"created_by": "เว็บไซต์สร้างโดย"
+		"created_by": "เว็บไซต์สร้างโดย",
+		"order_by": "สั่งได้ถึง",
+		"where": "สถานที่"
 	}
 }
