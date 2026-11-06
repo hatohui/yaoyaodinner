@@ -6,7 +6,7 @@ import {
 	TABLE_ACCESS_HEADER,
 	TABLE_CODE_STORAGE_KEY,
 } from './constants'
-import { useGuest } from '@/hooks/useGuest'
+import { useAdmin } from '@/hooks/useAdmin'
 import { localStorage } from '@/utils/localstorage'
 
 const ApiUrl = API_URL
@@ -44,8 +44,15 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(
 	response => response,
 	error => {
-		if (error.response?.status === 401 && useGuest.getState().pin)
-			useGuest.getState().clear()
+		// Only the admin guard answers 401. A rejected passphrase logs out the admin
+		// role alone; the guest PIN is checked separately by useGuestSession, so an
+		// admin-only request must never cost someone their event access.
+		if (
+			error.response?.status === 401 &&
+			error.config?.headers?.[ADMIN_HEADER] &&
+			useAdmin.getState().passphrase
+		)
+			useAdmin.getState().clear()
 		if (!error.response)
 			error.message =
 				error.code === 'ECONNABORTED' ? 'timeout' : 'network_error'

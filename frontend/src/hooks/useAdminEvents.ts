@@ -14,6 +14,7 @@ import {
 } from '@/api/events/events'
 import type { EventSummaryDto, StoredOrderingStage } from '@/api/model'
 import { getGetOrderingStatusQueryKey } from '@/api/ordering/ordering'
+import { useAdmin } from '@/hooks/useAdmin'
 import { useAdminEvent } from '@/hooks/useAdminEvent'
 import { useToast } from '@/hooks/useToast'
 
@@ -25,8 +26,14 @@ export function useAdminEvents() {
 	const selectedId = useAdminEvent(s => s.eventId)
 	const setEventId = useAdminEvent(s => s.setEventId)
 
-	const { data: activeEvent } = useGetActiveEvent<EventSummaryDto | null>()
-	const { data: pastEvents = [] } = useGetPastEvents<EventSummaryDto[]>()
+	// admin-only endpoints; the navbar mounts this for every visitor
+	const isAdmin = Boolean(useAdmin(s => s.passphrase))
+	const { data: activeEvent } = useGetActiveEvent<EventSummaryDto | null>({
+		query: { enabled: isAdmin },
+	})
+	const { data: pastEvents = [] } = useGetPastEvents<EventSummaryDto[]>({
+		query: { enabled: isAdmin },
+	})
 
 	const events = useMemo(
 		() => (activeEvent ? [activeEvent, ...pastEvents] : pastEvents),
