@@ -28,7 +28,7 @@ export function AdminFeedbackCard({ item, onDelete }: AdminFeedbackCardProps) {
 				</div>
 			</div>
 			{item.content && (
-				<p className='text-sm text-foreground'>{item.content}</p>
+				<p className='text-sm whitespace-pre-wrap text-foreground [overflow-wrap:anywhere]'>{item.content}</p>
 			)}
 
 			{item.reactions.length > 0 && (

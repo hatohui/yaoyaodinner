@@ -1,15 +1,17 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, MaxLength } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateFeedbackDto {
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ maxLength: 60 })
   @IsString()
   @IsOptional()
+  @MaxLength(60)
   by?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ maxLength: 1000 })
   @IsString()
   @IsOptional()
+  @MaxLength(1000)
   content?: string;
 
   @ApiPropertyOptional({

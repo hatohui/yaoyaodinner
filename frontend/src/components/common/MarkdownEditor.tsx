@@ -9,6 +9,7 @@ interface MarkdownEditorProps {
 	onChange: (value: string) => void
 	placeholder?: string
 	rows?: number
+	maxLength?: number
 	className?: string
 }
 
@@ -19,6 +20,7 @@ export function MarkdownEditor({
 	onChange,
 	placeholder,
 	rows = 3,
+	maxLength,
 	className,
 }: MarkdownEditorProps) {
 	const { t } = useTranslation()
@@ -112,8 +114,19 @@ export function MarkdownEditor({
 				onChange={e => onChange(e.target.value)}
 				placeholder={placeholder}
 				rows={rows}
-				className='resize-none border-none px-2 py-1 shadow-none focus-visible:ring-0'
+				maxLength={maxLength}
+				className='max-h-80 resize-none border-none px-2 py-1 break-words shadow-none focus-visible:ring-0'
 			/>
+			{maxLength !== undefined && (
+				<span
+					className={cn(
+						'self-end px-2 text-xs tabular-nums text-muted-foreground',
+						value.length >= maxLength && 'text-destructive'
+					)}
+				>
+					{value.length}/{maxLength}
+				</span>
+			)}
 		</div>
 	)
 }

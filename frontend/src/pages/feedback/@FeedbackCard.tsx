@@ -35,7 +35,7 @@ export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
 			{item.content && (
 				<div
 					className={cn(
-						'text-sm text-foreground',
+						'min-w-0 text-sm text-foreground [overflow-wrap:anywhere]',
 						'[&_p]:mb-2 [&_p:last-child]:mb-0',
 						'[&_strong]:font-semibold [&_em]:italic',
 						'[&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5',

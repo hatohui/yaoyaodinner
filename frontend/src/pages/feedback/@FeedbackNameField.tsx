@@ -5,7 +5,10 @@ import { useGetTables } from '@/api/tables/tables'
 import type { TableListDto } from '@/api/model'
 import { Input } from '@/components/ui/input'
 import { useDebounce } from '@/hooks/useDebounce'
-import { TABLE_FETCH_ALL_COUNT } from '@/common/constants'
+import {
+	MAX_FEEDBACK_NAME_LENGTH,
+	TABLE_FETCH_ALL_COUNT,
+} from '@/common/constants'
 
 const MAX_SUGGESTIONS = 6
 
@@ -49,6 +52,7 @@ export function FeedbackNameField({ value, onChange }: FeedbackNameFieldProps) {
 				onBlur={() => setFocused(false)}
 				placeholder={t('feedback.name_placeholder')}
 				autoComplete='off'
+				maxLength={MAX_FEEDBACK_NAME_LENGTH}
 				className='rounded-full'
 			/>
 			{focused && query.length > 0 && suggestions.length > 0 && (

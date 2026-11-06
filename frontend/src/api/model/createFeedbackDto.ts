@@ -7,7 +7,9 @@
  */
 
 export interface CreateFeedbackDto {
+  /** @maxLength 60 */
   by?: string;
+  /** @maxLength 1000 */
   content?: string;
   /** Storage key of an attached image */
   imageUrl?: string;

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { MarkdownEditor } from '@/components/common/MarkdownEditor'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { useGuest } from '@/hooks/useGuest'
+import { MAX_FEEDBACK_CONTENT_LENGTH } from '@/common/constants'
 import { FeedbackNameField } from './@FeedbackNameField'
 
 interface FeedbackFormProps {
@@ -33,6 +34,7 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 				value={content}
 				onChange={setContent}
 				placeholder={t('feedback.content_placeholder')}
+				maxLength={MAX_FEEDBACK_CONTENT_LENGTH}
 			/>
 			<div className='flex items-center justify-between gap-2'>
 				<ImageUploadSlot
