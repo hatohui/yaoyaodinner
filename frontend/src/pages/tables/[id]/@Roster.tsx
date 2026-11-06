@@ -228,12 +228,14 @@ function RosterItem({
 	return (
 		<li
 			className={cn(
-				'relative flex items-center gap-3 border border-border bg-card shadow-sm transition-[border-color,box-shadow]',
+				'group relative flex items-center gap-3 border border-border bg-card shadow-sm transition-all',
 				compact
 					? 'rounded-xl px-3 py-2'
 					: 'min-h-[4.5rem] rounded-2xl px-4 py-3 sm:gap-4 sm:px-5 sm:py-4',
-				editable && 'hover:border-primary/40 hover:shadow-md',
-				isMe && 'border-primary ring-2 ring-primary/30'
+				editable &&
+					'hover:-translate-y-0.5 hover:border-primary/50 hover:bg-brand-muted/35 hover:shadow-md',
+				isMe &&
+					'border-primary ring-2 ring-primary/30 hover:border-primary hover:ring-primary/50'
 			)}
 		>
 			{editable && (
@@ -278,7 +280,7 @@ function RosterItem({
 					<TruncatedText
 						text={person.name}
 						onClick={editable ? onOpen : undefined}
-						className='pointer-events-auto'
+						className={cn('pointer-events-auto', editable && 'cursor-pointer')}
 					/>
 					{isMe && (
 						<span className='shrink-0 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold text-primary ring-1 ring-inset ring-primary/30'>
@@ -306,7 +308,10 @@ function RosterItem({
 						<TruncatedText
 							text={note}
 							onClick={editable ? onOpen : undefined}
-							className='pointer-events-auto'
+							className={cn(
+								'pointer-events-auto',
+								editable && 'cursor-pointer'
+							)}
 						/>
 					</span>
 				)}
@@ -326,7 +331,7 @@ function RosterItem({
 				</button>
 			)}
 			{editable && (
-				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground' />
+				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
 			)}
 		</li>
 	)

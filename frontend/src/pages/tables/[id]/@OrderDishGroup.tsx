@@ -51,12 +51,12 @@ export function OrderDishGroup({
 	}
 
 	return (
-		<li className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
+		<li className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:border-primary/40 hover:shadow-md'>
 			<button
 				type='button'
 				aria-expanded={open}
 				onClick={() => setOpen(o => !o)}
-				className='flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none sm:px-4 sm:py-3'
+				className='group flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-brand-muted/35 focus-visible:bg-brand-muted/35 focus-visible:outline-none sm:px-4 sm:py-3'
 			>
 				<OrderThumb imageKey={head.foodImageUrl} alt={head.foodName} />
 				<span className='flex min-w-0 flex-1 flex-col gap-1'>
@@ -90,7 +90,7 @@ export function OrderDishGroup({
 				</span>
 				<ChevronDown
 					className={cn(
-						'size-4 shrink-0 text-muted-foreground transition-transform',
+						'size-4 shrink-0 text-muted-foreground transition-all group-hover:text-primary',
 						open && 'rotate-180'
 					)}
 				/>
