@@ -197,7 +197,8 @@
 		"note_label": "Note",
 		"host_label": "Table host",
 		"you": "You",
-		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name."
+		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name.",
+		"highlight_hint": "Point at someone to see what they're having"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",

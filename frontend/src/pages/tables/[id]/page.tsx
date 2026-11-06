@@ -23,6 +23,7 @@ import { groupOrders } from '@/components/ordering/groupOrders'
 import { LeaveTableButton } from './@LeaveTableButton'
 import { useTableDetail } from './@useTableDetail'
 import { RosterSkeleton } from './@Skeletons'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const tabTrigger =
 	'rounded-full text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
@@ -46,6 +47,51 @@ export default function TableDetailPage() {
 	const [joining, setJoining] = useState(false)
 	const { floorPlan, tableCodes } = useConfig()
 	const join = () => setJoining(true)
+
+	const isDesktop = useMediaQuery('(min-width: 1024px)')
+	const desktopTab = activeTab === 'people' ? 'orders' : activeTab
+	const [highlightId, setHighlightId] = useState<string | null>(null)
+
+	const roster = (onHighlight?: (personId: string | null) => void) =>
+		table && (
+			<Roster
+				table={table}
+				canEdit={canEdit}
+				canJoin={canJoin}
+				canSetHost={isAdmin}
+				onSetHost={personId => updateTable({ tableLeaderId: personId })}
+				onHighlight={onHighlight}
+			/>
+		)
+	const orderTriggers = (
+		<>
+			<TabsTrigger value='orders' className={tabTrigger}>
+				{t('tabs.orders')}
+				<TabCount count={orderCount} />
+			</TabsTrigger>
+			{showSplits && (
+				<TabsTrigger value='split' className={tabTrigger}>
+					{t('tabs.splits')}
+				</TabsTrigger>
+			)}
+		</>
+	)
+	const orderPanels = (highlightPersonId: string | null) =>
+		table && (
+			<>
+				<TabsContent value='orders'>
+					<OrdersTab
+						table={table}
+						people={people ?? []}
+						canEdit={canEdit}
+						highlightPersonId={highlightPersonId}
+					/>
+				</TabsContent>
+				<TabsContent value='split'>
+					<SplitsTab table={table} people={people ?? []} canEdit={canEdit} />
+				</TabsContent>
+			</>
+		)
 
 	if (isLoading) {
 		return (
@@ -77,7 +123,7 @@ export default function TableDetailPage() {
 	}
 
 	return (
-		<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10'>
+		<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-6xl xl:max-w-7xl'>
 			<Link
 				to={backTo ?? '/tables'}
 				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
@@ -144,38 +190,41 @@ export default function TableDetailPage() {
 				/>
 			)}
 
-			<Tabs value={activeTab} onValueChange={setTab}>
-				<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
-					<TabsTrigger value='people' className={tabTrigger}>
-						{t('tabs.people')}
-					</TabsTrigger>
-					<TabsTrigger value='orders' className={tabTrigger}>
-						{t('tabs.orders')}
-						<TabCount count={orderCount} />
-					</TabsTrigger>
-					{showSplits && (
-						<TabsTrigger value='split' className={tabTrigger}>
-							{t('tabs.splits')}
+			{isDesktop ? (
+				// who's here beside what they ordered; splits stay a tab away
+				<div className='grid grid-cols-[22.5rem_minmax(0,1fr)] items-start gap-6'>
+					<section className='sticky top-20 flex flex-col gap-2'>
+						<div className='px-1'>
+							<h2 className='m-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+								{t('tabs.people')} · {people?.length ?? table.seated}
+							</h2>
+							<p className='m-0 text-xs text-muted-foreground'>
+								{t('roster.highlight_hint')}
+							</p>
+						</div>
+						<div className='scrollbar-thin max-h-[calc(100vh-8rem)] overflow-y-auto pr-1'>
+							{roster(setHighlightId)}
+						</div>
+					</section>
+					<Tabs value={desktopTab} onValueChange={setTab}>
+						<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
+							{orderTriggers}
+						</TabsList>
+						{orderPanels(highlightId)}
+					</Tabs>
+				</div>
+			) : (
+				<Tabs value={activeTab} onValueChange={setTab}>
+					<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
+						<TabsTrigger value='people' className={tabTrigger}>
+							{t('tabs.people')}
 						</TabsTrigger>
-					)}
-				</TabsList>
-
-				<TabsContent value='people'>
-					<Roster
-						table={table}
-						canEdit={canEdit}
-						canJoin={canJoin}
-						canSetHost={isAdmin}
-						onSetHost={personId => updateTable({ tableLeaderId: personId })}
-					/>
-				</TabsContent>
-				<TabsContent value='orders'>
-					<OrdersTab table={table} people={people ?? []} canEdit={canEdit} />
-				</TabsContent>
-				<TabsContent value='split'>
-					<SplitsTab table={table} people={people ?? []} canEdit={canEdit} />
-				</TabsContent>
-			</Tabs>
+						{orderTriggers}
+					</TabsList>
+					<TabsContent value='people'>{roster()}</TabsContent>
+					{orderPanels(null)}
+				</Tabs>
+			)}
 
 			<TableCodeDialog
 				tableId={id}

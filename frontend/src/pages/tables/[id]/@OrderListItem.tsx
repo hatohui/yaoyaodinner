@@ -23,6 +23,8 @@ interface OrderListItemProps {
 	compact?: boolean
 	/** Inside a dish group the photo is already in the group header */
 	hideThumb?: boolean
+	/** Desktop hover on a person: their orders light up, the rest fade */
+	highlight?: 'hit' | 'dim'
 	lockItems?: boolean
 	lockSplit?: boolean
 }
@@ -36,6 +38,7 @@ export function OrderListItem({
 	onEditPrice,
 	compact = false,
 	hideThumb = false,
+	highlight,
 	lockItems = false,
 	lockSplit = false,
 }: OrderListItemProps) {
@@ -213,7 +216,13 @@ export function OrderListItem({
 	)
 	if (compact) {
 		return (
-			<li className='flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2 shadow-sm'>
+			<li
+				className={cn(
+					'flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2 shadow-sm transition-opacity',
+					highlight === 'hit' && 'ring-2 ring-primary/50',
+					highlight === 'dim' && 'opacity-40'
+				)}
+			>
 				{!hideThumb && (
 					<OrderThumb
 						imageKey={order.foodImageUrl}
@@ -232,7 +241,13 @@ export function OrderListItem({
 		)
 	}
 	return (
-		<li className='flex flex-col gap-1.5 rounded-2xl border border-border bg-card px-3 py-2.5 shadow-sm sm:gap-2 sm:px-4 sm:py-3'>
+		<li
+			className={cn(
+				'flex flex-col gap-1.5 rounded-2xl border border-border bg-card px-3 py-2.5 shadow-sm transition-opacity sm:gap-2 sm:px-4 sm:py-3',
+				highlight === 'hit' && 'ring-2 ring-primary/50',
+				highlight === 'dim' && 'opacity-40'
+			)}
+		>
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex min-w-0 items-start gap-3'>
 					<OrderThumb imageKey={order.foodImageUrl} alt={order.foodName} />

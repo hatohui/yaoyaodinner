@@ -197,7 +197,8 @@
 		"note_label": "备注",
 		"host_label": "桌主",
 		"you": "你",
-		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。"
+		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。",
+		"highlight_hint": "将鼠标移到某人上查看他们点的菜"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",

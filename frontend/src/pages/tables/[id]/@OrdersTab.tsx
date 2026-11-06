@@ -31,6 +31,8 @@ interface OrdersTabProps {
 	table: TableDto
 	people: PersonDto[]
 	canEdit: boolean
+	/** Person pointed at in the desktop People list */
+	highlightPersonId?: string | null
 }
 
 /** Lines of the same dish and portion, in first-ordered order. */
@@ -49,7 +51,12 @@ const linesTotal = (lines: OrderedLine[]) =>
 		0
 	)
 
-export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
+export function OrdersTab({
+	table,
+	people,
+	canEdit,
+	highlightPersonId,
+}: OrdersTabProps) {
 	const { t } = useTranslation()
 	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
 		table.id
@@ -82,6 +89,11 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		)
 	}
 
+	const includes = (line: OrderedLine) =>
+		line.splitAll || line.splits.some(s => s.personId === highlightPersonId)
+	const highlightOf = (dish: OrderedLine[]) =>
+		!highlightPersonId ? undefined : dish.some(includes) ? 'hit' : 'dim'
+
 	const renderLine = (line: OrderedLine, inGroup = false) => (
 		<OrderListItem
 			key={line.key}
@@ -95,6 +107,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 			}
 			compact={compact || inGroup}
 			hideThumb={inGroup}
+			highlight={inGroup ? undefined : highlightOf([line])}
 			lockItems={!canEdit || !canChangeItems(line)}
 			lockSplit={!canEdit || !canSplit}
 		/>
@@ -111,6 +124,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 						lines={dish}
 						people={people}
 						currency={currency}
+						highlight={highlightOf(dish)}
 					>
 						{dish.map(line => renderLine(line, true))}
 					</OrderDishGroup>

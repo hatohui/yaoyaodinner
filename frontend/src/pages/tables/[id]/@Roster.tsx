@@ -20,6 +20,8 @@ interface RosterProps {
 	canJoin: boolean
 	canSetHost: boolean
 	onSetHost: (personId: string | null) => void
+	/** Desktop: the person being pointed at, to light up their orders */
+	onHighlight?: (personId: string | null) => void
 }
 
 export function Roster({
@@ -28,6 +30,7 @@ export function Roster({
 	canJoin,
 	canSetHost,
 	onSetHost,
+	onHighlight,
 }: RosterProps) {
 	const { t } = useTranslation()
 	const { people, isLoading, add, remove, updatePfp, rename } = useRoster(
@@ -119,6 +122,7 @@ export function Roster({
 							onClaim={() => claim(person)}
 							onOpen={() => setEditingId(person.id)}
 							onView={() => setViewing(person)}
+							onHighlight={onHighlight}
 						/>
 					))}
 				</ul>
@@ -197,6 +201,7 @@ function RosterItem({
 	onClaim,
 	onOpen,
 	onView,
+	onHighlight,
 }: {
 	person: PersonDto
 	isMe: boolean
@@ -207,6 +212,7 @@ function RosterItem({
 	onClaim: () => void
 	onOpen: () => void
 	onView: () => void
+	onHighlight?: (personId: string | null) => void
 }) {
 	const { t } = useTranslation()
 	const note = person.personalNotes?.[0]?.content
@@ -227,6 +233,8 @@ function RosterItem({
 
 	return (
 		<li
+			onPointerEnter={() => onHighlight?.(person.id)}
+			onPointerLeave={() => onHighlight?.(null)}
 			className={cn(
 				'relative flex items-center gap-3 border border-border bg-card shadow-sm transition-[border-color,box-shadow]',
 				compact
