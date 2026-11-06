@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ProductGridSkeleton } from '../@Skeletons'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FilterBar } from '@/pages/menu/@FilterBar'
+import { FilterSidebar } from './@FilterSidebar'
 import {
 	Sheet,
 	SheetContent,
@@ -18,7 +19,7 @@ import type { FoodItemDto, OrderResponseDto } from '@/api/model'
 import { ProductCard } from './@ProductCard'
 import { CartPanel } from '@/components/ordering/CartPanel'
 import { OrderedList } from '@/components/ordering/OrderedList'
-import { groupOrders } from '@/components/ordering/groupOrders'
+import { countDishes, groupOrders } from '@/components/ordering/groupOrders'
 import {
 	OrderSidePanel,
 	type SidePanelTab,
@@ -88,7 +89,7 @@ export default function TableOrderPage() {
 			tab={panelTab}
 			onTabChange={setPanelTab}
 			cartCount={cart.itemCount}
-			orderedCount={orderedLines.length}
+			orderedCount={countDishes(orderedLines)}
 			cart={
 				<CartPanel
 					lines={cart.lines}
@@ -119,7 +120,7 @@ export default function TableOrderPage() {
 	if (!canAdd) return <OrderingClosed tableId={tableId} />
 
 	return (
-		<div className='mx-auto max-w-6xl px-4 py-6'>
+		<div className='mx-auto max-w-6xl px-4 py-6 xl:max-w-[1400px]'>
 			<div className='mb-4 flex flex-col gap-1'>
 				<Link
 					to={`/tables/${tableId}`}
@@ -155,19 +156,38 @@ export default function TableOrderPage() {
 				</div>
 			) : (
 				<div className='flex gap-6'>
+					<aside className='hidden w-60 shrink-0 xl:block'>
+						<div className='scrollbar-thin sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto'>
+							<FilterSidebar
+								search={search}
+								onSearchChange={setSearch}
+								activeCategory={category}
+								categories={categories}
+								categoriesState={categoriesState}
+								sort={sort}
+								onSortChange={setSort}
+								popular={popular}
+								recommended={recommended}
+								onFilterChange={setFilter}
+							/>
+						</div>
+					</aside>
+
 					<div className='flex min-w-0 flex-1 flex-col gap-4'>
-						<FilterBar
-							search={search}
-							onSearchChange={setSearch}
-							activeCategory={category}
-							categories={categories}
-							categoriesState={categoriesState}
-							sort={sort}
-							onSortChange={setSort}
-							popular={popular}
-							recommended={recommended}
-							onFilterChange={setFilter}
-						/>
+						<div className='xl:hidden'>
+							<FilterBar
+								search={search}
+								onSearchChange={setSearch}
+								activeCategory={category}
+								categories={categories}
+								categoriesState={categoriesState}
+								sort={sort}
+								onSortChange={setSort}
+								popular={popular}
+								recommended={recommended}
+								onFilterChange={setFilter}
+							/>
+						</div>
 
 						{isLoading ? (
 							<ProductGridSkeleton count={pagination.count} />
@@ -230,7 +250,7 @@ export default function TableOrderPage() {
 					) : (
 						<>
 							<ReceiptText className='size-4' />
-							{t('orders.view_ordered', { count: orderedLines.length })}
+							{t('orders.view_ordered', { count: countDishes(orderedLines) })}
 						</>
 					)}
 				</Button>

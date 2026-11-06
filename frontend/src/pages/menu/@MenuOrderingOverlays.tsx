@@ -16,6 +16,7 @@ import { useConfig } from '@/hooks/useConfig'
 import { SelectionBar } from './@SelectionBar'
 import { TablePickerModal } from './@TablePickerModal'
 import type { MenuOrdering } from './@useMenuOrdering'
+import { countDishes } from '@/components/ordering/groupOrders'
 
 export function MenuOrderingOverlays({
 	ordering,
@@ -33,7 +34,7 @@ export function MenuOrderingOverlays({
 			{canOrder && (
 				<SelectionBar
 					count={cart.itemCount}
-					orderedCount={ordering.orderedLines.length}
+					orderedCount={countDishes(ordering.orderedLines)}
 					onClear={cart.clear}
 					onOpen={ordering.openSheet}
 				/>
@@ -63,7 +64,7 @@ export function MenuOrderingOverlays({
 						tab={ordering.panelTab}
 						onTabChange={ordering.setPanelTab}
 						cartCount={cart.itemCount}
-						orderedCount={ordering.orderedLines.length}
+						orderedCount={countDishes(ordering.orderedLines)}
 						cart={
 							<CartPanel
 								lines={cart.lines}

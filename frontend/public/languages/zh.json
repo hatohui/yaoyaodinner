@@ -247,7 +247,8 @@
 			"image_updated": "图片已更新"
 		},
 		"suggestions": "建议",
-		"price_from": "起价"
+		"price_from": "起价",
+		"categories": "分类"
 	},
 	"about": {
 		"location_title": "我们在这里",

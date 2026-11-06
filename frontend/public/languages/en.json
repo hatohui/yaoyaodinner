@@ -247,7 +247,8 @@
 			"image_updated": "Picture updated"
 		},
 		"suggestions": "Suggestions",
-		"price_from": "From"
+		"price_from": "From",
+		"categories": "Categories"
 	},
 	"about": {
 		"location_title": "Where to find us",

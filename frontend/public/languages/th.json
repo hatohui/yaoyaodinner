@@ -247,7 +247,8 @@
 			"image_updated": "อัปเดตรูปแล้ว"
 		},
 		"suggestions": "คำแนะนำ",
-		"price_from": "เริ่มต้น"
+		"price_from": "เริ่มต้น",
+		"categories": "หมวดหมู่"
 	},
 	"about": {
 		"location_title": "หาเราเจอได้ที่นี่",

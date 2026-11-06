@@ -23,3 +23,10 @@ export function groupOrders(orders: OrderResponseDto[]): OrderedLine[] {
 	}
 	return [...lines.values()]
 }
+
+/** Same dish and portion, however it was split. */
+export const dishKey = (o: Pick<OrderResponseDto, 'foodId' | 'variantId'>) =>
+	`${o.foodId}|${o.variantId}`
+
+export const countDishes = (lines: OrderResponseDto[]) =>
+	new Set(lines.map(dishKey)).size

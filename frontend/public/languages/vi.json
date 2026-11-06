@@ -247,7 +247,8 @@
 			"image_updated": "Đã cập nhật ảnh"
 		},
 		"suggestions": "Gợi ý",
-		"price_from": "Từ"
+		"price_from": "Từ",
+		"categories": "Danh mục"
 	},
 	"about": {
 		"location_title": "Tìm chúng tôi ở đâu",
