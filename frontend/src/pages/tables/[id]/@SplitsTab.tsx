@@ -138,7 +138,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 			<div className='mb-3 flex justify-end'>
 				<div
 					role='group'
-					className='flex items-center gap-1 rounded-full border border-border bg-card p-0.5 shadow-xs'
+					className='flex w-full items-center gap-1 rounded-full border border-border bg-card p-0.5 shadow-xs sm:w-auto'
 				>
 					{viewOptions.map(({ value, icon: Icon, label }) => (
 						<button
@@ -147,7 +147,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 							aria-pressed={view === value}
 							onClick={() => setView(value)}
 							className={cn(
-								'flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-colors',
+								'flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors sm:flex-none sm:py-1',
 								view === value
 									? 'bg-primary text-primary-foreground'
 									: 'text-muted-foreground hover:text-foreground'
@@ -259,7 +259,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 				open={selectedOrder !== null}
 				onOpenChange={open => !open && setSelectedOrder(null)}
 			>
-				<DialogContent className='sm:max-w-sm'>
+				<DialogContent className='sm:max-w-sm [&>*]:min-w-0'>
 					{selectedOrder && (
 						<>
 							<DialogHeader>
@@ -269,7 +269,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 										alt={selectedOrder.foodName}
 									/>
 									<div className='flex min-w-0 flex-col'>
-										<DialogTitle className='truncate'>
+										<DialogTitle className='line-clamp-2 break-words text-base'>
 											{selectedOrder.foodName}
 										</DialogTitle>
 										{selectedOrder.variantLabel && (

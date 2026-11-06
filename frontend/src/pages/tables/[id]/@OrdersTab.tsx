@@ -17,9 +17,11 @@ import { OrderRoundSection } from './@OrderRoundSection'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { OrderingStageNotice } from '@/components/common/OrderingStageNotice'
 import {
+	dishKey,
 	groupOrders,
 	type OrderedLine,
 } from '@/components/ordering/groupOrders'
+import { OrderDishGroup } from './@OrderDishGroup'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
@@ -29,6 +31,16 @@ interface OrdersTabProps {
 	table: TableDto
 	people: PersonDto[]
 	canEdit: boolean
+}
+
+/** Lines of the same dish and portion, in first-ordered order. */
+const groupByDish = (lines: OrderedLine[]) => {
+	const groups = new Map<string, OrderedLine[]>()
+	for (const line of lines) {
+		const key = dishKey(line)
+		groups.set(key, [...(groups.get(key) ?? []), line])
+	}
+	return [...groups.values()]
 }
 
 const linesTotal = (lines: OrderedLine[]) =>
@@ -70,24 +82,40 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		)
 	}
 
+	const renderLine = (line: OrderedLine, inGroup = false) => (
+		<OrderListItem
+			key={line.key}
+			order={line}
+			people={people}
+			onEditSplit={() => setEditing(line)}
+			onRemove={() => setRemoving(line)}
+			onQuantityChange={quantity => updateLine(line.ids, { quantity })}
+			onEditPrice={
+				canEdit && canEditPrice(line) ? () => setPricing(line) : undefined
+			}
+			compact={compact || inGroup}
+			hideThumb={inGroup}
+			lockItems={!canEdit || !canChangeItems(line)}
+			lockSplit={!canEdit || !canSplit}
+		/>
+	)
+
 	const renderLines = (group: OrderedLine[]) => (
 		<ul className='flex flex-col gap-2'>
-			{group.map(line => (
-				<OrderListItem
-					key={line.key}
-					order={line}
-					people={people}
-					onEditSplit={() => setEditing(line)}
-					onRemove={() => setRemoving(line)}
-					onQuantityChange={quantity => updateLine(line.ids, { quantity })}
-					onEditPrice={
-						canEdit && canEditPrice(line) ? () => setPricing(line) : undefined
-					}
-					compact={compact}
-					lockItems={!canEdit || !canChangeItems(line)}
-					lockSplit={!canEdit || !canSplit}
-				/>
-			))}
+			{groupByDish(group).map(dish =>
+				dish.length === 1 ? (
+					renderLine(dish[0])
+				) : (
+					<OrderDishGroup
+						key={dishKey(dish[0])}
+						lines={dish}
+						people={people}
+						currency={currency}
+					>
+						{dish.map(line => renderLine(line, true))}
+					</OrderDishGroup>
+				)
+			)}
 		</ul>
 	)
 

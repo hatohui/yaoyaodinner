@@ -21,6 +21,8 @@ interface OrderListItemProps {
 	onQuantityChange: (quantity: number) => void
 	onEditPrice?: () => void
 	compact?: boolean
+	/** Inside a dish group the photo is already in the group header */
+	hideThumb?: boolean
 	lockItems?: boolean
 	lockSplit?: boolean
 }
@@ -33,6 +35,7 @@ export function OrderListItem({
 	onQuantityChange,
 	onEditPrice,
 	compact = false,
+	hideThumb = false,
 	lockItems = false,
 	lockSplit = false,
 }: OrderListItemProps) {
@@ -82,16 +85,17 @@ export function OrderListItem({
 
 	const stepButton =
 		'flex items-center justify-center rounded-full border border-border bg-muted/60 text-foreground shadow-2xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+	const fullName = `${order.foodName}${order.variantLabel ? ` - ${order.variantLabel}` : ''}`
 	const title = (
 		<span
+			title={fullName}
 			className={cn(
-				'font-medium',
-				compact && 'truncate text-sm',
+				'truncate font-medium',
+				compact && 'text-sm',
 				order.shouldCalculate ? 'text-foreground' : 'text-muted-foreground'
 			)}
 		>
-			{order.foodName}
-			{order.variantLabel ? ` - ${order.variantLabel}` : ''}
+			{fullName}
 		</span>
 	)
 	const splitBadge = (
@@ -210,13 +214,15 @@ export function OrderListItem({
 	if (compact) {
 		return (
 			<li className='flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2 shadow-sm'>
-				<OrderThumb
-					imageKey={order.foodImageUrl}
-					alt={order.foodName}
-					className='size-9 rounded-lg'
-				/>
+				{!hideThumb && (
+					<OrderThumb
+						imageKey={order.foodImageUrl}
+						alt={order.foodName}
+						className='size-9 rounded-lg'
+					/>
+				)}
 				<div className='flex min-w-0 flex-1 flex-col gap-0.5'>
-					{title}
+					{!hideThumb && title}
 					{splitBadge}
 				</div>
 				{stepper}
@@ -226,7 +232,7 @@ export function OrderListItem({
 		)
 	}
 	return (
-		<li className='flex flex-col gap-2 rounded-2xl border border-border bg-card px-4 py-3 shadow-sm'>
+		<li className='flex flex-col gap-1.5 rounded-2xl border border-border bg-card px-3 py-2.5 shadow-sm sm:gap-2 sm:px-4 sm:py-3'>
 			<div className='flex items-start justify-between gap-2'>
 				<div className='flex min-w-0 items-start gap-3'>
 					<OrderThumb imageKey={order.foodImageUrl} alt={order.foodName} />
