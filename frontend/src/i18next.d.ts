@@ -174,7 +174,6 @@ declare module 'react-i18next' {
 					none_found: string
 				}
 				roster: {
-					highlight_hint: string
 					people_here: string
 					empty: string
 					host: string

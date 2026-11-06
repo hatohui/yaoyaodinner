@@ -10,7 +10,6 @@ interface OrderDishGroupProps {
 	lines: OrderedLine[]
 	people: PersonDto[]
 	currency: string
-	highlight?: 'hit' | 'dim'
 	children: ReactNode
 }
 
@@ -24,7 +23,6 @@ export function OrderDishGroup({
 	lines,
 	people,
 	currency,
-	highlight,
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
@@ -48,13 +46,7 @@ export function OrderDishGroup({
 	}
 
 	return (
-		<li
-			className={cn(
-				'overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-opacity',
-				highlight === 'hit' && 'ring-2 ring-primary/50',
-				highlight === 'dim' && 'opacity-40'
-			)}
-		>
+		<li className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
 			<button
 				type='button'
 				aria-expanded={open}
