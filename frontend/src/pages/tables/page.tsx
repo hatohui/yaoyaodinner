@@ -10,6 +10,7 @@ import { TableSortSelect } from './@TableSortSelect'
 import { useConfig } from '@/hooks/useConfig'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { TABLE_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
+import { cn } from '@/utils/shadcn'
 
 export default function TablesPage() {
 	const { t } = useTranslation()
@@ -21,6 +22,7 @@ export default function TablesPage() {
 		tables,
 		pagedTables,
 		isLoading,
+		isRefreshing,
 		isError,
 		pagination,
 	} = useTableSearch()
@@ -71,15 +73,22 @@ export default function TablesPage() {
 				<p className='py-16 text-center text-sm text-muted-foreground'>
 					{t('tables.none_found')}
 				</p>
-			) : view === 'compact' ? (
-				<TableList tables={tables} compact showTotal={showTotal} />
 			) : (
-				<>
-					<TableList tables={pagedTables} showTotal={showTotal} />
-					<div className='mt-4 flex justify-center'>
-						<PaginationBar pagination={pagination} showPageSize />
-					</div>
-				</>
+				<div
+					aria-busy={isRefreshing}
+					className={cn('transition-opacity', isRefreshing && 'opacity-60')}
+				>
+					{view === 'compact' ? (
+						<TableList tables={tables} compact showTotal={showTotal} />
+					) : (
+						<>
+							<TableList tables={pagedTables} showTotal={showTotal} />
+							<div className='mt-4 flex justify-center'>
+								<PaginationBar pagination={pagination} showPageSize />
+							</div>
+						</>
+					)}
+				</div>
 			)}
 		</div>
 	)

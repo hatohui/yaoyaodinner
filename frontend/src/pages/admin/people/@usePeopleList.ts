@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import { useGetPeopleList, getGetPeopleListQueryKey } from '@/api/stats/stats'
 import { useUpdatePerson, useMovePeople } from '@/api/people/people'
 import { useUpsertNote } from '@/api/personal-notes/personal-notes'
@@ -30,13 +30,17 @@ export function usePeopleList() {
 	}
 	const listKey = getGetPeopleListQueryKey(listParams)
 
-	const { data, isLoading, isError } =
-		useGetPeopleList<PeopleListDto>(listParams)
+	const { data, isLoading, isError } = useGetPeopleList<PeopleListDto>(
+		listParams,
+		{
+			query: { placeholderData: keepPreviousData },
+		}
+	)
 
-	const { data: tablesData } = useGetTables<TableListDto>({
-		count: 100,
-		eventId: scopedEventId,
-	})
+	const { data: tablesData } = useGetTables<TableListDto>(
+		{ count: 100, eventId: scopedEventId },
+		{ query: { placeholderData: keepPreviousData } }
+	)
 	const tableOptions = useMemo(
 		() =>
 			(tablesData?.tables ?? []).map(tb => ({ label: tb.name, value: tb.id })),

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import {
 	useGetActiveEvent,
 	useGetPastEvents,
@@ -34,15 +34,21 @@ export function useAdminDashboard() {
 
 	const { data: popular = [], isLoading: popularLoading } = useGetPopularItems<
 		PopularItemDto[]
-	>({
-		scope: 'event',
-		lang: i18n.language,
-		eventId: scopedEventId,
-		limit: 5,
-	})
+	>(
+		{
+			scope: 'event',
+			lang: i18n.language,
+			eventId: scopedEventId,
+			limit: 5,
+		},
+		{ query: { placeholderData: keepPreviousData } }
+	)
 
 	const { data: tableTotals = [], isLoading: totalsLoading } =
-		useGetTableTotals<TableTotalDto[]>({ eventId: scopedEventId })
+		useGetTableTotals<TableTotalDto[]>(
+			{ eventId: scopedEventId },
+			{ query: { placeholderData: keepPreviousData } }
+		)
 
 	const totalSpend = tableTotals.reduce((sum, row) => sum + row.total, 0)
 	const activeTablesCount = tableTotals.filter(row => row.total > 0).length

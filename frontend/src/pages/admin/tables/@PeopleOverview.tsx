@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useGetTables } from '@/api/tables/tables'
 import type { TableListDto } from '@/api/model'
@@ -11,11 +12,14 @@ export function PeopleOverview({ search }: { search: string }) {
 	const { t } = useTranslation()
 	const debouncedSearch = useDebounce(search, 300)
 	const { scopedEventId } = useAdminEvents()
-	const { data, isLoading } = useGetTables<TableListDto>({
-		count: TABLE_FETCH_ALL_COUNT,
-		search: debouncedSearch || undefined,
-		eventId: scopedEventId,
-	})
+	const { data, isLoading } = useGetTables<TableListDto>(
+		{
+			count: TABLE_FETCH_ALL_COUNT,
+			search: debouncedSearch || undefined,
+			eventId: scopedEventId,
+		},
+		{ query: { placeholderData: keepPreviousData } }
+	)
 	const tables = data?.tables ?? []
 
 	if (isLoading) {

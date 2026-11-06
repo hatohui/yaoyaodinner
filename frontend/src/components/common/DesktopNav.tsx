@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import type { LucideIcon } from 'lucide-react'
-import gsap from 'gsap'
 import { cn } from '@/utils/shadcn'
 
 type NavLink = { to: string; label: string; icon: LucideIcon }
@@ -16,7 +15,7 @@ type Props = {
 export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 	const navRef = useRef<HTMLElement>(null)
 	const pillRef = useRef<HTMLSpanElement>(null)
-	const shown = useRef(false)
+	const shown = useRef<{ x: number; width: number } | null>(null)
 	const target = pendingTo ?? links.find(link => isActive(link.to))?.to
 
 	useLayoutEffect(() => {
@@ -27,24 +26,39 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 		const find = () =>
 			target ? nav.querySelector<HTMLElement>(`[data-to="${target}"]`) : null
 
+		const place = (x: number, width: number) => {
+			pill.style.width = `${width}px`
+			pill.style.transform = `translateX(${x}px)`
+		}
+
 		const el = find()
 		if (!el) {
-			gsap.to(pill, { autoAlpha: 0, duration: 0.2 })
-			shown.current = false
+			pill.style.opacity = '0'
+			shown.current = null
 			return
 		}
 
 		const next = { x: el.offsetLeft, width: el.offsetWidth }
+		const prev = shown.current
+		place(next.x, next.width)
+		pill.style.opacity = '1'
+		shown.current = next
+
+		// Transform-only (FLIP) so the compositor runs it: the incoming page's
+		// first render blocks the main thread and would stall a JS tween.
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-		const tween = shown.current
-			? gsap.to(pill, {
-					...next,
-					duration: reduce ? 0 : 0.35,
-					ease: 'power3.out',
-					overwrite: true,
-				})
-			: gsap.set(pill, { ...next, autoAlpha: 1 })
-		shown.current = true
+		const animation =
+			prev && !reduce
+				? pill.animate(
+						[
+							{
+								transform: `translateX(${prev.x}px) scaleX(${prev.width / next.width})`,
+							},
+							{ transform: `translateX(${next.x}px) scaleX(1)` },
+						],
+						{ duration: 320, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+					)
+				: null
 
 		// Labels change width when the language switches; follow without animating.
 		let navWidth = nav.offsetWidth
@@ -52,26 +66,27 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 			const current = find()
 			if (!current || nav.offsetWidth === navWidth) return
 			navWidth = nav.offsetWidth
-			tween.kill()
-			gsap.set(pill, { x: current.offsetLeft, width: current.offsetWidth })
+			animation?.cancel()
+			shown.current = { x: current.offsetLeft, width: current.offsetWidth }
+			place(shown.current.x, shown.current.width)
 		})
 		observer.observe(nav)
 
 		return () => {
 			observer.disconnect()
-			tween.kill()
+			animation?.cancel()
 		}
 	}, [target])
 
 	return (
 		<nav
 			ref={navRef}
-			className='relative hidden min-w-0 items-center gap-1 sm:flex'
+			className='relative hidden min-w-0 items-center gap-1 lg:flex'
 		>
 			<span
 				ref={pillRef}
 				aria-hidden
-				className='invisible absolute inset-y-0 left-0 rounded-full border border-primary/25 bg-primary/18 opacity-0 shadow-2xs'
+				className='absolute inset-y-0 left-0 origin-left rounded-full border border-primary/25 bg-primary/18 opacity-0 shadow-2xs transition-opacity duration-200 will-change-transform'
 			/>
 			{links.map(link => (
 				<Link
@@ -82,7 +97,7 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 					aria-busy={pendingTo === link.to}
 					aria-current={isActive(link.to) ? 'page' : undefined}
 					className={cn(
-						'relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200',
+						'relative flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200',
 						target === link.to
 							? 'font-semibold text-primary'
 							: 'text-foreground/75 hover:bg-primary/10 hover:text-primary dark:hover:bg-accent/50'

@@ -8,7 +8,7 @@ export default function FaqPage() {
 	return (
 		<div className='mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 sm:py-12'>
 			<div>
-				<span className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary'>
+				<span className='inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-card px-3 py-1 text-xs font-semibold text-primary shadow-xs'>
 					<CircleHelp className='size-3.5' />
 					{t('faq.tag')}
 				</span>

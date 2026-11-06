@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import {
 	useGetFoodsForAdmin,
 	useCreateFood,
@@ -70,9 +70,10 @@ export function useFoodCatalog() {
 		manual?: boolean
 	} | null>(null)
 
-	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>({
-		lang: i18n.language,
-	})
+	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>(
+		{ lang: i18n.language },
+		{ query: { placeholderData: keepPreviousData } }
+	)
 
 	const queryParams = {
 		lang: i18n.language,
@@ -83,8 +84,12 @@ export function useFoodCatalog() {
 		sort,
 	}
 
-	const { data, isLoading } =
-		useGetFoodsForAdmin<GetFoodsForAdminResponseDto>(queryParams)
+	const { data, isLoading } = useGetFoodsForAdmin<GetFoodsForAdminResponseDto>(
+		queryParams,
+		{
+			query: { placeholderData: keepPreviousData },
+		}
+	)
 	const foods: FoodGridRow[] = React.useMemo(
 		() =>
 			(data?.foods ?? []).map(f => ({

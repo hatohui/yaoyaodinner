@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
@@ -56,13 +57,16 @@ export function AddPresetItemDialog({
 	const [total, setTotal] = useState(0)
 	const pagination = usePagination({ total, initialCount: 20 })
 
-	const { data, isLoading } = useGetFoodsForAdmin<GetFoodsForAdminResponseDto>({
-		lang,
-		page: pagination.page,
-		count: pagination.count,
-		search: search || undefined,
-		category: categoryId,
-	})
+	const { data, isLoading } = useGetFoodsForAdmin<GetFoodsForAdminResponseDto>(
+		{
+			lang,
+			page: pagination.page,
+			count: pagination.count,
+			search: search || undefined,
+			category: categoryId,
+		},
+		{ query: { placeholderData: keepPreviousData } }
+	)
 
 	useEffect(() => {
 		if (data?.total !== undefined) setTotal(data.total)

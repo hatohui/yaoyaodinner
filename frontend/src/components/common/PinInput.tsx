@@ -39,7 +39,10 @@ export function PinInput({
 
 	const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
 		e.preventDefault()
-		const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length)
+		const digits = e.clipboardData
+			.getData('text')
+			.replace(/\D/g, '')
+			.slice(0, length)
 		if (!digits) return
 		onChange(digits)
 		refs.current[Math.min(digits.length, length - 1)]?.focus()
@@ -59,17 +62,19 @@ export function PinInput({
 					disabled={disabled}
 					autoFocus={autoFocus && i === 0}
 					value={value[i] ?? ''}
-					onChange={e => setDigit(i, e.target.value.replace(/\D/g, '').slice(-1))}
+					onChange={e =>
+						setDigit(i, e.target.value.replace(/\D/g, '').slice(-1))
+					}
 					onKeyDown={e => handleKeyDown(i, e)}
 					onPaste={handlePaste}
 					className={cn(
-						'size-12 rounded-2xl border-2 bg-control text-center text-xl font-semibold text-foreground shadow-sm outline-none transition-colors',
+						'size-12 rounded-2xl border-2 bg-card text-center dark:bg-background/50 text-xl font-semibold text-foreground shadow-sm outline-none transition-colors',
 						'focus:border-primary focus:ring-2 focus:ring-ring/40',
 						invalid
 							? 'border-destructive'
 							: value[i]
 								? 'border-primary bg-primary/10'
-								: 'border-input',
+								: 'border-muted-foreground/45',
 						disabled && 'opacity-60'
 					)}
 				/>

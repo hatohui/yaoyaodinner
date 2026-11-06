@@ -79,10 +79,7 @@ export function BannerDialog({ open, onOpenChange }: BannerDialogProps) {
 						{t('admin.settings.category_banner')}
 					</DialogTitle>
 					<DialogDescription>
-						{t('banner.dialog_description', {
-							defaultValue:
-								'Broadcast an announcement banner to all guests at the top of every page.',
-						})}
+						{t('banner.dialog_description')}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -93,14 +90,10 @@ export function BannerDialog({ open, onOpenChange }: BannerDialogProps) {
 								htmlFor='banner-toggle'
 								className='font-medium text-foreground cursor-pointer'
 							>
-								{t('banner.enable_banner', { defaultValue: 'Enable banner' })}
+								{t('banner.enable_banner')}
 							</Label>
 							<span className='text-xs text-muted-foreground'>
-								{enabled
-									? t('banner.visible_to_all', {
-											defaultValue: 'Visible at the top of the app',
-										})
-									: t('banner.hidden', { defaultValue: 'Hidden from guests' })}
+								{enabled ? t('banner.visible_to_all') : t('banner.hidden')}
 							</span>
 						</div>
 						<Switch
@@ -115,17 +108,14 @@ export function BannerDialog({ open, onOpenChange }: BannerDialogProps) {
 							htmlFor='banner-text'
 							className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'
 						>
-							{t('banner.message_label', { defaultValue: 'Banner Message' })}
+							{t('banner.message_label')}
 						</Label>
 						<Textarea
 							id='banner-text'
 							rows={3}
 							value={message}
 							onChange={e => setMessage(e.target.value)}
-							placeholder={t('banner.placeholder', {
-								defaultValue:
-									'e.g. YaoYao Dinner starts at 7:00 PM! Please finalize pre-orders.',
-							})}
+							placeholder={t('banner.placeholder')}
 							className='rounded-2xl resize-none'
 						/>
 					</div>
@@ -133,7 +123,7 @@ export function BannerDialog({ open, onOpenChange }: BannerDialogProps) {
 					{message.trim() && (
 						<div className='flex flex-col gap-1.5'>
 							<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-								{t('banner.preview', { defaultValue: 'Preview' })}
+								{t('banner.preview')}
 							</span>
 							<div className='flex items-center gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 px-3.5 py-2.5 text-sm font-medium text-foreground'>
 								<Megaphone className='size-4 shrink-0 text-primary' />

@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CheckCircle2, Lock, PauseCircle, RotateCcw, ShoppingCart } from 'lucide-react'
+import {
+	CheckCircle2,
+	Lock,
+	PauseCircle,
+	RotateCcw,
+	ShoppingCart,
+} from 'lucide-react'
 import type { EventSummaryDto, StoredOrderingStage } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -62,7 +68,6 @@ export function OrderingStageControl({
 
 	const showConfirm = stored === 'open' && stage === 'open'
 	const showFinalize = stored !== 'closed' && stored !== 'finalized'
-	const twoActions = showConfirm && showFinalize
 
 	return (
 		<div className='flex flex-col gap-3 px-4 py-3.5'>

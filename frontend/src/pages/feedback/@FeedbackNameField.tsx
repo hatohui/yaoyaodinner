@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { UserRound } from 'lucide-react'
@@ -25,7 +26,12 @@ export function FeedbackNameField({ value, onChange }: FeedbackNameFieldProps) {
 	// the table search already matches people's names, and guests can read it
 	const { data } = useGetTables<TableListDto>(
 		{ count: TABLE_FETCH_ALL_COUNT, search: query },
-		{ query: { enabled: focused && query.length > 0 } }
+		{
+			query: {
+				enabled: focused && query.length > 0,
+				placeholderData: keepPreviousData,
+			},
+		}
 	)
 
 	const suggestions = useMemo(() => {

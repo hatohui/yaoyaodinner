@@ -46,6 +46,9 @@ axios.interceptors.response.use(
 	error => {
 		if (error.response?.status === 401 && useGuest.getState().pin)
 			useGuest.getState().clear()
+		if (!error.response)
+			error.message =
+				error.code === 'ECONNABORTED' ? 'timeout' : 'network_error'
 		const data = error.response?.data?.message
 		if (typeof data === 'string') {
 			error.message = data

@@ -8,6 +8,7 @@ import { FoodTags } from '@/components/common/FoodTags'
 import { cn } from '@/utils/shadcn'
 import { StoredImage } from '@/components/common/StoredImage'
 import { FoodImageButton } from './@FoodImageButton'
+import { usePrefetchFood } from '@/hooks/usePrefetchFood'
 
 interface FoodCardProps {
 	food: FoodItemDto
@@ -35,6 +36,8 @@ export function FoodCard({
 	onImageChange,
 }: FoodCardProps) {
 	const { t } = useTranslation()
+	const prefetchFood = usePrefetchFood()
+	const prefetch = () => prefetchFood(food.id)
 
 	const handleLinkClick = (e: MouseEvent) => {
 		if (!onQuickView) return
@@ -72,6 +75,9 @@ export function FoodCard({
 			<Link
 				to={`/menu/${food.id}`}
 				onClick={handleLinkClick}
+				onPointerEnter={prefetch}
+				onTouchStart={prefetch}
+				onFocus={prefetch}
 				className='relative aspect-[4/3] overflow-hidden border-b border-border bg-muted'
 			>
 				<StoredImage
@@ -207,6 +213,9 @@ export function FoodCard({
 			<Link
 				to={`/menu/${food.id}`}
 				onClick={handleLinkClick}
+				onPointerEnter={prefetch}
+				onTouchStart={prefetch}
+				onFocus={prefetch}
 				className='flex flex-1 flex-col gap-1 px-3.5 pb-3.5 pt-3'
 			>
 				{categoryName && (

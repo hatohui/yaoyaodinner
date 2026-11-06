@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import registerGSAPPlugins from './config/registerGSAPPlugins'
 import { RouterProvider } from 'react-router'
 import router from './config/dynamicRouter'
@@ -9,7 +9,6 @@ import ThemeProvider from './config/theme'
 import { Toaster } from './components/ui/sonner'
 import { TooltipProvider } from './components/ui/tooltip'
 import tanstackConfig from './config/tanstack'
-import { useTranslation } from 'react-i18next'
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { GlobalLoading } from './components/common/GlobalLoading'
 import { AppErrorBoundary } from './components/common/AppErrorBoundary'
@@ -17,9 +16,7 @@ import { AppErrorBoundary } from './components/common/AppErrorBoundary'
 registerGSAPPlugins()
 
 const AppContent = (): React.ReactNode => {
-	const t = useTranslation()
-	const config = tanstackConfig(t)
-	const client = new QueryClient(config)
+	const [client] = useState(() => new QueryClient(tanstackConfig))
 
 	return (
 		<QueryClientProvider client={client}>

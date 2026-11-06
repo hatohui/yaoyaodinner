@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useGetTables } from '@/api/tables/tables'
 import { usePagination } from '@/hooks/usePagination'
@@ -32,10 +33,14 @@ export function useTableSearch() {
 	const [sort, setSort] = useState<TableSort>('number')
 	const debouncedSearch = useDebounce(search, 300)
 
-	const { data, isLoading, isError, refetch } = useGetTables<TableListDto>({
-		count: TABLE_FETCH_ALL_COUNT,
-		search: debouncedSearch || undefined,
-	})
+	const { data, isLoading, isError, refetch, isPlaceholderData } =
+		useGetTables<TableListDto>(
+			{
+				count: TABLE_FETCH_ALL_COUNT,
+				search: debouncedSearch || undefined,
+			},
+			{ query: { placeholderData: keepPreviousData } }
+		)
 
 	const tables = useMemo(
 		() => [...(data?.tables ?? [])].sort(COMPARE[sort]),
@@ -62,6 +67,7 @@ export function useTableSearch() {
 		tables,
 		pagedTables,
 		isLoading,
+		isRefreshing: isPlaceholderData,
 		isError,
 		refetch,
 		pagination,

@@ -15,6 +15,7 @@ import {
 } from '@/api/tables/tables'
 import { useToast } from '@/hooks/useToast'
 import type { PersonDto } from '@/api/model'
+import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 const isNameTaken = (e: unknown) =>
 	isAxiosError(e) && e.response?.status === 409
@@ -26,7 +27,9 @@ export function useRoster(tableId: string) {
 	const peopleKey = getGetTablePeopleQueryKey(tableId)
 	const tableKey = getGetTableByIdQueryKey(tableId)
 
-	const { data, isLoading } = useGetTablePeople<PersonDto[]>(tableId)
+	const { data, isLoading } = useGetTablePeople<PersonDto[]>(tableId, {
+		query: { refetchInterval: TABLE_LIVE_REFETCH_MS },
+	})
 
 	const invalidate = () => {
 		qc.invalidateQueries({ queryKey: peopleKey })

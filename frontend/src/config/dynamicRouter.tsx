@@ -179,4 +179,17 @@ const router = createBrowserRouter([rootRoute], {
 	future: { v7_startTransition: true },
 })
 
+// Warm the guest page chunks once the first screen is up, so tapping a nav
+// link doesn't wait on a download.
+const preloadGuestRoutes = () => {
+	const isGuest = (key: string) => !/\/pages\/(admin|dev|health)\//.test(key)
+	for (const loaders of [pageLoaders, layoutLoaders])
+		for (const [key, load] of Object.entries(loaders))
+			if (isGuest(key)) load().catch(() => {})
+}
+
+if (typeof window.requestIdleCallback === 'function')
+	window.requestIdleCallback(preloadGuestRoutes, { timeout: 4000 })
+else setTimeout(preloadGuestRoutes, 2000)
+
 export default router

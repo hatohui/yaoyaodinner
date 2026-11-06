@@ -30,6 +30,8 @@ import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useTableAccess } from '@/hooks/useTableCode'
+import { cn } from '@/utils/shadcn'
+import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 export default function TableOrderPage() {
 	const { t } = useTranslation()
@@ -46,8 +48,10 @@ export default function TableOrderPage() {
 		recommended,
 		setFilter,
 		categories,
+		categoriesState,
 		foods,
 		isLoading,
+		isRefreshing,
 		isError,
 		pagination,
 	} = useTableOrdering()
@@ -58,7 +62,7 @@ export default function TableOrderPage() {
 
 	const { data: orders = [] } = useGetOrders<OrderResponseDto[]>(
 		{ tableId },
-		{ query: { enabled: !!tableId } }
+		{ query: { enabled: !!tableId, refetchInterval: TABLE_LIVE_REFETCH_MS } }
 	)
 
 	const orderedLines = useMemo(() => groupOrders(orders), [orders])
@@ -157,6 +161,7 @@ export default function TableOrderPage() {
 							onSearchChange={setSearch}
 							activeCategory={category}
 							categories={categories}
+							categoriesState={categoriesState}
 							sort={sort}
 							onSortChange={setSort}
 							popular={popular}
@@ -176,7 +181,13 @@ export default function TableOrderPage() {
 							</p>
 						) : (
 							<>
-								<div className='grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3'>
+								<div
+									aria-busy={isRefreshing}
+									className={cn(
+										'grid grid-cols-2 gap-3 transition-opacity sm:gap-4 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3',
+										isRefreshing && 'opacity-60'
+									)}
+								>
 									{foods.map(food => (
 										<ProductCard
 											key={food.id}

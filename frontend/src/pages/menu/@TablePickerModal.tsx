@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Users } from 'lucide-react'
@@ -32,7 +33,7 @@ export function TablePickerModal({
 
 	const { data, isLoading } = useGetTables<TableListDto>(
 		{ count: 50, search: debouncedSearch || undefined },
-		{ query: { enabled: open } }
+		{ query: { enabled: open, placeholderData: keepPreviousData } }
 	)
 	const tables = data?.tables ?? []
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import {
 	useGetTables,
 	useGetStagedTables,
@@ -35,12 +35,15 @@ export function useAdminTables() {
 	const pagination = usePagination({ total, initialCount: 12 })
 	const { scopedEventId, isViewingPast } = useAdminEvents()
 
-	const { data, isLoading: liveLoading } = useGetTables<TableListDto>({
-		page: pagination.page,
-		count: pagination.count,
-		search: debouncedSearch || undefined,
-		eventId: scopedEventId,
-	})
+	const { data, isLoading: liveLoading } = useGetTables<TableListDto>(
+		{
+			page: pagination.page,
+			count: pagination.count,
+			search: debouncedSearch || undefined,
+			eventId: scopedEventId,
+		},
+		{ query: { placeholderData: keepPreviousData } }
+	)
 	const liveTables = data?.tables ?? []
 
 	useEffect(() => {

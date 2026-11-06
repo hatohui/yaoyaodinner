@@ -98,7 +98,11 @@ export function Navbar() {
 		},
 	].filter(link => link.show)
 
-	const desktopLinks = navLinks.filter(link => link.to !== '/admin')
+	// mobile keeps About last; on desktop it leads the bar
+	const desktopLinks = [
+		...navLinks.filter(link => link.to === '/about'),
+		...navLinks.filter(link => link.to !== '/about' && link.to !== '/admin'),
+	]
 
 	const isActive = (to: string) =>
 		to === '/admin' || to === '/tables'
@@ -141,7 +145,7 @@ export function Navbar() {
 						</Link>
 					)}
 					<AdminMenu />
-					<div className='hidden items-center gap-1 sm:flex'>
+					<div className='hidden items-center gap-1 lg:flex'>
 						<LanguageSelector />
 						<ThemeToggle />
 					</div>

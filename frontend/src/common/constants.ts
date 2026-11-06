@@ -21,7 +21,13 @@ export const ADMIN_GATE_TAPS = 5
 export const ADMIN_GATE_WINDOW_MS = 1500
 export const ADMIN_GATE_LOCK_MS = 3000
 
+export const LOCATION_ADDRESS =
+	'43, Jalan SS15/4E, Subang Jaya, Subang Jaya, Malaysia'
+export const LOCATION_MAPS_URL = 'https://maps.app.goo.gl/FqCuu25uEUchCgZd7'
+
 export const STALE_TIME_STATIC = 1000 * 60 * 30
+// tables are shared, so keep other guests' orders and seats fresh while open
+export const TABLE_LIVE_REFETCH_MS = 15_000
 
 export const MENU_PAGE_SIZE_OPTIONS = [8, 12, 16, 24] as const
 export const MENU_PAGE_SIZE_ALL = 500
@@ -31,10 +37,10 @@ export const MAX_FEEDBACK_CONTENT_LENGTH = 1000
 
 export const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
 export const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/gif',
 ]
 export const THUMBNAIL_KEY_SUFFIX = '_thumb'
 export const THUMBNAIL_MAX_SIZE_PX = 800

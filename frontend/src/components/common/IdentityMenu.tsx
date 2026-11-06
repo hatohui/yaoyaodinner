@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Armchair, ChevronDown, LogOut } from 'lucide-react'
+import { ChevronDown, LogOut } from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,6 +13,7 @@ import { StoredImage } from '@/components/common/StoredImage'
 import { useGuest } from '@/hooks/useGuest'
 import { useHeldTableCode } from '@/hooks/useTableCode'
 import { useToast } from '@/hooks/useToast'
+import { useQuickActions } from '@/hooks/useQuickActions'
 
 export function IdentityMenu() {
 	const { t } = useTranslation()
@@ -21,6 +22,7 @@ export function IdentityMenu() {
 	const clearMe = useGuest(s => s.clearMe)
 	const held = useHeldTableCode(s => s.held)
 	const release = useHeldTableCode(s => s.release)
+	const quickActions = useQuickActions()
 
 	if (!me) return null
 
@@ -52,13 +54,27 @@ export function IdentityMenu() {
 				<DropdownMenuLabel className='font-normal text-muted-foreground'>
 					{t('identity.signed_in_as', { name: me.name })}
 				</DropdownMenuLabel>
-				{me.tableId && (
-					<DropdownMenuItem asChild>
-						<Link to={`/tables/${me.tableId}`}>
-							<Armchair />
-							{t('identity.my_table')}
-						</Link>
-					</DropdownMenuItem>
+				{quickActions.map(action =>
+					'to' in action ? (
+						<DropdownMenuItem key={action.key} asChild>
+							<Link to={action.to}>
+								<action.icon />
+								{action.label}
+							</Link>
+						</DropdownMenuItem>
+					) : 'href' in action ? (
+						<DropdownMenuItem key={action.key} asChild>
+							<a href={action.href} target='_blank' rel='noopener noreferrer'>
+								<action.icon />
+								{action.label}
+							</a>
+						</DropdownMenuItem>
+					) : (
+						<DropdownMenuItem key={action.key} onSelect={action.onSelect}>
+							<action.icon />
+							{action.label}
+						</DropdownMenuItem>
+					)
 				)}
 				<DropdownMenuSeparator />
 				<DropdownMenuItem variant='destructive' onSelect={logOut}>

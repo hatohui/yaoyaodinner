@@ -1,5 +1,4 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { Spinner } from '@/components/ui/spinner'
 
 export function LoadingView() {
 	return (
@@ -23,14 +22,6 @@ export function LoadingView() {
 					</div>
 				</div>
 			))}
-		</div>
-	)
-}
-
-export function LoadingSpinner() {
-	return (
-		<div className='flex min-h-[300px] items-center justify-center'>
-			<Spinner className='h-8 w-8 text-primary' />
 		</div>
 	)
 }

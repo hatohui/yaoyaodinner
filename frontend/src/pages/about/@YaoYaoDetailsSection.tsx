@@ -8,7 +8,7 @@ export function YaoYaoDetailsSection() {
 	return (
 		<section className='grid items-center gap-8 md:grid-cols-[1fr_1.15fr] md:gap-12'>
 			<div>
-				<span className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary'>
+				<span className='inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-card px-3 py-1 text-xs font-semibold text-primary shadow-xs'>
 					<PawPrint className='size-3.5' />
 					{t('about.details_tag')}
 				</span>

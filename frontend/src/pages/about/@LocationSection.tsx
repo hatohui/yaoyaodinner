@@ -1,8 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { MapPin, Navigation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-
-const ADDRESS = '43, Jalan SS15/4E, Subang Jaya, Subang Jaya, Malaysia'
+import { LOCATION_ADDRESS, LOCATION_MAPS_URL } from '@/common/constants'
 
 export function LocationSection() {
 	const { t } = useTranslation()
@@ -27,16 +26,12 @@ export function LocationSection() {
 						{t('menu.restaurant_name')} · {t('menu.restaurant_en')}
 					</p>
 					<p className='mt-0.5 text-sm leading-relaxed text-muted-foreground'>
-						{ADDRESS}
+						{LOCATION_ADDRESS}
 					</p>
 				</div>
 
 				<Button asChild className='mt-auto w-fit gap-1.5 rounded-full'>
-					<a
-						href='https://maps.app.goo.gl/FqCuu25uEUchCgZd7'
-						target='_blank'
-						rel='noopener noreferrer'
-					>
+					<a href={LOCATION_MAPS_URL} target='_blank' rel='noopener noreferrer'>
 						<Navigation className='size-3.5' />
 						{t('about.get_directions')}
 					</a>
@@ -45,7 +40,7 @@ export function LocationSection() {
 
 			<iframe
 				title={t('about.location_title')}
-				src={`https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&output=embed`}
+				src={`https://www.google.com/maps?q=${encodeURIComponent(LOCATION_ADDRESS)}&output=embed`}
 				className='h-64 w-full border-t border-border md:h-full md:min-h-80 md:border-l md:border-t-0'
 				loading='lazy'
 				referrerPolicy='no-referrer-when-downgrade'

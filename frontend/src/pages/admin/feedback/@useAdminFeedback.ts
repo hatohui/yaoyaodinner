@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useGetFeedbackByEvent } from '@/api/feedback/feedback'
 import type {
@@ -23,7 +24,7 @@ export function useAdminFeedback() {
 			count: pagination.count,
 			sort,
 		},
-		{ query: { enabled: Boolean(eventId) } }
+		{ query: { enabled: Boolean(eventId), placeholderData: keepPreviousData } }
 	)
 
 	useEffect(() => {

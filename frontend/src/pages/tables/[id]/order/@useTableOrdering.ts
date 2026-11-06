@@ -1,8 +1,10 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useGetFoods } from '@/api/foods/foods'
 import { useGetCategories } from '@/api/categories/categories'
+import type { CategoriesState } from '@/pages/menu/@FilterBar'
 import { useGetTableById } from '@/api/tables/tables'
 import type {
 	CategoryItemDto,
@@ -36,24 +38,45 @@ export function useTableOrdering() {
 
 	const { data: table, isLoading: tableLoading } = useGetTableById<TableDto>(id)
 
-	const { data: categories = [] } = useGetCategories<CategoryItemDto[]>(
+	const {
+		data: categories = [],
+		isPending: categoriesPending,
+		isError: categoriesError,
+	} = useGetCategories<CategoryItemDto[]>(
 		{ lang: i18n.language },
-		{ query: { staleTime: STALE_TIME_STATIC } }
+		{
+			query: {
+				staleTime: STALE_TIME_STATIC,
+				placeholderData: keepPreviousData,
+			},
+		}
 	)
 
-	const { data, isLoading, isError } = useGetFoods<GetFoodsResponseDto>(
-		{
-			lang: i18n.language,
-			page,
-			count,
-			category: category === 'all' ? undefined : category,
-			sortBy: sort === 'price_desc' ? 'price' : sort,
-			sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
-			popular: popular || undefined,
-			recommended: recommended || undefined,
-		},
-		{ query: { staleTime: STALE_TIME_STATIC } }
-	)
+	const categoriesState: CategoriesState = categoriesPending
+		? 'loading'
+		: categoriesError
+			? 'error'
+			: 'ready'
+
+	const { data, isLoading, isError, isPlaceholderData } =
+		useGetFoods<GetFoodsResponseDto>(
+			{
+				lang: i18n.language,
+				page,
+				count,
+				category: category === 'all' ? undefined : category,
+				sortBy: sort === 'price_desc' ? 'price' : sort,
+				sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
+				popular: popular || undefined,
+				recommended: recommended || undefined,
+			},
+			{
+				query: {
+					staleTime: STALE_TIME_STATIC,
+					placeholderData: keepPreviousData,
+				},
+			}
+		)
 
 	useEffect(() => {
 		if (data?.total !== undefined) setTotal(data.total)
@@ -93,8 +116,10 @@ export function useTableOrdering() {
 		recommended,
 		setFilter,
 		categories,
+		categoriesState,
 		foods,
 		isLoading,
+		isRefreshing: isPlaceholderData,
 		isError,
 		pagination,
 	}

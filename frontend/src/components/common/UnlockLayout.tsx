@@ -29,11 +29,9 @@ export function UnlockLayout({
 			</Link>
 
 			<div className='flex flex-1 items-center justify-center py-6'>
-				<div className='relative w-full overflow-hidden rounded-3xl border border-border bg-card px-6 pb-8 pt-12 text-center shadow-xl'>
-					<div className='pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-primary/20 to-transparent' />
-
-					<div className='relative flex flex-col items-center gap-6'>
-						<div className='flex size-16 items-center justify-center rounded-3xl bg-primary text-primary-foreground shadow-lg ring-8 ring-primary/15'>
+				<div className='w-full rounded-3xl border border-border bg-card px-6 py-10 text-center shadow-lg'>
+					<div className='flex flex-col items-center gap-6'>
+						<div className='flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary'>
 							<Icon className='size-7' />
 						</div>
 

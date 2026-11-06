@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGetPopularItems, useGetTableTotals } from '@/api/stats/stats'
@@ -11,15 +12,24 @@ export function useAdminStats() {
 
 	const { data: popular = [], isLoading: popularLoading } = useGetPopularItems<
 		PopularItemDto[]
-	>({ scope, lang: i18n.language, eventId: scopedEventId })
+	>(
+		{ scope, lang: i18n.language, eventId: scopedEventId },
+		{ query: { placeholderData: keepPreviousData } }
+	)
 
 	const [allOpen, setAllOpen] = useState(false)
 	const { data: allOrdered = [], isLoading: allLoading } = useGetPopularItems<
 		PopularItemDto[]
-	>({ scope, lang: i18n.language, eventId: scopedEventId, limit: 0 })
+	>(
+		{ scope, lang: i18n.language, eventId: scopedEventId, limit: 0 },
+		{ query: { placeholderData: keepPreviousData } }
+	)
 
 	const { data: tableTotals = [], isLoading: totalsLoading } =
-		useGetTableTotals<TableTotalDto[]>({ eventId: scopedEventId })
+		useGetTableTotals<TableTotalDto[]>(
+			{ eventId: scopedEventId },
+			{ query: { placeholderData: keepPreviousData } }
+		)
 
 	const totalSpend = tableTotals.reduce((sum, row) => sum + row.total, 0)
 	const activeTablesCount = tableTotals.filter(row => row.total > 0).length

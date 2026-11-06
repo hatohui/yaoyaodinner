@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import {
 	useGetFeedback,
 	useCreateFeedback,
@@ -29,7 +29,9 @@ export function useFeedback() {
 	const params = { page, count, sort }
 	const feedbackKey = getGetFeedbackQueryKey(params)
 
-	const { data, isLoading } = useGetFeedback<GetFeedbackResponseDto>(params)
+	const { data, isLoading } = useGetFeedback<GetFeedbackResponseDto>(params, {
+		query: { placeholderData: keepPreviousData },
+	})
 
 	useEffect(() => {
 		if (data?.total !== undefined) setTotal(data.total)
@@ -115,7 +117,7 @@ export function useFeedback() {
 					const reactions = existing
 						? f.reactions.map(r =>
 								r.emoji === emoji ? { ...r, count: r.count + 1 } : r
-						  )
+							)
 						: [...f.reactions, { emoji, count: 1 }]
 					return { ...f, reactions, reactionTotal: f.reactionTotal + 1 }
 				}),
@@ -123,7 +125,8 @@ export function useFeedback() {
 		})
 
 		if (!pendingReactions.current[id]) pendingReactions.current[id] = {}
-		pendingReactions.current[id][emoji] = (pendingReactions.current[id][emoji] || 0) + 1
+		pendingReactions.current[id][emoji] =
+			(pendingReactions.current[id][emoji] || 0) + 1
 		flushReactions()
 	}
 

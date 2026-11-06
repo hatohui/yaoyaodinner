@@ -184,6 +184,13 @@ export function useOrderCart(tableId: string) {
 
 	const { mutateAsync: createBatch, isPending } = useCreateOrderBatch()
 
+	const dropLines = (foodIds: string[]) =>
+		setLines(prev => {
+			const next = new Map(prev)
+			for (const id of foodIds) next.delete(id)
+			return next
+		})
+
 	/** One batch call per distinct split config, since a batch shares its split. */
 	const checkout = async () => {
 		if (items.length === 0) return
@@ -219,14 +226,16 @@ export function useOrderCart(tableId: string) {
 						personIds,
 					},
 				})
+				// a later group can fail; never let a retry re-place this one
+				dropLines(group.map(l => l.foodId))
 			}
-			qc.invalidateQueries({ queryKey: getGetOrdersQueryKey() })
-			clear()
 			toast.success(t('orders.placed'))
 			return true
 		} catch {
 			toast.error(t('orders.place_failed'))
 			return false
+		} finally {
+			qc.invalidateQueries({ queryKey: getGetOrdersQueryKey() })
 		}
 	}
 

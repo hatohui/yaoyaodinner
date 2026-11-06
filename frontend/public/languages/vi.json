@@ -18,7 +18,8 @@
 		"unauthorized": "Không được phép",
 		"forbidden": "Bị cấm",
 		"validation_error": "Lỗi xác thực",
-		"timeout": "Hết thời gian chờ"
+		"timeout": "Hết thời gian chờ",
+		"network_error": "Không thể kết nối máy chủ. Hãy kiểm tra kết nối mạng và thử lại."
 	},
 	"common": {
 		"back": "Quay lại",
@@ -54,7 +55,14 @@
 		"close": "Đóng"
 	},
 	"banner": {
-		"dismiss": "Đóng"
+		"dismiss": "Đóng",
+		"dialog_description": "Hiển thị thông báo ở đầu mọi trang cho tất cả khách.",
+		"enable_banner": "Bật thông báo",
+		"visible_to_all": "Hiển thị ở đầu ứng dụng",
+		"hidden": "Đang ẩn với khách",
+		"message_label": "Nội dung thông báo",
+		"placeholder": "VD: YaoYao Dinner bắt đầu lúc 19:00! Vui lòng chốt món đặt trước.",
+		"preview": "Xem trước"
 	},
 	"dinner": {
 		"label": "Giờ ăn tối"
@@ -98,11 +106,14 @@
 		"tables": "Bàn",
 		"feedback": "Góp ý",
 		"admin": "Quản trị",
-		"open_menu": "Mở menu"
+		"open_menu": "Mở menu",
+		"location": "Vị trí",
+		"copy_address": "Chép địa chỉ",
+		"address_copied": "Đã chép địa chỉ"
 	},
 	"access": {
 		"back": "Quay lại",
-		"enter_pin": "Nhập mã PIN để truy cập",
+		"enter_pin": "Nhập mã PIN",
 		"subtitle": "Nhập đúng mã PIN để tiếp tục",
 		"unlock": "Mở khóa",
 		"unlocking": "Đang mở khóa…",
@@ -588,7 +599,8 @@
 			"category_feedback": "Phản hồi",
 			"category_features": "Tính năng",
 			"category_banner": "Thông báo",
-			"category_orders": "Đặt món"
+			"category_orders": "Đặt món",
+			"category_danger": "Vùng nguy hiểm"
 		},
 		"food": {
 			"title": "Danh mục món ăn",
@@ -671,7 +683,9 @@
 			"delete_confirm_title": "Xóa sự kiện này?",
 			"delete_confirm_body": "\"{{name}}\" cùng toàn bộ bàn, người, đơn hàng và phản hồi sẽ bị xóa vĩnh viễn. Nhập mật khẩu chủ sở hữu để xác nhận.",
 			"owner_passphrase_placeholder": "Mật khẩu chủ sở hữu",
-			"deleted": "Đã xóa sự kiện"
+			"deleted": "Đã xóa sự kiện",
+			"delete_title": "Xóa sự kiện này",
+			"delete_warning": "Xóa vĩnh viễn sự kiện này cùng các bàn, món đã đặt và khách tham dự. Cần mật khẩu chủ sở hữu."
 		},
 		"edit_mode": {
 			"label": "Chế độ chỉnh sửa",
@@ -705,7 +719,9 @@
 			"finalize_body": "Tổng tiền và cách chia sẽ bị khóa với tất cả mọi người, và một bản sao lưu chỉ đọc có đánh số phiên bản mới sẽ được lưu lên S3.",
 			"reopen_title": "Mở lại sự kiện đã chốt sổ?",
 			"reopen_body": "Thao tác này mở khóa sự kiện để chỉnh sửa đơn hàng và chia tiền trước khi chốt sổ lại. Nhập mật khẩu chủ sở hữu để xác nhận.",
-			"updated": "Đã cập nhật đặt món"
+			"updated": "Đã cập nhật đặt món",
+			"open_title": "Mở đặt trước?",
+			"open_body": "Khách sẽ có thể xem thực đơn và gửi món đặt trước cho bàn của mình."
 		}
 	},
 	"faq": {
@@ -728,5 +744,16 @@
 		"switch_table_a": "Bấm nút hình cửa cạnh Sao chép liên kết để rời bàn, rồi mở đúng bàn và vào bằng mã của bàn đó. Mỗi điện thoại chỉ giữ được một mã bàn.",
 		"feedback_q": "Gửi góp ý hoặc ảnh ở đâu?",
 		"feedback_a": "Ở trang Góp ý. Viết vài dòng, thêm ảnh nếu muốn, rồi đăng để mọi người cùng xem."
+	},
+	"not_found_page": {
+		"title": "Trang này không tồn tại",
+		"description": "Liên kết có thể bị lỗi hoặc trang đã được chuyển đi."
+	},
+	"a11y": {
+		"toggle_theme": "Đổi giao diện sáng/tối",
+		"clear_search": "Xóa tìm kiếm"
+	},
+	"landing": {
+		"created_by": "Trang web được tạo bởi"
 	}
 }

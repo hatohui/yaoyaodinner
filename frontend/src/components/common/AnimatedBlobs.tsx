@@ -245,7 +245,7 @@ export function AnimatedBlobs({ className }: { className?: string }) {
 			ref={containerRef}
 			aria-hidden='true'
 			className={cn(
-				'fixed inset-0 pointer-events-none select-none overflow-hidden -z-20 dark:opacity-75',
+				'fixed inset-0 pointer-events-none select-none overflow-hidden -z-20 opacity-70 dark:opacity-55',
 				className
 			)}
 		>

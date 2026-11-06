@@ -11,7 +11,7 @@ export function EmptyView({ onReset, hasFilters }: EmptyViewProps) {
 	const { t } = useTranslation()
 
 	return (
-		<div className='flex flex-col items-center justify-center py-20 text-center'>
+		<div className='mx-auto my-12 flex max-w-md flex-col items-center justify-center rounded-3xl border border-border bg-card/95 px-6 py-12 text-center shadow-sm backdrop-blur-md'>
 			<div className='mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-brand-muted'>
 				<UtensilsCrossed className='h-10 w-10 text-primary' />
 			</div>

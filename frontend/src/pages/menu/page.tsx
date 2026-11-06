@@ -1,3 +1,4 @@
+import { keepPreviousData } from '@tanstack/react-query'
 import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGetFoods } from '@/api/foods/foods'
@@ -10,7 +11,8 @@ import { FoodCard } from './@FoodCard'
 import { FoodDetailModal } from './[id]/@FoodDetailModal'
 import { MenuOrderingOverlays } from './@MenuOrderingOverlays'
 import { useMenuOrdering } from './@useMenuOrdering'
-import { LoadingView, LoadingSpinner } from './@LoadingView'
+import { LoadingView } from './@LoadingView'
+import { cn } from '@/utils/shadcn'
 import { ErrorView } from './@ErrorView'
 import { EmptyView } from './@EmptyView'
 import { STALE_TIME_STATIC } from '@/common/constants'
@@ -63,7 +65,7 @@ export default function MenuPage() {
 
 	const { page, count } = pagination
 
-	const { data, isLoading, isError, error, refetch } =
+	const { data, isLoading, isError, error, refetch, isPlaceholderData } =
 		useGetFoods<GetFoodsResponseDto>(
 			{
 				lang: i18n.language,
@@ -75,16 +77,32 @@ export default function MenuPage() {
 				popular: popular || undefined,
 				recommended: recommended || undefined,
 			},
-			{ query: { staleTime: STALE_TIME_STATIC, refetchOnWindowFocus: false } }
+			{
+				query: {
+					staleTime: STALE_TIME_STATIC,
+					refetchOnWindowFocus: false,
+					placeholderData: keepPreviousData,
+				},
+			}
 		)
 
 	useEffect(() => {
 		if (data?.total !== undefined) setTotal(data.total)
 	}, [data?.total])
 
-	const { data: categoriesRaw } = useGetCategories<CategoryItemDto[]>(
+	const {
+		data: categoriesRaw,
+		isPending: categoriesPending,
+		isError: categoriesError,
+	} = useGetCategories<CategoryItemDto[]>(
 		{ lang: i18n.language },
-		{ query: { staleTime: STALE_TIME_STATIC, refetchOnWindowFocus: false } }
+		{
+			query: {
+				staleTime: STALE_TIME_STATIC,
+				refetchOnWindowFocus: false,
+				placeholderData: keepPreviousData,
+			},
+		}
 	)
 
 	const categories = useMemo<CategoryItemDto[]>(
@@ -125,6 +143,9 @@ export default function MenuPage() {
 				onSearchChange={setSearch}
 				activeCategory={category}
 				categories={categories}
+				categoriesState={
+					categoriesPending ? 'loading' : categoriesError ? 'error' : 'ready'
+				}
 				sort={sort}
 				onSortChange={setSort}
 				popular={popular}
@@ -140,13 +161,17 @@ export default function MenuPage() {
 						<LoadingView />
 					) : isError && error ? (
 						<ErrorView error={error as Error} onRetry={() => refetch()} />
-					) : isLoading ? (
-						<LoadingSpinner />
 					) : filteredFoods.length === 0 ? (
 						<EmptyView hasFilters={hasFilters} onReset={handleReset} />
 					) : (
 						<>
-							<div className='grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
+							<div
+								aria-busy={isPlaceholderData}
+								className={cn(
+									'grid grid-cols-2 gap-3 transition-opacity sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5',
+									isPlaceholderData && 'opacity-60'
+								)}
+							>
 								{filteredFoods.map((food: FoodItemDto) => (
 									<FoodCard
 										key={food.id}

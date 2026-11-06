@@ -8,6 +8,7 @@ import {
 } from '@/api/orders/orders'
 import { useToast } from '@/hooks/useToast'
 import type { OrderResponseDto } from '@/api/model'
+import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 export function useOrders(tableId: string) {
 	const { t, i18n } = useTranslation()
@@ -15,10 +16,10 @@ export function useOrders(tableId: string) {
 	const qc = useQueryClient()
 	const ordersKey = getGetOrdersQueryKey({ tableId, lang: i18n.language })
 
-	const { data, isLoading } = useGetOrders<OrderResponseDto[]>({
-		tableId,
-		lang: i18n.language,
-	})
+	const { data, isLoading } = useGetOrders<OrderResponseDto[]>(
+		{ tableId, lang: i18n.language },
+		{ query: { refetchInterval: TABLE_LIVE_REFETCH_MS } }
+	)
 
 	const invalidate = () => qc.invalidateQueries({ queryKey: ordersKey })
 

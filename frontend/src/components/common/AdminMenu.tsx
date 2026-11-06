@@ -41,7 +41,7 @@ import {
 	getGetConfigQueryKey,
 	getGetPublicConfigQueryKey,
 } from '@/api/config/config'
-import type { StoredOrderingStage } from '@/api/model'
+import type { GetPublicConfig200, StoredOrderingStage } from '@/api/model'
 
 type PendingStageAction =
 	| StoredOrderingStage
@@ -62,14 +62,28 @@ export function AdminMenu() {
 	const [bannerOpen, setBannerOpen] = useState(false)
 	const [pendingStage, setPendingStage] = useState<PendingStageAction>(null)
 
+	const publicKey = getGetPublicConfigQueryKey()
 	const { mutate: updateConfig } = useUpdateConfig({
 		mutation: {
-			onSuccess: () => {
-				qc.invalidateQueries({ queryKey: getGetConfigQueryKey() })
-				qc.invalidateQueries({ queryKey: getGetPublicConfigQueryKey() })
-				toast.success(t('admin.settings.saved'))
+			onMutate: async ({ key, data: { value } }) => {
+				await qc.cancelQueries({ queryKey: publicKey })
+				const prev = qc.getQueryData<GetPublicConfig200>(publicKey)
+				if (prev)
+					qc.setQueryData<GetPublicConfig200>(publicKey, {
+						...prev,
+						[key]: value === 'true',
+					})
+				return { prev }
 			},
-			onError: () => toast.error(t('admin.settings.save_failed')),
+			onSuccess: () => toast.success(t('admin.settings.saved')),
+			onError: (_e, _v, ctx) => {
+				if (ctx?.prev) qc.setQueryData(publicKey, ctx.prev)
+				toast.error(t('admin.settings.save_failed'))
+			},
+			onSettled: () => {
+				qc.invalidateQueries({ queryKey: getGetConfigQueryKey() })
+				qc.invalidateQueries({ queryKey: publicKey })
+			},
 		},
 	})
 
@@ -135,7 +149,11 @@ export function AdminMenu() {
 					>
 						<PencilLine className='size-4' />
 						<span className='flex-1'>{t('admin.edit_mode.label')}</span>
-						<Switch checked={editing} size='sm' className='pointer-events-none' />
+						<Switch
+							checked={editing}
+							size='sm'
+							className='pointer-events-none'
+						/>
 					</DropdownMenuItem>
 
 					{activeEvent && (
@@ -256,7 +274,9 @@ export function AdminMenu() {
 						className='cursor-pointer'
 					>
 						<Megaphone className='size-4' />
-						<span className='flex-1'>{t('admin.settings.category_banner')}…</span>
+						<span className='flex-1'>
+							{t('admin.settings.category_banner')}…
+						</span>
 						<Switch
 							checked={bannerEnabled}
 							size='sm'
@@ -298,10 +318,12 @@ export function AdminMenu() {
 						className='cursor-pointer'
 					>
 						<Map className='size-4' />
-						<span className='flex-1'>
-							{t('floor_plan.view_map', { defaultValue: 'Floor plan' })}
-						</span>
-						<Switch checked={floorPlan} size='sm' className='pointer-events-none' />
+						<span className='flex-1'>{t('floor_plan.view_map')}</span>
+						<Switch
+							checked={floorPlan}
+							size='sm'
+							className='pointer-events-none'
+						/>
 					</DropdownMenuItem>
 
 					<DropdownMenuItem
@@ -312,7 +334,9 @@ export function AdminMenu() {
 						className='cursor-pointer'
 					>
 						<MessageSquareHeart className='size-4' />
-						<span className='flex-1'>{t('admin.settings.category_feedback')}</span>
+						<span className='flex-1'>
+							{t('admin.settings.category_feedback')}
+						</span>
 						<Switch
 							checked={feedbackWall}
 							size='sm'
@@ -347,13 +371,8 @@ export function AdminMenu() {
 			<ConfirmDialog
 				open={pendingStage === 'open'}
 				onOpenChange={open => !open && setPendingStage(null)}
-				title={t('admin.ordering.open_title', {
-					defaultValue: 'Open pre-orders?',
-				})}
-				description={t('admin.ordering.open_body', {
-					defaultValue:
-						'Guests will be able to browse the menu and submit pre-orders for their tables.',
-				})}
+				title={t('admin.ordering.open_title')}
+				description={t('admin.ordering.open_body')}
 				confirmLabel={t('admin.ordering.open')}
 				destructive={false}
 				onConfirm={() => confirmStage('open')}

@@ -67,24 +67,17 @@ export default function AdminSettingsPage() {
 				<div className='flex flex-col gap-1.5 pt-4'>
 					<p className='flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-destructive'>
 						<AlertTriangle className='size-3.5' />
-						{t('admin.settings.category_danger', {
-							defaultValue: 'Danger Zone',
-						})}
+						{t('admin.settings.category_danger')}
 					</p>
 					<Card className='gap-3 border-destructive/30 bg-destructive/5 p-4'>
 						<div className='flex flex-wrap items-center justify-between gap-3'>
 							<div className='flex min-w-0 flex-1 flex-col gap-0.5'>
 								<span className='font-semibold text-foreground'>
-									{t('admin.event.delete_title', {
-										defaultValue: 'Delete this event',
-									})}
+									{t('admin.event.delete_title')}
 									{eventLabel && ` (${eventLabel})`}
 								</span>
 								<p className='text-xs text-muted-foreground'>
-									{t('admin.event.delete_warning', {
-										defaultValue:
-											'Permanently remove this event and its tables, orders, and attendees. Requires owner passphrase.',
-									})}
+									{t('admin.event.delete_warning')}
 								</p>
 							</div>
 							<Button

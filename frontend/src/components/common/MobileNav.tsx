@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import { ChevronRight, Loader2, MapPin, Menu } from 'lucide-react'
+import { ChevronRight, Loader2, Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import {
@@ -13,6 +13,7 @@ import {
 import { cn } from '@/utils/shadcn'
 import { LanguageSelector } from './LanguageSelector'
 import { ThemeToggle } from './ThemeToggle'
+import { MobileQuickActions } from './MobileQuickActions'
 
 interface MobileNavLink {
 	to: string
@@ -45,20 +46,25 @@ export function MobileNav({
 				<button
 					type='button'
 					aria-label={t('nav.open_menu')}
-					className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary/10 hover:text-primary sm:hidden dark:hover:bg-accent/50'
+					className='flex size-8 items-center justify-center rounded-full text-foreground transition-colors hover:bg-primary/10 hover:text-primary lg:hidden dark:hover:bg-accent/50'
 				>
 					<Menu className='size-5' />
 				</button>
 			</SheetTrigger>
-			<SheetContent side='right' className='w-72 gap-0 border-l border-border'>
-				<SheetHeader className='gap-1 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent px-5 pb-5 pt-6'>
-					<SheetTitle className='text-2xl font-bold tracking-tight'>
+			<SheetContent side='right' className='w-80 gap-0 border-l border-border'>
+				<SheetHeader className='gap-0 p-0 pt-12'>
+					<SheetTitle className='sr-only'>
 						{t('menu.restaurant_name')}
 					</SheetTitle>
-					<SheetDescription className='flex items-center gap-1.5'>
-						<MapPin className='size-3.5 text-primary' />
+					<SheetDescription className='sr-only'>
 						{t('menu.restaurant_en')} · {t('menu.restaurant_location')}
 					</SheetDescription>
+					<MobileQuickActions
+						onNavigate={to => {
+							onNavigate(to)
+							onOpenChange(false)
+						}}
+					/>
 				</SheetHeader>
 
 				<div className='mx-4 mt-3 flex items-center justify-between rounded-2xl border border-border bg-muted/50 p-1.5'>

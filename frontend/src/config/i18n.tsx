@@ -2,6 +2,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector'
 import { createContext, useContext, useState, useEffect } from 'react'
+import { GlobalLoading } from '@/components/common/GlobalLoading'
 
 const loadLanguage = async (lng: string) => {
 	const response = await fetch(`/languages/${lng}.json`, { cache: 'no-cache' })
@@ -65,8 +66,8 @@ export const changeLanguage = async (lng: string) => {
 	const supportedLngs = ['en', 'vi', 'th', 'zh']
 	if (!supportedLngs.includes(lng)) return
 
-	const translation = await loadLanguage(lng)
-	i18n.addResourceBundle(lng, 'translation', translation)
+	if (!i18n.hasResourceBundle(lng, 'translation'))
+		i18n.addResourceBundle(lng, 'translation', await loadLanguage(lng))
 	await i18n.changeLanguage(lng)
 
 	const urlParams = new URLSearchParams(window.location.search)
@@ -74,6 +75,9 @@ export const changeLanguage = async (lng: string) => {
 	const newUrl = `${window.location.pathname}?${urlParams.toString()}`
 	window.history.replaceState({}, '', newUrl)
 }
+
+// start fetching translations as soon as the bundle runs, not after first render
+const ready = initI18n()
 
 type LanguageContextType = {
 	lang: string
@@ -92,7 +96,7 @@ const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
 	const [isInitialized, setIsInitialized] = useState(false)
 
 	useEffect(() => {
-		initI18n().then(detectedLang => {
+		ready.then(detectedLang => {
 			setLang(detectedLang)
 			setIsInitialized(true)
 		})
@@ -104,7 +108,7 @@ const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
 	}
 
 	if (!isInitialized) {
-		return null
+		return <GlobalLoading />
 	}
 
 	return (

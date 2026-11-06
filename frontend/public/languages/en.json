@@ -18,7 +18,8 @@
 		"unauthorized": "Unauthorized",
 		"forbidden": "Forbidden",
 		"validation_error": "Validation error",
-		"timeout": "Request timeout"
+		"timeout": "Request timeout",
+		"network_error": "Can't reach the server. Check your connection and try again."
 	},
 	"common": {
 		"back": "Back",
@@ -54,7 +55,14 @@
 		"close": "Close"
 	},
 	"banner": {
-		"dismiss": "Dismiss"
+		"dismiss": "Dismiss",
+		"dialog_description": "Broadcast an announcement banner to all guests at the top of every page.",
+		"enable_banner": "Enable banner",
+		"visible_to_all": "Visible at the top of the app",
+		"hidden": "Hidden from guests",
+		"message_label": "Banner message",
+		"placeholder": "e.g. YaoYao Dinner starts at 7:00 PM! Please finalize pre-orders.",
+		"preview": "Preview"
 	},
 	"dinner": {
 		"label": "Dinner time"
@@ -98,11 +106,14 @@
 		"tables": "Tables",
 		"feedback": "Feedback",
 		"admin": "Admin",
-		"open_menu": "Open menu"
+		"open_menu": "Open menu",
+		"location": "Location",
+		"copy_address": "Copy address",
+		"address_copied": "Address copied"
 	},
 	"access": {
 		"back": "Back",
-		"enter_pin": "Enter the PIN to get access",
+		"enter_pin": "Enter PIN",
 		"subtitle": "Enter the correct PIN to continue",
 		"unlock": "Unlock",
 		"unlocking": "Unlocking…",
@@ -588,7 +599,8 @@
 			"category_feedback": "Feedback",
 			"category_features": "Features",
 			"category_banner": "Banner",
-			"category_orders": "Orders"
+			"category_orders": "Orders",
+			"category_danger": "Danger zone"
 		},
 		"food": {
 			"title": "Food catalog",
@@ -671,7 +683,9 @@
 			"delete_confirm_title": "Delete this event?",
 			"delete_confirm_body": "\"{{name}}\" and all of its tables, people, orders and feedback will be deleted for good. Enter the owner passphrase to confirm.",
 			"owner_passphrase_placeholder": "Owner passphrase",
-			"deleted": "Event deleted"
+			"deleted": "Event deleted",
+			"delete_title": "Delete this event",
+			"delete_warning": "Permanently remove this event and its tables, orders, and attendees. Requires owner passphrase."
 		},
 		"edit_mode": {
 			"label": "Edit mode",
@@ -705,7 +719,9 @@
 			"finalize_body": "Totals and splits will be locked for everyone, and a new versioned read-only backup of this event will be saved to S3.",
 			"reopen_title": "Re-open this finalized event?",
 			"reopen_body": "This unlocks the event so orders and splits can be adjusted before re-finalizing. Enter the owner passphrase to confirm.",
-			"updated": "Ordering updated"
+			"updated": "Ordering updated",
+			"open_title": "Open pre-orders?",
+			"open_body": "Guests will be able to browse the menu and submit pre-orders for their tables."
 		}
 	},
 	"faq": {
@@ -728,5 +744,16 @@
 		"switch_table_a": "Tap the door button next to Copy link to leave, then open the right table and join it with its code. A phone can only hold one table's code at a time.",
 		"feedback_q": "Where do I leave feedback or photos?",
 		"feedback_a": "On the Feedback page. Write something, add a photo if you like, and post it for everyone to see."
+	},
+	"not_found_page": {
+		"title": "This page doesn't exist",
+		"description": "The link may be broken or the page was moved."
+	},
+	"a11y": {
+		"toggle_theme": "Toggle theme",
+		"clear_search": "Clear search"
+	},
+	"landing": {
+		"created_by": "Website created by"
 	}
 }

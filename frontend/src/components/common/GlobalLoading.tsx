@@ -3,10 +3,7 @@ import { Spinner } from '@/components/ui/spinner'
 export const GlobalLoading = () => {
 	return (
 		<div className='flex min-h-screen items-center justify-center bg-background'>
-			<div className='flex flex-col items-center gap-4'>
-				<Spinner />
-				<p className='text-sm text-muted-foreground'>Loading...</p>
-			</div>
+			<Spinner className='size-6 text-primary' />
 		</div>
 	)
 }

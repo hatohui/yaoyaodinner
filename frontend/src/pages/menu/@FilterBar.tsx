@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ArrowUpDown, Flame, Search, Sparkles, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
 	Select,
 	SelectContent,
@@ -18,11 +19,25 @@ interface MenuFilter {
 	recommended: boolean
 }
 
+export type CategoriesState = 'loading' | 'error' | 'ready'
+
+const PILL_SKELETON_WIDTHS = [
+	'w-24',
+	'w-24',
+	'w-16',
+	'w-20',
+	'w-16',
+	'w-24',
+	'w-20',
+	'w-16',
+]
+
 interface FilterBarProps {
 	search: string
 	onSearchChange: (value: string) => void
 	activeCategory: string
 	categories: CategoryItemDto[]
+	categoriesState: CategoriesState
 	sort: MenuSort
 	onSortChange: (value: MenuSort) => void
 	popular: boolean
@@ -35,6 +50,7 @@ export function FilterBar({
 	onSearchChange,
 	activeCategory,
 	categories,
+	categoriesState,
 	sort,
 	onSortChange,
 	popular,
@@ -67,7 +83,7 @@ export function FilterBar({
 								type='button'
 								onClick={() => onSearchChange('')}
 								className='absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors'
-								aria-label='Clear search'
+								aria-label={t('a11y.clear_search')}
 							>
 								<X className='size-3.5' />
 							</button>
@@ -80,7 +96,7 @@ export function FilterBar({
 							value={sort}
 							onValueChange={val => onSortChange(val as MenuSort)}
 						>
-							<SelectTrigger className='h-10 w-44 gap-1.5 rounded-full border border-border/90 bg-background/90 px-3.5 text-sm font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
+							<SelectTrigger className='*:data-[slot=select-value]:flex-1 data-[size=default]:h-10 w-44 gap-1.5 rounded-full border border-border/90 bg-background/90 px-3.5 text-sm font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
 								<ArrowUpDown className='size-3.5 shrink-0 text-foreground/75' />
 								<SelectValue />
 							</SelectTrigger>
@@ -90,65 +106,82 @@ export function FilterBar({
 								<SelectItem value='price_desc'>
 									{t('menu.sort_price_desc')}
 								</SelectItem>
-								<SelectItem value='popular'>{t('menu.sort_popular')}</SelectItem>
+								<SelectItem value='popular'>
+									{t('menu.sort_popular')}
+								</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>
 				</div>
 
 				{/* Desktop: Wrapped Category Pills */}
-				<div className='mt-2.5 hidden flex-wrap gap-2 pt-0.5 sm:flex'>
-					<CategoryPill
-						label={t('menu.popular')}
-						icon={Flame}
-						variant='popular'
-						active={popular}
-						onClick={() =>
-							onFilterChange({
-								category: 'all',
-								popular: true,
-								recommended: false,
-							})
-						}
-					/>
-					<CategoryPill
-						label={t('menu.recommended')}
-						icon={Sparkles}
-						variant='recommended'
-						active={recommended}
-						onClick={() =>
-							onFilterChange({
-								category: 'all',
-								popular: false,
-								recommended: true,
-							})
-						}
-					/>
-					<CategoryPill
-						label={t('menu.all_categories')}
-						active={activeCategory === 'all' && !popular && !recommended}
-						onClick={() =>
-							onFilterChange({
-								category: 'all',
-								popular: false,
-								recommended: false,
-							})
-						}
-					/>
-					{categories.map(cat => (
-						<CategoryPill
-							key={cat.id}
-							label={cat.name ?? cat.key}
-							active={activeCategory === cat.id && !popular && !recommended}
-							onClick={() =>
-								onFilterChange({
-									category: cat.id,
-									popular: false,
-									recommended: false,
-								})
-							}
-						/>
-					))}
+				<div
+					aria-busy={categoriesState === 'loading'}
+					className='mt-2.5 hidden flex-wrap gap-2 pt-0.5 sm:flex'
+				>
+					{categoriesState === 'loading' ? (
+						PILL_SKELETON_WIDTHS.map((width, i) => (
+							<Skeleton key={i} className={cn('h-8.5 rounded-full', width)} />
+						))
+					) : (
+						<>
+							{categoriesState === 'ready' && (
+								<>
+									<CategoryPill
+										label={t('menu.popular')}
+										icon={Flame}
+										variant='popular'
+										active={popular}
+										onClick={() =>
+											onFilterChange({
+												category: 'all',
+												popular: true,
+												recommended: false,
+											})
+										}
+									/>
+									<CategoryPill
+										label={t('menu.recommended')}
+										icon={Sparkles}
+										variant='recommended'
+										active={recommended}
+										onClick={() =>
+											onFilterChange({
+												category: 'all',
+												popular: false,
+												recommended: true,
+											})
+										}
+									/>
+								</>
+							)}
+							<CategoryPill
+								label={t('menu.all_categories')}
+								active={activeCategory === 'all' && !popular && !recommended}
+								onClick={() =>
+									onFilterChange({
+										category: 'all',
+										popular: false,
+										recommended: false,
+									})
+								}
+							/>
+							{categories.map(cat => (
+								<CategoryPill
+									key={cat.id}
+									label={cat.name ?? cat.key}
+									active={activeCategory === cat.id && !popular && !recommended}
+									onClick={() =>
+										onFilterChange({
+											category: cat.id,
+											popular: false,
+											recommended: false,
+										})
+									}
+								/>
+							))}
+						</>
+					)}
 				</div>
 
 				{/* Mobile: 2-column Grid for Sort and Category Selects */}
@@ -157,7 +190,7 @@ export function FilterBar({
 						value={sort}
 						onValueChange={val => onSortChange(val as MenuSort)}
 					>
-						<SelectTrigger className='h-9.5 w-full rounded-full border border-border/90 bg-background/90 px-3 text-xs font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
+						<SelectTrigger className='*:data-[slot=select-value]:flex-1 data-[size=default]:h-9.5 w-full rounded-full border border-border/90 bg-background/90 px-3 text-xs font-semibold text-foreground shadow-xs transition-all hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15'>
 							<ArrowUpDown className='size-3.5 shrink-0 text-foreground/75' />
 							<SelectValue />
 						</SelectTrigger>
@@ -172,6 +205,7 @@ export function FilterBar({
 					</Select>
 
 					<Select
+						disabled={categoriesState === 'loading'}
 						value={
 							popular ? 'popular' : recommended ? 'recommended' : activeCategory
 						}
@@ -186,7 +220,7 @@ export function FilterBar({
 					>
 						<SelectTrigger
 							className={cn(
-								'h-9.5 w-full rounded-full border px-3 text-xs font-semibold shadow-xs transition-all',
+								'*:data-[slot=select-value]:flex-1 data-[size=default]:h-9.5 w-full rounded-full border px-3 text-xs font-semibold shadow-xs transition-all',
 								'border-border/90 bg-background/90 text-foreground hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/20 dark:bg-white/10 dark:hover:bg-white/15',
 								(activeCategory !== 'all' || popular || recommended) &&
 									'border-primary/60 bg-primary/10 text-primary dark:border-primary/60 dark:bg-primary/20 dark:text-primary-foreground'
@@ -200,18 +234,22 @@ export function FilterBar({
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
-							<SelectItem value='popular'>
-								<span className='flex items-center gap-1.5'>
-									<Flame className='size-3.5 text-orange-500' />
-									{t('menu.popular')}
-								</span>
-							</SelectItem>
-							<SelectItem value='recommended'>
-								<span className='flex items-center gap-1.5'>
-									<Sparkles className='size-3.5 text-purple-500' />
-									{t('menu.recommended')}
-								</span>
-							</SelectItem>
+							{categoriesState === 'ready' && (
+								<>
+									<SelectItem value='popular'>
+										<span className='flex items-center gap-1.5'>
+											<Flame className='size-3.5 text-orange-500' />
+											{t('menu.popular')}
+										</span>
+									</SelectItem>
+									<SelectItem value='recommended'>
+										<span className='flex items-center gap-1.5'>
+											<Sparkles className='size-3.5 text-purple-500' />
+											{t('menu.recommended')}
+										</span>
+									</SelectItem>
+								</>
+							)}
 							<SelectItem value='all'>{t('menu.all_categories')}</SelectItem>
 							{categories.map(cat => (
 								<SelectItem key={cat.id} value={cat.id}>
