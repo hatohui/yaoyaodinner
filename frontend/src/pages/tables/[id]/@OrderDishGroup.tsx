@@ -14,11 +14,6 @@ interface OrderDishGroupProps {
 	children: ReactNode
 }
 
-// wide screens have room to show every split; phones start folded
-const startsOpen = () =>
-	typeof window !== 'undefined' &&
-	window.matchMedia('(min-width: 640px)').matches
-
 /** One dish and its splits, folded into a card that drops down its rows. */
 export function OrderDishGroup({
 	lines,
@@ -28,7 +23,7 @@ export function OrderDishGroup({
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
-	const [open, setOpen] = useState(startsOpen)
+	const [open, setOpen] = useState(false)
 	const prevCompact = useRef(compact)
 
 	useEffect(() => {

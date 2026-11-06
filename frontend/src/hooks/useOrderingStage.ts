@@ -1,6 +1,6 @@
 import { useGetOrderingStatus } from '@/api/ordering/ordering'
 import type { OrderingStatusDto, OrderResponseDto } from '@/api/model'
-import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useEditMode } from '@/hooks/useEditMode'
 
 const FALLBACK: OrderingStatusDto = {
 	stage: 'closed',
@@ -13,7 +13,7 @@ const FALLBACK: OrderingStatusDto = {
 
 /** Mirrors the server's rules so locked controls are hidden, not just rejected. */
 export function useOrderingStage() {
-	const { isAdmin } = useIsAdmin()
+	const { editing } = useEditMode()
 	const { data } = useGetOrderingStatus<OrderingStatusDto>({
 		// the stage moves on its own at the deadline and dinner time
 		query: {
@@ -35,9 +35,9 @@ export function useOrderingStage() {
 		canAdd: stage === 'open' || stage === 'dinner',
 		canSplit: !finalized,
 		canChangeItems: (order: Pick<OrderResponseDto, 'round'>) =>
-			isAdmin ? !finalized : roundOpen(order),
+			editing ? !finalized : roundOpen(order),
 		canEditPrice: (order: Pick<OrderResponseDto, 'round'>) =>
-			isAdmin
+			editing
 				? !finalized
 				: order.round === 'dinner' &&
 					stage === 'dinner' &&
