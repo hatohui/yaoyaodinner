@@ -43,6 +43,9 @@ export function Roster({
 	const { view, setView } = useListView(ROSTER_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
 
+	// hide quick-add once every seat is taken (live list beats the cached count)
+	const isFull = (isLoading ? table.seated : people.length) >= table.capacity
+
 	const mine = people.find(p => p.id === me?.id)
 	const editingPerson = people.find(p => p.id === editingId) ?? null
 	useEffect(() => {
@@ -124,7 +127,7 @@ export function Roster({
 				</ul>
 			)}
 
-			{canJoin && (
+			{canJoin && !isFull && (
 				<input
 					ref={inputRef}
 					onKeyDown={handleKeyDown}
