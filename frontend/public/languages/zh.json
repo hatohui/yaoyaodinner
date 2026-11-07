@@ -325,6 +325,8 @@
 		"all_sections": "全部主题",
 		"back_to_about": "返回关于页面",
 		"contact_faq_cta": "查看常见问题快速解决",
+		"contact_host_label": "聚餐主办方 (Yao Yao)",
+		"contact_tech_label": "技术与网站支持 (hatohui)",
 		"sections": {
 			"privacy": {
 				"title": "隐私说明",
@@ -395,8 +397,8 @@
 					"report_issue_body": "如果留言墙上出现了不合适的照片，或者你们桌的名单、订单被误改，请直接联系 Yao Yao 或现场管理员。",
 					"content_removal_title": "申请删除个人名字或照片",
 					"content_removal_body": "如果你希望从当前或往期 Yao Yao 聚餐中删除自己的显示名称、头像或留言照片，可通过下方的社交链接联系主办方，我们会尽快为你删除。",
-					"host_help_title": "聚餐主办方与网站维护者",
-					"host_help_body": "聚餐由 Chee Yao（Yao Yao / Aster 归星）主办，网站由 hatohui 专为 Yao Yao 的聚餐开发与维护。",
+					"host_help_title": "聚餐主办方与技术支持",
+					"host_help_body": "聚餐由 Chee Yao（Yao Yao / Aster 归星）主办。如遇网站技术问题，可通过 X (@_Hatohui)、Telegram (hatohui)、Bluesky (hatohui) 或 Facebook (hatohui) 联系 hatohui。",
 					"self_service_title": "常见误操作快速自助处理",
 					"self_service_body": "不小心在别人的名字旁点了“这是我”或进错了餐桌？你可以随时点击右上角名字菜单中的“退出”，或点击餐桌页面上的“离开餐桌”按钮。"
 				}

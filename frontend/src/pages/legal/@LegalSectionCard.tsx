@@ -31,6 +31,25 @@ const HOST_CONTACTS = [
 	},
 ] as const
 
+const TECH_CONTACTS = [
+	{
+		label: '@_Hatohui (X)',
+		href: 'https://x.com/_Hatohui',
+	},
+	{
+		label: 'hatohui (Telegram)',
+		href: 'https://t.me/hatohui',
+	},
+	{
+		label: 'hatohui (Bluesky)',
+		href: 'https://bsky.app/profile/hatohui.bsky.social',
+	},
+	{
+		label: 'hatohui (Facebook)',
+		href: 'https://www.facebook.com/hatohui',
+	},
+] as const
+
 export function LegalSectionCard({
 	id,
 	icon: Icon,
@@ -74,26 +93,49 @@ export function LegalSectionCard({
 			</div>
 
 			{id === 'contact' && (
-				<div className='flex flex-wrap items-center gap-2 border-t border-border pt-4'>
-					{HOST_CONTACTS.map(contact => (
-						<a
-							key={contact.href}
-							href={contact.href}
-							target='_blank'
-							rel='noopener noreferrer'
-							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-3.5 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+				<div className='flex flex-col gap-3 border-t border-border pt-4'>
+					<div className='flex flex-wrap items-center gap-2'>
+						<span className='text-xs font-semibold text-muted-foreground'>
+							{t('legal.contact_host_label')}:
+						</span>
+						{HOST_CONTACTS.map(contact => (
+							<a
+								key={contact.href}
+								href={contact.href}
+								target='_blank'
+								rel='noopener noreferrer'
+								className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-3.5 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+							>
+								{contact.label}
+								<ExternalLink className='size-3.5' />
+							</a>
+						))}
+					</div>
+
+					<div className='flex flex-wrap items-center gap-2'>
+						<span className='text-xs font-semibold text-muted-foreground'>
+							{t('legal.contact_tech_label')}:
+						</span>
+						{TECH_CONTACTS.map(contact => (
+							<a
+								key={contact.href}
+								href={contact.href}
+								target='_blank'
+								rel='noopener noreferrer'
+								className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-3.5 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+							>
+								{contact.label}
+								<ExternalLink className='size-3.5' />
+							</a>
+						))}
+						<Link
+							to='/faq'
+							className='inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
 						>
-							{contact.label}
-							<ExternalLink className='size-3.5' />
-						</a>
-					))}
-					<Link
-						to='/faq'
-						className='inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
-					>
-						<CircleHelp className='size-3.5' />
-						{t('legal.contact_faq_cta')}
-					</Link>
+							<CircleHelp className='size-3.5' />
+							{t('legal.contact_faq_cta')}
+						</Link>
+					</div>
 				</div>
 			)}
 		</article>

@@ -325,6 +325,8 @@
 		"all_sections": "Tất cả mục",
 		"back_to_about": "Quay lại Giới thiệu",
 		"contact_faq_cta": "Xem Hỏi đáp để xử lý nhanh",
+		"contact_host_label": "Chủ tiệc (Yao Yao)",
+		"contact_tech_label": "Kỹ thuật & trang web (hatohui)",
 		"sections": {
 			"privacy": {
 				"title": "Thông báo quyền riêng tư",
@@ -395,8 +397,8 @@
 					"report_issue_body": "Nếu có ảnh hoặc bài đăng không mong muốn trên tường góp ý, hoặc nhầm lẫn trong danh sách bàn/đơn hàng, hãy nhắn cho Yao Yao hoặc quản trị viên tại bữa tiệc.",
 					"content_removal_title": "Yêu cầu xóa dữ liệu hoặc hình ảnh",
 					"content_removal_body": "Nếu bạn muốn xóa tên hiển thị, ảnh đại diện hoặc bài góp ý khỏi bữa tiệc hiện tại hay trước đây của Yao Yao, hãy nhắn qua các liên kết mạng xã hội bên dưới.",
-					"host_help_title": "Chủ tiệc & người vận hành web",
-					"host_help_body": "Bữa tiệc được tổ chức bởi Chee Yao (Yao Yao / Aster 归星), và trang web được xây dựng, duy trì bởi hatohui dành riêng cho các buổi ăn tối của Yao Yao.",
+					"host_help_title": "Chủ tiệc & hỗ trợ kỹ thuật",
+					"host_help_body": "Bữa tiệc được tổ chức bởi Chee Yao (Yao Yao / Aster 归星). Về vấn đề kỹ thuật hoặc trang web, hãy liên hệ hatohui qua X (@_Hatohui), Telegram (hatohui), Bluesky (hatohui) hoặc Facebook (hatohui).",
 					"self_service_title": "Tự xử lý nhanh khi bấm nhầm",
 					"self_service_body": "Lỡ bấm \"Là tôi\" nhầm người hoặc vào nhầm bàn? Bạn có thể chọn Đăng xuất ở menu tên góc trên bên phải hoặc bấm nút Rời bàn bất cứ lúc nào."
 				}

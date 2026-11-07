@@ -325,6 +325,8 @@
 		"all_sections": "All topics",
 		"back_to_about": "Back to About",
 		"contact_faq_cta": "Check Q&A for quick fixes",
+		"contact_host_label": "Dinner host (Yao Yao)",
+		"contact_tech_label": "Technical & website (hatohui)",
 		"sections": {
 			"privacy": {
 				"title": "Privacy Notice",
@@ -395,8 +397,8 @@
 					"report_issue_body": "If someone posted an unwanted photo on the feedback wall or made a mistake on your table's roster or orders, message Yao Yao or an admin at the dinner.",
 					"content_removal_title": "Request data or photo removal",
 					"content_removal_body": "Want your display name, avatar, or feedback post removed from the current or a past Yao Yao dinner? Contact the host via the social links below and it will be removed promptly.",
-					"host_help_title": "Dinner host & website maintainer",
-					"host_help_body": "The dinner is hosted by Chee Yao (Yao Yao / Aster 归星), and the website is built and maintained by hatohui specifically for Yao Yao's dinner gatherings.",
+					"host_help_title": "Dinner host & technical support",
+					"host_help_body": "The dinner is hosted by Chee Yao (Yao Yao / Aster 归星). For technical issues or website help, reach out to hatohui on X (@_Hatohui), Telegram (hatohui), Bluesky (hatohui), or Facebook (hatohui).",
 					"self_service_title": "Quick fixes for common mix-ups",
 					"self_service_body": "Tapped \"That's me\" on the wrong person or joined the wrong table? You can log out from the top-right name menu or tap the Leave Table button anytime."
 				}
