@@ -34,9 +34,7 @@ export function ImageUploadSlot({
 	const { t } = useTranslation()
 	const { upload, validate, isUploading } = useImageUpload(folder)
 	const inputRef = useRef<HTMLInputElement>(null)
-	const [pending, setPending] = useState<{ src: string; type: string } | null>(
-		null
-	)
+	const [pendingSrc, setPendingSrc] = useState<string | null>(null)
 	const [viewing, setViewing] = useState(false)
 
 	const src = imageKey || null
@@ -51,20 +49,19 @@ export function ImageUploadSlot({
 			resetInput()
 			return
 		}
-		setPending({ src: URL.createObjectURL(file), type: file.type })
+		setPendingSrc(URL.createObjectURL(file))
 	}
 
 	const closeCrop = () => {
-		if (pending) URL.revokeObjectURL(pending.src)
-		setPending(null)
+		if (pendingSrc) URL.revokeObjectURL(pendingSrc)
+		setPendingSrc(null)
 		resetInput()
 	}
 
 	const confirmCrop = async (blob: Blob) => {
-		if (!pending) return
-		const cropped = new File([blob], 'image', { type: blob.type })
+		if (!pendingSrc) return
 		closeCrop()
-		const key = await upload(cropped)
+		const key = await upload(blob)
 		if (key) onChange(key)
 	}
 
@@ -98,10 +95,9 @@ export function ImageUploadSlot({
 					onChange={e => handleFile(e.target.files?.[0])}
 				/>
 
-				{pending && (
+				{pendingSrc && (
 					<ImageCropDialog
-						imageSrc={pending.src}
-						mimeType={pending.type}
+						imageSrc={pendingSrc}
 						aspect={1}
 						shape='round'
 						onConfirm={confirmCrop}
@@ -173,10 +169,9 @@ export function ImageUploadSlot({
 					onChange={e => handleFile(e.target.files?.[0])}
 				/>
 
-				{pending && (
+				{pendingSrc && (
 					<ImageCropDialog
-						imageSrc={pending.src}
-						mimeType={pending.type}
+						imageSrc={pendingSrc}
 						shape='rect'
 						onConfirm={confirmCrop}
 						onCancel={closeCrop}
@@ -253,10 +248,9 @@ export function ImageUploadSlot({
 				onChange={e => handleFile(e.target.files?.[0])}
 			/>
 
-			{pending && (
+			{pendingSrc && (
 				<ImageCropDialog
-					imageSrc={pending.src}
-					mimeType={pending.type}
+					imageSrc={pendingSrc}
 					aspect={aspect}
 					shape='rect'
 					onConfirm={confirmCrop}

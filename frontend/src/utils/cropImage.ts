@@ -1,4 +1,9 @@
-import { THUMBNAIL_MAX_SIZE_PX, THUMBNAIL_QUALITY } from '@/common/constants'
+import {
+	IMAGE_MAX_SIZE_PX,
+	IMAGE_QUALITY,
+	THUMBNAIL_MAX_SIZE_PX,
+	THUMBNAIL_QUALITY,
+} from '@/common/constants'
 
 export interface CropPixels {
 	x: number
@@ -27,54 +32,48 @@ function rotatedSize(width: number, height: number, rotation: number) {
 export async function getCroppedImageBlob(
 	imageSrc: string,
 	crop: CropPixels,
-	mimeType = 'image/jpeg',
-	rotation = 0
+	rotation = 0,
+	maxSize = IMAGE_MAX_SIZE_PX
 ): Promise<Blob> {
 	const image = await loadImage(imageSrc)
 
 	// react-easy-crop reports the crop relative to the rotated bounding box
 	const bounds = rotatedSize(image.width, image.height, rotation)
-	const rotated = document.createElement('canvas')
-	rotated.width = bounds.width
-	rotated.height = bounds.height
-	const rotatedCtx = rotated.getContext('2d')
-	if (!rotatedCtx) throw new Error('Canvas not supported')
-	rotatedCtx.translate(bounds.width / 2, bounds.height / 2)
-	rotatedCtx.rotate((rotation * Math.PI) / 180)
-	rotatedCtx.drawImage(image, -image.width / 2, -image.height / 2)
+	const scale = Math.min(1, maxSize / Math.max(crop.width, crop.height))
 
 	const canvas = document.createElement('canvas')
-	canvas.width = crop.width
-	canvas.height = crop.height
+	canvas.width = Math.max(1, Math.round(crop.width * scale))
+	canvas.height = Math.max(1, Math.round(crop.height * scale))
 	const ctx = canvas.getContext('2d')
 	if (!ctx) throw new Error('Canvas not supported')
-	// Zooming out past the image edge leaves empty margins; JPEG has no alpha so they need a fill
-	if (mimeType === 'image/jpeg') {
-		ctx.fillStyle = '#fff'
-		ctx.fillRect(0, 0, crop.width, crop.height)
-	}
-	ctx.drawImage(rotated, -crop.x, -crop.y)
+
+	ctx.imageSmoothingQuality = 'high'
+	ctx.scale(scale, scale)
+	ctx.translate(bounds.width / 2 - crop.x, bounds.height / 2 - crop.y)
+	ctx.rotate((rotation * Math.PI) / 180)
+	ctx.drawImage(image, -image.width / 2, -image.height / 2)
 
 	return new Promise((resolve, reject) => {
 		canvas.toBlob(
 			blob => (blob ? resolve(blob) : reject(new Error('Crop failed'))),
-			mimeType,
-			0.92
+			'image/webp',
+			IMAGE_QUALITY
 		)
 	})
 }
 
-export async function createThumbnail(
+export async function compressImage(
 	source: Blob,
-	maxSize = THUMBNAIL_MAX_SIZE_PX
+	maxSize = IMAGE_MAX_SIZE_PX,
+	quality = IMAGE_QUALITY
 ): Promise<Blob> {
 	const src = URL.createObjectURL(source)
 	try {
 		const image = await loadImage(src)
 		const scale = Math.min(1, maxSize / Math.max(image.width, image.height))
 		const canvas = document.createElement('canvas')
-		canvas.width = Math.round(image.width * scale)
-		canvas.height = Math.round(image.height * scale)
+		canvas.width = Math.max(1, Math.round(image.width * scale))
+		canvas.height = Math.max(1, Math.round(image.height * scale))
 		const ctx = canvas.getContext('2d')
 		if (!ctx) throw new Error('Canvas not supported')
 		ctx.imageSmoothingQuality = 'high'
@@ -83,12 +82,19 @@ export async function createThumbnail(
 		// Browsers without WebP encoding fall back to PNG, which keeps transparency
 		return await new Promise((resolve, reject) => {
 			canvas.toBlob(
-				blob => (blob ? resolve(blob) : reject(new Error('Thumbnail failed'))),
+				blob => (blob ? resolve(blob) : reject(new Error('Compression failed'))),
 				'image/webp',
-				THUMBNAIL_QUALITY
+				quality
 			)
 		})
 	} finally {
 		URL.revokeObjectURL(src)
 	}
+}
+
+export async function createThumbnail(
+	source: Blob,
+	maxSize = THUMBNAIL_MAX_SIZE_PX
+): Promise<Blob> {
+	return compressImage(source, maxSize, THUMBNAIL_QUALITY)
 }

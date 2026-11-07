@@ -31,7 +31,6 @@ interface ImageCropDialogProps {
 	/** Fixed crop ratio. Omit to let the user pick, defaulting to the image's own ratio. */
 	aspect?: number
 	shape?: 'rect' | 'round'
-	mimeType: string
 	onConfirm: (blob: Blob) => void
 	onCancel: () => void
 }
@@ -40,7 +39,6 @@ export function ImageCropDialog({
 	imageSrc,
 	aspect,
 	shape = 'rect',
-	mimeType,
 	onConfirm,
 	onCancel,
 }: ImageCropDialogProps) {
@@ -96,7 +94,6 @@ export function ImageCropDialog({
 			const blob = await getCroppedImageBlob(
 				imageSrc,
 				croppedPixels,
-				mimeType,
 				rotation
 			)
 			onConfirm(blob)

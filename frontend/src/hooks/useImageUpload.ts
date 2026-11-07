@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { getSignedUrl } from '@/api/images/images'
 import { useToast } from '@/hooks/useToast'
 import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_SIZE_BYTES } from '@/common/constants'
-import { createThumbnail } from '@/utils/cropImage'
+import { compressImage, createThumbnail } from '@/utils/cropImage'
 
 async function put(url: string, body: Blob) {
 	const res = await fetch(url, {
@@ -31,15 +31,16 @@ export function useImageUpload(folder: string) {
 		return true
 	}
 
-	const upload = async (file: File): Promise<string | null> => {
-		if (!validate(file)) return null
+	const upload = async (input: File | Blob): Promise<string | null> => {
+		if (input instanceof File && !validate(input)) return null
 		setIsUploading(true)
 		try {
-			const [{ url, key, thumbUrl }, thumbnail] = await Promise.all([
+			const [{ url, key, thumbUrl }, fullImage, thumbnail] = await Promise.all([
 				getSignedUrl({ folder }),
-				createThumbnail(file),
+				input instanceof File ? compressImage(input) : Promise.resolve(input),
+				createThumbnail(input),
 			])
-			await Promise.all([put(url, file), put(thumbUrl, thumbnail)])
+			await Promise.all([put(url, fullImage), put(thumbUrl, thumbnail)])
 			return key
 		} catch {
 			toast.error(t('common.upload_failed'))

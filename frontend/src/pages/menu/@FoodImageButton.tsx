@@ -14,24 +14,22 @@ export function FoodImageButton({ onChange, className }: FoodImageButtonProps) {
 	const { t } = useTranslation()
 	const { upload, validate, isUploading } = useImageUpload('foods')
 	const inputRef = useRef<HTMLInputElement>(null)
-	const [pending, setPending] = useState<{ src: string; type: string } | null>(
-		null
-	)
+	const [pendingSrc, setPendingSrc] = useState<string | null>(null)
 
 	const close = () => {
-		if (pending) URL.revokeObjectURL(pending.src)
-		setPending(null)
+		if (pendingSrc) URL.revokeObjectURL(pendingSrc)
+		setPendingSrc(null)
 		if (inputRef.current) inputRef.current.value = ''
 	}
 
 	const handleFile = (file: File | undefined) => {
 		if (!file || !validate(file)) return close()
-		setPending({ src: URL.createObjectURL(file), type: file.type })
+		setPendingSrc(URL.createObjectURL(file))
 	}
 
 	const confirm = async (blob: Blob) => {
 		close()
-		const key = await upload(new File([blob], 'image', { type: blob.type }))
+		const key = await upload(blob)
 		if (key) onChange(key)
 	}
 
@@ -62,10 +60,9 @@ export function FoodImageButton({ onChange, className }: FoodImageButtonProps) {
 				className='hidden'
 				onChange={e => handleFile(e.target.files?.[0])}
 			/>
-			{pending && (
+			{pendingSrc && (
 				<ImageCropDialog
-					imageSrc={pending.src}
-					mimeType={pending.type}
+					imageSrc={pendingSrc}
 					aspect={4 / 3}
 					onConfirm={confirm}
 					onCancel={close}

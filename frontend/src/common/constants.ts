@@ -41,13 +41,15 @@ export const MENU_PAGE_SIZE_ALL = 500
 export const MAX_FEEDBACK_NAME_LENGTH = 60
 export const MAX_FEEDBACK_CONTENT_LENGTH = 1000
 
-export const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024
+export const MAX_IMAGE_SIZE_BYTES = 25 * 1024 * 1024
 export const ACCEPTED_IMAGE_TYPES = [
 	'image/jpeg',
 	'image/png',
 	'image/webp',
 	'image/gif',
 ]
+export const IMAGE_MAX_SIZE_PX = 1920
+export const IMAGE_QUALITY = 0.85
 export const THUMBNAIL_KEY_SUFFIX = '_thumb'
 export const THUMBNAIL_MAX_SIZE_PX = 800
 export const THUMBNAIL_QUALITY = 0.8
