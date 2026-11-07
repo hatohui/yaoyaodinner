@@ -1,10 +1,12 @@
-import { Fragment, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import type { LucideIcon } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/utils/shadcn'
 
 type NavLink = { to: string; label: string; icon: LucideIcon }
+
+const SKELETON_WIDTHS = ['w-20', 'w-20', 'w-24', 'w-16'] as const
 
 type Props = {
 	links: NavLink[]
@@ -86,10 +88,22 @@ export function DesktopNav({
 		}
 	}, [target, isLoading, links.length])
 
+	if (isLoading) {
+		return (
+			<nav
+				aria-busy
+				className='relative hidden min-w-0 items-center gap-1 lg:flex'
+			>
+				{SKELETON_WIDTHS.map((width, idx) => (
+					<Skeleton key={idx} className={cn('h-8 rounded-full', width)} />
+				))}
+			</nav>
+		)
+	}
+
 	return (
 		<nav
 			ref={navRef}
-			aria-busy={isLoading}
 			className='relative hidden min-w-0 items-center gap-1 lg:flex'
 		>
 			<span
@@ -98,27 +112,23 @@ export function DesktopNav({
 				className='absolute inset-y-0 left-0 origin-left rounded-full border border-primary/25 bg-primary/18 opacity-0 shadow-2xs transition-opacity duration-200 will-change-transform'
 			/>
 			{links.map(link => (
-				<Fragment key={link.to}>
-					<Link
-						to={link.to}
-						data-to={link.to}
-						onClick={() => onNavigate(link.to)}
-						aria-busy={pendingTo === link.to}
-						aria-current={isActive(link.to) ? 'page' : undefined}
-						className={cn(
-							'relative flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200',
-							target === link.to
-								? 'font-semibold text-primary'
-								: 'text-foreground/75 hover:bg-primary/10 hover:text-primary dark:hover:bg-accent/50'
-						)}
-					>
-						<link.icon className='size-4 shrink-0' strokeWidth={1.75} />
-						{link.label}
-					</Link>
-					{isLoading && link.to === '/about' && (
-						<Skeleton className='h-8 w-24 rounded-full' />
+				<Link
+					key={link.to}
+					to={link.to}
+					data-to={link.to}
+					onClick={() => onNavigate(link.to)}
+					aria-busy={pendingTo === link.to}
+					aria-current={isActive(link.to) ? 'page' : undefined}
+					className={cn(
+						'relative flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition-colors duration-200',
+						target === link.to
+							? 'font-semibold text-primary'
+							: 'text-foreground/75 hover:bg-primary/10 hover:text-primary dark:hover:bg-accent/50'
 					)}
-				</Fragment>
+				>
+					<link.icon className='size-4 shrink-0' strokeWidth={1.75} />
+					{link.label}
+				</Link>
 			))}
 		</nav>
 	)

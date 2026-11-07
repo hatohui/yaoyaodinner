@@ -79,49 +79,52 @@ export function MobileNav({
 					aria-busy={isLoading}
 					className='flex flex-col gap-1.5 px-4 pb-6 pt-4'
 				>
-					{isLoading && <Skeleton className='h-13 w-full rounded-2xl' />}
-					{links.map(link => {
-						const active = isActive(link.to)
-						return (
-							<Link
-								key={link.to}
-								to={link.to}
-								onClick={() => {
-									onNavigate(link.to)
-									onOpenChange(false)
-								}}
-								aria-busy={pendingTo === link.to}
-								className={cn(
-									'group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-semibold transition-colors',
-									active
-										? 'border-primary/30 bg-primary text-primary-foreground shadow-sm'
-										: 'border-transparent text-foreground hover:border-border hover:bg-accent'
-								)}
-							>
-								<span
-									className={cn(
-										'flex size-8 shrink-0 items-center justify-center rounded-xl',
-										active
-											? 'bg-primary-foreground/20'
-											: 'bg-primary/10 text-primary'
-									)}
-								>
-									{pendingTo === link.to ? (
-										<Loader2 className='size-4 animate-spin' />
-									) : (
-										<link.icon className='size-4' />
-									)}
-								</span>
-								<span className='flex-1'>{link.label}</span>
-								<ChevronRight
-									className={cn(
-										'size-4 shrink-0 transition-transform group-hover:translate-x-0.5',
-										active ? 'opacity-80' : 'text-muted-foreground'
-									)}
-								/>
-							</Link>
-						)
-					})}
+					{isLoading
+						? Array.from({ length: 4 }).map((_, idx) => (
+								<Skeleton key={idx} className='h-13 w-full rounded-2xl' />
+							))
+						: links.map(link => {
+								const active = isActive(link.to)
+								return (
+									<Link
+										key={link.to}
+										to={link.to}
+										onClick={() => {
+											onNavigate(link.to)
+											onOpenChange(false)
+										}}
+										aria-busy={pendingTo === link.to}
+										className={cn(
+											'group flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-sm font-semibold transition-colors',
+											active
+												? 'border-primary/30 bg-primary text-primary-foreground shadow-sm'
+												: 'border-transparent text-foreground hover:border-border hover:bg-accent'
+										)}
+									>
+										<span
+											className={cn(
+												'flex size-8 shrink-0 items-center justify-center rounded-xl',
+												active
+													? 'bg-primary-foreground/20'
+													: 'bg-primary/10 text-primary'
+											)}
+										>
+											{pendingTo === link.to ? (
+												<Loader2 className='size-4 animate-spin' />
+											) : (
+												<link.icon className='size-4' />
+											)}
+										</span>
+										<span className='flex-1'>{link.label}</span>
+										<ChevronRight
+											className={cn(
+												'size-4 shrink-0 transition-transform group-hover:translate-x-0.5',
+												active ? 'opacity-80' : 'text-muted-foreground'
+											)}
+										/>
+									</Link>
+								)
+							})}
 				</nav>
 			</SheetContent>
 		</Sheet>
