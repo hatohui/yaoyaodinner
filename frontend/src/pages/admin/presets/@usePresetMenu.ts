@@ -75,12 +75,20 @@ export function usePresetMenu() {
 	const { mutate: updateMutate } = useUpdatePresetMenu({
 		mutation: {
 			onMutate: ({ id, data: { price, isActive, note } }) =>
-				patchPreset(id, p => ({
-					...p,
-					...(price !== undefined && { price }),
-					...(isActive !== undefined && { isActive }),
-					...(note !== undefined && { note: note || null }),
-				})),
+				patchPresets(list =>
+					list.map(p =>
+						p.id === id
+							? {
+									...p,
+									...(price !== undefined && { price }),
+									...(isActive !== undefined && { isActive }),
+									...(note !== undefined && { note: note || null }),
+								}
+							: isActive === true
+								? { ...p, isActive: false }
+								: p
+					)
+				),
 			...optimistic,
 		},
 	})
@@ -131,7 +139,8 @@ export function usePresetMenu() {
 		presetId: string,
 		name: string,
 		categoryId: string,
-		price: number,
+		price: number | null,
+		isSeasonal: boolean,
 		imageUrl?: string
 	) =>
 		createFoodAsync({
@@ -140,7 +149,13 @@ export function usePresetMenu() {
 				categoryId,
 				imageUrl,
 				lang: i18n.language,
-				variants: [{ label: t('admin.food.default_variant_label'), price }],
+				variants: [
+					{
+						label: t('admin.food.default_variant_label'),
+						price: price ?? undefined,
+						isSeasonal,
+					},
+				],
 			},
 		}).then(food => {
 			const variantId = food.variants[0]?.id

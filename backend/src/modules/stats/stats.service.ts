@@ -63,33 +63,40 @@ export class StatsService {
     const eventId = await this.events.resolveEventId(forEventId);
     if (!eventId) return [];
 
-    const tables = await prisma.table.findMany({
-      where: { eventId, isStaging: false },
-      orderBy: { no: 'asc' },
-      include: {
-        slot: { select: { name: true } },
-        orders: {
-          select: {
-            price: true,
-            quantity: true,
-            variant: { select: { food: { select: { shouldCalculate: true } } } },
+    const [tables, preset] = await Promise.all([
+      prisma.table.findMany({
+        where: { eventId, isStaging: false },
+        orderBy: { no: 'asc' },
+        include: {
+          slot: { select: { name: true } },
+          _count: { select: { people: true } },
+          orders: {
+            select: {
+              price: true,
+              quantity: true,
+              variant: { select: { food: { select: { shouldCalculate: true } } } },
+            },
           },
         },
-      },
-    });
+      }),
+      this.events.getPresetPrice(eventId),
+    ]);
 
-    const rows = tables.map((t) => ({
-      tableId: t.id,
-      name: t.slot?.name ?? '',
-      no: t.no,
-      total: t.orders.reduce(
+    const rows = tables.map((t) => {
+      const ordersTotal = t.orders.reduce(
         (sum, o) =>
           o.variant.food.shouldCalculate
             ? sum + Number(o.price) * o.quantity
             : sum,
         0,
-      ),
-    }));
+      );
+      return {
+        tableId: t.id,
+        name: t.slot?.name ?? '',
+        no: t.no,
+        total: (t._count.people > 0 ? preset.price : 0) + ordersTotal,
+      };
+    });
 
     const nonZero = rows.filter((r) => r.total > 0);
     const avg =

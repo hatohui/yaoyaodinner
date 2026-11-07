@@ -4,10 +4,17 @@ import { getGetPresetMenusQueryOptions } from '@/api/preset-menus/preset-menus'
 import type { PresetMenuDto } from '@/api/model'
 import { IncludedNoteStrip } from '@/components/common/IncludedNoteStrip'
 
-export function IncludedNote() {
+interface IncludedNoteProps {
+	eventId?: string | null
+}
+
+export function IncludedNote({ eventId }: IncludedNoteProps) {
 	const { i18n } = useTranslation()
 	const { data: presets = [] } = useQuery(
-		getGetPresetMenusQueryOptions<PresetMenuDto[]>({ lang: i18n.language })
+		getGetPresetMenusQueryOptions<PresetMenuDto[]>({
+			lang: i18n.language,
+			eventId: eventId ?? undefined,
+		})
 	)
 	const note = presets.find(p => p.isActive)?.note
 

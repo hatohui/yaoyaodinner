@@ -61,13 +61,19 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 		})
 	)
 	const { data: presets = [], isLoading: presetsLoading } = useQuery(
-		getGetPresetMenusQueryOptions<PresetMenuDto[]>({ lang: i18n.language })
+		getGetPresetMenusQueryOptions<PresetMenuDto[]>({
+			lang: i18n.language,
+			eventId: table.eventId ?? undefined,
+		})
 	)
 
 	const activePreset = presets.find(p => p.isActive)
 	const flatPrice = activePreset?.price ?? 0
 	const flatShare = flatPrice / Math.max(people.length, 1)
-	const currency = billingCurrency(orders)
+	const currency = billingCurrency([
+		...orders,
+		...(activePreset?.items ?? []),
+	])
 
 	const lineShare = (order: OrderResponseDto) => {
 		const lineTotal = order.price * order.quantity

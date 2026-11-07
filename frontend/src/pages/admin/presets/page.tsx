@@ -138,8 +138,21 @@ export default function AdminPresetsPage() {
 								onAddItem={variantId => addItem(preset.id, variantId)}
 								categories={categories}
 								creatingFood={creatingFood}
-								onCreateFood={(name, categoryId, price, imageUrl) =>
-									createFood(preset.id, name, categoryId, price, imageUrl)
+								onCreateFood={(
+									name,
+									categoryId,
+									price,
+									isSeasonal,
+									imageUrl
+								) =>
+									createFood(
+										preset.id,
+										name,
+										categoryId,
+										price,
+										isSeasonal,
+										imageUrl
+									)
 								}
 							/>
 						</TabsContent>

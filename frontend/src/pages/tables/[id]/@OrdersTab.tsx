@@ -116,7 +116,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 
 	return (
 		<div className='flex flex-col gap-3'>
-			<IncludedNote />
+			<IncludedNote eventId={table.eventId} />
 			<OrderingStageNotice />
 
 			{people.length === 0 ? (

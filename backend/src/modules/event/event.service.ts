@@ -167,6 +167,41 @@ export class EventService {
     return this.withStats(event);
   }
 
+  /**
+   * Resolves the set-menu price (per table) for an event. Legacy active events
+   * created before presetMenuId was synced fall back to the active preset.
+   */
+  async getPresetPrice(
+    eventId: string,
+  ): Promise<{ price: number; currency: string | null }> {
+    const presetSelect = {
+      price: true,
+      foods: { take: 1, select: { variant: { select: { currency: true } } } },
+    } as const;
+
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+      select: {
+        isActive: true,
+        presetMenu: { select: presetSelect },
+      },
+    });
+
+    const preset =
+      event?.presetMenu ??
+      (event?.isActive
+        ? await prisma.presetMenu.findFirst({
+            where: { isActive: true },
+            select: presetSelect,
+          })
+        : null);
+
+    return {
+      price: preset ? Number(preset.price) : 0,
+      currency: preset?.foods[0]?.variant.currency ?? null,
+    };
+  }
+
   async publish(dto: PublishEventDto) {
     const previousActive = await this.getActive();
     const pinLength = await this.config.get<number>(CONFIG_KEYS.pinLength);
@@ -176,13 +211,23 @@ export class EventService {
         data: { isActive: false, orderingStage: 'finalized' },
       });
 
+      const presetMenuId =
+        dto.presetMenuId !== undefined
+          ? dto.presetMenuId
+          : ((
+              await tx.presetMenu.findFirst({
+                where: { isActive: true },
+                select: { id: true },
+              })
+            )?.id ?? null);
+
       const created = await tx.event.create({
         data: {
           id: uuidv4(),
           pin: generatePin(pinLength),
           name: dto.name ?? null,
           isActive: true,
-          presetMenuId: dto.presetMenuId ?? null,
+          presetMenuId,
         },
       });
 
@@ -204,9 +249,23 @@ export class EventService {
   async assignPreset(id: string, presetMenuId: string | null) {
     const event = await prisma.event.findUnique({ where: { id } });
     if (!event) throw new NotFoundException('Event not found');
-    return prisma.event.update({
-      where: { id },
-      data: { presetMenuId },
+    return prisma.$transaction(async (tx) => {
+      if (event.isActive) {
+        await tx.presetMenu.updateMany({
+          where: { isActive: true },
+          data: { isActive: false },
+        });
+        if (presetMenuId) {
+          await tx.presetMenu.update({
+            where: { id: presetMenuId },
+            data: { isActive: true },
+          });
+        }
+      }
+      return tx.event.update({
+        where: { id },
+        data: { presetMenuId },
+      });
     });
   }
 
@@ -244,6 +303,16 @@ export class EventService {
         where: { isActive: true, id: { not: id } },
         data: { isActive: false },
       });
+      await tx.presetMenu.updateMany({
+        where: { isActive: true },
+        data: { isActive: false },
+      });
+      if (event.presetMenuId) {
+        await tx.presetMenu.update({
+          where: { id: event.presetMenuId },
+          data: { isActive: true },
+        });
+      }
       return tx.event.update({ where: { id }, data: { isActive: true } });
     });
 
@@ -316,14 +385,16 @@ export class EventService {
     });
     if (!full) return null;
 
+    const setPrice = full.presetMenu ? Number(full.presetMenu.price) : 0;
     const tables = full.tables.map((t) => {
-      const tableTotal = t.orders.reduce(
+      const ordersTotal = t.orders.reduce(
         (sum, o) =>
           o.variant.food.shouldCalculate
             ? sum + Number(o.price) * o.quantity
             : sum,
         0,
       );
+      const tableTotal = (t.people.length > 0 ? setPrice : 0) + ordersTotal;
       return {
         id: t.id,
         no: t.no,

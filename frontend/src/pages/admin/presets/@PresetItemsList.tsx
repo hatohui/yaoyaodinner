@@ -18,7 +18,8 @@ interface PresetItemsListProps {
 	onCreateFood: (
 		name: string,
 		categoryId: string,
-		price: number,
+		price: number | null,
+		isSeasonal: boolean,
 		imageUrl?: string
 	) => Promise<unknown>
 }

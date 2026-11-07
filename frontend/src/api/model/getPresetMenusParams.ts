@@ -8,4 +8,5 @@
 
 export type GetPresetMenusParams = {
 lang?: string;
+eventId?: string;
 };

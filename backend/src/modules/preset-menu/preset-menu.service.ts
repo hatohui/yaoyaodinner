@@ -29,11 +29,11 @@ type PresetWithInclude = Awaited<
 
 @Injectable()
 export class PresetMenuService {
-  private toResponseDto(preset: PresetWithInclude) {
+  private toResponseDto(preset: PresetWithInclude, isActive = preset.isActive) {
     return {
       id: preset.id,
       price: Number(preset.price),
-      isActive: preset.isActive,
+      isActive,
       note: preset.translations[0]?.note ?? null,
       items: preset.foods.map((f) => ({
         variantId: f.variantId,
@@ -48,9 +48,24 @@ export class PresetMenuService {
     };
   }
 
-  async findAll(lang = "en") {
-    const presets = await prisma.presetMenu.findMany({ include: presetInclude(lang) });
-    return presets.map((p) => this.toResponseDto(p));
+  async findAll(lang = "en", eventId?: string) {
+    const [presets, event] = await Promise.all([
+      prisma.presetMenu.findMany({ include: presetInclude(lang) }),
+      eventId
+        ? prisma.event.findUnique({
+            where: { id: eventId },
+            select: { presetMenuId: true, isActive: true },
+          })
+        : null,
+    ]);
+    return presets.map((p) => {
+      const active = event
+        ? event.presetMenuId
+          ? p.id === event.presetMenuId
+          : event.isActive && p.isActive
+        : p.isActive;
+      return this.toResponseDto(p, active);
+    });
   }
 
   async findOne(id: string, lang = "en") {
@@ -64,15 +79,30 @@ export class PresetMenuService {
 
   async create(dto: CreatePresetDto, lang = "en") {
     const id = uuidv4();
-    await prisma.presetMenu.create({
-      data: {
-        id,
-        price: dto.price,
-        isActive: dto.isActive ?? true,
-        foods: dto.foods
-          ? { create: dto.foods.map((f) => ({ variantId: f.variantId, quantity: f.quantity })) }
-          : undefined,
-      },
+    const isActive = dto.isActive ?? true;
+    await prisma.$transaction(async (tx) => {
+      if (isActive) {
+        await tx.presetMenu.updateMany({
+          where: { isActive: true },
+          data: { isActive: false },
+        });
+      }
+      await tx.presetMenu.create({
+        data: {
+          id,
+          price: dto.price,
+          isActive,
+          foods: dto.foods
+            ? { create: dto.foods.map((f) => ({ variantId: f.variantId, quantity: f.quantity })) }
+            : undefined,
+        },
+      });
+      if (isActive) {
+        await tx.event.updateMany({
+          where: { isActive: true },
+          data: { presetMenuId: id },
+        });
+      }
     });
     await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     return this.findOne(id, lang);
@@ -83,9 +113,27 @@ export class PresetMenuService {
     const existing = await prisma.presetMenu.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException("Preset menu not found");
 
-    await prisma.presetMenu.update({
-      where: { id },
-      data: { price: dto.price, isActive: dto.isActive },
+    await prisma.$transaction(async (tx) => {
+      if (dto.isActive === true) {
+        await tx.presetMenu.updateMany({
+          where: { id: { not: id }, isActive: true },
+          data: { isActive: false },
+        });
+        await tx.event.updateMany({
+          where: { isActive: true },
+          data: { presetMenuId: id },
+        });
+      } else if (dto.isActive === false) {
+        await tx.event.updateMany({
+          where: { isActive: true, presetMenuId: id },
+          data: { presetMenuId: null },
+        });
+      }
+
+      await tx.presetMenu.update({
+        where: { id },
+        data: { price: dto.price, isActive: dto.isActive },
+      });
     });
     if (dto.note !== undefined) await this.setNote(id, dto.note.trim(), lang);
     await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
@@ -108,7 +156,10 @@ export class PresetMenuService {
   async remove(id: string) {
     const existing = await prisma.presetMenu.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException("Preset menu not found");
-    await prisma.presetMenu.delete({ where: { id } });
+    await prisma.$transaction([
+      prisma.presetMenuFood.deleteMany({ where: { presetId: id } }),
+      prisma.presetMenu.delete({ where: { id } }),
+    ]);
     await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     return { id };
   }

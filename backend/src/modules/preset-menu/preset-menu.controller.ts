@@ -29,9 +29,13 @@ export class PresetMenuController {
   @Get()
   @ApiOperation({ operationId: 'getPresetMenus' })
   @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
+  @ApiQuery({ name: 'eventId', required: false, type: String })
   @ApiResponse({ status: 200, type: [PresetMenuDto] })
-  findAll(@Query('lang') lang = 'en') {
-    return this.preset.findAll(lang);
+  findAll(
+    @Query('lang') lang = 'en',
+    @Query('eventId') eventId?: string,
+  ) {
+    return this.preset.findAll(lang, eventId);
   }
 
   @Get(':id')
