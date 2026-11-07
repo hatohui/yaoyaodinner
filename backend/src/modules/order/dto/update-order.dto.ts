@@ -6,6 +6,7 @@ import {
   IsString,
   IsNumber,
   Min,
+  Max,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -13,6 +14,7 @@ export class UpdateOrderDto {
   @ApiPropertyOptional()
   @IsInt()
   @Min(1)
+  @Max(99)
   @IsOptional()
   quantity?: number;
 
@@ -21,6 +23,7 @@ export class UpdateOrderDto {
   })
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @Max(100000)
   @IsOptional()
   price?: number;
 

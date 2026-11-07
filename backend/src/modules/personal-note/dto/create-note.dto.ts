@@ -1,12 +1,14 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateNoteDto {
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   personId: string;
 
-  @ApiProperty()
+  @ApiProperty({ maxLength: 500 })
   @IsString()
+  @MaxLength(500)
   content: string;
 }

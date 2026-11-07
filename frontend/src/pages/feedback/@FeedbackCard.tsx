@@ -45,7 +45,10 @@ export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
 						'[&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs'
 					)}
 				>
-					<ReactMarkdown remarkPlugins={[remarkGfm]}>
+					<ReactMarkdown
+						remarkPlugins={[remarkGfm]}
+						disallowedElements={['img']}
+					>
 						{item.content}
 					</ReactMarkdown>
 				</div>

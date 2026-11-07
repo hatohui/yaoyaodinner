@@ -6,6 +6,7 @@ import {
   Body,
   Param,
   Query,
+  Headers,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
@@ -18,13 +19,19 @@ import {
   FeedbackReactionDto,
 } from './dto/feedback-response.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
+import { TableAccessService } from '@modules/table-access/table-access.service';
 
 type FeedbackSort = 'recent' | 'top';
 
 @ApiTags('feedback')
 @Controller('feedback')
+@UseGuards(RateLimitGuard)
 export class FeedbackController {
-  constructor(private feedback: FeedbackService) {}
+  constructor(
+    private feedback: FeedbackService,
+    private access: TableAccessService,
+  ) {}
 
   @Get()
   @ApiOperation({ operationId: 'getFeedback' })
@@ -67,16 +74,27 @@ export class FeedbackController {
   }
 
   @Post()
+  @RateLimit(15, 60)
   @ApiOperation({ operationId: 'createFeedback' })
   @ApiResponse({ status: 201, type: FeedbackItemDto })
-  create(@Body() dto: CreateFeedbackDto) {
+  async create(
+    @Body() dto: CreateFeedbackDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forEventPin(headers);
     return this.feedback.create(dto);
   }
 
   @Post(':id/react')
+  @RateLimit(120, 60)
   @ApiOperation({ operationId: 'reactToFeedback' })
   @ApiResponse({ status: 201, type: FeedbackReactionDto })
-  react(@Param('id') id: string, @Body() dto: ReactDto) {
+  async react(
+    @Param('id') id: string,
+    @Body() dto: ReactDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forEventPin(headers);
     return this.feedback.react(id, dto.emoji, dto.count);
   }
 

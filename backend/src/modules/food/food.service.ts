@@ -483,8 +483,18 @@ export class FoodService {
     const blockedIds = new Set(withOrders.map((o) => o.variant.foodId));
     const deletableIds = ids.filter((id) => !blockedIds.has(id));
 
+    const existing = await prisma.food.findMany({
+      where: { id: { in: deletableIds } },
+      select: { imageUrl: true },
+    });
     await prisma.food.deleteMany({ where: { id: { in: deletableIds } } });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await Promise.all(
+      existing
+        .map((f) => f.imageUrl)
+        .filter((k): k is string => Boolean(k))
+        .map((k) => this.images.deleteKey(k)),
+    );
     return { deleted: deletableIds.length, skipped: [...blockedIds] };
   }
 

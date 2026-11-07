@@ -560,13 +560,24 @@ export class TableService {
   }
 
   async remove(id: string) {
-    await this.findOne(id);
+    const existing = await this.findOne(id);
     await prisma.table.delete({ where: { id } });
+    if (existing.bannerUrl) await this.images.deleteKey(existing.bannerUrl);
     return { id };
   }
 
   async bulkRemove(ids: string[]) {
+    const existing = await prisma.table.findMany({
+      where: { id: { in: ids } },
+      select: { bannerUrl: true },
+    });
     await prisma.table.deleteMany({ where: { id: { in: ids } } });
+    await Promise.all(
+      existing
+        .map((t) => t.bannerUrl)
+        .filter((k): k is string => Boolean(k))
+        .map((k) => this.images.deleteKey(k)),
+    );
     return { removed: ids.length };
   }
 

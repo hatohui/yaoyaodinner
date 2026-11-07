@@ -8,12 +8,20 @@ import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { prisma } from '../../libs/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import { EventService } from '@modules/event/event.service';
+import { ImagesService } from '@modules/images/images.service';
+import { ConfigService } from '@modules/config/config.service';
+import { CONFIG_KEYS } from '@common/config/registry';
+import { SUGGESTED_FEEDBACK_EMOJIS } from './reactions';
 
 type FeedbackSort = 'recent' | 'top';
 
 @Injectable()
 export class FeedbackService {
-  constructor(private events: EventService) {}
+  constructor(
+    private events: EventService,
+    private images: ImagesService,
+    private config: ConfigService,
+  ) {}
 
   async findForActiveEvent(page = 1, count = 20, sort: FeedbackSort = 'recent') {
     const eventId = await this.events.getActiveId();
@@ -134,12 +142,18 @@ export class FeedbackService {
   async create(dto: CreateFeedbackDto) {
     const eventId = await this.events.getActiveId();
     if (!eventId) throw new UnauthorizedException('No active event');
+    const content = dto.content?.trim() || null;
+    const by = dto.by?.trim() || null;
+    const imageUrl = dto.imageUrl?.trim() || null;
+    if (!content && !imageUrl) {
+      throw new BadRequestException('Feedback cannot be empty');
+    }
     const feedback = await prisma.feedback.create({
       data: {
         id: uuidv4(),
-        by: dto.by || null,
-        content: dto.content || null,
-        imageUrl: dto.imageUrl || null,
+        by,
+        content,
+        imageUrl,
         eventId,
       },
       include: { reactions: true },
@@ -149,10 +163,19 @@ export class FeedbackService {
 
   async react(feedbackId: string, emoji: string, count = 1) {
     const value = emoji.trim();
-    if (!value || value.length > 16) {
+    const allowed: readonly string[] =
+      (await this.config.get<string[]>(CONFIG_KEYS.suggestedReactions)) ??
+      SUGGESTED_FEEDBACK_EMOJIS;
+    if (!value || value.length > 16 || !allowed.includes(value)) {
       throw new BadRequestException('Invalid reaction');
     }
-    const amount = Math.max(1, count);
+    const existing = await prisma.feedback.findUnique({
+      where: { id: feedbackId },
+      select: { id: true },
+    });
+    if (!existing) throw new NotFoundException('Feedback not found');
+
+    const amount = Math.min(50, Math.max(1, Math.floor(count)));
     const reaction = await prisma.feedbackReaction.upsert({
       where: { feedbackId_emoji: { feedbackId, emoji: value } },
       update: { count: { increment: amount } },
@@ -165,6 +188,7 @@ export class FeedbackService {
     const existing = await prisma.feedback.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException('Feedback not found');
     await prisma.feedback.delete({ where: { id } });
+    if (existing.imageUrl) await this.images.deleteKey(existing.imageUrl);
     return { id };
   }
 }

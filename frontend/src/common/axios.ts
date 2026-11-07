@@ -3,6 +3,8 @@ import { API_URL } from './app'
 import {
 	ADMIN_HEADER,
 	ADMIN_PASSPHRASE_STORAGE_KEY,
+	EVENT_PIN_HEADER,
+	PIN_STORAGE_KEY,
 	TABLE_ACCESS_HEADER,
 	TABLE_CODE_STORAGE_KEY,
 } from './constants'
@@ -22,6 +24,9 @@ const axios = a.create({
 axios.interceptors.request.use(config => {
 	const passphrase = localStorage.load(ADMIN_PASSPHRASE_STORAGE_KEY)
 	if (passphrase) config.headers[ADMIN_HEADER] = passphrase
+
+	const pin = localStorage.load(PIN_STORAGE_KEY)
+	if (pin) config.headers[EVENT_PIN_HEADER] = pin
 
 	// the server checks this table's code on edits; read from storage to avoid
 	// an import cycle with the table-code store

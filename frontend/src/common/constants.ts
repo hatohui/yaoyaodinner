@@ -19,6 +19,7 @@ export const ADMIN_SIDEBAR_COLLAPSED_STORAGE_KEY = 'admin_sidebar_collapsed'
 
 export const ADMIN_HEADER = 'x-admin-secret'
 export const TABLE_ACCESS_HEADER = 'x-table-access'
+export const EVENT_PIN_HEADER = 'x-event-pin'
 export const ADMIN_GATE_TAPS = 5
 export const ADMIN_GATE_WINDOW_MS = 1500
 export const ADMIN_GATE_LOCK_MS = 3000

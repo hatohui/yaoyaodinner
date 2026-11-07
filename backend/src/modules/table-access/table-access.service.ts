@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { prisma } from '../../libs/prisma';
 import { ADMIN_HEADER } from '@common/auth/admin';
-import { TABLE_ACCESS_HEADER } from '@common/auth/table-access';
+import {
+  EVENT_PIN_HEADER,
+  TABLE_ACCESS_HEADER,
+} from '@common/auth/table-access';
 import { OrderRound } from '@prisma/client';
 import { ConfigService } from '@modules/config/config.service';
 import { EventService } from '@modules/event/event.service';
@@ -88,12 +91,39 @@ export class TableAccessService {
     }
   }
 
+  async requireAdmin(headers: Headers) {
+    if (!(await this.isAdmin(headers))) {
+      throw new ForbiddenException('Admin access required');
+    }
+  }
+
+  async forEventPin(headers: Headers) {
+    if (await this.isAdmin(headers)) return;
+    const meta = await this.events.getActiveMeta();
+    const pin = first(headers[EVENT_PIN_HEADER]);
+    if (!meta || !pin || pin !== meta.pin) {
+      throw new ForbiddenException('Enter the event PIN to continue');
+    }
+  }
+
+  async forHeldTable(headers: Headers) {
+    if (await this.isAdmin(headers)) return;
+    await this.forEventPin(headers);
+    if (!(await this.config.get<boolean>(CONFIG_KEYS.featureTableCodes))) return;
+
+    const raw = first(headers[TABLE_ACCESS_HEADER]) ?? '';
+    const split = raw.indexOf(':');
+    const heldId = split === -1 ? '' : raw.slice(0, split);
+    await this.forTable(heldId, headers);
+  }
+
   async forTable(tableId: string | null | undefined, headers: Headers) {
     if (tableId) {
       const stage = await this.events.stageOf(await this.tableEventId(tableId));
       if (stage === 'finalized') throw new ForbiddenException(FINALIZED);
     }
     if (await this.isAdmin(headers)) return;
+    await this.forEventPin(headers);
     // with codes off, the event PIN is the only gate on table edits
     if (!(await this.config.get<boolean>(CONFIG_KEYS.featureTableCodes))) return;
 

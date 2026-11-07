@@ -17,6 +17,7 @@ import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
 import { PeopleService } from '@modules/people/people.service';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
 import { ADMIN_HEADER } from '@common/auth/admin';
 import { ConfigService } from '@modules/config/config.service';
 import { TableAccessService } from '@modules/table-access/table-access.service';
@@ -132,6 +133,8 @@ export class TableController {
   }
 
   @Post(':id/code/verify')
+  @UseGuards(RateLimitGuard)
+  @RateLimit(60, 60)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ operationId: 'verifyTableCode' })
   @ApiResponse({ status: 200, type: TableCodeVerifyResponseDto })

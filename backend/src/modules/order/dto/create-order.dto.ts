@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsArray,
   Min,
+  Max,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -20,6 +21,7 @@ export class CreateOrderDto {
   @ApiPropertyOptional({ default: 1 })
   @IsInt()
   @Min(1)
+  @Max(99)
   @IsOptional()
   quantity?: number;
 

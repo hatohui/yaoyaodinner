@@ -211,6 +211,45 @@ export const CacheService = {
     return "FALLBACK";
   },
 
+  async increment(key: string, ttlSeconds: number): Promise<number> {
+    try {
+      await initializeClient();
+
+      if (_client && _isAvailable) {
+        try {
+          const count = await _client.incr(key);
+          if (count === 1) {
+            await _client.expire(key, ttlSeconds);
+          }
+          return count;
+        } catch (err) {
+          console.warn(
+            "[Redis] Increment operation failed:",
+            err instanceof Error ? err.message : String(err)
+          );
+        }
+      }
+    } catch (err) {
+      console.warn(
+        "[Redis] Initialization failed:",
+        err instanceof Error ? err.message : String(err)
+      );
+    }
+
+    const now = Date.now();
+    const cached = _fallbackCache.get(key);
+    if (!cached || cached.expiresAt < now) {
+      _fallbackCache.set(key, {
+        value: 1,
+        expiresAt: now + ttlSeconds * 1000,
+      });
+      return 1;
+    }
+    const next = (typeof cached.value === "number" ? cached.value : 0) + 1;
+    cached.value = next;
+    return next;
+  },
+
   isAvailable(): boolean {
     return _isAvailable;
   },

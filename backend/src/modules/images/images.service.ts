@@ -47,7 +47,7 @@ export class ImagesService {
     const key = `${folder}/${uuidv4()}`;
     const thumbKey = thumbKeyOf(key);
     const [url, thumbUrl] = await Promise.all(
-      [key, thumbKey].map((Key) => getSignedUrl(client, new PutObjectCommand({ Bucket: bucket, Key }), { expiresIn: 900 })),
+      [key, thumbKey].map((Key) => getSignedUrl(client, new PutObjectCommand({ Bucket: bucket, Key }), { expiresIn: 120 })),
     );
 
     return { url, key, thumbUrl, thumbKey };

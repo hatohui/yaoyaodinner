@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, MaxLength, Matches } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 /**
@@ -29,5 +29,9 @@ export class UpdateTableDetailsDto {
   })
   @IsString()
   @IsOptional()
+  @MaxLength(100)
+  @Matches(/^table-banners\/[0-9a-f-]{36}$/i, {
+    message: 'Invalid banner image key',
+  })
   bannerUrl?: string | null;
 }

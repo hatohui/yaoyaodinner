@@ -61,8 +61,9 @@ export class PeopleService {
   }
 
   async create(dto: CreatePersonDto) {
-    const table = await this.assertCapacity(dto.tableId);
     const name = dto.name.trim();
+    if (!name) throw new BadRequestException('Name is required');
+    const table = await this.assertCapacity(dto.tableId);
     await this.assertNameFree(table.id, [name]);
     return prisma.people.create({
       data: {
@@ -77,12 +78,16 @@ export class PeopleService {
   async update(id: string, dto: UpdatePersonDto) {
     const person = await prisma.people.findUnique({ where: { id } });
     if (!person) throw new NotFoundException('Person not found');
-    if (dto.name !== undefined && person.tableId) {
-      await this.assertNameFree(person.tableId, [dto.name], [id]);
+    const trimmed = dto.name?.trim();
+    if (dto.name !== undefined && !trimmed) {
+      throw new BadRequestException('Name is required');
+    }
+    if (trimmed !== undefined && person.tableId) {
+      await this.assertNameFree(person.tableId, [trimmed], [id]);
     }
     return prisma.people.update({
       where: { id },
-      data: dto.name === undefined ? dto : { ...dto, name: dto.name.trim() },
+      data: trimmed === undefined ? dto : { ...dto, name: trimmed },
     });
   }
 
@@ -102,11 +107,22 @@ export class PeopleService {
     const person = await prisma.people.findUnique({ where: { id } });
     if (!person) throw new NotFoundException('Person not found');
     await prisma.people.delete({ where: { id } });
+    if (person.pfpUrl) await this.images.deleteKey(person.pfpUrl);
     return { id };
   }
 
   async bulkRemove(ids: string[]) {
+    const existing = await prisma.people.findMany({
+      where: { id: { in: ids } },
+      select: { pfpUrl: true },
+    });
     await prisma.people.deleteMany({ where: { id: { in: ids } } });
+    await Promise.all(
+      existing
+        .map((p) => p.pfpUrl)
+        .filter((k): k is string => Boolean(k))
+        .map((k) => this.images.deleteKey(k)),
+    );
     return { removed: ids.length };
   }
 

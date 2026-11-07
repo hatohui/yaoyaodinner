@@ -3,8 +3,12 @@ import {
   IsArray,
   IsOptional,
   IsBoolean,
+  IsInt,
+  Min,
+  Max,
   ValidateNested,
   ArrayMinSize,
+  ArrayMaxSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -15,6 +19,9 @@ export class BatchOrderItemDto {
   variantId: string;
 
   @ApiPropertyOptional({ default: 1 })
+  @IsInt()
+  @Min(1)
+  @Max(99)
   @IsOptional()
   quantity?: number;
 }
@@ -27,6 +34,7 @@ export class BatchCreateOrderDto {
   @ApiProperty({ type: [BatchOrderItemDto] })
   @IsArray()
   @ArrayMinSize(1)
+  @ArrayMaxSize(50)
   @ValidateNested({ each: true })
   @Type(() => BatchOrderItemDto)
   items: BatchOrderItemDto[];

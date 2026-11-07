@@ -1,4 +1,12 @@
-import { IsString, MaxLength, MinLength, IsOptional, IsNumber, Min } from 'class-validator';
+import {
+  IsString,
+  MaxLength,
+  MinLength,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ReactDto {
@@ -10,7 +18,8 @@ export class ReactDto {
 
   @ApiProperty({ example: 1, description: 'Number of reactions to add', required: false })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(1)
+  @Max(50)
   count?: number;
 }
