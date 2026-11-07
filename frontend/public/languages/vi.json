@@ -292,7 +292,115 @@
 		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón những người bạn furry cùng tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia.",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster (归星)",
-		"social_label": "{{name}} trên {{platform}}"
+		"social_label": "{{name}} trên {{platform}}",
+		"project": {
+			"tag": "Về dự án này",
+			"title": "Không gian thân thiện cho những buổi tụ họp riêng tư",
+			"intro": "Trang web này là dự án cá nhân miễn phí, phi thương mại được tạo ra để bạn bè cùng sắp xếp các bữa tối và buổi gặp mặt mà không cần bảng tính phức tạp hay tin nhắn nhóm rối rắm.",
+			"features": {
+				"gatherings_title": "Tổ chức tụ họp riêng tư",
+				"gatherings_body": "Lên kế hoạch ăn tối cùng nhóm bạn với thời gian, hạn đặt món trước và chỉ đường đến nhà hàng tại cùng một nơi.",
+				"spaces_title": "Tạo không gian sự kiện",
+				"spaces_body": "Thiết lập sơ đồ mặt bằng và danh sách bàn trực quan để mọi người dễ dàng biết mình ngồi đâu và ngồi cùng ai.",
+				"codes_title": "Mời bạn bè bằng mã truy cập",
+				"codes_body": "Sử dụng mã PIN sự kiện và mã riêng cho từng bàn để bạn bè tham gia nhanh chóng mà không cần đăng ký tài khoản.",
+				"memories_title": "Chia sẻ ảnh, bài viết & cảm xúc",
+				"memories_body": "Đăng lời nhắn, tải ảnh bữa tiệc và thả biểu tượng cảm xúc trên tường góp ý chung.",
+				"preorders_title": "Phối hợp sở thích & đặt món trước",
+				"preorders_body": "Xem thực đơn 4 ngôn ngữ, ghi chú khẩu vị, đặt món trước và chia hóa đơn công bằng cho cả bàn.",
+				"archive_title": "Lưu giữ kỷ niệm buổi gặp mặt",
+				"archive_body": "Lưu lại danh sách bàn, các món yêu thích và những khoảnh khắc đáng nhớ từ các sự kiện trước."
+			},
+			"identity_title": "Không cần tài khoản, mật khẩu hay đăng ký email",
+			"identity_body_1": "Trang web chủ đích không yêu cầu tạo tài khoản truyền thống, mật khẩu hay đăng ký email. Bạn chỉ cần nhập mã PIN sự kiện và mã bàn để tham gia.",
+			"identity_body_2": "Tên hiển thị tại bàn hoặc trên tường góp ý là tên chung không qua xác minh, chỉ dùng để sắp xếp chỗ ngồi và món ăn. Việc chọn hoặc nhập một tên không xác nhận danh tính ngoài đời thực của bất kỳ ai."
+		}
+	},
+	"legal": {
+		"tag": "Thông tin & quy định",
+		"title": "Quyền riêng tư, Điều khoản & Quy tắc",
+		"subtitle": "Thông tin ngắn gọn, dễ hiểu về cách hoạt động của trang web tụ họp phi thương mại này.",
+		"view_all": "Xem tất cả",
+		"all_sections": "Tất cả mục",
+		"back_to_about": "Quay lại Giới thiệu",
+		"contact_faq_cta": "Xem Hỏi đáp để xử lý nhanh",
+		"sections": {
+			"privacy": {
+				"title": "Thông báo quyền riêng tư",
+				"summary": "Thông tin nào được lưu khi bạn vào bàn, đặt món hoặc đăng ảnh.",
+				"intro": "Đây là trang web cá nhân phi thương mại dành cho bạn bè tham dự các buổi ăn tối riêng tư. Chúng tôi chỉ lưu những thông tin tối thiểu cần thiết cho bữa tiệc.",
+				"items": {
+					"no_accounts_title": "Không thu thập dữ liệu tài khoản cá nhân",
+					"no_accounts_body": "Chúng tôi không yêu cầu hay lưu trữ địa chỉ email, mật khẩu, số điện thoại, tên thật pháp lý hoặc thông tin thanh toán.",
+					"shared_info_title": "Thông tin hiển thị với khách khác",
+					"shared_info_body": "Tên hiển thị, ảnh đại diện tùy chọn, ghi chú khẩu vị, món đã đặt, phần chia tiền và bài đăng/ảnh trên tường góp ý sẽ hiển thị với những người có quyền truy cập sự kiện.",
+					"device_storage_title": "Chỉ lưu cục bộ trên trình duyệt",
+					"device_storage_body": "Trang web không dùng cookie quảng cáo hay theo dõi. Bộ nhớ trình duyệt (localStorage) chỉ lưu ngôn ngữ, giao diện sáng/tối, mã PIN sự kiện, mã bàn và tên bạn đã chọn trên thiết bị của bạn.",
+					"removal_title": "Lưu trữ & xóa thông tin",
+					"removal_body": "Dữ liệu sự kiện và ảnh tải lên được lưu trên các dịch vụ đám mây (Neon, Upstash, AWS và Cloudflare), và trang Giới thiệu có nhúng bản đồ Google Maps. Bạn có thể tự sửa/xóa tên khi sự kiện đang mở hoặc nhắn người tổ chức bất cứ lúc nào để xóa tên, ghi chú hay hình ảnh."
+				}
+			},
+			"terms": {
+				"title": "Điều khoản sử dụng",
+				"summary": "Những nguyên tắc cơ bản khi sử dụng công cụ miễn phí này.",
+				"intro": "Khi sử dụng trang web để vào bàn, đặt món trước hoặc đăng bài trên tường góp ý, bạn đồng ý với một vài nguyên tắc đơn giản sau.",
+				"items": {
+					"non_commercial_title": "Dự án cá nhân, phi thương mại",
+					"non_commercial_body": "Trang web được vận hành miễn phí phục vụ các buổi tụ họp bạn bè. Dịch vụ được cung cấp theo hiện trạng và có thể được cập nhật hoặc tạm dừng bất cứ lúc nào.",
+					"access_codes_title": "Giữ kín mã PIN sự kiện & mã bàn",
+					"access_codes_body": "Mã PIN sự kiện và mã bàn chỉ dành cho khách được mời. Vui lòng không chia sẻ công khai hoặc cố truy cập vào bàn hay trang quản trị khi chưa được phép.",
+					"unverified_names_title": "Tên hiển thị chung, không xác minh",
+					"unverified_names_body": "Tên khách là nhãn hiển thị chưa xác minh do người tham dự tự nhập hoặc chọn. Vì bất kỳ ai có mã bàn đều có thể chọn tên tại bàn đó, tên hiển thị không xác lập danh tính thực tế.",
+					"bills_title": "Không thanh toán qua trang web",
+					"bills_body": "Giá món ăn và bảng chia tiền chỉ là ước tính để bàn dễ tính toán. Việc thanh toán thực tế diễn ra trực tiếp với chủ bàn hoặc nhà hàng."
+				}
+			},
+			"guidelines": {
+				"title": "Nguyên tắc cộng đồng",
+				"summary": "Giữ cho danh sách bàn và tường góp ý luôn vui vẻ, lịch sự.",
+				"intro": "Không gian này giúp bạn bè thư giãn, ăn ngon và trò chuyện vui vẻ. Hãy cùng giữ bầu không khí thân thiện cho tất cả mọi người.",
+				"items": {
+					"be_kind_title": "Thân thiện và tôn trọng nhau",
+					"be_kind_body": "Hãy cư xử tử tế với bạn bè, chủ bàn và nhân viên nhà hàng. Không đăng nội dung quấy rối, xúc phạm hoặc gây mất đoàn kết.",
+					"appropriate_posts_title": "Đăng ảnh & ghi chú phù hợp",
+					"appropriate_posts_body": "Chỉ tải lên ảnh góp ý, ảnh đại diện và ghi chú lịch sự, phù hợp với mọi người. Hãy hỏi ý kiến bạn bè trước khi đăng ảnh chụp cận mặt họ.",
+					"respect_tables_title": "Tôn trọng chỗ ngồi & đơn hàng của người khác",
+					"respect_tables_body": "Chỉ mở khóa bàn bạn thực sự ngồi và chỉ nhận đúng tên của mình. Đừng tự ý sửa hoặc xóa món ăn của người khác khi chưa hỏi họ.",
+					"moderation_title": "Điều phối từ người tổ chức",
+					"moderation_body": "Người tổ chức có thể ẩn hoặc xóa bài đăng/ảnh không phù hợp, chỉnh lại danh sách bàn hoặc đổi mã bàn khi cần thiết để buổi tiệc diễn ra suôn sẻ."
+				}
+			},
+			"preorder": {
+				"title": "Quy định đặt món trước",
+				"summary": "Cách thức hoạt động của các giai đoạn đặt món, chia phần ăn và ghi chú khẩu vị.",
+				"intro": "Để nhà hàng chuẩn bị món ăn kịp giờ cho đoàn đông người, việc đặt món sẽ đi qua các giai đoạn rõ ràng trước và trong bữa tối.",
+				"items": {
+					"stages_title": "Các giai đoạn & hạn đặt món",
+					"stages_body": "Khi mở đặt trước, bạn có thể thêm hoặc sửa món cho bàn mình. Đến hạn chốt, đơn đặt trước sẽ khóa để nhà bếp chuẩn bị. Các món gọi thêm tại nhà hàng sẽ được nhập trong lúc ăn tối trước khi chốt sổ.",
+					"splitting_title": "Món cá nhân & món ăn chung",
+					"splitting_body": "Khi thêm món, bạn có thể chọn tính riêng cho mình, chia cho vài người cụ thể hoặc chia đều cả bàn. Thực đơn set hoặc món tặng kèm sẽ áp dụng theo quy tắc chung của bàn.",
+					"dietary_notes_title": "Ghi chú khẩu vị & dị ứng",
+					"dietary_notes_body": "Ghi chú như \"không ăn tôm\" cạnh tên bạn giúp người cùng bàn dễ chọn món, nhưng không tự động gửi thẳng vào bếp. Nếu bị dị ứng thực phẩm, hãy báo trực tiếp cho nhân viên nhà hàng.",
+					"changes_title": "Kiểm tra kỹ trước khi khóa đơn",
+					"changes_body": "Vì món đặt trước được nhà hàng chuẩn bị riêng cho bàn của bạn, vui lòng kiểm tra kỹ số lượng trước giờ chốt và báo ngay cho chủ bàn nếu kế hoạch thay đổi."
+				}
+			},
+			"contact": {
+				"title": "Liên hệ / Báo cáo sự cố",
+				"summary": "Liên hệ ai khi cần hỗ trợ, báo lỗi hoặc yêu cầu xóa ảnh/bài đăng.",
+				"intro": "Cần hỗ trợ tại bàn, phát hiện lỗi trên web hoặc muốn xóa ảnh, ghi chú hay bài góp ý? Hãy liên hệ trực tiếp để được hỗ trợ ngay.",
+				"items": {
+					"report_issue_title": "Báo cáo bài đăng, ảnh hoặc sự cố tại bàn",
+					"report_issue_body": "Nếu có ảnh hoặc bài đăng không mong muốn trên tường góp ý, hoặc nhầm lẫn trong danh sách bàn/đơn hàng, hãy nhắn cho người tổ chức sự kiện.",
+					"content_removal_title": "Yêu cầu xóa dữ liệu hoặc hình ảnh",
+					"content_removal_body": "Nếu bạn muốn xóa tên hiển thị, ảnh đại diện hoặc bài góp ý khỏi sự kiện hiện tại hay sự kiện cũ, hãy nhắn qua các liên kết mạng xã hội bên dưới.",
+					"host_help_title": "Người tổ chức & người vận hành web",
+					"host_help_body": "Sự kiện được tổ chức bởi Chee Yao (Yao Yao / Aster 归星), và trang web được phát triển bởi hatohui như một dự án cá nhân dành cho cộng đồng.",
+					"self_service_title": "Tự xử lý nhanh khi bấm nhầm",
+					"self_service_body": "Lỡ bấm \"Là tôi\" nhầm người hoặc vào nhầm bàn? Bạn có thể chọn Đăng xuất ở menu tên góc trên bên phải hoặc bấm nút Rời bàn bất cứ lúc nào."
+				}
+			}
+		}
 	},
 	"food_detail": {
 		"title": "Chi tiết món ăn",

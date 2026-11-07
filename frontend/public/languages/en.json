@@ -292,7 +292,115 @@
 		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes fellow furs to gather for a great night of food and hanging out in Malaysia.",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster (归星)",
-		"social_label": "{{name}} on {{platform}}"
+		"social_label": "{{name}} on {{platform}}",
+		"project": {
+			"tag": "About this project",
+			"title": "A friendly space for private gatherings",
+			"intro": "This website is a personally operated, free, non-commercial project built for friends to coordinate dinners and group meetups without the hassle of spreadsheets or group-chat chaos.",
+			"features": {
+				"gatherings_title": "Organise private gatherings",
+				"gatherings_body": "Plan group dinners with clear event times, pre-order deadlines, and venue directions in one place.",
+				"spaces_title": "Create event spaces",
+				"spaces_body": "Set up interactive floor plans and tables so everyone can see where they are sitting and who is at their table.",
+				"codes_title": "Invite friends with access codes",
+				"codes_body": "Use a simple event PIN and per-table access codes so invited friends can join their table without sign-up forms.",
+				"memories_title": "Share photos, posts & reactions",
+				"memories_body": "Post messages, upload dinner photos, and leave emoji reactions on the shared feedback wall.",
+				"preorders_title": "Coordinate food & pre-orders",
+				"preorders_body": "Browse the menu in four languages, add dietary notes, pre-order dishes, and split the table bill fairly.",
+				"archive_title": "Preserve gathering memories",
+				"archive_body": "Keep a read-only record of past events, table rosters, favorite dishes, and shared moments from each meetup."
+			},
+			"identity_title": "No accounts, passwords, or email registration",
+			"identity_body_1": "This website intentionally does not use traditional user accounts, passwords, or email sign-ups. You join an event with a shared PIN and unlock your table with its table code.",
+			"identity_body_2": "Names on a table roster or the feedback wall are shared, unverified identifiers used only to organize seats and food orders. Claiming or typing a username does not verify or establish anyone's real-world identity."
+		}
+	},
+	"legal": {
+		"tag": "Info & rules",
+		"title": "Legal, Privacy & Guidelines",
+		"subtitle": "Plain-language notes on how this non-commercial gathering tool works.",
+		"view_all": "View all",
+		"all_sections": "All topics",
+		"back_to_about": "Back to About",
+		"contact_faq_cta": "Check Q&A for quick fixes",
+		"sections": {
+			"privacy": {
+				"title": "Privacy Notice",
+				"summary": "What information is stored when you join a table, order food, or post photos.",
+				"intro": "This is a personally operated, non-commercial website for friends attending private dinner gatherings. We keep data collection to the bare minimum needed to run the dinner.",
+				"items": {
+					"no_accounts_title": "No personal account data",
+					"no_accounts_body": "We do not ask for or store email addresses, passwords, phone numbers, real legal names, or payment details.",
+					"shared_info_title": "What is visible to other guests",
+					"shared_info_body": "Display names, optional avatars, dietary notes, food orders, bill splits, and feedback wall posts or photos you submit are visible to everyone with access to the event.",
+					"device_storage_title": "Local browser storage only",
+					"device_storage_body": "We do not use advertising trackers or analytics cookies. Your browser's localStorage simply remembers your language, theme, event PIN, table code, and selected roster name on your device.",
+					"removal_title": "Hosting & removing your info",
+					"removal_body": "Event data and uploaded images are stored using cloud database and storage providers (Neon, Upstash, AWS, and Cloudflare), and the About page embeds Google Maps. You can edit or remove your roster info while an event is open, or contact the host anytime to have a name, note, or photo deleted."
+				}
+			},
+			"terms": {
+				"title": "Terms of Use",
+				"summary": "Simple ground rules for using this free community tool.",
+				"intro": "By using this website to join a table, pre-order food, or post on the feedback wall, you agree to a few straightforward ground rules.",
+				"items": {
+					"non_commercial_title": "Personal, non-commercial project",
+					"non_commercial_body": "This website is provided free of charge as a personal hobby project for organizing friend gatherings. It is offered on an as-is, best-effort basis and may be updated or paused at any time.",
+					"access_codes_title": "Keep event PINs & table codes private",
+					"access_codes_body": "Event PINs and table codes are meant only for invited attendees. Please do not share them publicly or attempt to access tables or admin tools you were not invited to use.",
+					"unverified_names_title": "Shared, unverified usernames",
+					"unverified_names_body": "Guest names are unverified labels chosen by attendees. Because anyone with a table code can add or claim a name at that table, usernames do not establish real-world identity.",
+					"bills_title": "No payments happen on this site",
+					"bills_body": "Menu prices and bill splits shown here are estimates to help your table coordinate. Actual payment happens in person with your table host or the restaurant."
+				}
+			},
+			"guidelines": {
+				"title": "Community Guidelines",
+				"summary": "Keep the table rosters and feedback wall friendly and welcoming.",
+				"intro": "This space exists so friends can relax, eat well, and enjoy the gathering together. Please help keep it welcoming for everyone.",
+				"items": {
+					"be_kind_title": "Be friendly and respectful",
+					"be_kind_body": "Treat fellow guests, hosts, and restaurant staff with kindness. Harassment, hate speech, or mean-spirited posts have no place here.",
+					"appropriate_posts_title": "Share appropriate photos & notes",
+					"appropriate_posts_body": "Only upload feedback photos, profile pictures, and notes that are safe for all attendees. Ask friends before posting close-up photos of them.",
+					"respect_tables_title": "Don't mess with other people's seats or orders",
+					"respect_tables_body": "Only unlock the table you are actually sitting at, and only claim your own name. Never edit or delete someone else's food order without asking them.",
+					"moderation_title": "Organizer moderation",
+					"moderation_body": "The event organizer and admins can remove inappropriate posts or photos, adjust table rosters, or reset table codes if needed to keep things running smoothly."
+				}
+			},
+			"preorder": {
+				"title": "Food Pre-order Rules",
+				"summary": "How ordering stages, shared dishes, dietary notes, and bill splits work.",
+				"intro": "To help the restaurant prepare food on time for a large group, ordering moves through clear stages before and during dinner.",
+				"items": {
+					"stages_title": "Ordering stages & deadlines",
+					"stages_body": "While pre-ordering is open, you can add or edit dishes for your table. Once pre-orders are confirmed at the deadline, pre-orders lock so the kitchen can prepare. Extra dishes ordered at the restaurant can be added during dinner before the event is finalized.",
+					"splitting_title": "Personal vs. shared dishes",
+					"splitting_body": "When adding a dish, you can assign it to just yourself, specific tablemates, or the whole table. Preset set menus or included items follow the table's shared split rules shown on the Splits tab.",
+					"dietary_notes_title": "Dietary notes & food allergies",
+					"dietary_notes_body": "Adding a note like \"no shrimp\" to your roster profile helps your tablemates pick dishes, but notes are not sent automatically to the restaurant kitchen. Always inform restaurant staff directly about allergies.",
+					"changes_title": "Check your order before the lock",
+					"changes_body": "Because pre-ordered food is prepared specifically for your table, please double-check quantities and options before the deadline and tell your table host promptly if your plans change."
+				}
+			},
+			"contact": {
+				"title": "Contact / Report an Issue",
+				"summary": "Who to reach out to for help, bug reports, or removing a photo or post.",
+				"intro": "Need a hand with your table, spotted a bug, or want a photo, note, or feedback post removed? Reach out directly and we'll sort it out.",
+				"items": {
+					"report_issue_title": "Report a post, photo, or table issue",
+					"report_issue_body": "If someone posted an unwanted photo on the feedback wall or made a mistake on your table's roster or orders, message the event host or an admin at the venue.",
+					"content_removal_title": "Request data or photo removal",
+					"content_removal_body": "Want your display name, avatar, or feedback post removed from an active or past event? Contact the host via the social links below and it will be removed promptly.",
+					"host_help_title": "Event host & website maintainer",
+					"host_help_body": "Events are hosted by Chee Yao (Yao Yao / Aster 归星), and the website is maintained by hatohui as a personal community project.",
+					"self_service_title": "Quick fixes for common mix-ups",
+					"self_service_body": "Tapped \"That's me\" on the wrong person or joined the wrong table? You can log out from the top-right name menu or tap the Leave Table button anytime."
+				}
+			}
+		}
 	},
 	"food_detail": {
 		"title": "Food details",

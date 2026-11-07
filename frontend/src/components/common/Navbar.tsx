@@ -107,7 +107,9 @@ export function Navbar() {
 	const isActive = (to: string) =>
 		to === '/admin' || to === '/tables'
 			? pathname.startsWith(to)
-			: pathname === to
+			: to === '/about'
+				? pathname === '/about' || pathname === '/legal'
+				: pathname === to
 
 	return (
 		<header className='fixed top-0 z-50 w-full border-b border-border bg-card/90 dark:bg-card/75 shadow-sm backdrop-blur-xl'>
