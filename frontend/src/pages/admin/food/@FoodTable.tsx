@@ -94,6 +94,16 @@ export function FoodTable({
 				meta: { label: t('admin.food.price'), cell: { variant: 'number' } },
 			},
 			{
+				id: 'isSeasonal',
+				accessorKey: 'isSeasonal',
+				header: t('admin.food.seasonal'),
+				size: 120,
+				meta: {
+					label: t('admin.food.seasonal'),
+					cell: { variant: 'checkbox' },
+				},
+			},
+			{
 				id: 'currency',
 				accessorKey: 'currency',
 				header: t('admin.food.currency'),
@@ -286,8 +296,9 @@ export function FoodTable({
 								</p>
 								<p className='flex justify-between gap-2 text-xs text-muted-foreground'>
 									<span>
-										{food.price != null &&
-											`${food.price} ${food.currency ?? ''}`}
+										{!food.isSeasonal && food.price != null && food.price > 0
+											? `${food.price} ${food.currency ?? ''}`
+											: t('menu.seasonal_price')}
 									</span>
 									<span>
 										{t('admin.food.ordered_count', { count: food.orderCount })}

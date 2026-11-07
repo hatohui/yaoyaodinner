@@ -28,6 +28,7 @@ import { updateFood as apiUpdateFood } from '@/api/foods/foods'
 export type FoodGridRow = FoodAdminItemDto & {
 	price: number | null
 	currency: string | null
+	isSeasonal: boolean
 	variantId: string | null
 }
 
@@ -92,12 +93,16 @@ export function useFoodCatalog() {
 	)
 	const foods: FoodGridRow[] = React.useMemo(
 		() =>
-			(data?.foods ?? []).map(f => ({
-				...f,
-				price: f.variants[0]?.price ?? null,
-				currency: f.variants[0]?.currency ?? null,
-				variantId: f.variants[0]?.id ?? null,
-			})),
+			(data?.foods ?? []).map(f => {
+				const isSeasonal = f.variants[0]?.isSeasonal ?? false
+				return {
+					...f,
+					price: isSeasonal ? null : (f.variants[0]?.price ?? null),
+					currency: f.variants[0]?.currency ?? null,
+					isSeasonal,
+					variantId: f.variants[0]?.id ?? null,
+				}
+			}),
 		[data?.foods]
 	)
 
@@ -230,7 +235,8 @@ export function useFoodCatalog() {
 		createFood: (
 			name: string,
 			catId: string,
-			price: number,
+			price: number | null,
+			isSeasonal: boolean,
 			imageUrl?: string
 		) =>
 			createFoodAsync({
@@ -239,7 +245,13 @@ export function useFoodCatalog() {
 					categoryId: catId,
 					imageUrl,
 					lang: i18n.language,
-					variants: [{ label: t('admin.food.default_variant_label'), price }],
+					variants: [
+						{
+							label: t('admin.food.default_variant_label'),
+							price: isSeasonal ? null : price,
+							isSeasonal,
+						},
+					],
 				},
 			}),
 		updateFood: (
@@ -273,9 +285,18 @@ export function useFoodCatalog() {
 
 				// Price/currency live on the variant, not the food, so they patch separately.
 				if (prev.variantId) {
-					const variantPatch: { price?: number; currency?: string } = {}
-					if (prev.price !== next.price && next.price !== null)
-						variantPatch.price = Number(next.price)
+					const variantPatch: {
+						price?: number | null
+						currency?: string
+						isSeasonal?: boolean
+					} = {}
+					if (prev.isSeasonal !== next.isSeasonal) {
+						variantPatch.isSeasonal = next.isSeasonal
+						if (next.isSeasonal) variantPatch.price = null
+					}
+					if (!next.isSeasonal && prev.price !== next.price) {
+						variantPatch.price = next.price !== null ? Number(next.price) : null
+					}
 					if (prev.currency !== next.currency && next.currency)
 						variantPatch.currency = next.currency
 					if (Object.keys(variantPatch).length > 0)

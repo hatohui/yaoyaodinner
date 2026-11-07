@@ -80,7 +80,9 @@ export function OrderDishGroup({
 					</span>
 					{head.shouldCalculate ? (
 						<span className='text-xs tabular-nums text-muted-foreground'>
-							{total.toFixed(2)} {currency}
+							{total > 0
+								? `${total.toFixed(2)} ${currency}`
+								: t('menu.seasonal_price')}
 						</span>
 					) : (
 						<span className='rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground'>

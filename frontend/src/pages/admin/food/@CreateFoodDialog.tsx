@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { CategoryChips } from '@/components/common/CategoryChips'
 import {
@@ -23,7 +24,8 @@ interface CreateFoodDialogProps {
 	onCreate: (
 		name: string,
 		categoryId: string,
-		price: number,
+		price: number | null,
+		isSeasonal: boolean,
 		imageUrl?: string
 	) => Promise<unknown>
 }
@@ -38,12 +40,14 @@ export function CreateFoodDialog({
 	const [name, setName] = useState('')
 	const [categoryId, setCategoryId] = useState<string | undefined>(undefined)
 	const [price, setPrice] = useState('')
+	const [isSeasonal, setIsSeasonal] = useState(false)
 	const [imageKey, setImageKey] = useState<string | null>(null)
 
 	const reset = () => {
 		setName('')
 		setCategoryId(undefined)
 		setPrice('')
+		setIsSeasonal(false)
 		setImageKey(null)
 	}
 
@@ -100,16 +104,23 @@ export function CreateFoodDialog({
 						/>
 					</div>
 
-					<div className='flex flex-col gap-1.5'>
-						<Label htmlFor='food-price'>{t('admin.food.price')}</Label>
-						<Input
-							id='food-price'
-							type='number'
-							value={price}
-							onChange={e => setPrice(e.target.value)}
-							className='rounded-full'
-						/>
-					</div>
+					<Label className='flex items-center justify-between'>
+						{t('admin.food.seasonal')}
+						<Switch checked={isSeasonal} onCheckedChange={setIsSeasonal} />
+					</Label>
+
+					{!isSeasonal && (
+						<div className='flex flex-col gap-1.5'>
+							<Label htmlFor='food-price'>{t('admin.food.price')}</Label>
+							<Input
+								id='food-price'
+								type='number'
+								value={price}
+								onChange={e => setPrice(e.target.value)}
+								className='rounded-full'
+							/>
+						</div>
+					)}
 				</div>
 
 				<DialogFooter>
@@ -121,7 +132,8 @@ export function CreateFoodDialog({
 							onCreate(
 								name.trim(),
 								categoryId,
-								Number(price) || 0,
+								isSeasonal ? null : Number(price) || 0,
+								isSeasonal,
 								imageKey ?? undefined
 							)
 								.then(() => {

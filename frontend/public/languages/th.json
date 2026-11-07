@@ -50,7 +50,7 @@
 		"crop_rotate_right": "หมุนขวา",
 		"crop_reset": "รีเซ็ต",
 		"invalid_file_type": "โปรดเลือกรูปภาพ JPEG, PNG, WebP หรือ GIF",
-		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 10 MB",
+		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 25 MB",
 		"view_image": "ดูรูปภาพ",
 		"close": "ปิด"
 	},
@@ -280,6 +280,7 @@
 		},
 		"suggestions": "คำแนะนำ",
 		"price_from": "เริ่มต้น",
+		"seasonal_price": "ราคาตามฤดูกาล",
 		"categories": "หมวดหมู่"
 	},
 	"about": {
@@ -478,6 +479,7 @@
 	"split": {
 		"title": "แบ่งรายการนี้",
 		"just_me": "แค่ฉันคนเดียว",
+		"just_me_need_identity": "คุณต้องเลือกชื่อของคุณก่อนจึงจะใช้ตัวเลือกนี้ได้",
 		"whole_table": "ทั้งโต๊ะ",
 		"choose_people": "เลือกคน",
 		"empty": "ยังไม่มีออเดอร์",
@@ -754,6 +756,7 @@
 			"name": "ชื่อ",
 			"category": "หมวดหมู่",
 			"price": "ราคา",
+			"seasonal": "ราคาตามฤดูกาล",
 			"available": "พร้อมขาย",
 			"recommended": "แนะนำ",
 			"calculated": "นับรวมในบิล",

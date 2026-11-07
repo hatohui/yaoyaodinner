@@ -10,7 +10,7 @@ class VariantDto {
   @ApiProperty({ required: false, nullable: true })
   @IsNumber()
   @IsOptional()
-  price?: number;
+  price?: number | null;
 
   @ApiProperty({ required: false, example: 'RM' })
   @IsString()

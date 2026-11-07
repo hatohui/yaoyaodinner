@@ -98,7 +98,7 @@ export function EditFoodDialog({
 						/>
 					</div>
 
-					{draft.variantId && (
+					{draft.variantId && !draft.isSeasonal && (
 						<div className='flex flex-col gap-1.5'>
 							<Label htmlFor='edit-food-price'>{t('admin.food.price')}</Label>
 							<Input
@@ -117,6 +117,21 @@ export function EditFoodDialog({
 					)}
 
 					<div className='flex flex-col gap-2'>
+						{draft.variantId && (
+							<Label className='flex items-center justify-between'>
+								{t('admin.food.seasonal')}
+								<Switch
+									checked={draft.isSeasonal}
+									onCheckedChange={checked =>
+										setDraft(prev => ({
+											...prev,
+											isSeasonal: checked,
+											price: checked ? null : prev.price,
+										}))
+									}
+								/>
+							</Label>
+						)}
 						{flags.map(([key, label]) => (
 							<Label key={key} className='flex items-center justify-between'>
 								{t(label)}

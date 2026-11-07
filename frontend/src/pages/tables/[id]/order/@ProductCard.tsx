@@ -71,9 +71,11 @@ export function ProductCard({
 
 				<div className='mt-auto flex items-center justify-between gap-2'>
 					<span className='text-sm font-semibold text-primary'>
-						{food.shouldCalculate
-							? `${food.price ?? 0} ${food.currency ?? ''}`
-							: t('orders.free')}
+						{!food.shouldCalculate
+							? t('orders.free')
+							: food.price != null && food.price > 0
+								? `${food.price} ${food.currency ?? ''}`
+								: t('menu.seasonal_price')}
 					</span>
 
 					{quantity === 0 ? (

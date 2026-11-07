@@ -166,21 +166,26 @@ export function FoodDetailView({
 						{t('food_detail.variants')}
 					</p>
 					<div className='flex flex-wrap gap-2'>
-						{availableVariants.map(v =>
-							editing ? (
+						{availableVariants.map(v => {
+							const isSeasonal = v.isSeasonal || !v.price || v.price <= 0
+							return editing ? (
 								<span
 									key={v.id}
 									className='flex items-center gap-1 rounded-full border border-border bg-control px-4 py-2 text-sm font-medium text-foreground'
 								>
 									<InlineEdit
 										value={v.label ?? ''}
+										placeholder={t('admin.food.default_variant_label')}
 										onCommit={label => onUpdateVariant(v.id, { label })}
 										inputClassName='w-28'
 									/>
 									<span className='text-muted-foreground'>-</span>
 									<InlineEdit
 										type='number'
-										value={String(v.price ?? '')}
+										value={
+											v.price != null && v.price > 0 ? String(v.price) : ''
+										}
+										placeholder={t('menu.seasonal_price')}
 										onCommit={price =>
 											onUpdateVariant(v.id, { price: Number(price) })
 										}
@@ -201,27 +206,57 @@ export function FoodDetailView({
 											: 'border-border bg-control text-foreground hover:border-primary/40 hover:bg-primary/10'
 									)}
 								>
-									{v.label}
-									<span className='opacity-60'>-</span>
-									{v.price}
-									<span
-										className={cn(v.id !== selectedVariantId && 'text-primary')}
-									>
-										{v.currency}
-									</span>
+									{v.label && (
+										<>
+											{v.label}
+											<span className='opacity-60'>-</span>
+										</>
+									)}
+									{isSeasonal ? (
+										<span
+											className={cn(
+												v.id !== selectedVariantId && 'text-primary'
+											)}
+										>
+											{t('menu.seasonal_price')}
+										</span>
+									) : (
+										<>
+											{v.price}
+											<span
+												className={cn(
+													v.id !== selectedVariantId && 'text-primary'
+												)}
+											>
+												{v.currency}
+											</span>
+										</>
+									)}
 								</button>
 							) : (
 								<span
 									key={v.id}
 									className='flex items-center gap-1 rounded-full border border-border bg-control px-4 py-2 text-sm font-medium text-foreground'
 								>
-									{v.label}
-									<span className='text-muted-foreground'>-</span>
-									{v.price}
-									<span className='text-primary'>{v.currency}</span>
+									{v.label && (
+										<>
+											{v.label}
+											<span className='text-muted-foreground'>-</span>
+										</>
+									)}
+									{isSeasonal ? (
+										<span className='text-primary'>
+											{t('menu.seasonal_price')}
+										</span>
+									) : (
+										<>
+											{v.price}
+											<span className='text-primary'>{v.currency}</span>
+										</>
+									)}
 								</span>
 							)
-						)}
+						})}
 					</div>
 				</div>
 			)}

@@ -9,7 +9,7 @@ export class AddFoodVariantDto {
   @ApiPropertyOptional({ nullable: true })
   @IsNumber()
   @IsOptional()
-  price?: number;
+  price?: number | null;
 
   @ApiPropertyOptional({ example: 'RM' })
   @IsString()

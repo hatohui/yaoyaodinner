@@ -31,9 +31,25 @@ export function SplitModeSelector({
 				onValueChange={v => onModeChange(v as SplitMode)}
 				className='gap-3'
 			>
-				<label className='flex items-center gap-2.5 text-sm font-medium text-foreground'>
-					<RadioGroupItem value='me' disabled={!myPersonId} />
-					{t('split.just_me')}
+				<label
+					className={cn(
+						'flex items-start gap-2.5 text-sm font-medium text-foreground',
+						!myPersonId && 'text-muted-foreground'
+					)}
+				>
+					<RadioGroupItem
+						value='me'
+						disabled={!myPersonId}
+						className='mt-0.5'
+					/>
+					<span className='flex flex-col gap-0.5 leading-snug'>
+						<span>{t('split.just_me')}</span>
+						{!myPersonId && (
+							<span className='text-xs font-normal text-muted-foreground'>
+								{t('split.just_me_need_identity')}
+							</span>
+						)}
+					</span>
 				</label>
 				<label className='flex items-center gap-2.5 text-sm font-medium text-foreground'>
 					<RadioGroupItem value='table' />

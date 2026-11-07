@@ -66,7 +66,11 @@ export function OrderedList({ lines, people }: OrderedListProps) {
 	}
 
 	const amount = (value: number, free: boolean) =>
-		free ? t('orders.free') : `${value.toFixed(2)} ${currency}`
+		free
+			? t('orders.free')
+			: value > 0
+				? `${value.toFixed(2)} ${currency}`
+				: t('menu.seasonal_price')
 
 	return (
 		<div className='flex flex-col gap-3'>

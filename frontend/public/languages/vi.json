@@ -50,7 +50,7 @@
 		"crop_rotate_right": "Xoay phải",
 		"crop_reset": "Đặt lại",
 		"invalid_file_type": "Vui lòng chọn ảnh JPEG, PNG, WebP hoặc GIF",
-		"file_too_large": "Ảnh phải nhỏ hơn 10 MB",
+		"file_too_large": "Ảnh phải nhỏ hơn 25 MB",
 		"view_image": "Xem ảnh",
 		"close": "Đóng"
 	},
@@ -280,6 +280,7 @@
 		},
 		"suggestions": "Gợi ý",
 		"price_from": "Từ",
+		"seasonal_price": "Theo thời giá",
 		"categories": "Danh mục"
 	},
 	"about": {
@@ -478,6 +479,7 @@
 	"split": {
 		"title": "Chia món này",
 		"just_me": "Chỉ mình tôi",
+		"just_me_need_identity": "Bạn cần chọn tên của mình để dùng tùy chọn này",
 		"whole_table": "Cả bàn",
 		"choose_people": "Chọn người",
 		"empty": "Chưa có đơn nào",
@@ -754,6 +756,7 @@
 			"name": "Tên",
 			"category": "Danh mục",
 			"price": "Giá",
+			"seasonal": "Theo thời giá",
 			"available": "Có sẵn",
 			"recommended": "Đề xuất",
 			"calculated": "Tính vào hóa đơn",

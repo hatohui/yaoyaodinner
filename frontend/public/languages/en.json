@@ -50,7 +50,7 @@
 		"crop_rotate_right": "Rotate right",
 		"crop_reset": "Reset",
 		"invalid_file_type": "Please choose a JPEG, PNG, WebP, or GIF image",
-		"file_too_large": "Image must be under 10 MB",
+		"file_too_large": "Image must be under 25 MB",
 		"view_image": "View image",
 		"close": "Close"
 	},
@@ -280,6 +280,7 @@
 		},
 		"suggestions": "Suggestions",
 		"price_from": "From",
+		"seasonal_price": "Seasonal price",
 		"categories": "Categories"
 	},
 	"about": {
@@ -478,6 +479,7 @@
 	"split": {
 		"title": "Split this item",
 		"just_me": "Just me",
+		"just_me_need_identity": "You need to select an identity to have this option",
 		"whole_table": "Whole table",
 		"choose_people": "Choose people",
 		"empty": "No orders yet",
@@ -754,6 +756,7 @@
 			"name": "Name",
 			"category": "Category",
 			"price": "Price",
+			"seasonal": "Seasonal price",
 			"available": "Available",
 			"recommended": "Recommended",
 			"calculated": "Counts toward bill",

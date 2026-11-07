@@ -50,7 +50,7 @@
 		"crop_rotate_right": "向右旋转",
 		"crop_reset": "重置",
 		"invalid_file_type": "请选择 JPEG、PNG、WebP 或 GIF 格式的图片",
-		"file_too_large": "图片需小于 10 MB",
+		"file_too_large": "图片需小于 25 MB",
 		"view_image": "查看图片",
 		"close": "关闭"
 	},
@@ -280,6 +280,7 @@
 		},
 		"suggestions": "建议",
 		"price_from": "起价",
+		"seasonal_price": "时价",
 		"categories": "分类"
 	},
 	"about": {
@@ -478,6 +479,7 @@
 	"split": {
 		"title": "分摊此项",
 		"just_me": "只有我",
+		"just_me_need_identity": "需要先选择你的名字才能使用此选项",
 		"whole_table": "全桌分摊",
 		"choose_people": "选择人员",
 		"empty": "暂无订单",
@@ -754,6 +756,7 @@
 			"name": "名称",
 			"category": "分类",
 			"price": "价格",
+			"seasonal": "时价",
 			"available": "可购买",
 			"recommended": "推荐",
 			"calculated": "计入账单",

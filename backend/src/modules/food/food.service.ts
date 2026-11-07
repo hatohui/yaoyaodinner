@@ -129,7 +129,10 @@ export class FoodService {
         isPopular: popularIds.has(f.id),
         isRecommended: f.isRecommended,
         defaultVariantId: defaultVariant?.id ?? null,
-        price: defaultVariant?.price ? Number(defaultVariant.price) : null,
+        price:
+          defaultVariant && !defaultVariant.isSeasonal && defaultVariant.price !== null
+            ? Number(defaultVariant.price)
+            : null,
         currency: defaultVariant?.currency ?? null,
         variantCount: f.variants.length,
         shouldCalculate: f.shouldCalculate,
@@ -246,7 +249,10 @@ export class FoodService {
     return {
       id: variant.id,
       label: variant.translations[0]?.label ?? "",
-      price: variant.price ? Number(variant.price) : null,
+      price:
+        !variant.isSeasonal && variant.price !== null && variant.price !== undefined
+          ? Number(variant.price)
+          : null,
       currency: variant.currency,
       isSeasonal: variant.isSeasonal,
       isAvailable: variant.isAvailable,
@@ -373,7 +379,7 @@ export class FoodService {
           ? {
             create: dto.variants.map((v) => ({
               id: uuidv4(),
-              price: v.price,
+              price: v.isSeasonal ? null : (v.price ?? null),
               currency: v.currency ?? "RM",
               isSeasonal: v.isSeasonal ?? false,
               isAvailable: true,
@@ -507,7 +513,7 @@ export class FoodService {
       data: {
         id: uuidv4(),
         foodId,
-        price: dto.price,
+        price: dto.isSeasonal ? null : (dto.price ?? null),
         currency: dto.currency ?? "RM",
         isSeasonal: dto.isSeasonal ?? false,
         isAvailable: true,
@@ -534,7 +540,12 @@ export class FoodService {
     const variant = await prisma.foodVariant.update({
       where: { id: variantId },
       data: {
-        price: dto.price,
+        price:
+          dto.isSeasonal === true
+            ? null
+            : dto.price !== undefined
+              ? dto.price
+              : undefined,
         currency: dto.currency,
         isSeasonal: dto.isSeasonal,
         isAvailable: dto.isAvailable,

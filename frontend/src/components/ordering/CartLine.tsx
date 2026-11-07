@@ -81,9 +81,11 @@ export function CartLine({
 
 					<div className='flex items-center justify-between gap-2'>
 						<span className='text-sm font-semibold text-primary'>
-							{line.shouldCalculate
-								? `${(line.price * line.quantity).toFixed(2)} ${line.currency}`
-								: t('orders.free')}
+							{!line.shouldCalculate
+								? t('orders.free')
+								: line.price > 0
+									? `${(line.price * line.quantity).toFixed(2)} ${line.currency}`
+									: t('menu.seasonal_price')}
 						</span>
 
 						<div className='flex items-center gap-1 rounded-full border border-border bg-muted/50'>
@@ -145,7 +147,9 @@ export function CartLine({
 										)}
 									>
 										{v.label ? `${v.label} - ` : ''}
-										{v.price} {v.currency}
+										{v.isSeasonal || !v.price || v.price <= 0
+											? t('menu.seasonal_price')
+											: `${v.price} ${v.currency}`}
 									</button>
 								))}
 						</div>

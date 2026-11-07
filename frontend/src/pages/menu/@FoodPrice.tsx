@@ -10,7 +10,15 @@ interface FoodPriceProps {
 /** The cheapest portion's price, labelled "From" when there are several. */
 export function FoodPrice({ food, className }: FoodPriceProps) {
 	const { t } = useTranslation()
-	if (food.price === null || food.price === undefined) return null
+	if (food.price === null || food.price === undefined || food.price <= 0) {
+		return (
+			<div className={cn('flex flex-col leading-tight', className)}>
+				<span className='whitespace-nowrap text-sm font-semibold text-primary'>
+					{food.shouldCalculate ? t('menu.seasonal_price') : t('orders.free')}
+				</span>
+			</div>
+		)
+	}
 
 	return (
 		<div className={cn('flex flex-col leading-tight', className)}>

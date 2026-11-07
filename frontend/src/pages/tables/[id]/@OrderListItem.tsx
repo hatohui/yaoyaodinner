@@ -123,9 +123,11 @@ export function OrderListItem({
 		</div>
 	)
 
-	const priceText = order.shouldCalculate
-		? `${(order.price * (Number(quantityInput) || order.quantity)).toFixed(2)} ${order.currency}`
-		: t('orders.free')
+	const priceText = !order.shouldCalculate
+		? t('orders.free')
+		: order.price > 0 || order.priceEdited
+			? `${(order.price * (Number(quantityInput) || order.quantity)).toFixed(2)} ${order.currency}`
+			: t('menu.seasonal_price')
 	const priceClass =
 		'min-w-[4.5rem] shrink-0 text-right text-sm font-medium tabular-nums text-foreground'
 	const price = onEditPrice ? (
