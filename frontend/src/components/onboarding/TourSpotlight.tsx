@@ -102,10 +102,7 @@ export function TourSpotlight({
 					}}
 				>
 					{i === 0 && (
-						<span
-							className='absolute inset-0 rounded-[inherit] ring-4 ring-primary/50 motion-safe:animate-ping'
-							style={{ animationDuration: '1.8s' }}
-						/>
+						<span className='absolute -inset-1 rounded-[inherit] ring-4 ring-primary/60 motion-safe:animate-pulse' />
 					)}
 				</span>
 			))}
