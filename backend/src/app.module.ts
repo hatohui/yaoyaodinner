@@ -14,6 +14,7 @@ import { PersonalNoteModule } from "./modules/personal-note/personal-note.module
 import { PresetMenuModule } from "./modules/preset-menu/preset-menu.module";
 import { StatsModule } from "./modules/stats/stats.module";
 import { ImagesModule } from "./modules/images/images.module";
+import { ImageUploadModule } from "./modules/images/image-upload.module";
 import { ConfigModule as AppConfigModule } from "./modules/config/config.module";
 
 @Module({
@@ -34,6 +35,7 @@ import { ConfigModule as AppConfigModule } from "./modules/config/config.module"
     PresetMenuModule,
     StatsModule,
     ImagesModule,
+    ImageUploadModule,
   ],
 })
 export class AppModule {}
