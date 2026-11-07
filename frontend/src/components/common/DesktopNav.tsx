@@ -1,18 +1,28 @@
 import { useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import type { LucideIcon } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/utils/shadcn'
 
 type NavLink = { to: string; label: string; icon: LucideIcon }
 
+const SKELETON_WIDTHS = ['w-20', 'w-20', 'w-24', 'w-16'] as const
+
 type Props = {
 	links: NavLink[]
+	isLoading?: boolean
 	isActive: (to: string) => boolean
 	pendingTo: string | null
 	onNavigate: (to: string) => void
 }
 
-export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
+export function DesktopNav({
+	links,
+	isLoading,
+	isActive,
+	pendingTo,
+	onNavigate,
+}: Props) {
 	const navRef = useRef<HTMLElement>(null)
 	const pillRef = useRef<HTMLSpanElement>(null)
 	const shown = useRef<{ x: number; width: number } | null>(null)
@@ -76,7 +86,20 @@ export function DesktopNav({ links, isActive, pendingTo, onNavigate }: Props) {
 			observer.disconnect()
 			animation?.cancel()
 		}
-	}, [target])
+	}, [target, isLoading, links.length])
+
+	if (isLoading) {
+		return (
+			<nav
+				aria-busy
+				className='relative hidden min-w-0 items-center gap-1 lg:flex'
+			>
+				{SKELETON_WIDTHS.map((width, idx) => (
+					<Skeleton key={idx} className={cn('h-8 rounded-full', width)} />
+				))}
+			</nav>
+		)
+	}
 
 	return (
 		<nav

@@ -32,7 +32,7 @@ export function Navbar() {
 	const { pathname } = useLocation()
 	const navigate = useNavigate()
 	const { isAdmin } = useIsAdmin()
-	const { feedbackWall, menu, tables } = useConfig()
+	const { feedbackWall, menu, tables, isLoading: isConfigLoading } = useConfig()
 	const tapCount = useRef(0)
 	const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const gateOpenedAt = useRef(0)
@@ -122,6 +122,7 @@ export function Navbar() {
 
 				<DesktopNav
 					links={desktopLinks}
+					isLoading={isConfigLoading}
 					isActive={isActive}
 					pendingTo={pendingTo}
 					onNavigate={handleNavClick}
@@ -155,6 +156,7 @@ export function Navbar() {
 						open={mobileOpen}
 						onOpenChange={setMobileOpen}
 						links={navLinks}
+						isLoading={isConfigLoading}
 						isActive={isActive}
 						pendingTo={pendingTo}
 						onNavigate={handleNavClick}

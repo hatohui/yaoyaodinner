@@ -21,18 +21,16 @@ const FALLBACK: GetPublicConfig200 = {
 }
 
 export function useConfig() {
-	const { data } = useGetPublicConfig<GetPublicConfig200>({
-		// the fallback alone never counts as fresh
+	const { data, isLoading } = useGetPublicConfig<GetPublicConfig200>({
 		query: {
 			staleTime: 60_000,
-			initialData: FALLBACK,
-			initialDataUpdatedAt: 0,
 		},
 	})
 
 	const cfg = { ...FALLBACK, ...(data ?? {}) }
 
 	return {
+		isLoading,
 		pinLength: Number(cfg['event.pinLength']) || DEFAULT_PIN_LENGTH,
 		defaultTableCapacity:
 			Number(cfg['table.defaultCapacity']) || DEFAULT_TABLE_CAPACITY,

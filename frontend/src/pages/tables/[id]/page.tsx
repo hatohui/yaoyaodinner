@@ -44,10 +44,10 @@ export default function TableDetailPage() {
 	const showSplits = !orders || orderCount > 0
 	const activeTab = tab === 'split' && !showSplits ? 'orders' : tab
 	const [joining, setJoining] = useState(false)
-	const { floorPlan, tableCodes } = useConfig()
+	const { floorPlan, tableCodes, isLoading: isConfigLoading } = useConfig()
 	const join = () => setJoining(true)
 
-	if (isLoading) {
+	if (isLoading || isConfigLoading) {
 		return (
 			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10'>
 				<Skeleton className='h-4 w-24 rounded-full' />
