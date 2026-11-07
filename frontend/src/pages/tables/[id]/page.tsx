@@ -35,16 +35,30 @@ export default function TableDetailPage() {
 		useTableDetail()
 	const { tab, setTab } = useTableTab(id)
 	const { canEdit, canJoin, isAdmin } = useTableAccess(id)
+	const {
+		floorPlan,
+		tableCodes,
+		menu,
+		isLoading: isConfigLoading,
+	} = useConfig()
+	const showOrdering = menu || isAdmin
+	const showFloorPlan = floorPlan || isAdmin
 	const { data: people } = useGetTablePeople<PersonDto[]>(id)
-	const { data: orders } = useGetOrders<OrderResponseDto[]>({
-		tableId: id,
-		lang: i18n.language,
-	})
+	const { data: orders } = useGetOrders<OrderResponseDto[]>(
+		{
+			tableId: id,
+			lang: i18n.language,
+		},
+		{
+			query: {
+				enabled: Boolean(id) && !isConfigLoading && showOrdering,
+			},
+		}
+	)
 	const orderCount = useMemo(() => groupOrders(orders ?? []).length, [orders])
 	const showSplits = !orders || orderCount > 0
 	const activeTab = tab === 'split' && !showSplits ? 'orders' : tab
 	const [joining, setJoining] = useState(false)
-	const { floorPlan, tableCodes, isLoading: isConfigLoading } = useConfig()
 	const join = () => setJoining(true)
 
 	if (isLoading || isConfigLoading) {
@@ -111,7 +125,7 @@ export default function TableDetailPage() {
 				</div>
 				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
-					{floorPlan && isOnMap(table) && (
+					{showFloorPlan && isOnMap(table) && (
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
 							aria-label={t('floor_plan.view_map')}
@@ -144,38 +158,52 @@ export default function TableDetailPage() {
 				/>
 			)}
 
-			<Tabs value={activeTab} onValueChange={setTab}>
-				<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
-					<TabsTrigger value='people' className={tabTrigger}>
-						{t('tabs.people')}
-					</TabsTrigger>
-					<TabsTrigger value='orders' className={tabTrigger}>
-						{t('tabs.orders')}
-						<TabCount count={orderCount} />
-					</TabsTrigger>
-					{showSplits && (
-						<TabsTrigger value='split' className={tabTrigger}>
-							{t('tabs.splits')}
+			{showOrdering ? (
+				<Tabs value={activeTab} onValueChange={setTab}>
+					<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
+						<TabsTrigger
+							value='people'
+							data-tour='people-tab'
+							className={tabTrigger}
+						>
+							{t('tabs.people')}
 						</TabsTrigger>
-					)}
-				</TabsList>
+						<TabsTrigger value='orders' className={tabTrigger}>
+							{t('tabs.orders')}
+							<TabCount count={orderCount} />
+						</TabsTrigger>
+						{showSplits && (
+							<TabsTrigger value='split' className={tabTrigger}>
+								{t('tabs.splits')}
+							</TabsTrigger>
+						)}
+					</TabsList>
 
-				<TabsContent value='people'>
-					<Roster
-						table={table}
-						canEdit={canEdit}
-						canJoin={canJoin}
-						canSetHost={isAdmin}
-						onSetHost={personId => updateTable({ tableLeaderId: personId })}
-					/>
-				</TabsContent>
-				<TabsContent value='orders'>
-					<OrdersTab table={table} people={people ?? []} canEdit={canEdit} />
-				</TabsContent>
-				<TabsContent value='split'>
-					<SplitsTab table={table} people={people ?? []} canEdit={canEdit} />
-				</TabsContent>
-			</Tabs>
+					<TabsContent value='people'>
+						<Roster
+							table={table}
+							canEdit={canEdit}
+							canJoin={canJoin}
+							canSetHost={isAdmin}
+							onSetHost={personId => updateTable({ tableLeaderId: personId })}
+						/>
+					</TabsContent>
+					<TabsContent value='orders'>
+						<OrdersTab table={table} people={people ?? []} canEdit={canEdit} />
+					</TabsContent>
+					<TabsContent value='split'>
+						<SplitsTab table={table} people={people ?? []} canEdit={canEdit} />
+					</TabsContent>
+				</Tabs>
+			) : (
+				<Roster
+					table={table}
+					canEdit={canEdit}
+					canJoin={canJoin}
+					canSetHost={isAdmin}
+					onSetHost={personId => updateTable({ tableLeaderId: personId })}
+				/>
+			)}
 
 			<TableCodeDialog
 				tableId={id}

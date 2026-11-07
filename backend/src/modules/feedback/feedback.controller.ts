@@ -19,14 +19,17 @@ import {
   FeedbackReactionDto,
 } from './dto/feedback-response.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
 import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 import { TableAccessService } from '@modules/table-access/table-access.service';
 
 type FeedbackSort = 'recent' | 'top';
 
 @ApiTags('feedback')
 @Controller('feedback')
-@UseGuards(RateLimitGuard)
+@UseGuards(FeatureGuard, RateLimitGuard)
+@RequireFeature(CONFIG_KEYS.featureFeedbackWall)
 export class FeedbackController {
   constructor(
     private feedback: FeedbackService,

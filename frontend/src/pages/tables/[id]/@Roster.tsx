@@ -82,7 +82,7 @@ export function Roster({
 	}
 
 	return (
-		<div className='flex flex-col gap-3 sm:gap-4'>
+		<div data-tour='roster' className='flex flex-col gap-3 sm:gap-4'>
 			<div className='flex items-center justify-between'>
 				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 					{t('roster.people_here')}
@@ -230,6 +230,8 @@ function RosterItem({
 
 	return (
 		<li
+			data-tour='person'
+			data-name={person.name}
 			className={cn(
 				'group relative flex items-center gap-3 border border-border bg-card shadow-sm transition-all',
 				compact

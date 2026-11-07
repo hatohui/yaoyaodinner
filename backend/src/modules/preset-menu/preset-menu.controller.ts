@@ -16,9 +16,13 @@ import { UpdatePresetDto } from './dto/update-preset.dto';
 import { AddPresetItemDto, UpdatePresetItemDto } from './dto/preset-item.dto';
 import { PresetMenuDto } from './dto/preset-menu-response.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 
 @ApiTags('preset-menus')
 @Controller('preset-menus')
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureMenu)
 export class PresetMenuController {
   constructor(private preset: PresetMenuService) {}
 

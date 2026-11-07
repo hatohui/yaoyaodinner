@@ -17,7 +17,9 @@ import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
 import { PeopleService } from '@modules/people/people.service';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
 import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 import { ADMIN_HEADER } from '@common/auth/admin';
 import { ConfigService } from '@modules/config/config.service';
 import { TableAccessService } from '@modules/table-access/table-access.service';
@@ -40,6 +42,8 @@ import { PersonDto } from '@modules/people/dto/person-response.dto';
 
 @ApiTags('tables')
 @Controller('tables')
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureTables)
 export class TableController {
   constructor(
     private table: TableService,

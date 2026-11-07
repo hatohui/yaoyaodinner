@@ -103,6 +103,38 @@ declare module 'react-i18next' {
 					log_out: string
 					logged_out: string
 				}
+				onboarding: {
+					welcome_title: string
+					welcome_body: string
+					search_option: string
+					search_option_hint: string
+					browse_option: string
+					browse_option_hint: string
+					skip: string
+					search_title: string
+					search_body: string
+					match_title: string
+					match_body: string
+					pick_title: string
+					pick_body: string
+					no_match_title: string
+					no_match_body: string
+					browse_title: string
+					browse_body: string
+					code_title: string
+					code_body: string
+					roster_match_title: string
+					roster_match_body: string
+					roster_title: string
+					roster_body: string
+					people_tab_title: string
+					people_tab_body: string
+					done_title: string
+					done_body: string
+					got_it: string
+					help: string
+					step_of: string
+				}
 				table_code: {
 					title: string
 					subtitle: string

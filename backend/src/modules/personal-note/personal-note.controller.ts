@@ -8,15 +8,20 @@ import {
   Param,
   Query,
   Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { PersonalNoteService } from './personal-note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { NoteResponseDto } from './dto/note-response.dto';
 import { TableAccessService } from '@modules/table-access/table-access.service';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 
 @ApiTags('personal-notes')
 @Controller('personal-notes')
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureTables)
 export class PersonalNoteController {
   constructor(
     private notes: PersonalNoteService,

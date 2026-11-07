@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { OrderService } from './order.service';
@@ -16,9 +17,13 @@ import { BatchCreateOrderDto } from './dto/batch-create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { TableAccessService } from '@modules/table-access/table-access.service';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 
 @ApiTags('orders')
 @Controller('orders')
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureTables, CONFIG_KEYS.featureMenu)
 export class OrderController {
   constructor(
     private order: OrderService,

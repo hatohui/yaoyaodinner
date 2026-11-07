@@ -64,6 +64,7 @@
 	--color-paper-muted: var(--paper-muted);
 	--color-paper-border: var(--paper-border);
 	--color-skeleton: var(--skeleton);
+	--color-scrim: var(--scrim);
 	--animate-progress: progress 1.1s ease-in-out infinite;
 
 	@keyframes progress {
@@ -181,6 +182,7 @@
 
 	--control: oklch(0.99 0.003 329);
 	--skeleton: color-mix(in oklch, var(--primary) 24%, transparent);
+	--scrim: color-mix(in oklch, var(--foreground) 55%, transparent);
 
 	/* Accent Subtle (Filter pills, soft tags) */
 	--secondary: oklch(0.93 0.025 332);
@@ -261,6 +263,7 @@
 
 	--control: oklch(0.27 0.055 264.7);
 	--skeleton: var(--accent);
+	--scrim: oklch(0.08 0.04 264.7 / 0.72);
 
 	--accent: oklch(0.688 0.127 222.5);
 	--accent-foreground: oklch(0.14 0.05 264.7);

@@ -8,9 +8,11 @@ import { TableListSkeleton } from './@TableListSkeleton'
 import { useTableSearch } from './@useTableSearch'
 import { TableSortSelect } from './@TableSortSelect'
 import { useConfig } from '@/hooks/useConfig'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { TABLE_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { cn } from '@/utils/shadcn'
+import { IdentityTourButton } from '@/components/onboarding/IdentityTourButton'
 
 export default function TablesPage() {
 	const { t } = useTranslation()
@@ -27,6 +29,7 @@ export default function TablesPage() {
 		pagination,
 	} = useTableSearch()
 	const { floorPlan } = useConfig()
+	const { isAdmin } = useIsAdmin()
 	const { view, setView } = useListView(TABLE_LIST_VIEW_STORAGE_KEY)
 	const showTotal = sort === 'most_ordered' || sort === 'least_ordered'
 
@@ -36,22 +39,27 @@ export default function TablesPage() {
 				<h1 className='text-xl font-bold text-foreground'>
 					{t('tables.find_title')}
 				</h1>
-				{floorPlan && (
-					<Link
-						to='/tables/map'
-						className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-3 py-1.5 text-sm font-medium text-foreground/80 shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
-					>
-						<Map className='size-4' />
-						{t('floor_plan.view_map')}
-					</Link>
-				)}
+				<div className='flex items-center gap-2'>
+					<IdentityTourButton />
+					{(floorPlan || isAdmin) && (
+						<Link
+							to='/tables/map'
+							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-3 py-1.5 text-sm font-medium text-foreground/80 shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+						>
+							<Map className='size-4' />
+							{t('floor_plan.view_map')}
+						</Link>
+					)}
+				</div>
 			</div>
 
-			<SearchBar
-				value={search}
-				onChange={setSearch}
-				placeholder={t('tables.search_placeholder')}
-			/>
+			<div data-tour='search'>
+				<SearchBar
+					value={search}
+					onChange={setSearch}
+					placeholder={t('tables.search_placeholder')}
+				/>
+			</div>
 
 			<div className='flex items-center justify-between'>
 				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>

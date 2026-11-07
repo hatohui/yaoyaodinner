@@ -37,6 +37,7 @@ export function IdentityMenu() {
 			<DropdownMenuTrigger asChild>
 				<button
 					type='button'
+					data-tour='identity'
 					className='flex items-center gap-1.5 rounded-full border border-border bg-control py-0.5 pl-0.5 pr-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-primary/40 hover:bg-primary/10'
 				>
 					<span className='flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-xs font-semibold text-secondary-foreground'>

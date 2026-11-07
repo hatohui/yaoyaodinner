@@ -17,7 +17,7 @@ export type QuickAction = { key: string; label: string; icon: LucideIcon } & (
 export function useQuickActions(): QuickAction[] {
 	const { t } = useTranslation()
 	const copyAddress = useCopyAddress()
-	const { floorPlan, tables } = useConfig()
+	const { floorPlan, tables, isLoading } = useConfig()
 	const pin = useGuest(s => s.pin)
 	const myTableId = useGuest(s => s.me?.tableId)
 	// a mouse means desktop, where pasting the address beats opening Maps
@@ -27,14 +27,14 @@ export function useQuickActions(): QuickAction[] {
 	if (!pin && !myTableId) return []
 
 	const actions: QuickAction[] = []
-	if (tables && myTableId)
+	if (!isLoading && tables && myTableId)
 		actions.push({
 			key: 'my-table',
 			label: t('identity.my_table'),
 			icon: Armchair,
 			to: `/tables/${myTableId}`,
 		})
-	if (tables && floorPlan)
+	if (!isLoading && tables && floorPlan)
 		actions.push({
 			key: 'map',
 			label: t('floor_plan.view_map'),

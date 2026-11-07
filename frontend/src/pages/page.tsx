@@ -5,10 +5,16 @@ import { useTranslation } from 'react-i18next'
 import VideoPlayer from '@/components/common/VideoPlayer'
 import { AppLogo } from '@/components/common/AppLogo'
 import QuoteSection from '@/config/quotes'
+import { useConfig } from '@/hooks/useConfig'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { EventFacts } from './@EventFacts'
 
 const LandingPage = (): React.JSX.Element => {
 	const { t } = useTranslation()
+	const { menu, tables, isLoading } = useConfig()
+	const { isAdmin } = useIsAdmin()
+	const showMenu = !isLoading && (menu || isAdmin)
+	const showTables = !isLoading && (tables || isAdmin)
 
 	// the hero fills the screen; stop iOS rubber-banding from dragging it around
 	useEffect(() => {
@@ -47,20 +53,26 @@ const LandingPage = (): React.JSX.Element => {
 					/>
 					<QuoteSection />
 					<EventFacts />
-					<div className='mt-2 flex flex-wrap items-center gap-3'>
-						<Link
-							to='/menu'
-							className='rounded-full bg-primary px-7 py-3 font-semibold text-primary-foreground shadow-sm transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-md'
-						>
-							{t('nav.menu')}
-						</Link>
-						<Link
-							to='/tables'
-							className='rounded-full border border-border bg-background/85 px-7 py-3 font-semibold text-foreground shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-background hover:shadow-md'
-						>
-							{t('nav.tables')}
-						</Link>
-					</div>
+					{(showMenu || showTables) && (
+						<div className='mt-2 flex flex-wrap items-center gap-3'>
+							{showMenu && (
+								<Link
+									to='/menu'
+									className='rounded-full bg-primary px-7 py-3 font-semibold text-primary-foreground shadow-sm transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-md'
+								>
+									{t('nav.menu')}
+								</Link>
+							)}
+							{showTables && (
+								<Link
+									to='/tables'
+									className='rounded-full border border-border bg-background/85 px-7 py-3 font-semibold text-foreground shadow-sm backdrop-blur-md transition-all hover:scale-105 hover:bg-background hover:shadow-md'
+								>
+									{t('nav.tables')}
+								</Link>
+							)}
+						</div>
+					)}
 				</div>
 			</div>
 

@@ -24,11 +24,15 @@ import {
   FoodSuggestionDto,
 } from './dto/food-response.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 import { BulkToggleDto } from '@common/dto/bulk-toggle.dto';
 import { IdsDto } from '@common/dto/ids.dto';
 
 @ApiTags('foods')
 @Controller('foods')
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureMenu)
 export class FoodController {
   constructor(private food: FoodService) {}
 

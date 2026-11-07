@@ -97,6 +97,13 @@ export class TableAccessService {
     }
   }
 
+  async requireFeature(key: string, headers: Headers) {
+    if (await this.isAdmin(headers)) return;
+    if (!(await this.config.get<boolean>(key))) {
+      throw new ForbiddenException('This feature is currently disabled');
+    }
+  }
+
   async forEventPin(headers: Headers) {
     if (await this.isAdmin(headers)) return;
     const meta = await this.events.getActiveMeta();

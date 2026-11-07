@@ -15,11 +15,15 @@ import { CategoryItemDto } from "./dto/category-response.dto";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { AdminGuard } from "@common/guards/admin.guard";
+import { FeatureGuard, RequireFeature } from "@common/guards/feature.guard";
+import { CONFIG_KEYS } from "@common/config/registry";
 import { BulkToggleDto } from "@common/dto/bulk-toggle.dto";
 import { IdsDto } from "@common/dto/ids.dto";
 
 @ApiTags("categories")
 @Controller("categories")
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureMenu)
 export class CategoryController {
   constructor(private category: CategoryService) {}
 

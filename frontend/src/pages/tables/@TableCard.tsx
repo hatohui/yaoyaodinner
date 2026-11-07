@@ -25,7 +25,11 @@ export function TableCard({ table, isMine, showTotal }: TableCardProps) {
 	const { t } = useTranslation()
 
 	return (
-		<Link to={`/tables/${table.id}`} className={tableCardClass(isMine)}>
+		<Link
+			to={`/tables/${table.id}`}
+			data-tour={table.matchedPeople?.length ? 'match' : undefined}
+			className={tableCardClass(isMine)}
+		>
 			<div className='relative aspect-[16/9] w-full overflow-hidden border-b border-border'>
 				<StoredImage
 					imageKey={table.bannerUrl}

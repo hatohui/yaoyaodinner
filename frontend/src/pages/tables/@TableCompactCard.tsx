@@ -25,7 +25,11 @@ export function TableCompactCard({
 		table.bannerUrl && 'rounded-full bg-card px-2.5 py-0.5 shadow-sm ring-1 ring-inset ring-border'
 
 	return (
-		<Link to={`/tables/${table.id}`} className={tableCardClass(isMine)}>
+		<Link
+			to={`/tables/${table.id}`}
+			data-tour={table.matchedPeople?.length ? 'match' : undefined}
+			className={tableCardClass(isMine)}
+		>
 			{table.bannerUrl && (
 				<>
 					<StoredImage

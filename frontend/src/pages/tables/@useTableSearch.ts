@@ -5,6 +5,7 @@ import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
 import type { TableDto, TableListDto } from '@/api/model'
 import { TABLE_FETCH_ALL_COUNT } from '@/common/constants'
+import { useIdentityTour } from '@/hooks/useIdentityTour'
 
 export const TABLE_SORTS = [
 	'number',
@@ -41,6 +42,12 @@ export function useTableSearch() {
 			},
 			{ query: { placeholderData: keepPreviousData } }
 		)
+
+	const setTourQuery = useIdentityTour(s => s.setQuery)
+	const settled = !isLoading && !isPlaceholderData
+	useEffect(() => {
+		if (settled) setTourQuery(debouncedSearch)
+	}, [settled, debouncedSearch, setTourQuery])
 
 	const tables = useMemo(
 		() => [...(data?.tables ?? [])].sort(COMPARE[sort]),

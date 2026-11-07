@@ -18,10 +18,14 @@ import { MovePeopleDto } from './dto/move-people.dto';
 import { PersonDto } from './dto/person-response.dto';
 import { IdsDto } from '@common/dto/ids.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
+import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 import { TableAccessService } from '@modules/table-access/table-access.service';
 
 @ApiTags('people')
 @Controller('people')
+@UseGuards(FeatureGuard)
+@RequireFeature(CONFIG_KEYS.featureTables)
 export class PeopleController {
   constructor(
     private people: PeopleService,

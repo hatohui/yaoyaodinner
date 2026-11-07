@@ -16,6 +16,7 @@ export function TableList({ tables, compact, showTotal }: TableListProps) {
 
 	return (
 		<ul
+			data-tour='tables'
 			className={cn(
 				'grid gap-3',
 				compact

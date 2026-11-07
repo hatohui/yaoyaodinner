@@ -11,6 +11,7 @@ import { ImagesService } from './images.service';
 import { SignUrlResponseDto } from './dto/sign-url-response.dto';
 import { TableAccessService } from '@modules/table-access/table-access.service';
 import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
+import { CONFIG_KEYS } from '@common/config/registry';
 
 const UPLOAD_FOLDERS = [
   'foods',
@@ -46,8 +47,10 @@ export class ImagesController {
     if (folder === 'foods') {
       await this.access.requireAdmin(headers);
     } else if (folder === 'feedback-images') {
+      await this.access.requireFeature(CONFIG_KEYS.featureFeedbackWall, headers);
       await this.access.forEventPin(headers);
     } else {
+      await this.access.requireFeature(CONFIG_KEYS.featureTables, headers);
       await this.access.forHeldTable(headers);
     }
 
