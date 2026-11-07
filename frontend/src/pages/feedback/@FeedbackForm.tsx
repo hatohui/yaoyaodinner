@@ -20,8 +20,10 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 	const [content, setContent] = useState('')
 	const [imageUrl, setImageUrl] = useState<string | null>(null)
 
+	const canPost = Boolean(content.trim() || imageUrl)
+
 	const submit = () => {
-		if (!content.trim()) return
+		if (!canPost) return
 		onPost(by, content, imageUrl)
 		setContent('')
 		setImageUrl(null)
@@ -46,7 +48,7 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 				/>
 				<Button
 					className='w-fit shrink-0 gap-1.5 rounded-full'
-					disabled={!content.trim() || isPosting}
+					disabled={!canPost || isPosting}
 					onClick={submit}
 				>
 					<Send className='size-4' />

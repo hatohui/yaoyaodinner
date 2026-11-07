@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { FeedbackItemDto } from '@/api/model'
 import { DeleteFeedbackButton } from '@/components/common/DeleteFeedbackButton'
+import { ViewableImage } from '@/components/common/ViewableImage'
 
 interface AdminFeedbackCardProps {
 	item: FeedbackItemDto
@@ -30,6 +31,11 @@ export function AdminFeedbackCard({ item, onDelete }: AdminFeedbackCardProps) {
 			{item.content && (
 				<p className='text-sm whitespace-pre-wrap text-foreground [overflow-wrap:anywhere]'>{item.content}</p>
 			)}
+			<ViewableImage
+				imageKey={item.imageUrl}
+				className='w-full'
+				imgClassName='max-h-96 w-full rounded-xl bg-muted object-contain'
+			/>
 
 			{item.reactions.length > 0 && (
 				<div className='flex flex-wrap items-center gap-1.5 pt-1'>

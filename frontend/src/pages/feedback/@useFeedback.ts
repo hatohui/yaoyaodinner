@@ -81,11 +81,11 @@ export function useFeedback() {
 
 	const post = (by: string, content: string, imageUrl: string | null) => {
 		const trimmed = content.trim()
-		if (!trimmed) return
+		if (!trimmed && !imageUrl) return
 		createMutation.mutate({
 			data: {
 				by: by.trim() || undefined,
-				content: trimmed,
+				content: trimmed || undefined,
 				imageUrl: imageUrl ?? undefined,
 			},
 		})
