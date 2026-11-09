@@ -218,6 +218,7 @@
 		"remove_desc": "此操作无法撤销 - 他们将不再显示在此桌名单中。",
 		"link_copied": "链接已复制",
 		"copy_link": "复制链接",
+		"table_no": "{{no}} 号桌",
 		"not_found": "未找到餐桌",
 		"add_failed": "无法添加 - 此桌可能已满",
 		"name_taken": "这桌已经有人叫这个名字了",

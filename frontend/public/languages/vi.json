@@ -218,6 +218,7 @@
 		"remove_desc": "Không thể hoàn tác - họ sẽ không còn trong danh sách bàn này.",
 		"link_copied": "Đã sao chép liên kết",
 		"copy_link": "Sao chép liên kết",
+		"table_no": "Bàn {{no}}",
 		"not_found": "Không tìm thấy bàn",
 		"add_failed": "Không thêm được - bàn có thể đã đầy",
 		"name_taken": "Đã có người ở bàn này dùng tên đó",

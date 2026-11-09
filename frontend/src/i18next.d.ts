@@ -215,6 +215,7 @@ declare module 'react-i18next' {
 					remove_desc: string
 					link_copied: string
 					copy_link: string
+					table_no: string
 					not_found: string
 					add_failed: string
 					name_taken: string

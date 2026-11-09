@@ -108,6 +108,12 @@ export default function TableDetailPage() {
 
 			<div className='flex items-center justify-between gap-2'>
 				<div className='flex min-w-0 items-center gap-2'>
+					<span
+						aria-label={t('roster.table_no', { no: table.no })}
+						className='flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold tabular-nums text-secondary-foreground shadow-sm sm:size-9 sm:text-base'
+					>
+						{table.no}
+					</span>
 					<h1 className='min-w-0 truncate text-xl font-bold text-foreground sm:text-2xl'>
 						{canEdit ? (
 							<EditableName

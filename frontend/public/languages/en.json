@@ -218,6 +218,7 @@
 		"remove_desc": "This can't be undone - they'll no longer appear on this table's roster.",
 		"link_copied": "Link copied",
 		"copy_link": "Copy link",
+		"table_no": "Table {{no}}",
 		"not_found": "Table not found",
 		"add_failed": "Couldn't add - the table may be full",
 		"name_taken": "Someone at this table already has that name",
