@@ -110,7 +110,7 @@ export default function TableDetailPage() {
 				<div className='flex min-w-0 items-center gap-2'>
 					<span
 						aria-label={t('roster.table_no', { no: table.no })}
-						className='flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold tabular-nums text-secondary-foreground shadow-sm sm:size-9 sm:text-base'
+						className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold tabular-nums text-primary-foreground shadow-sm sm:size-9 sm:text-base'
 					>
 						{table.no}
 					</span>
