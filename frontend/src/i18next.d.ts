@@ -318,6 +318,7 @@ declare module 'react-i18next' {
 				orders: {
 					estimate_note: string
 					unpriced_note: string
+					from_amount: string
 					round_pre: string
 					round_dinner: string
 					round_dinner_empty: string

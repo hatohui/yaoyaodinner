@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Info } from 'lucide-react'
-import { awaitingPrice, type Priced } from '@/utils/money'
+import { hasUnpriced, type Priced } from '@/utils/money'
 import { cn } from '@/utils/shadcn'
 
 interface PriceEstimateNoteProps {
@@ -13,7 +13,6 @@ export function PriceEstimateNote({
 	className,
 }: PriceEstimateNoteProps) {
 	const { t } = useTranslation()
-	const hasUnpriced = lines.some(awaitingPrice)
 
 	return (
 		<p
@@ -25,7 +24,7 @@ export function PriceEstimateNote({
 			<Info className='mt-0.5 size-3.5 shrink-0' />
 			<span>
 				{t('orders.estimate_note')}
-				{hasUnpriced && ` ${t('orders.unpriced_note')}`}
+				{hasUnpriced(lines) && ` ${t('orders.unpriced_note')}`}
 			</span>
 		</p>
 	)

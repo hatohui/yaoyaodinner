@@ -436,7 +436,8 @@
 	},
 	"orders": {
 		"estimate_note": "Prices are estimates to help you plan. The restaurant's bill is what you actually pay.",
-		"unpriced_note": "Seasonal dishes count as 0 until someone adds the price the restaurant charged.",
+		"unpriced_note": "Seasonal dishes without a price yet aren't included, so totals marked \"From\" may go up.",
+		"from_amount": "From {{amount}}",
 		"shared": "Shared",
 		"personal": "Personal",
 		"free_badge": "Free",
@@ -763,6 +764,7 @@
 			"category": "Category",
 			"price": "Price",
 			"seasonal": "Seasonal price",
+			"seasonal_price_hint": "Leave empty until the restaurant sets the price. Totals show \"From\" until then.",
 			"available": "Available",
 			"recommended": "Recommended",
 			"calculated": "Counts toward bill",

@@ -11,6 +11,8 @@ export interface Priced {
 export const awaitingPrice = (line: Priced) =>
 	line.shouldCalculate !== false && !line.priceEdited && (line.price ?? 0) <= 0
 
+export const hasUnpriced = (lines: Priced[]) => lines.some(awaitingPrice)
+
 /**
  * The currency totals are billed in. Free joke items can carry their own unit
  * (e.g. "barks"), so only charged lines count.

@@ -296,7 +296,7 @@ export function FoodTable({
 								</p>
 								<p className='flex justify-between gap-2 text-xs text-muted-foreground'>
 									<span>
-										{!food.isSeasonal && food.price != null && food.price > 0
+										{food.price != null && food.price > 0
 											? `${food.price} ${food.currency ?? ''}`
 											: t('menu.seasonal_price')}
 									</span>

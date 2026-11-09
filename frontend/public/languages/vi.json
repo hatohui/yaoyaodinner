@@ -436,7 +436,8 @@
 	},
 	"orders": {
 		"estimate_note": "Giá chỉ mang tính ước tính để bạn dự trù. Hóa đơn của nhà hàng mới là số tiền thực tế phải trả.",
-		"unpriced_note": "Món theo mùa được tính là 0 cho đến khi có người nhập giá nhà hàng tính.",
+		"unpriced_note": "Món theo mùa chưa có giá chưa được tính, nên tổng có chữ \"Từ\" có thể tăng thêm.",
+		"from_amount": "Từ {{amount}}",
 		"shared": "Chia sẻ",
 		"personal": "Cá nhân",
 		"free_badge": "Miễn phí",
@@ -763,6 +764,7 @@
 			"category": "Danh mục",
 			"price": "Giá",
 			"seasonal": "Theo thời giá",
+			"seasonal_price_hint": "Để trống cho đến khi nhà hàng báo giá. Tổng tiền sẽ hiện \"Từ\" cho đến lúc đó.",
 			"available": "Có sẵn",
 			"recommended": "Đề xuất",
 			"calculated": "Tính vào hóa đơn",

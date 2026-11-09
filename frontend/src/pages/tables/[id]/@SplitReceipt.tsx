@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { OrderResponseDto } from '@/api/model'
 import { groupOrders } from '@/components/ordering/groupOrders'
+import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { awaitingPrice } from '@/utils/money'
 import { cn } from '@/utils/shadcn'
 
@@ -9,8 +10,9 @@ interface SplitReceiptProps {
 	orders: OrderResponseDto[]
 	flatPrice: number
 	total: number
+	partial: boolean
 	currency: string
-	people: { id: string; name: string; amount: number }[]
+	people: { id: string; name: string; amount: number; partial: boolean }[]
 	myPersonId: string | null
 }
 
@@ -20,6 +22,7 @@ export function SplitReceipt({
 	orders,
 	flatPrice,
 	total,
+	partial,
 	currency,
 	people,
 	myPersonId,
@@ -67,7 +70,7 @@ export function SplitReceipt({
 			<div className='flex justify-between gap-3 text-base font-bold'>
 				<span>{t('split.total')}</span>
 				<span className='tabular-nums'>
-					{total.toFixed(2)} {currency}
+					<TotalAmount amount={total} currency={currency} partial={partial} />
 				</span>
 			</div>
 			<div className='border-t border-dashed border-border' />
@@ -85,7 +88,9 @@ export function SplitReceipt({
 							{p.name}
 							{p.id === myPersonId && ` (${t('split.you')})`}
 						</span>
-						<span className='tabular-nums'>{p.amount.toFixed(2)}</span>
+						<span className='tabular-nums'>
+							<TotalAmount amount={p.amount} partial={p.partial} />
+						</span>
 					</li>
 				))}
 			</ul>

@@ -22,7 +22,13 @@ import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { SPLIT_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { localStorage } from '@/utils/localstorage'
-import { allocateCents, awaitingPrice, billingCurrency } from '@/utils/money'
+import {
+	allocateCents,
+	awaitingPrice,
+	billingCurrency,
+	hasUnpriced,
+} from '@/utils/money'
+import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 import { cn } from '@/utils/shadcn'
 import { TabEmptyState } from './@TabEmptyState'
@@ -99,13 +105,23 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 			},
 		]
 			.filter(r => r.items.length > 0)
-			.map(r => ({ ...r, subtotal: shareOf(r.items) }))
-		return { person, rounds, total: shareOf(items) + flatShare }
+			.map(r => ({
+				...r,
+				subtotal: shareOf(r.items),
+				partial: hasUnpriced(r.items),
+			}))
+		return {
+			person,
+			rounds,
+			total: shareOf(items) + flatShare,
+			partial: hasUnpriced(items),
+		}
 	})
 	// rounded per person so the shares always add up to the table total
 	const rounded = allocateCents(exact.map(b => b.total))
 	const breakdown = exact.map((b, i) => ({ ...b, total: rounded[i] }))
 	const tableTotal = rounded.reduce((sum, v) => sum + v, 0)
+	const tablePartial = hasUnpriced(orders)
 
 	const mine = breakdown.find(b => b.person.id === myPersonId)
 	const others = breakdown.filter(b => b.person.id !== myPersonId)
@@ -170,11 +186,13 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 					orders={orders}
 					flatPrice={flatPrice}
 					total={tableTotal}
+					partial={tablePartial}
 					currency={currency}
 					people={breakdown.map(b => ({
 						id: b.person.id,
 						name: b.person.name,
 						amount: b.total,
+						partial: b.partial,
 					}))}
 					myPersonId={myPersonId}
 				/>
@@ -184,6 +202,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 						<section className='flex flex-col gap-2 rounded-2xl border-2 border-primary bg-card p-4 shadow-sm'>
 							<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 								{t('split.your_share')}
+								{mine.partial && ` · ${t('menu.price_from')}`}
 							</span>
 							<span className='text-3xl font-extrabold tracking-tight tabular-nums text-foreground'>
 								{mine.total.toFixed(2)}{' '}
@@ -206,7 +225,11 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 					<div className='flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-xs'>
 						<span>{t('split.table_total')}</span>
 						<span className='tabular-nums'>
-							{tableTotal.toFixed(2)} {currency}
+							<TotalAmount
+								amount={tableTotal}
+								currency={currency}
+								partial={tablePartial}
+							/>
 						</span>
 					</div>
 
@@ -216,7 +239,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 								{mine ? t('split.everyone_else') : t('split.everyone')}
 							</h3>
 							<ul className='m-0 flex list-none flex-col divide-y divide-border/60 overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-xs'>
-								{others.map(({ person, rounds, total }) => {
+								{others.map(({ person, rounds, total, partial }) => {
 									const isOpen = expanded.has(person.id)
 									return (
 										<li key={person.id}>
@@ -230,7 +253,11 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 													{person.name}
 												</span>
 												<span className='flex shrink-0 items-center gap-1.5 text-sm font-medium tabular-nums text-foreground'>
-													{total.toFixed(2)} {currency}
+													<TotalAmount
+														amount={total}
+														currency={currency}
+														partial={partial}
+													/>
 													<ChevronDown
 														className={cn(
 															'size-4 text-muted-foreground transition-transform',

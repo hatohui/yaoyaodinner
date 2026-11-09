@@ -130,7 +130,7 @@ export class FoodService {
         isRecommended: f.isRecommended,
         defaultVariantId: defaultVariant?.id ?? null,
         price:
-          defaultVariant && !defaultVariant.isSeasonal && defaultVariant.price !== null
+          defaultVariant && defaultVariant.price !== null
             ? Number(defaultVariant.price)
             : null,
         currency: defaultVariant?.currency ?? null,
@@ -250,7 +250,7 @@ export class FoodService {
       id: variant.id,
       label: variant.translations[0]?.label ?? "",
       price:
-        !variant.isSeasonal && variant.price !== null && variant.price !== undefined
+        variant.price !== null && variant.price !== undefined
           ? Number(variant.price)
           : null,
       currency: variant.currency,
@@ -379,7 +379,7 @@ export class FoodService {
           ? {
             create: dto.variants.map((v) => ({
               id: uuidv4(),
-              price: v.isSeasonal ? null : (v.price ?? null),
+              price: v.price ?? null,
               currency: v.currency ?? "RM",
               isSeasonal: v.isSeasonal ?? false,
               isAvailable: true,
@@ -513,7 +513,7 @@ export class FoodService {
       data: {
         id: uuidv4(),
         foodId,
-        price: dto.isSeasonal ? null : (dto.price ?? null),
+        price: dto.price ?? null,
         currency: dto.currency ?? "RM",
         isSeasonal: dto.isSeasonal ?? false,
         isAvailable: true,
@@ -540,12 +540,7 @@ export class FoodService {
     const variant = await prisma.foodVariant.update({
       where: { id: variantId },
       data: {
-        price:
-          dto.isSeasonal === true
-            ? null
-            : dto.price !== undefined
-              ? dto.price
-              : undefined,
+        price: dto.price,
         currency: dto.currency,
         isSeasonal: dto.isSeasonal,
         isAvailable: dto.isAvailable,
@@ -562,9 +557,30 @@ export class FoodService {
       },
       include: { translations: { where: { language: lang } } },
     });
+    if (variant.isSeasonal && dto.price !== undefined) {
+      await this.repriceSeasonalOrders(variantId, dto.price ?? 0);
+    }
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
 
     return this.toVariantDto(variant);
+  }
+
+  /**
+   * Seasonal dishes are ordered before the restaurant names a price, so a price
+   * set later flows to orders nobody repriced by hand, but never to finished bills.
+   */
+  private repriceSeasonalOrders(variantId: string, price: number) {
+    return prisma.order.updateMany({
+      where: {
+        variantId,
+        priceEdited: false,
+        OR: [
+          { eventId: null },
+          { event: { orderingStage: { not: "finalized" } } },
+        ],
+      },
+      data: { price },
+    });
   }
 
   async removeVariant(variantId: string) {

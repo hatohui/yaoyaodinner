@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
 import { Lock } from 'lucide-react'
+import { TotalAmount } from '@/components/ordering/TotalAmount'
 
 interface OrderRoundSectionProps {
 	title: string
 	locked: boolean
 	subtotal: number
 	currency?: string
+	partial?: boolean
 	children: ReactNode
 }
 
@@ -14,6 +16,7 @@ export function OrderRoundSection({
 	locked,
 	subtotal,
 	currency,
+	partial,
 	children,
 }: OrderRoundSectionProps) {
 	return (
@@ -24,7 +27,11 @@ export function OrderRoundSection({
 					{title}
 				</span>
 				<span className='tabular-nums'>
-					{subtotal.toFixed(2)} {currency}
+					<TotalAmount
+						amount={subtotal}
+						currency={currency}
+						partial={partial}
+					/>
 				</span>
 			</div>
 			{children}

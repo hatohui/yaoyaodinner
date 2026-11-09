@@ -4,6 +4,8 @@ import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { Button } from '@/components/ui/button'
 import { CartLine } from './CartLine'
 import { PriceEstimateNote } from './PriceEstimateNote'
+import { TotalAmount } from './TotalAmount'
+import { hasUnpriced } from '@/utils/money'
 import type { CartLine as CartLineData } from '@/hooks/useOrderCart'
 
 interface CartPanelProps {
@@ -82,7 +84,11 @@ export function CartPanel({
 					<div className='flex items-center justify-between text-sm font-semibold text-foreground'>
 						<span>{t('orders.total')}</span>
 						<span>
-							{total.toFixed(2)} {currency}
+							<TotalAmount
+								amount={total}
+								currency={currency}
+								partial={hasUnpriced(lines)}
+							/>
 						</span>
 					</div>
 					<Button

@@ -436,7 +436,8 @@
 	},
 	"orders": {
 		"estimate_note": "价格仅供预估参考，实际金额以餐厅账单为准。",
-		"unpriced_note": "时价菜品在有人填写餐厅实际收费前按 0 计算。",
+		"unpriced_note": "尚未定价的时价菜品未计入，标有“起”的总额可能会更高。",
+		"from_amount": "{{amount}} 起",
 		"shared": "共享",
 		"personal": "个人",
 		"free_badge": "免费",
@@ -763,6 +764,7 @@
 			"category": "分类",
 			"price": "价格",
 			"seasonal": "时价",
+			"seasonal_price_hint": "餐厅定价前请留空，在此之前总额会显示“起”。",
 			"available": "可购买",
 			"recommended": "推荐",
 			"calculated": "计入账单",

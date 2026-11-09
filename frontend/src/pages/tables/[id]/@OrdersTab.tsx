@@ -25,7 +25,8 @@ import { OrderDishGroup } from './@OrderDishGroup'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
-import { billingCurrency } from '@/utils/money'
+import { billingCurrency, hasUnpriced } from '@/utils/money'
+import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 
 interface OrdersTabProps {
@@ -156,6 +157,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 								locked={stage !== 'open'}
 								subtotal={linesTotal(preLines)}
 								currency={currency}
+								partial={hasUnpriced(preLines)}
 							>
 								{renderLines(preLines)}
 							</OrderRoundSection>
@@ -165,6 +167,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 							locked={stage === 'finalized'}
 							subtotal={linesTotal(dinnerLines)}
 							currency={currency}
+							partial={hasUnpriced(dinnerLines)}
 						>
 							{dinnerLines.length > 0 ? (
 								renderLines(dinnerLines)
@@ -184,7 +187,11 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 					<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
 						<span>{t('orders.total')}</span>
 						<span>
-							{total.toFixed(2)} {currency}
+							<TotalAmount
+								amount={total}
+								currency={currency}
+								partial={hasUnpriced(orders)}
+							/>
 						</span>
 					</div>
 					<PriceEstimateNote lines={orders} />

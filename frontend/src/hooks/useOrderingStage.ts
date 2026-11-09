@@ -37,8 +37,8 @@ export function useOrderingStage() {
 		canSplit: !finalized,
 		canChangeItems: (order: Pick<OrderResponseDto, 'round'>) =>
 			editing ? !finalized : roundOpen(order),
-		canEditPrice: (order: Pick<OrderResponseDto, 'round' | 'isSeasonal'>) =>
-			editing || order.isSeasonal
+		canEditPrice: (order: Pick<OrderResponseDto, 'round'>) =>
+			editing
 				? !finalized
 				: order.round === 'dinner' &&
 					stage === 'dinner' &&

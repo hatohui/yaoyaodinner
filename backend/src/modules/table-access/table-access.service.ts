@@ -61,11 +61,7 @@ export class TableAccessService {
     );
   }
 
-  /**
-   * Splits stay editable; items and prices only while their round is open.
-   * Seasonal prices are only known at the restaurant, so they stay editable
-   * until the bill is finalized.
-   */
+  /** Splits stay editable; items and prices only while their round is open. */
   async forOrderChange(
     orderId: string,
     headers: Headers,
@@ -73,12 +69,7 @@ export class TableAccessService {
   ) {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      select: {
-        tableId: true,
-        eventId: true,
-        round: true,
-        variant: { select: { isSeasonal: true } },
-      },
+      select: { tableId: true, eventId: true, round: true },
     });
     if (!order) throw new NotFoundException('Order not found');
     await this.forTable(order.tableId, headers);
@@ -88,12 +79,6 @@ export class TableAccessService {
     const stage = await this.events.stageOf(
       order.eventId ?? (await this.tableEventId(order.tableId)),
     );
-    if (change.price && !change.items && order.variant.isSeasonal) {
-      if (stage === 'finalized') {
-        throw new ForbiddenException('These orders are locked');
-      }
-      return;
-    }
     const roundOpen = order.round === 'pre' ? stage === 'open' : stage === 'dinner';
     if (!roundOpen) throw new ForbiddenException('These orders are locked');
 

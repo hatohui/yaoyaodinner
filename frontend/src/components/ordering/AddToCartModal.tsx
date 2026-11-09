@@ -158,7 +158,7 @@ export function AddToCartModal({
 												)}
 											>
 												{v.label ? `${v.label} - ` : ''}
-												{v.isSeasonal || !v.price || v.price <= 0
+												{!v.price || v.price <= 0
 													? t('menu.seasonal_price')
 													: `${v.price} ${v.currency}`}
 											</button>

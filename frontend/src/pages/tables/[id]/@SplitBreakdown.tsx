@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react'
 import type { OrderResponseDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
+import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { awaitingPrice } from '@/utils/money'
 import { cn } from '@/utils/shadcn'
 
@@ -11,6 +12,7 @@ export interface SplitRound {
 	label: string
 	items: OrderResponseDto[]
 	subtotal: number
+	partial: boolean
 }
 
 interface SplitBreakdownProps {
@@ -46,7 +48,11 @@ export function SplitBreakdown({
 					<div className='flex items-center justify-between gap-2 px-1.5 pt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 						<span>{r.label}</span>
 						<span className='tabular-nums'>
-							{r.subtotal.toFixed(2)} {currency}
+							<TotalAmount
+								amount={r.subtotal}
+								currency={currency}
+								partial={r.partial}
+							/>
 						</span>
 					</div>
 					<ul className='flex flex-col gap-1'>

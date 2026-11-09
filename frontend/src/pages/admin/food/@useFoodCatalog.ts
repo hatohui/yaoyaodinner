@@ -94,12 +94,11 @@ export function useFoodCatalog() {
 	const foods: FoodGridRow[] = React.useMemo(
 		() =>
 			(data?.foods ?? []).map(f => {
-				const isSeasonal = f.variants[0]?.isSeasonal ?? false
 				return {
 					...f,
-					price: isSeasonal ? null : (f.variants[0]?.price ?? null),
+					price: f.variants[0]?.price ?? null,
 					currency: f.variants[0]?.currency ?? null,
-					isSeasonal,
+					isSeasonal: f.variants[0]?.isSeasonal ?? false,
 					variantId: f.variants[0]?.id ?? null,
 				}
 			}),
@@ -248,7 +247,7 @@ export function useFoodCatalog() {
 					variants: [
 						{
 							label: t('admin.food.default_variant_label'),
-							price: isSeasonal ? null : price,
+							price,
 							isSeasonal,
 						},
 					],
@@ -290,11 +289,9 @@ export function useFoodCatalog() {
 						currency?: string
 						isSeasonal?: boolean
 					} = {}
-					if (prev.isSeasonal !== next.isSeasonal) {
+					if (prev.isSeasonal !== next.isSeasonal)
 						variantPatch.isSeasonal = next.isSeasonal
-						if (next.isSeasonal) variantPatch.price = null
-					}
-					if (!next.isSeasonal && prev.price !== next.price) {
+					if (prev.price !== next.price) {
 						variantPatch.price = next.price !== null ? Number(next.price) : null
 					}
 					if (prev.currency !== next.currency && next.currency)
