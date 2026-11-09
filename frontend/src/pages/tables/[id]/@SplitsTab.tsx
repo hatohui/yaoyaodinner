@@ -22,7 +22,8 @@ import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { SPLIT_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { localStorage } from '@/utils/localstorage'
-import { allocateCents, billingCurrency } from '@/utils/money'
+import { allocateCents, awaitingPrice, billingCurrency } from '@/utils/money'
+import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 import { cn } from '@/utils/shadcn'
 import { TabEmptyState } from './@TabEmptyState'
 import { SplitsSkeleton } from './@Skeletons'
@@ -70,10 +71,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 	const activePreset = presets.find(p => p.isActive)
 	const flatPrice = activePreset?.price ?? 0
 	const flatShare = flatPrice / Math.max(people.length, 1)
-	const currency = billingCurrency([
-		...orders,
-		...(activePreset?.items ?? []),
-	])
+	const currency = billingCurrency([...orders, ...(activePreset?.items ?? [])])
 
 	const lineShare = (order: OrderResponseDto) => {
 		const lineTotal = order.price * order.quantity
@@ -261,6 +259,8 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 				</div>
 			)}
 
+			<PriceEstimateNote lines={orders} className='mt-3 px-1' />
+
 			<Dialog
 				open={selectedOrder !== null}
 				onOpenChange={open => !open && setSelectedOrder(null)}
@@ -301,11 +301,9 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 										{t('split.your_share')}
 									</span>
 									<span className='flex items-center gap-1.5 font-semibold tabular-nums text-foreground'>
-										{(selectedOrder.shouldCalculate
-											? lineShare(selectedOrder)
-											: 0
-										).toFixed(2)}{' '}
-										{currency}
+										{awaitingPrice(selectedOrder)
+											? t('menu.seasonal_price')
+											: `${(selectedOrder.shouldCalculate ? lineShare(selectedOrder) : 0).toFixed(2)} ${currency}`}
 										{!selectedOrder.shouldCalculate && (
 											<Badge className='rounded-full border-border bg-muted px-1.5 py-0 text-[10px] text-muted-foreground'>
 												{t('split.free_badge')}

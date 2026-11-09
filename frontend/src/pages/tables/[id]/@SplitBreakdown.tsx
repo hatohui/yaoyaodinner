@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react'
 import type { OrderResponseDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
+import { awaitingPrice } from '@/utils/money'
 import { cn } from '@/utils/shadcn'
 
 export interface SplitRound {
@@ -86,8 +87,9 @@ export function SplitBreakdown({
 												: 'text-muted-foreground'
 										)}
 									>
-										{(o.shouldCalculate ? lineShare(o) : 0).toFixed(2)}{' '}
-										{currency}
+										{awaitingPrice(o)
+											? t('menu.seasonal_price')
+											: `${(o.shouldCalculate ? lineShare(o) : 0).toFixed(2)} ${currency}`}
 									</span>
 									<ChevronRight className='size-4 shrink-0 text-muted-foreground/60' />
 								</button>

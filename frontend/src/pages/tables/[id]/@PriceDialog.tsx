@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { OrderResponseDto } from '@/api/model'
+import { awaitingPrice } from '@/utils/money'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -18,13 +19,13 @@ interface PriceDialogProps {
 	onSave: (price: number) => void
 }
 
-/** The restaurant's bill can differ from the menu, so dinner prices can be corrected. */
+/** The restaurant's bill can differ from the menu, so dinner and seasonal prices can be noted. */
 export function PriceDialog({ order, onOpenChange, onSave }: PriceDialogProps) {
 	const { t } = useTranslation()
 	const [draft, setDraft] = useState('')
 
 	useEffect(() => {
-		if (order) setDraft(String(order.price))
+		if (order) setDraft(awaitingPrice(order) ? '' : String(order.price))
 	}, [order])
 
 	const price = Number(draft)

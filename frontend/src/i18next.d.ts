@@ -316,6 +316,8 @@ declare module 'react-i18next' {
 					finalized_body: string
 				}
 				orders: {
+					estimate_note: string
+					unpriced_note: string
 					round_pre: string
 					round_dinner: string
 					round_dinner_empty: string

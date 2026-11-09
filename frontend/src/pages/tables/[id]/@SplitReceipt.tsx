@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { OrderResponseDto } from '@/api/model'
 import { groupOrders } from '@/components/ordering/groupOrders'
+import { awaitingPrice } from '@/utils/money'
 import { cn } from '@/utils/shadcn'
 
 interface SplitReceiptProps {
@@ -52,9 +53,11 @@ export function SplitReceipt({
 							{line.variantLabel && ` · ${line.variantLabel}`}
 						</span>
 						<span className='shrink-0 tabular-nums'>
-							{line.shouldCalculate
-								? (line.price * line.quantity).toFixed(2)
-								: t('split.free_badge')}
+							{!line.shouldCalculate
+								? t('split.free_badge')
+								: awaitingPrice(line)
+									? t('menu.seasonal_price')
+									: (line.price * line.quantity).toFixed(2)}
 						</span>
 					</li>
 				))}

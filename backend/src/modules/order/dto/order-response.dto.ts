@@ -22,6 +22,11 @@ export class OrderResponseDto {
       'Whether this order counts toward table/split totals. False for joke/gag menu items.',
   })
   shouldCalculate: boolean;
+  @ApiProperty({
+    description:
+      'Seasonal dish: the menu has no fixed price, so guests can note what the restaurant charged.',
+  })
+  isSeasonal: boolean;
   @ApiProperty({ type: [OrderSplitDto] }) splits: OrderSplitDto[];
   @ApiProperty({
     enum: ['pre', 'dinner'],

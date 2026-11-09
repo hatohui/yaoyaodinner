@@ -26,6 +26,7 @@ import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { billingCurrency } from '@/utils/money'
+import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 
 interface OrdersTabProps {
 	table: TableDto
@@ -179,12 +180,15 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 				))}
 
 			{orders.length > 0 && (
-				<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
-					<span>{t('orders.total')}</span>
-					<span>
-						{total.toFixed(2)} {currency}
-					</span>
-				</div>
+				<>
+					<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
+						<span>{t('orders.total')}</span>
+						<span>
+							{total.toFixed(2)} {currency}
+						</span>
+					</div>
+					<PriceEstimateNote lines={orders} />
+				</>
 			)}
 
 			<SplitPickerModal

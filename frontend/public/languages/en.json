@@ -435,6 +435,8 @@
 		"finalized_body": "Totals are final and can't be changed."
 	},
 	"orders": {
+		"estimate_note": "Prices are estimates to help you plan. The restaurant's bill is what you actually pay.",
+		"unpriced_note": "Seasonal dishes count as 0 until someone adds the price the restaurant charged.",
 		"shared": "Shared",
 		"personal": "Personal",
 		"free_badge": "Free",

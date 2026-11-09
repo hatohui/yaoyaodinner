@@ -1,9 +1,15 @@
 import { DEFAULT_CURRENCY } from '@/common/constants'
 
-interface Priced {
+export interface Priced {
 	currency?: string | null
 	shouldCalculate?: boolean
+	price?: number | null
+	priceEdited?: boolean
 }
+
+/** Seasonal dishes have no menu price, so they count as nothing until someone notes one. */
+export const awaitingPrice = (line: Priced) =>
+	line.shouldCalculate !== false && !line.priceEdited && (line.price ?? 0) <= 0
 
 /**
  * The currency totals are billed in. Free joke items can carry their own unit

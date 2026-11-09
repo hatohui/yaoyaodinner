@@ -51,6 +51,7 @@ export class OrderService {
       foodImageUrl: order.variant.food.imageUrl,
       variantLabel: order.variant.translations[0]?.label ?? "",
       shouldCalculate: order.variant.food.shouldCalculate,
+      isSeasonal: order.variant.isSeasonal,
       splits: order.splits.map((s) => ({ personId: s.personId })),
       round: order.round,
       priceEdited: order.priceEdited,

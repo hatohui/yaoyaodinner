@@ -25,6 +25,8 @@ export interface OrderResponseDto {
   foodImageUrl: string | null;
   /** Whether this order counts toward table/split totals. False for joke/gag menu items. */
   shouldCalculate: boolean;
+  /** Seasonal dish: the menu has no fixed price, so guests can note what the restaurant charged. */
+  isSeasonal: boolean;
   splits: OrderSplitDto[];
   /** Pre-ordered, or added during the dinner */
   round: OrderRound;

@@ -435,6 +435,8 @@
 		"finalized_body": "Tổng tiền là cuối cùng và không thể thay đổi."
 	},
 	"orders": {
+		"estimate_note": "Giá chỉ mang tính ước tính để bạn dự trù. Hóa đơn của nhà hàng mới là số tiền thực tế phải trả.",
+		"unpriced_note": "Món theo mùa được tính là 0 cho đến khi có người nhập giá nhà hàng tính.",
 		"shared": "Chia sẻ",
 		"personal": "Cá nhân",
 		"free_badge": "Miễn phí",

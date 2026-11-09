@@ -435,6 +435,8 @@
 		"finalized_body": "金额已最终确定，无法再修改。"
 	},
 	"orders": {
+		"estimate_note": "价格仅供预估参考，实际金额以餐厅账单为准。",
+		"unpriced_note": "时价菜品在有人填写餐厅实际收费前按 0 计算。",
 		"shared": "共享",
 		"personal": "个人",
 		"free_badge": "免费",

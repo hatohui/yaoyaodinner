@@ -3,6 +3,7 @@ import type { PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { Button } from '@/components/ui/button'
 import { CartLine } from './CartLine'
+import { PriceEstimateNote } from './PriceEstimateNote'
 import type { CartLine as CartLineData } from '@/hooks/useOrderCart'
 
 interface CartPanelProps {
@@ -91,6 +92,7 @@ export function CartPanel({
 					>
 						{isPlacing ? t('orders.placing') : t('orders.place_order')}
 					</Button>
+					<PriceEstimateNote lines={lines} />
 				</div>
 			)}
 		</div>
