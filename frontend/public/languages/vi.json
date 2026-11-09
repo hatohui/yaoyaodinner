@@ -876,7 +876,8 @@
 			"reopen_body": "Thao tác này mở khóa sự kiện để chỉnh sửa đơn hàng và chia tiền trước khi chốt sổ lại. Nhập mật khẩu chủ sở hữu để xác nhận.",
 			"updated": "Đã cập nhật đặt món",
 			"open_title": "Mở đặt trước?",
-			"open_body": "Khách sẽ có thể xem thực đơn và gửi món đặt trước cho bàn của mình."
+			"open_body": "Khách sẽ có thể xem thực đơn và gửi món đặt trước cho bàn của mình.",
+			"needs_menu": "Bật Thực đơn trước khi mở đặt món trước"
 		},
 		"seasonal": {
 			"title": "Giá theo mùa",

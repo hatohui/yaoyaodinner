@@ -876,7 +876,8 @@
 			"reopen_body": "This unlocks the event so orders and splits can be adjusted before re-finalizing. Enter the owner passphrase to confirm.",
 			"updated": "Ordering updated",
 			"open_title": "Open pre-orders?",
-			"open_body": "Guests will be able to browse the menu and submit pre-orders for their tables."
+			"open_body": "Guests will be able to browse the menu and submit pre-orders for their tables.",
+			"needs_menu": "Enable Menu before opening pre-orders"
 		},
 		"seasonal": {
 			"title": "Seasonal prices",

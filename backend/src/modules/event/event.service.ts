@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -136,6 +137,12 @@ export class EventService {
     if (!event) throw new NotFoundException('Event not found');
     if (event.orderingStage === 'finalized' && stage !== 'finalized') {
       this.verifyOwnerPassphrase(passphrase);
+    }
+    if (
+      stage === 'open' &&
+      !(await this.config.get<boolean>(CONFIG_KEYS.featureMenu))
+    ) {
+      throw new BadRequestException('Enable the menu before opening pre-orders');
     }
     const updated = await prisma.event.update({
       where: { id },

@@ -426,6 +426,7 @@ declare module 'react-i18next' {
 						stage_finalized: string
 						hint_auto_confirm: string
 						hint_dinner: string
+						needs_menu: string
 						open: string
 						confirm: string
 						finalize: string
@@ -476,6 +477,7 @@ declare module 'react-i18next' {
 						stage_finalized: string
 						hint_auto_confirm: string
 						hint_dinner: string
+						needs_menu: string
 						open: string
 						pause: string
 						pause_title: string

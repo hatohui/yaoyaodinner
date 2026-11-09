@@ -11,6 +11,8 @@ import type { EventSummaryDto, StoredOrderingStage } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { NeedsMenuTooltip } from '@/components/common/NeedsMenuTooltip'
+import { useConfig } from '@/hooks/useConfig'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { formatEventTime } from '@/utils/eventTime'
@@ -33,6 +35,7 @@ export function OrderingStageControl({
 	const { t, i18n } = useTranslation()
 	const { setStage, settingStage } = useAdminEvents()
 	const status = useOrderingStage()
+	const { menu } = useConfig()
 	const [pending, setPending] = useState<PendingStageAction>(null)
 
 	// only the live event's deadline and dinner time move it along on its own
@@ -95,16 +98,18 @@ export function OrderingStageControl({
 					}
 				>
 					{stored === 'closed' && (
-						<Button
-							type='button'
-							size='sm'
-							disabled={settingStage}
-							onClick={() => confirm('open')}
-							className='h-9 w-full gap-1.5 rounded-xl'
-						>
-							<ShoppingCart className='size-4' />
-							{t('admin.ordering.open')}
-						</Button>
+						<NeedsMenuTooltip active={!menu}>
+							<Button
+								type='button'
+								size='sm'
+								disabled={settingStage || !menu}
+								onClick={() => confirm('open')}
+								className='h-9 w-full gap-1.5 rounded-xl'
+							>
+								<ShoppingCart className='size-4' />
+								{t('admin.ordering.open')}
+							</Button>
+						</NeedsMenuTooltip>
 					)}
 					{stored === 'open' && (
 						<Button
@@ -132,17 +137,19 @@ export function OrderingStageControl({
 						</Button>
 					)}
 					{stored === 'confirmed' && (
-						<Button
-							type='button'
-							size='sm'
-							variant='outline'
-							disabled={settingStage}
-							onClick={() => setPending('reopen_orders')}
-							className='h-9 w-full gap-1.5 rounded-xl'
-						>
-							<RotateCcw className='size-4' />
-							{t('admin.ordering.reopen_orders')}
-						</Button>
+						<NeedsMenuTooltip active={!menu}>
+							<Button
+								type='button'
+								size='sm'
+								variant='outline'
+								disabled={settingStage || !menu}
+								onClick={() => setPending('reopen_orders')}
+								className='h-9 w-full gap-1.5 rounded-xl'
+							>
+								<RotateCcw className='size-4' />
+								{t('admin.ordering.reopen_orders')}
+							</Button>
+						</NeedsMenuTooltip>
 					)}
 					{stored === 'finalized' && (
 						<Button

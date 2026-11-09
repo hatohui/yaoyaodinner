@@ -37,6 +37,7 @@ import { useToast } from '@/hooks/useToast'
 import { cn } from '@/utils/shadcn'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { BannerDialog } from '@/components/common/BannerDialog'
+import { NeedsMenuTooltip } from '@/components/common/NeedsMenuTooltip'
 import {
 	useUpdateConfig,
 	getGetConfigQueryKey,
@@ -173,16 +174,18 @@ export function AdminMenu() {
 							</div>
 
 							{stage === 'closed' && (
-								<DropdownMenuItem
-									disabled={settingStage}
-									onSelect={e => {
-										e.preventDefault()
-										setTimeout(() => setPendingStage('open'), 0)
-									}}
-								>
-									<ShoppingCart className='size-4' />
-									{t('admin.ordering.open')}…
-								</DropdownMenuItem>
+								<NeedsMenuTooltip active={!menu}>
+									<DropdownMenuItem
+										disabled={settingStage || !menu}
+										onSelect={e => {
+											e.preventDefault()
+											setTimeout(() => setPendingStage('open'), 0)
+										}}
+									>
+										<ShoppingCart className='size-4' />
+										{t('admin.ordering.open')}…
+									</DropdownMenuItem>
+								</NeedsMenuTooltip>
 							)}
 
 							{stage === 'open' && (
@@ -211,16 +214,18 @@ export function AdminMenu() {
 							)}
 
 							{stage === 'confirmed' && (
-								<DropdownMenuItem
-									disabled={settingStage}
-									onSelect={e => {
-										e.preventDefault()
-										setTimeout(() => setPendingStage('reopen_orders'), 0)
-									}}
-								>
-									<RotateCcw className='size-4' />
-									{t('admin.ordering.reopen_orders')}…
-								</DropdownMenuItem>
+								<NeedsMenuTooltip active={!menu}>
+									<DropdownMenuItem
+										disabled={settingStage || !menu}
+										onSelect={e => {
+											e.preventDefault()
+											setTimeout(() => setPendingStage('reopen_orders'), 0)
+										}}
+									>
+										<RotateCcw className='size-4' />
+										{t('admin.ordering.reopen_orders')}…
+									</DropdownMenuItem>
+								</NeedsMenuTooltip>
 							)}
 
 							{stage !== 'closed' && stage !== 'finalized' && (
