@@ -880,7 +880,6 @@
 		},
 		"seasonal": {
 			"title": "Seasonal prices",
-			"hint": "Prices for this event only. Leave empty if not known yet.",
 			"saved": "Price saved",
 			"price_for": "Price for {{name}}",
 			"empty": "No seasonal dishes. Mark a food as seasonal in Food."

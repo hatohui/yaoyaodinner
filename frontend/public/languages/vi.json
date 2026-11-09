@@ -880,7 +880,6 @@
 		},
 		"seasonal": {
 			"title": "Giá theo mùa",
-			"hint": "Chỉ áp dụng cho sự kiện này. Để trống nếu chưa biết.",
 			"saved": "Đã lưu giá",
 			"price_for": "Giá của {{name}}",
 			"empty": "Chưa có món theo mùa. Đánh dấu món là theo mùa trong mục Món ăn."

@@ -16,14 +16,9 @@ export default function AdminSeasonalPricesPage() {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<div className='flex flex-col gap-1'>
-				<h1 className='text-xl font-bold text-foreground'>
-					{t('admin.seasonal.title')}
-				</h1>
-				<p className='text-sm text-muted-foreground'>
-					{t('admin.seasonal.hint')}
-				</p>
-			</div>
+			<h1 className='text-xl font-bold text-foreground'>
+				{t('admin.seasonal.title')}
+			</h1>
 
 			{isLoading ? (
 				<div className='flex justify-center py-16'>

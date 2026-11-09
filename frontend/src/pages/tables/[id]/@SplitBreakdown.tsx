@@ -32,7 +32,6 @@ export function SplitBreakdown({
 	onSelect,
 }: SplitBreakdownProps) {
 	const { t } = useTranslation()
-	// with one round and no set menu, the subtotal is just the person's total again
 	const showSubtotals = rounds.length > 1 || flatShare > 0
 
 	return (

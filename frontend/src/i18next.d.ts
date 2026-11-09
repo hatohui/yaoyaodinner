@@ -524,7 +524,6 @@ declare module 'react-i18next' {
 					}
 					seasonal: {
 						title: string
-						hint: string
 						saved: string
 						price_for: string
 						empty: string
