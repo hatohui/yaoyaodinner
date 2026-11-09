@@ -527,6 +527,7 @@ declare module 'react-i18next' {
 						saved: string
 						price_for: string
 						empty: string
+						not_set: string
 					}
 					dashboard: {
 						title: string

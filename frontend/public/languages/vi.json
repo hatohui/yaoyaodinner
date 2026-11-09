@@ -882,7 +882,8 @@
 			"title": "Giá theo mùa",
 			"saved": "Đã lưu giá",
 			"price_for": "Giá của {{name}}",
-			"empty": "Chưa có món theo mùa. Đánh dấu món là theo mùa trong mục Món ăn."
+			"empty": "Chưa có món theo mùa. Đánh dấu món là theo mùa trong mục Món ăn.",
+			"not_set": "Chưa đặt"
 		}
 	},
 	"faq": {

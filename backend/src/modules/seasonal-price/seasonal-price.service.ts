@@ -12,13 +12,21 @@ export class SeasonalPriceService {
         eventPrices: { where: { eventId } },
       },
     });
+    const ordered = await prisma.order.groupBy({
+      by: ['variantId'],
+      where: { eventId, variantId: { in: variants.map((v) => v.id) } },
+      _sum: { quantity: true },
+    });
+    const counts = new Map(ordered.map((o) => [o.variantId, o._sum.quantity ?? 0]));
     return variants
       .map((v) => ({
         variantId: v.id,
         foodId: v.foodId,
         foodName: v.food.translations[0]?.name ?? '',
+        imageUrl: v.food.imageUrl,
         variantLabel: v.translations[0]?.label ?? '',
         currency: v.currency,
+        orderedCount: counts.get(v.id) ?? 0,
         price: v.eventPrices[0] ? Number(v.eventPrices[0].price) : null,
       }))
       .sort((a, b) => a.foodName.localeCompare(b.foodName));

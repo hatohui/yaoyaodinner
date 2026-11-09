@@ -5,8 +5,11 @@ export class SeasonalPriceDto {
   @ApiProperty() variantId: string;
   @ApiProperty() foodId: string;
   @ApiProperty() foodName: string;
+  @ApiProperty({ nullable: true, type: String }) imageUrl: string | null;
   @ApiProperty() variantLabel: string;
   @ApiProperty() currency: string;
+  @ApiProperty({ description: 'Quantity ordered at this event' })
+  orderedCount: number;
   @ApiProperty({
     nullable: true,
     type: Number,

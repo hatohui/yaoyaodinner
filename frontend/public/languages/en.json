@@ -882,7 +882,8 @@
 			"title": "Seasonal prices",
 			"saved": "Price saved",
 			"price_for": "Price for {{name}}",
-			"empty": "No seasonal dishes. Mark a food as seasonal in Food."
+			"empty": "No seasonal dishes. Mark a food as seasonal in Food.",
+			"not_set": "Not set"
 		}
 	},
 	"faq": {

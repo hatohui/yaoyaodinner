@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next'
 import { useGetSeasonalPrices } from '@/api/seasonal-prices/seasonal-prices'
 import type { SeasonalPriceDto } from '@/api/model'
-import { Card } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
-import { SeasonalPriceRow } from './@SeasonalPriceRow'
+import { SeasonalPriceCard } from './@SeasonalPriceCard'
 
 export default function AdminSeasonalPricesPage() {
 	const { t, i18n } = useTranslation()
@@ -29,18 +28,16 @@ export default function AdminSeasonalPricesPage() {
 					{t('admin.seasonal.empty')}
 				</p>
 			) : (
-				<Card className='gap-0 overflow-hidden rounded-2xl p-0'>
-					<ul className='flex flex-col divide-y divide-border/60'>
-						{dishes.map(dish => (
-							<SeasonalPriceRow
-								key={dish.variantId}
-								eventId={eventId}
-								dish={dish}
-								lang={i18n.language}
-							/>
-						))}
-					</ul>
-				</Card>
+				<ul className='grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+					{dishes.map(dish => (
+						<SeasonalPriceCard
+							key={dish.variantId}
+							eventId={eventId}
+							dish={dish}
+							lang={i18n.language}
+						/>
+					))}
+				</ul>
 			)}
 		</div>
 	)

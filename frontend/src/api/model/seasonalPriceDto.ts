@@ -10,8 +10,12 @@ export interface SeasonalPriceDto {
   variantId: string;
   foodId: string;
   foodName: string;
+  /** @nullable */
+  imageUrl: string | null;
   variantLabel: string;
   currency: string;
+  /** Quantity ordered at this event */
+  orderedCount: number;
   /**
      * Price at this event; null until the admin sets one
      * @nullable
