@@ -24,6 +24,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditModeBanner } from './@EditModeBanner'
+import { MenuSeasonalPrices } from './@MenuSeasonalPrices'
 import { useMenuAdmin } from './@useMenuAdmin'
 import type {
 	FoodItemDto,
@@ -41,8 +42,15 @@ export default function MenuPage() {
 	const { isAdmin } = useIsAdmin()
 	const { canAdd } = useOrderingStage()
 	const canOrder = (Boolean(pin) || isAdmin) && canAdd
-	const { editing, exitEditMode, deleteFood, setAvailable, setImage } =
-		useMenuAdmin()
+	const {
+		editing,
+		exitEditMode,
+		deleteFood,
+		setAvailable,
+		setImage,
+		eventId,
+		seasonalByFood,
+	} = useMenuAdmin()
 	const [pendingDelete, setPendingDelete] = useState<FoodItemDto | null>(null)
 
 	const {
@@ -212,6 +220,14 @@ export default function MenuPage() {
 											}
 											onImageChange={
 												editing ? key => setImage(food.id, key) : undefined
+											}
+											footer={
+												editing && seasonalByFood.has(food.id) ? (
+													<MenuSeasonalPrices
+														eventId={eventId}
+														dishes={seasonalByFood.get(food.id)!}
+													/>
+												) : undefined
 											}
 										/>
 									)

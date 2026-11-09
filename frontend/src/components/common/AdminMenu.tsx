@@ -6,6 +6,7 @@ import {
 	CheckCircle2,
 	Copy,
 	LayoutDashboard,
+	Leaf,
 	Lock,
 	Map,
 	Megaphone,
@@ -349,6 +350,12 @@ export function AdminMenu() {
 						<Link to='/admin'>
 							<LayoutDashboard className='size-4' />
 							{t('admin.nav.dashboard')}
+						</Link>
+					</DropdownMenuItem>
+					<DropdownMenuItem asChild>
+						<Link to='/admin/seasonal'>
+							<Leaf className='size-4' />
+							{t('admin.nav.seasonal')}
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem asChild>

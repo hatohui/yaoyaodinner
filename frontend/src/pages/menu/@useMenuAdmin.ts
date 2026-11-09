@@ -7,15 +7,37 @@ import {
 	getGetFoodsQueryKey,
 	getGetFoodsForAdminQueryKey,
 } from '@/api/foods/foods'
-import type { FoodItemDto, GetFoodsResponseDto } from '@/api/model'
+import type {
+	EventSummaryDto,
+	FoodItemDto,
+	GetFoodsResponseDto,
+	SeasonalPriceDto,
+} from '@/api/model'
+import { useGetActiveEvent } from '@/api/events/events'
+import { useGetSeasonalPrices } from '@/api/seasonal-prices/seasonal-prices'
 import { useToast } from '@/hooks/useToast'
 import { useEditMode } from '@/hooks/useEditMode'
 
 export function useMenuAdmin() {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
 	const { editing, toggle } = useEditMode()
+	const { data: activeEvent } = useGetActiveEvent<EventSummaryDto | null>({
+		query: { enabled: editing },
+	})
+	const eventId = activeEvent?.id ?? ''
+	const { data: seasonal = [] } = useGetSeasonalPrices<SeasonalPriceDto[]>(
+		eventId,
+		{ lang: i18n.language },
+		{ query: { enabled: editing && Boolean(eventId) } }
+	)
+	const seasonalByFood = new Map<string, SeasonalPriceDto[]>()
+	for (const dish of seasonal)
+		seasonalByFood.set(dish.foodId, [
+			...(seasonalByFood.get(dish.foodId) ?? []),
+			dish,
+		])
 
 	const invalidate = () => {
 		qc.invalidateQueries({ queryKey: getGetFoodsQueryKey() })
@@ -88,5 +110,7 @@ export function useMenuAdmin() {
 			update({ id, data: { isAvailable } }),
 		setImage: (id: string, imageUrl: string) =>
 			update({ id, data: { imageUrl } }),
+		eventId,
+		seasonalByFood,
 	}
 }

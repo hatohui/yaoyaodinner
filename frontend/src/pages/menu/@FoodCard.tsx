@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Check, Eye, EyeOff, Trash2 } from 'lucide-react'
@@ -23,6 +23,7 @@ interface FoodCardProps {
 	onToggleAvailable?: () => void
 	onDelete?: () => void
 	onImageChange?: (key: string) => void
+	footer?: ReactNode
 }
 
 export function FoodCard({
@@ -36,6 +37,7 @@ export function FoodCard({
 	onToggleAvailable,
 	onDelete,
 	onImageChange,
+	footer,
 }: FoodCardProps) {
 	const { t } = useTranslation()
 	const prefetchFood = usePrefetchFood()
@@ -188,6 +190,7 @@ export function FoodCard({
 					)}
 				</div>
 			</Link>
+			{footer}
 		</div>
 	)
 }

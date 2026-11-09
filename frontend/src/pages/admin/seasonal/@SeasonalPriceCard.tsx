@@ -1,58 +1,16 @@
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from '@tanstack/react-query'
-import {
-	getGetSeasonalPricesQueryKey,
-	useSetSeasonalPrice,
-} from '@/api/seasonal-prices/seasonal-prices'
-import { getGetOrdersQueryKey } from '@/api/orders/orders'
-import type { SeasonalPriceDto } from '@/api/model'
 import { UtensilsCrossed } from 'lucide-react'
+import type { SeasonalPriceDto } from '@/api/model'
+import { SeasonalPriceInput } from '@/components/common/SeasonalPriceInput'
 import { StoredImage } from '@/components/common/StoredImage'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/utils/shadcn'
-import { useToast } from '@/hooks/useToast'
 
 interface SeasonalPriceCardProps {
 	eventId: string
 	dish: SeasonalPriceDto
-	lang: string
 }
 
-export function SeasonalPriceCard({
-	eventId,
-	dish,
-	lang,
-}: SeasonalPriceCardProps) {
+export function SeasonalPriceCard({ eventId, dish }: SeasonalPriceCardProps) {
 	const { t } = useTranslation()
-	const toast = useToast()
-	const qc = useQueryClient()
-	const saved = dish.price === null ? '' : String(dish.price)
-	const [draft, setDraft] = useState(saved)
-	const { mutate, isPending } = useSetSeasonalPrice({
-		mutation: {
-			onSuccess: () => {
-				qc.invalidateQueries({
-					queryKey: getGetSeasonalPricesQueryKey(eventId, { lang }),
-				})
-				qc.invalidateQueries({ queryKey: getGetOrdersQueryKey() })
-				toast.success(t('admin.seasonal.saved'))
-			},
-			onError: () => setDraft(saved),
-		},
-	})
-
-	useEffect(() => setDraft(saved), [saved])
-
-	const commit = () => {
-		const value = draft.trim()
-		const price = value === '' ? null : Math.round(Number(value) * 100) / 100
-		if (value === saved || (price !== null && !(price >= 0))) {
-			setDraft(saved)
-			return
-		}
-		mutate({ eventId, variantId: dish.variantId, data: { price } })
-	}
 
 	return (
 		<li className='flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card'>
@@ -78,26 +36,9 @@ export function SeasonalPriceCard({
 						</span>
 					</p>
 				</div>
-				<label className='mt-auto flex items-center gap-1.5 text-xs font-medium text-muted-foreground'>
-					<Input
-						type='number'
-						inputMode='decimal'
-						min={0}
-						step='0.01'
-						value={draft}
-						placeholder={t('admin.seasonal.not_set')}
-						disabled={isPending}
-						aria-label={t('admin.seasonal.price_for', { name: dish.foodName })}
-						onChange={e => setDraft(e.target.value)}
-						onBlur={commit}
-						onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
-						className={cn(
-							'h-9 rounded-full text-right font-semibold tabular-nums',
-							draft === '' && 'border-dashed'
-						)}
-					/>
-					{dish.currency}
-				</label>
+				<div className='mt-auto'>
+					<SeasonalPriceInput eventId={eventId} dish={dish} />
+				</div>
 			</div>
 		</li>
 	)

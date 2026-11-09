@@ -34,7 +34,6 @@ export default function AdminSeasonalPricesPage() {
 							key={dish.variantId}
 							eventId={eventId}
 							dish={dish}
-							lang={i18n.language}
 						/>
 					))}
 				</ul>
