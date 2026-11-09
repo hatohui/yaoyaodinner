@@ -168,63 +168,60 @@
 :root {
 	--radius: 0.625rem;
 
-	/* 60% Dominant (Canvas: #e2d8e1 - Yao Yao inspired daytime pastel surface) */
-	--background: oklch(0.893 0.016 328.8);
-	--foreground: oklch(0.2 0.015 292);
-	/* #1d1c23: deep charcoal black body text with enhanced contrast */
+	/* Palette sampled from the Yao Yao sticker: lavender fur #b778be, plum hair
+	   #5e3d62, deep plum outline #361327, hot-pink streak #d01060, peach muzzle
+	   #f6e3d8, gold sparkles #f0d060 */
+	--background: oklch(0.935 0.028 323);
+	--foreground: oklch(0.249 0.063 340);
 
-	/* 30% Secondary (Surfaces: crisp pure white cards popped against #e2d8e1 canvas) */
-	--card: oklch(0.99 0.003 329);
-	--card-foreground: oklch(0.2 0.015 292);
+	--card: oklch(0.993 0.006 323);
+	--card-foreground: oklch(0.249 0.063 340);
 
-	--popover: oklch(0.99 0.003 329);
-	--popover-foreground: oklch(0.2 0.015 292);
+	--popover: oklch(0.993 0.006 323);
+	--popover-foreground: oklch(0.249 0.063 340);
 
-	--control: oklch(0.99 0.003 329);
-	--skeleton: color-mix(in oklch, var(--primary) 24%, transparent);
+	--control: oklch(0.993 0.006 323);
+	--skeleton: color-mix(in oklch, var(--primary) 22%, transparent);
 	--scrim: color-mix(in oklch, var(--foreground) 55%, transparent);
 
-	/* Accent Subtle (Filter pills, soft tags) */
-	--secondary: oklch(0.93 0.025 332);
-	--secondary-foreground: oklch(0.25 0.08 332);
+	--secondary: oklch(0.9 0.05 323);
+	--secondary-foreground: oklch(0.36 0.09 323);
 
-	--muted: oklch(0.87 0.02 329);
-	--muted-foreground: oklch(0.42 0.03 292);
+	--muted: oklch(0.895 0.035 323);
+	--muted-foreground: oklch(0.45 0.06 323);
 
-	--accent: oklch(0.93 0.025 332);
-	--accent-foreground: oklch(0.2 0.015 292);
+	--accent: oklch(0.9 0.05 323);
+	--accent-foreground: oklch(0.249 0.063 340);
 
-	/* High-contrast structural borders cleanly framing the cards */
-	--border: oklch(0.77 0.03 329);
-	--input: oklch(0.77 0.03 329);
+	--border: oklch(0.8 0.055 323);
+	--input: oklch(0.8 0.055 323);
 
-	--sidebar: oklch(0.93 0.015 329);
-	--sidebar-foreground: oklch(0.2 0.015 292);
-	--sidebar-accent: oklch(0.91 0.035 332);
-	--sidebar-accent-foreground: oklch(0.2 0.015 292);
-	--sidebar-border: oklch(0.77 0.03 329);
+	--sidebar: oklch(0.955 0.022 323);
+	--sidebar-foreground: oklch(0.249 0.063 340);
+	--sidebar-accent: oklch(0.9 0.05 323);
+	--sidebar-accent-foreground: oklch(0.249 0.063 340);
+	--sidebar-border: oklch(0.8 0.055 323);
 
-	/* 10% Accent Intent: Purple (#a7389d - Yao Yao's signature purple) */
-	--primary: oklch(0.537 0.186 331.6);
+	/* Fur purple, deepened so white text stays readable */
+	--primary: oklch(0.54 0.15 323);
 	--primary-foreground: oklch(0.99 0 0);
-	--ring: oklch(0.537 0.186 331.6);
-	--sidebar-primary: oklch(0.537 0.186 331.6);
+	--ring: oklch(0.555 0.217 5.8);
+	--sidebar-primary: oklch(0.54 0.15 323);
 	--sidebar-primary-foreground: oklch(0.99 0 0);
-	--sidebar-ring: oklch(0.537 0.186 331.6);
+	--sidebar-ring: oklch(0.555 0.217 5.8);
 
-	/* Semantic System Colors */
 	--destructive: oklch(0.55 0.22 25);
 	--success: oklch(0.55 0.16 145);
-	--success-foreground: oklch(0.99 0.003 329);
+	--success-foreground: oklch(0.99 0.003 323);
 
-	--chart-1: oklch(0.537 0.186 331.6);
-	--chart-2: oklch(0.55 0.12 280);
-	--chart-3: oklch(0.65 0.12 280);
-	--chart-4: oklch(0.3 0.06 280);
-	--chart-5: oklch(0.72 0.16 65);
+	--chart-1: oklch(0.54 0.15 323);
+	--chart-2: oklch(0.555 0.217 5.8);
+	--chart-3: oklch(0.663 0.122 323.3);
+	--chart-4: oklch(0.413 0.073 323);
+	--chart-5: oklch(0.78 0.135 85);
 
-	--selection: oklch(0.85 0.08 312);
-	--selection-foreground: oklch(0.2 0.04 312);
+	--selection: oklch(0.86 0.09 5.8);
+	--selection-foreground: oklch(0.249 0.063 340);
 
 	--bg-paw-opacity: 0.045;
 	--bg-dot: color-mix(in oklch, var(--foreground) 6%, transparent);
