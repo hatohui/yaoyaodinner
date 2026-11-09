@@ -252,6 +252,7 @@
 		"recommended": "แนะนำ",
 		"variant": "ตัวเลือก",
 		"sort_name": "ชื่อ (A–Z)",
+		"sort_name_desc": "ชื่อ (Z–A)",
 		"sort_price": "ราคา (ต่ำไปสูง)",
 		"sort_price_desc": "ราคา (สูงไปต่ำ)",
 		"sort_popular": "ยอดนิยมที่สุด",

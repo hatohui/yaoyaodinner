@@ -252,6 +252,7 @@
 		"recommended": "Recommended",
 		"variant": "Variation",
 		"sort_name": "Name (A–Z)",
+		"sort_name_desc": "Name (Z–A)",
 		"sort_price": "Price (low to high)",
 		"sort_price_desc": "Price (high to low)",
 		"sort_popular": "Most popular",

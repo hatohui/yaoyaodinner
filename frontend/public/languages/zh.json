@@ -252,6 +252,7 @@
 		"recommended": "推荐",
 		"variant": "选项",
 		"sort_name": "名称（A–Z）",
+		"sort_name_desc": "名称（Z–A）",
 		"sort_price": "价格（从低到高）",
 		"sort_price_desc": "价格（从高到低）",
 		"sort_popular": "最受欢迎",

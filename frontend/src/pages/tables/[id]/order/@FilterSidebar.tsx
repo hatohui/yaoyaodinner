@@ -67,6 +67,7 @@ export function FilterSidebar({
 				</SelectTrigger>
 				<SelectContent>
 					<SelectItem value='name'>{t('menu.sort_name')}</SelectItem>
+					<SelectItem value='name_desc'>{t('menu.sort_name_desc')}</SelectItem>
 					<SelectItem value='price'>{t('menu.sort_price')}</SelectItem>
 					<SelectItem value='price_desc'>
 						{t('menu.sort_price_desc')}

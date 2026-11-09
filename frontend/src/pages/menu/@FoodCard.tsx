@@ -173,7 +173,7 @@ export function FoodCard({
 				)}
 				<h3
 					title={food.name}
-					className='truncate text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base'
+					className='line-clamp-2 min-h-[2lh] text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base'
 				>
 					{food.name}
 				</h3>

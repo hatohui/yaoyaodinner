@@ -252,6 +252,7 @@
 		"recommended": "Đề xuất",
 		"variant": "Tùy chọn",
 		"sort_name": "Tên (A–Z)",
+		"sort_name_desc": "Tên (Z–A)",
 		"sort_price": "Giá (thấp đến cao)",
 		"sort_price_desc": "Giá (cao đến thấp)",
 		"sort_popular": "Phổ biến nhất",

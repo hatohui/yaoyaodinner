@@ -251,6 +251,7 @@ declare module 'react-i18next' {
 					popular: string
 					recommended: string
 					sort_name: string
+					sort_name_desc: string
 					sort_price: string
 					sort_price_desc: string
 					sort_popular: string

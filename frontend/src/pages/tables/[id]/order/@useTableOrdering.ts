@@ -14,7 +14,7 @@ import type {
 import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
 import { STALE_TIME_STATIC } from '@/common/constants'
-import type { MenuSort } from '@/utils/searchParams'
+import { toFoodSortQuery, type MenuSort } from '@/utils/searchParams'
 
 export function useTableOrdering() {
 	const { id = '' } = useParams()
@@ -64,8 +64,7 @@ export function useTableOrdering() {
 				page,
 				count,
 				category: category === 'all' ? undefined : category,
-				sortBy: sort === 'price_desc' ? 'price' : sort,
-				sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
+				...toFoodSortQuery(sort),
 				popular: popular || undefined,
 				recommended: recommended || undefined,
 				search: debouncedSearch.trim() || undefined,

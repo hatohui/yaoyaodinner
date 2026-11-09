@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
+import type { GetFoodsSortBy, GetFoodsSortOrder } from '@/api/model'
 
-export type MenuSort = 'name' | 'price' | 'price_desc' | 'popular'
+export type MenuSort = 'name' | 'name_desc' | 'price' | 'price_desc' | 'popular'
+
+export function toFoodSortQuery(sort: MenuSort): {
+	sortBy: GetFoodsSortBy
+	sortOrder: GetFoodsSortOrder
+} {
+	if (sort === 'name_desc') return { sortBy: 'name', sortOrder: 'desc' }
+	if (sort === 'price_desc') return { sortBy: 'price', sortOrder: 'desc' }
+	return { sortBy: sort, sortOrder: 'asc' }
+}
 
 function getResponsiveMenuCount(): number {
 	if (typeof window === 'undefined') return 15
@@ -22,6 +32,7 @@ export interface MenuSearchParams {
 
 const isMenuSort = (value: string | null): value is MenuSort =>
 	value === 'name' ||
+	value === 'name_desc' ||
 	value === 'price' ||
 	value === 'price_desc' ||
 	value === 'popular'

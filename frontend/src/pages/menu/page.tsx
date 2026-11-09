@@ -5,7 +5,7 @@ import { useGetFoods } from '@/api/foods/foods'
 import { useGetCategories } from '@/api/categories/categories'
 import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
-import { useMenuSearchParams } from '@/utils/searchParams'
+import { toFoodSortQuery, useMenuSearchParams } from '@/utils/searchParams'
 import { FilterBar } from './@FilterBar'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FoodCard } from './@FoodCard'
@@ -76,8 +76,7 @@ export default function MenuPage() {
 				page,
 				count,
 				category: category === 'all' ? undefined : category,
-				sortBy: sort === 'price_desc' ? 'price' : sort,
-				sortOrder: sort === 'price_desc' ? 'desc' : 'asc',
+				...toFoodSortQuery(sort),
 				popular: popular || undefined,
 				recommended: recommended || undefined,
 				search: debouncedSearch.trim() || undefined,
