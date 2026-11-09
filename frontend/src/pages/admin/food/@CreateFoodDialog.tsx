@@ -109,21 +109,18 @@ export function CreateFoodDialog({
 						<Switch checked={isSeasonal} onCheckedChange={setIsSeasonal} />
 					</Label>
 
-					<div className='flex flex-col gap-1.5'>
-						<Label htmlFor='food-price'>{t('admin.food.price')}</Label>
-						<Input
-							id='food-price'
-							type='number'
-							value={price}
-							onChange={e => setPrice(e.target.value)}
-							className='rounded-full'
-						/>
-						{isSeasonal && (
-							<p className='m-0 text-xs text-muted-foreground'>
-								{t('admin.food.seasonal_price_hint')}
-							</p>
-						)}
-					</div>
+					{!isSeasonal && (
+						<div className='flex flex-col gap-1.5'>
+							<Label htmlFor='food-price'>{t('admin.food.price')}</Label>
+							<Input
+								id='food-price'
+								type='number'
+								value={price}
+								onChange={e => setPrice(e.target.value)}
+								className='rounded-full'
+							/>
+						</div>
+					)}
 				</div>
 
 				<DialogFooter>
@@ -135,7 +132,7 @@ export function CreateFoodDialog({
 							onCreate(
 								name.trim(),
 								categoryId,
-								isSeasonal && price.trim() === '' ? null : Number(price) || 0,
+								isSeasonal ? null : Number(price) || 0,
 								isSeasonal,
 								imageKey ?? undefined
 							)

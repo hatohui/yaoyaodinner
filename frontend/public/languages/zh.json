@@ -435,8 +435,7 @@
 		"finalized_body": "金额已最终确定，无法再修改。"
 	},
 	"orders": {
-		"estimate_note": "价格仅供预估参考，实际金额以餐厅账单为准。",
-		"unpriced_note": "尚未定价的时价菜品未计入，标有“起”的总额可能会更高。",
+		"estimate_note": "价格仅为预估，实际付款可能有所不同。",
 		"from_amount": "{{amount}} 起",
 		"shared": "共享",
 		"personal": "个人",
@@ -764,7 +763,6 @@
 			"category": "分类",
 			"price": "价格",
 			"seasonal": "时价",
-			"seasonal_price_hint": "餐厅定价前请留空，在此之前总额会显示“起”。",
 			"available": "可购买",
 			"recommended": "推荐",
 			"calculated": "计入账单",
@@ -878,6 +876,12 @@
 			"updated": "点餐状态已更新",
 			"open_title": "开放预订？",
 			"open_body": "客人将可以浏览菜单并为自己的餐桌提交预订。"
+		},
+		"seasonal": {
+			"title": "时价",
+			"hint": "仅适用于本次活动。未知时请留空。",
+			"saved": "价格已保存",
+			"price_for": "{{name}} 的价格"
 		}
 	},
 	"faq": {

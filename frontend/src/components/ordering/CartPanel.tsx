@@ -98,7 +98,7 @@ export function CartPanel({
 					>
 						{isPlacing ? t('orders.placing') : t('orders.place_order')}
 					</Button>
-					<PriceEstimateNote lines={lines} />
+					<PriceEstimateNote />
 				</div>
 			)}
 		</div>

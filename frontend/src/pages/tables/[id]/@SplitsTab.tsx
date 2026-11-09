@@ -286,7 +286,7 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 				</div>
 			)}
 
-			<PriceEstimateNote lines={orders} className='mt-3 px-1' />
+			<PriceEstimateNote className='mt-3 px-1' />
 
 			<Dialog
 				open={selectedOrder !== null}

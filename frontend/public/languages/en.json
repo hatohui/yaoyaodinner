@@ -435,8 +435,7 @@
 		"finalized_body": "Totals are final and can't be changed."
 	},
 	"orders": {
-		"estimate_note": "Prices are estimates to help you plan. The restaurant's bill is what you actually pay.",
-		"unpriced_note": "Seasonal dishes without a price yet aren't included, so totals marked \"From\" may go up.",
+		"estimate_note": "Prices are estimates only. The actual payment may vary.",
 		"from_amount": "From {{amount}}",
 		"shared": "Shared",
 		"personal": "Personal",
@@ -764,7 +763,6 @@
 			"category": "Category",
 			"price": "Price",
 			"seasonal": "Seasonal price",
-			"seasonal_price_hint": "Leave empty until the restaurant sets the price. Totals show \"From\" until then.",
 			"available": "Available",
 			"recommended": "Recommended",
 			"calculated": "Counts toward bill",
@@ -878,6 +876,12 @@
 			"updated": "Ordering updated",
 			"open_title": "Open pre-orders?",
 			"open_body": "Guests will be able to browse the menu and submit pre-orders for their tables."
+		},
+		"seasonal": {
+			"title": "Seasonal prices",
+			"hint": "Prices for this event only. Leave empty if not known yet.",
+			"saved": "Price saved",
+			"price_for": "Price for {{name}}"
 		}
 	},
 	"faq": {

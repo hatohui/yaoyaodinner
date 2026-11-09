@@ -77,12 +77,24 @@ export class OrderService {
     return orders.map((o) => this.toResponseDto(o));
   }
 
-  private async resolvePrice(variantId: string): Promise<number> {
+  /** Seasonal dishes take the event's price, or 0 until the admin sets one. */
+  private async resolvePrice(
+    variantId: string,
+    eventId: string | null,
+  ): Promise<number> {
     const variant = await prisma.foodVariant.findUnique({
       where: { id: variantId },
-      select: { price: true },
+      select: {
+        price: true,
+        isSeasonal: true,
+        eventPrices: eventId ? { where: { eventId } } : false,
+      },
     });
     if (!variant) throw new NotFoundException("Food variant not found");
+    if (variant.isSeasonal) {
+      const eventPrice = variant.eventPrices?.[0]?.price;
+      return eventPrice ? Number(eventPrice) : 0;
+    }
     return variant.price ? Number(variant.price) : 0;
   }
 
@@ -178,10 +190,8 @@ export class OrderService {
   }
 
   async create(dto: CreateOrderDto, round: OrderRound, lang = "en") {
-    const [price, eventId] = await Promise.all([
-      this.resolvePrice(dto.variantId),
-      this.orderableTableEventId(dto.tableId),
-    ]);
+    const eventId = await this.orderableTableEventId(dto.tableId);
+    const price = await this.resolvePrice(dto.variantId, eventId);
     const order = await prisma.$transaction((tx) =>
       this.placeOrMerge(
         tx,
@@ -208,7 +218,7 @@ export class OrderService {
     const priced = await Promise.all(
       dto.items.map(async (item) => ({
         item,
-        price: await this.resolvePrice(item.variantId),
+        price: await this.resolvePrice(item.variantId, eventId),
       })),
     );
 

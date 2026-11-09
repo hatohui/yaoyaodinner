@@ -435,8 +435,7 @@
 		"finalized_body": "Tổng tiền là cuối cùng và không thể thay đổi."
 	},
 	"orders": {
-		"estimate_note": "Giá chỉ mang tính ước tính để bạn dự trù. Hóa đơn của nhà hàng mới là số tiền thực tế phải trả.",
-		"unpriced_note": "Món theo mùa chưa có giá chưa được tính, nên tổng có chữ \"Từ\" có thể tăng thêm.",
+		"estimate_note": "Giá chỉ mang tính ước tính. Số tiền thực tế có thể khác.",
 		"from_amount": "Từ {{amount}}",
 		"shared": "Chia sẻ",
 		"personal": "Cá nhân",
@@ -764,7 +763,6 @@
 			"category": "Danh mục",
 			"price": "Giá",
 			"seasonal": "Theo thời giá",
-			"seasonal_price_hint": "Để trống cho đến khi nhà hàng báo giá. Tổng tiền sẽ hiện \"Từ\" cho đến lúc đó.",
 			"available": "Có sẵn",
 			"recommended": "Đề xuất",
 			"calculated": "Tính vào hóa đơn",
@@ -878,6 +876,12 @@
 			"updated": "Đã cập nhật đặt món",
 			"open_title": "Mở đặt trước?",
 			"open_body": "Khách sẽ có thể xem thực đơn và gửi món đặt trước cho bàn của mình."
+		},
+		"seasonal": {
+			"title": "Giá theo mùa",
+			"hint": "Chỉ áp dụng cho sự kiện này. Để trống nếu chưa biết.",
+			"saved": "Đã lưu giá",
+			"price_for": "Giá của {{name}}"
 		}
 	},
 	"faq": {

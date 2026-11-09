@@ -194,7 +194,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 							/>
 						</span>
 					</div>
-					<PriceEstimateNote lines={orders} />
+					<PriceEstimateNote />
 				</>
 			)}
 

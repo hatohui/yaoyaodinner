@@ -9,6 +9,7 @@ import { EventStatsCards } from './@EventStatsCards'
 import { PublishEventDialog } from './@PublishEventDialog'
 import { PastEventsList } from './@PastEventsList'
 import { EventSettingsCard } from './@EventSettingsCard'
+import { SeasonalPricesCard } from './@SeasonalPricesCard'
 import { ExportOrdersDialog } from './@ExportOrdersDialog'
 import { useAdminDashboard } from './@useAdminDashboard'
 
@@ -78,6 +79,7 @@ export default function AdminDashboardPage() {
 								onCopy={() => copyPin(selectedEvent.pin)}
 							/>
 							<EventSettingsCard />
+							<SeasonalPricesCard />
 						</div>
 
 						<div className='flex flex-col gap-4'>

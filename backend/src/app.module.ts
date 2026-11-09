@@ -12,6 +12,7 @@ import { OrderModule } from "./modules/order/order.module";
 import { FeedbackModule } from "./modules/feedback/feedback.module";
 import { PersonalNoteModule } from "./modules/personal-note/personal-note.module";
 import { PresetMenuModule } from "./modules/preset-menu/preset-menu.module";
+import { SeasonalPriceModule } from "./modules/seasonal-price/seasonal-price.module";
 import { StatsModule } from "./modules/stats/stats.module";
 import { ImagesModule } from "./modules/images/images.module";
 import { ImageUploadModule } from "./modules/images/image-upload.module";
@@ -33,6 +34,7 @@ import { ConfigModule as AppConfigModule } from "./modules/config/config.module"
     FeedbackModule,
     PersonalNoteModule,
     PresetMenuModule,
+    SeasonalPriceModule,
     StatsModule,
     ImagesModule,
     ImageUploadModule,
