@@ -14,7 +14,7 @@ const FALLBACK: OrderingStatusDto = {
 /** Mirrors the server's rules so locked controls are hidden, not just rejected. */
 export function useOrderingStage() {
 	const { editing } = useEditMode()
-	const { data } = useGetOrderingStatus<OrderingStatusDto>({
+	const { data, isLoading } = useGetOrderingStatus<OrderingStatusDto>({
 		// the stage moves on its own at the deadline and dinner time
 		query: {
 			staleTime: 60_000,
@@ -32,6 +32,7 @@ export function useOrderingStage() {
 
 	return {
 		...status,
+		isLoading,
 		canAdd: stage === 'open' || stage === 'dinner',
 		canSplit: !finalized,
 		canChangeItems: (order: Pick<OrderResponseDto, 'round'>) =>

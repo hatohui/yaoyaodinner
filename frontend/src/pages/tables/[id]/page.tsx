@@ -56,8 +56,8 @@ export default function TableDetailPage() {
 		}
 	)
 	const orderCount = useMemo(() => groupOrders(orders ?? []).length, [orders])
-	const showSplits = !orders || orderCount > 0
-	const activeTab = tab === 'split' && !showSplits ? 'orders' : tab
+	const showSplits = orderCount > 0
+	const activeTab = tab === 'split' && orders && !showSplits ? 'orders' : tab
 	const [joining, setJoining] = useState(false)
 	const join = () => setJoining(true)
 

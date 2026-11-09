@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { CheckCircle2, Clock, Lock, UtensilsCrossed } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useStageTitle } from '@/hooks/useStageTitle'
 import { formatEventTime } from '@/utils/eventTime'
@@ -16,9 +17,27 @@ const ICONS = {
 /** What guests can do with orders right now; nothing while ordering is open with no deadline. */
 export function OrderingStageNotice({ className }: { className?: string }) {
 	const { t, i18n } = useTranslation()
-	const { stage, deadline, dinnerTime, timezone } = useOrderingStage()
+	const { stage, deadline, dinnerTime, timezone, isLoading } =
+		useOrderingStage()
 	const title = useStageTitle()
 	const time = (iso: string) => formatEventTime(iso, timezone, i18n.language)
+
+	if (isLoading) {
+		return (
+			<div
+				className={cn(
+					'flex items-center gap-3 rounded-2xl border border-border px-4 py-3',
+					className
+				)}
+			>
+				<Skeleton className='size-8 shrink-0 rounded-full' />
+				<div className='flex flex-1 flex-col gap-1.5'>
+					<Skeleton className='h-3.5 w-32 rounded-full' />
+					<Skeleton className='h-3 w-48 max-w-full rounded-full' />
+				</div>
+			</div>
+		)
+	}
 
 	const body = {
 		closed: t('ordering.closed_body'),
