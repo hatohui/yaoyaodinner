@@ -520,6 +520,14 @@ declare module 'react-i18next' {
 						stats: string
 						feedback: string
 						settings: string
+						seasonal: string
+					}
+					seasonal: {
+						title: string
+						hint: string
+						saved: string
+						price_for: string
+						empty: string
 					}
 					dashboard: {
 						title: string

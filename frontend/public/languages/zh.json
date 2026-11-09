@@ -612,7 +612,8 @@
 			"feedback": "反馈",
 			"settings": "设置",
 			"collapse": "收起侧边栏",
-			"expand": "展开侧边栏"
+			"expand": "展开侧边栏",
+			"seasonal": "时价"
 		},
 		"dashboard": {
 			"title": "仪表盘",
@@ -881,7 +882,8 @@
 			"title": "时价",
 			"hint": "仅适用于本次活动。未知时请留空。",
 			"saved": "价格已保存",
-			"price_for": "{{name}} 的价格"
+			"price_for": "{{name}} 的价格",
+			"empty": "暂无时价菜品。请在“菜品”中将菜品标记为时价。"
 		}
 	},
 	"faq": {

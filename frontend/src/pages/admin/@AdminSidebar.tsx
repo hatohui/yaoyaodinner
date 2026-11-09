@@ -11,6 +11,7 @@ import {
 	MessageSquare,
 	UtensilsCrossed,
 	ClipboardList,
+	Leaf,
 	SlidersHorizontal,
 } from 'lucide-react'
 import { useAdmin } from '@/hooks/useAdmin'
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
 	{ to: '/admin/tables', labelKey: 'admin.nav.tables', icon: Armchair },
 	{ to: '/admin/floor-plan', labelKey: 'admin.nav.floor_plan', icon: Map },
 	{ to: '/admin/food', labelKey: 'admin.nav.food', icon: UtensilsCrossed },
+	{ to: '/admin/seasonal', labelKey: 'admin.nav.seasonal', icon: Leaf },
 	{ to: '/admin/presets', labelKey: 'admin.nav.presets', icon: ClipboardList },
 	{ to: '/admin/people', labelKey: 'admin.nav.people', icon: Users },
 	{ to: '/admin/stats', labelKey: 'admin.nav.stats', icon: BarChart3 },

@@ -32,6 +32,8 @@ export function SplitBreakdown({
 	onSelect,
 }: SplitBreakdownProps) {
 	const { t } = useTranslation()
+	// with one round and no set menu, the subtotal is just the person's total again
+	const showSubtotals = rounds.length > 1 || flatShare > 0
 
 	return (
 		<ul className='flex flex-col gap-1'>
@@ -47,13 +49,15 @@ export function SplitBreakdown({
 				<li key={r.key} className='flex flex-col gap-1'>
 					<div className='flex items-center justify-between gap-2 px-1.5 pt-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 						<span>{r.label}</span>
-						<span className='tabular-nums'>
-							<TotalAmount
-								amount={r.subtotal}
-								currency={currency}
-								partial={r.partial}
-							/>
-						</span>
+						{showSubtotals && (
+							<span className='tabular-nums'>
+								<TotalAmount
+									amount={r.subtotal}
+									currency={currency}
+									partial={r.partial}
+								/>
+							</span>
+						)}
 					</div>
 					<ul className='flex flex-col gap-1'>
 						{r.items.map(o => (
