@@ -13,7 +13,7 @@ interface OrderingStatusDto {
 	dinnerTime: string | null
 }
 
-const EVENT_TITLE = 'YaoYao Furum After Gathering (FAG) 2026'
+const EVENT_TITLE = 'YaoYao Furum After Gathering (FAG)'
 const VENUE = '高人馆 · Gao Ren Guan, Subang Jaya'
 
 const LANDING_COPY: Record<
@@ -96,7 +96,7 @@ export const onRequestGet = async (
 		lang,
 		url: url.toString(),
 		title: EVENT_TITLE,
-		pageTitle: `${EVENT_TITLE} · YaoYao Dinner`,
+		pageTitle: EVENT_TITLE,
 		description: parts.join(' · '),
 		imageUrl: `${url.origin}/images/banner.png`,
 	})

@@ -10,7 +10,7 @@ export interface PagesContext {
 	request: Request
 	params: Record<string, string | string[] | undefined>
 	env: Env
-	next: () => Promise<Response>
+	next: (input?: Request | string, init?: RequestInit) => Promise<Response>
 }
 
 interface RewriterElement {
@@ -73,9 +73,39 @@ export function getAssetBase(env: Env): string {
 export async function getBaseHtmlResponse(
 	context: PagesContext
 ): Promise<Response> {
-	const res = await context.next()
-	if (res.ok) return res
-	return context.env.ASSETS.fetch(new URL('/', context.request.url))
+	const rootUrl = new URL('/', context.request.url).toString()
+	try {
+		const res = await context.next(new Request(rootUrl, context.request))
+		if (res.ok) return res
+	} catch {
+		// Ignore and try next strategy
+	}
+
+	try {
+		const res = await context.next()
+		if (res.ok) return res
+	} catch {
+		// Ignore and try next strategy
+	}
+
+	if (context.env?.ASSETS?.fetch) {
+		try {
+			const res = await context.env.ASSETS.fetch(
+				new URL('/', context.request.url)
+			)
+			if (res.ok) return res
+		} catch {
+			// Ignore and fall back to minimal shell
+		}
+	}
+
+	return new Response(
+		'<!doctype html><html><head><title>YaoYao Furum After Gathering (FAG)</title><meta name="description" content="YaoYao Furum After Gathering (FAG) — A private post-Furum gathering hosted by Yao Yao" /><meta property="og:title" content="YaoYao Furum After Gathering (FAG)" /><meta property="og:description" content="A private post-Furum gathering hosted by Yao Yao" /><meta property="og:image" content="https://yaoyaodinner.party/images/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="YaoYao Furum After Gathering (FAG)" /><meta name="twitter:description" content="A private post-Furum gathering hosted by Yao Yao" /><meta name="twitter:image" content="https://yaoyaodinner.party/images/banner.png" /></head><body><div id="root"></div></body></html>',
+		{
+			headers: { 'Content-Type': 'text/html; charset=utf-8' },
+			status: 200,
+		}
+	)
 }
 
 export interface PageMetadata {
@@ -93,7 +123,7 @@ export function rewriteMetaResponse(
 ): Response {
 	const locale = LOCALE_MAP[meta.lang]
 	const documentTitle =
-		meta.pageTitle ?? `${meta.title} · YaoYao Furum After Gathering (FAG) 2026`
+		meta.pageTitle ?? `${meta.title} · YaoYao Furum After Gathering (FAG)`
 
 	const rewritten = new HTMLRewriter()
 		.on('html', {
@@ -159,8 +189,8 @@ export function rewriteMetaResponse(
 		'public, max-age=0, s-maxage=60, stale-while-revalidate=300'
 	)
 	return new Response(rewritten.body, {
-		status: rewritten.status,
-		statusText: rewritten.statusText,
+		status: 200,
+		statusText: 'OK',
 		headers,
 	})
 }

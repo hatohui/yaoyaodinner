@@ -1,7 +1,7 @@
 {
 	"site": {
-		"title": "YaoYao Furum After Gathering (FAG) 2026",
-		"short_name": "YaoYao FAG 2026",
+		"title": "YaoYao Furum After Gathering (FAG)",
+		"short_name": "YaoYao FAG",
 		"description": "Buổi tụ họp riêng hậu Furum do Yao Yao tổ chức"
 	},
 	"config": {
@@ -317,25 +317,25 @@
 	},
 	"about": {
 		"hero_tag": "Tụ họp thân mật",
-		"hero_badge_private": "Hậu sự kiện Furum 2026",
-		"hero_title": "YaoYao Furum After Gathering (FAG) 2026",
+		"hero_badge_private": "Hậu sự kiện Furum",
+		"hero_title": "YaoYao Furum After Gathering (FAG)",
 		"hero_subtitle": "Buổi tụ họp riêng hậu sự kiện Furum do Yao Yao tổ chức, gắn kết bạn bè và cộng đồng furry cùng thưởng thức món ngon và tận hưởng buổi tối đáng nhớ tại Malaysia.",
 		"location_title": "Tìm chúng tôi ở đâu",
 		"address_label": "Địa chỉ",
 		"get_directions": "Chỉ đường",
 		"details_tag": "Chủ trì buổi tiệc",
 		"details_title": "Gặp gỡ Chee Yao (Yao Yao)",
-		"details_body_1": "Còn được biết đến trong fandom với tên Aster (归星) @AsterTheDragon, Chee Yao là người tổ chức YaoYao Furum After Gathering (FAG) 2026 — mời bạn bè và anh em furry cùng thư giãn sau sự kiện!",
+		"details_body_1": "Còn được biết đến trong fandom với tên Aster (归星) @AsterTheDragon, Chee Yao là người tổ chức YaoYao Furum After Gathering (FAG) — mời bạn bè và anh em furry cùng thư giãn sau sự kiện!",
 		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón mọi người tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia.",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster (归星)",
 		"social_label": "{{name}} trên {{platform}}",
 		"project": {
 			"tag": "Về trang web này",
-			"title": "Xây dựng riêng cho YaoYao Furum After Gathering (FAG) 2026",
-			"intro": "Trang web này là dự án cá nhân miễn phí, phi thương mại được làm riêng cho YaoYao Furum After Gathering (FAG) 2026 — buổi tụ họp riêng hậu Furum của Yao Yao (Chee Yao / Aster 归星) và bạn bè tại 高人馆 · Gao Ren Guan ở Subang Jaya — giúp sắp xếp chỗ ngồi, đặt món trước và chia hóa đơn gọn gàng mà không cần bảng tính hay tin nhắn nhóm rối rắm.",
+			"title": "Xây dựng riêng cho YaoYao Furum After Gathering (FAG)",
+			"intro": "Trang web này là dự án cá nhân miễn phí, phi thương mại được làm riêng cho YaoYao Furum After Gathering (FAG) — buổi tụ họp riêng hậu Furum của Yao Yao (Chee Yao / Aster 归星) và bạn bè tại 高人馆 · Gao Ren Guan ở Subang Jaya — giúp sắp xếp chỗ ngồi, đặt món trước và chia hóa đơn gọn gàng mà không cần bảng tính hay tin nhắn nhóm rối rắm.",
 			"features": {
-				"gatherings_title": "Sắp xếp buổi tiệc YaoYao FAG 2026",
+				"gatherings_title": "Sắp xếp buổi tiệc YaoYao FAG",
 				"gatherings_body": "Tổng hợp thời gian tiệc, hạn đặt món trước và chỉ đường đến nhà hàng Gao Ren Guan tại một nơi cho tất cả người tham gia.",
 				"spaces_title": "Sơ đồ bàn tại Gao Ren Guan",
 				"spaces_body": "Xem trực quan các bàn ở tầng trệt và tầng một của Gao Ren Guan để biết mình ngồi đâu và ngồi cùng ai.",
@@ -356,7 +356,7 @@
 	"legal": {
 		"tag": "Thông tin & quy định",
 		"title": "Quyền riêng tư, Điều khoản & Quy tắc",
-		"subtitle": "Thông tin ngắn gọn, dễ hiểu về cách trang web YaoYao Furum After Gathering (FAG) 2026 hoạt động.",
+		"subtitle": "Thông tin ngắn gọn, dễ hiểu về cách trang web YaoYao Furum After Gathering (FAG) hoạt động.",
 		"view_all": "Xem tất cả",
 		"all_sections": "Tất cả mục",
 		"back_to_about": "Quay lại Giới thiệu",
@@ -367,7 +367,7 @@
 			"privacy": {
 				"title": "Thông báo quyền riêng tư",
 				"summary": "Thông tin nào được lưu khi bạn vào bàn, đặt món hoặc đăng ảnh.",
-				"intro": "Trang web cá nhân, phi thương mại này được xây dựng riêng cho bạn bè tham gia YaoYao Furum After Gathering (FAG) 2026 — buổi tụ họp riêng sau Furum do Yao Yao chủ trì tại 高人馆 · Gao Ren Guan. Chúng tôi thu thập dữ liệu ở mức tối thiểu cần thiết để phục vụ sự kiện.",
+				"intro": "Trang web cá nhân, phi thương mại này được xây dựng riêng cho bạn bè tham gia YaoYao Furum After Gathering (FAG) — buổi tụ họp riêng sau Furum do Yao Yao chủ trì tại 高人馆 · Gao Ren Guan. Chúng tôi thu thập dữ liệu ở mức tối thiểu cần thiết để phục vụ sự kiện.",
 				"items": {
 					"no_accounts_title": "Không thu thập dữ liệu tài khoản cá nhân",
 					"no_accounts_body": "Chúng tôi không yêu cầu hay lưu trữ địa chỉ email, mật khẩu, số điện thoại, tên thật pháp lý hoặc thông tin thanh toán.",
@@ -381,11 +381,11 @@
 			},
 			"terms": {
 				"title": "Điều khoản sử dụng",
-				"summary": "Các quy tắc cơ bản khi sử dụng trang web YaoYao Furum After Gathering (FAG) 2026.",
+				"summary": "Các quy tắc cơ bản khi sử dụng trang web YaoYao Furum After Gathering (FAG).",
 				"intro": "Khi sử dụng trang web để vào bàn, đặt món trước tại Gao Ren Guan hoặc đăng bài trên tường góp ý, bạn đồng ý với một vài nguyên tắc đơn giản sau.",
 				"items": {
 					"non_commercial_title": "Dự án cá nhân, phi thương mại",
-					"non_commercial_body": "Trang web này được cung cấp miễn phí dưới dạng dự án cá nhân cho YaoYao Furum After Gathering (FAG) 2026 theo tinh thần nỗ lực tối đa và có thể được cập nhật hoặc tạm dừng bất cứ lúc nào.",
+					"non_commercial_body": "Trang web này được cung cấp miễn phí dưới dạng dự án cá nhân cho YaoYao Furum After Gathering (FAG) theo tinh thần nỗ lực tối đa và có thể được cập nhật hoặc tạm dừng bất cứ lúc nào.",
 					"access_codes_title": "Giữ kín mã PIN & mã bàn",
 					"access_codes_body": "Mã PIN sự kiện và mã bàn chỉ dành cho bạn bè được mời tham dự buổi họp mặt. Vui lòng không chia sẻ công khai hoặc cố truy cập vào bàn hay trang quản trị khi chưa được phép.",
 					"unverified_names_title": "Tên hiển thị chung, không xác minh",
@@ -956,7 +956,7 @@
 		"created_by": "Trang web được tạo bởi",
 		"order_by": "Đặt món trước",
 		"where": "Địa điểm",
-		"event_name": "YaoYao Furum After Gathering (FAG) 2026",
+		"event_name": "YaoYao Furum After Gathering (FAG)",
 		"event_subtitle": "Buổi tụ họp riêng hậu sự kiện Furum do Yao Yao tổ chức"
 	}
 }

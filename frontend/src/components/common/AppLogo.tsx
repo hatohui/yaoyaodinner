@@ -10,7 +10,7 @@ interface AppLogoProps {
 
 export const AppLogo: React.FC<AppLogoProps> = ({
 	className = 'h-5 w-auto',
-	alt = 'YaoYao Furum After Gathering (FAG) 2026',
+	alt = 'YaoYao Furum After Gathering (FAG)',
 	alwaysInvert = false,
 }) => {
 	return (
@@ -23,7 +23,7 @@ export const AppLogo: React.FC<AppLogoProps> = ({
 					alwaysInvert && 'invert',
 					className
 				)}
-				alt={alt || 'YaoYao Furum After Gathering (FAG) 2026'}
+				alt={alt || 'YaoYao Furum After Gathering (FAG)'}
 			/>
 			{/* Dark mode: Aster logo */}
 			<img
@@ -33,7 +33,7 @@ export const AppLogo: React.FC<AppLogoProps> = ({
 					alwaysInvert ? 'invert' : 'dark:invert',
 					className
 				)}
-				alt={alt || 'YaoYao Furum After Gathering (FAG) 2026'}
+				alt={alt || 'YaoYao Furum After Gathering (FAG)'}
 			/>
 		</span>
 	)

@@ -78,8 +78,13 @@ function resolveBannerUrl(
 export const onRequestGet = async (
 	context: PagesContext
 ): Promise<Response> => {
-	const rawId = context.params.id
-	const id = Array.isArray(rawId) ? rawId[0] : rawId
+	const url = new URL(context.request.url)
+	const paramId = Array.isArray(context.params?.id)
+		? context.params.id[0]
+		: context.params?.id
+	const pathnameId = url.pathname.match(/\/tables\/([^/?#]+)/)?.[1]
+	const id = paramId || pathnameId
+
 	const baseResponse = await getBaseHtmlResponse(context)
 
 	if (!id || id === 'map') {
@@ -93,7 +98,10 @@ export const onRequestGet = async (
 		const apiRes = await fetch(
 			`${apiBase}/api/tables/${encodeURIComponent(id)}`,
 			{
-				headers: { Accept: 'application/json' },
+				headers: {
+					Accept: 'application/json',
+					'User-Agent': 'YaoYaoDinner-Cloudflare-Worker/1.0',
+				},
 			}
 		)
 		if (!apiRes.ok) {
@@ -101,7 +109,6 @@ export const onRequestGet = async (
 		}
 
 		const table = (await apiRes.json()) as TableMetaDto
-		const url = new URL(context.request.url)
 		const lang = resolveLang(
 			url,
 			context.request.headers.get('accept-language')
