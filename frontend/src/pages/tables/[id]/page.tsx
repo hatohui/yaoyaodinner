@@ -41,6 +41,17 @@ export default function TableDetailPage() {
 	useEffect(() => {
 		if (tourQuery) setTab('people')
 	}, [tourQuery, setTab])
+
+	useEffect(() => {
+		if (!table) return
+		const label = table.name
+			? t('feedback.author_table', { no: table.no, name: table.name })
+			: t('roster.table_no', { no: table.no })
+		document.title = `${label} · YaoYao Furum After Gathering (FAG) 2026`
+		return () => {
+			document.title = 'YaoYao Furum After Gathering (FAG) 2026'
+		}
+	}, [table, t])
 	const { canEdit, canJoin, isAdmin } = useTableAccess(id)
 	const {
 		floorPlan,

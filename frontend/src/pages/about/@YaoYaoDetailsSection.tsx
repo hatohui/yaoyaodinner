@@ -13,9 +13,9 @@ export function YaoYaoDetailsSection() {
 					{t('about.details_tag')}
 				</span>
 
-				<h1 className='mt-3 text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl'>
+				<h2 className='mt-3 text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl'>
 					{t('about.details_title')}
-				</h1>
+				</h2>
 
 				<div className='mt-4 flex flex-col gap-3 leading-relaxed text-foreground/90'>
 					<p>{t('about.details_body_1')}</p>

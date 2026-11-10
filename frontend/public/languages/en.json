@@ -1,4 +1,9 @@
 {
+	"site": {
+		"title": "YaoYao Furum After Gathering (FAG) 2026",
+		"short_name": "YaoYao FAG 2026",
+		"description": "A private post-Furum gathering hosted by Yao Yao"
+	},
 	"config": {
 		"select_language": "Select language"
 	},
@@ -61,7 +66,7 @@
 		"visible_to_all": "Visible at the top of the app",
 		"hidden": "Hidden from guests",
 		"message_label": "Banner message",
-		"placeholder": "e.g. YaoYao Dinner starts at 7:00 PM! Please finalize pre-orders.",
+		"placeholder": "e.g. YaoYao Furum After Gathering starts at 7:00 PM! Please finalize pre-orders.",
 		"preview": "Preview"
 	},
 	"dinner": {
@@ -311,74 +316,78 @@
 		"categories": "Categories"
 	},
 	"about": {
+		"hero_tag": "Private Gathering",
+		"hero_badge_private": "Post-Furum 2026",
+		"hero_title": "YaoYao Furum After Gathering (FAG) 2026",
+		"hero_subtitle": "A private post-Furum gathering hosted by Yao Yao, welcoming friends and fellow furs to unwind, enjoy delicious food, and celebrate together in Malaysia.",
 		"location_title": "Where to find us",
 		"address_label": "Address",
 		"get_directions": "Get directions",
-		"details_tag": "The tea",
+		"details_tag": "The Host",
 		"details_title": "Meet Chee Yao (Yao Yao)",
-		"details_body_1": "Also known in the fandom as Aster (归星) @AsterTheDragon, Chee Yao is the one inviting everyone to this special event!",
-		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes fellow furs to gather for a great night of food and hanging out in Malaysia.",
+		"details_body_1": "Also known in the fandom as Aster (归星) @AsterTheDragon, Chee Yao is hosting the YaoYao Furum After Gathering (FAG) 2026 — inviting friends and fellow furs together for this special post-convention evening!",
+		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes everyone to gather for a great night of delicious food and hanging out in Malaysia.",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster (归星)",
 		"social_label": "{{name}} on {{platform}}",
 		"project": {
 			"tag": "About this website",
-			"title": "Built for Yao Yao's dinner at Gao Ren Guan",
-			"intro": "This website is a personally operated, free, non-commercial project made specifically for Yao Yao (Chee Yao / Aster 归星) and friends gathering for dinner at 高人馆 · Gao Ren Guan in Subang Jaya — keeping seats, pre-orders, and table bills organized without spreadsheet or group-chat chaos.",
+			"title": "Built for YaoYao Furum After Gathering (FAG) 2026",
+			"intro": "This website is a personally operated, free, non-commercial project made specifically for YaoYao Furum After Gathering (FAG) 2026 — a private post-Furum gathering hosted by Yao Yao (Chee Yao / Aster 归星) for friends and fellow furs at 高人馆 · Gao Ren Guan in Subang Jaya, keeping seats, pre-orders, and table bills organized without spreadsheet or group-chat chaos.",
 			"features": {
-				"gatherings_title": "Organise Yao Yao's dinner",
-				"gatherings_body": "Keep the dinner time, pre-order deadline, and Gao Ren Guan venue details in one place for everyone attending.",
+				"gatherings_title": "Organise YaoYao's FAG 2026",
+				"gatherings_body": "Keep the gathering time, pre-order deadline, and Gao Ren Guan venue details in one place for everyone attending.",
 				"spaces_title": "Gao Ren Guan floor plan & tables",
 				"spaces_body": "Browse the ground-floor and first-floor tables at Gao Ren Guan to see where you are sitting and who is at your table.",
-				"codes_title": "Join with dinner & table codes",
-				"codes_body": "Use the shared dinner PIN and your table's access code so invited friends can claim their seat without sign-up forms.",
+				"codes_title": "Join with gathering & table codes",
+				"codes_body": "Use the shared gathering PIN and your table's access code so invited friends can claim their seat without sign-up forms.",
 				"memories_title": "Share photos, posts & reactions",
 				"memories_body": "Post messages, upload photos from the night, and leave emoji reactions on the shared feedback wall.",
 				"preorders_title": "Pre-order from the Gao Ren Guan menu",
 				"preorders_body": "Browse the restaurant menu in four languages, add dietary notes, pre-order dishes for your table, and split the bill fairly.",
-				"archive_title": "Keep memories from each dinner",
-				"archive_body": "Preserve a read-only archive of past Yao Yao dinners, table rosters, popular dishes, and shared moments."
+				"archive_title": "Keep memories from each gathering",
+				"archive_body": "Preserve a read-only archive of past Yao Yao gatherings, table rosters, popular dishes, and shared moments."
 			},
 			"identity_title": "No accounts, passwords, or email registration",
-			"identity_body_1": "This website intentionally does not use traditional user accounts, passwords, or email sign-ups. You unlock the dinner with a shared PIN and join your table with its table code.",
+			"identity_body_1": "This website intentionally does not use traditional user accounts, passwords, or email sign-ups. You unlock the gathering with a shared PIN and join your table with its table code.",
 			"identity_body_2": "Names on a table roster or the feedback wall are shared, unverified identifiers used only to organize seats and food orders. Claiming or typing a username does not verify or establish anyone's real-world identity."
 		}
 	},
 	"legal": {
 		"tag": "Info & rules",
 		"title": "Legal, Privacy & Guidelines",
-		"subtitle": "Plain-language notes on how the Yao Yao Dinner website works.",
+		"subtitle": "Plain-language notes on how the YaoYao Furum After Gathering (FAG) 2026 website works.",
 		"view_all": "View all",
 		"all_sections": "All topics",
 		"back_to_about": "Back to About",
 		"contact_faq_cta": "Check Q&A for quick fixes",
-		"contact_host_label": "Dinner host (Yao Yao)",
+		"contact_host_label": "Gathering host (Yao Yao)",
 		"contact_tech_label": "Technical & website (hatohui)",
 		"sections": {
 			"privacy": {
 				"title": "Privacy Notice",
 				"summary": "What information is stored when you join a table, pre-order food, or post photos.",
-				"intro": "This is a personally operated, non-commercial website built specifically for friends attending Yao Yao's dinner at 高人馆 · Gao Ren Guan. We keep data collection to the bare minimum needed to run the dinner.",
+				"intro": "This is a personally operated, non-commercial website built specifically for friends attending the YaoYao Furum After Gathering (FAG) 2026 — a private post-Furum gathering hosted by Yao Yao at 高人馆 · Gao Ren Guan. We keep data collection to the bare minimum needed to run the gathering.",
 				"items": {
 					"no_accounts_title": "No personal account data",
 					"no_accounts_body": "We do not ask for or store email addresses, passwords, phone numbers, real legal names, or payment details.",
 					"shared_info_title": "What is visible to other guests",
-					"shared_info_body": "Display names, optional avatars, dietary notes, food orders, bill splits, and feedback wall posts or photos you submit are visible to everyone with the dinner PIN.",
+					"shared_info_body": "Display names, optional avatars, dietary notes, food orders, bill splits, and feedback wall posts or photos you submit are visible to everyone with the gathering PIN.",
 					"device_storage_title": "Local browser storage only",
-					"device_storage_body": "We do not use advertising trackers or analytics cookies. Your browser's localStorage simply remembers your language, theme, dinner PIN, table code, and selected roster name on your device.",
+					"device_storage_body": "We do not use advertising trackers or analytics cookies. Your browser's localStorage simply remembers your language, theme, gathering PIN, table code, and selected roster name on your device.",
 					"removal_title": "Hosting & removing your info",
-					"removal_body": "Dinner data and uploaded images are stored using cloud database and storage providers (Neon, Upstash, AWS, and Cloudflare), and the About page embeds Google Maps for Gao Ren Guan's location. You can edit or remove your roster info while the dinner is open, or contact the host anytime to have a name, note, or photo deleted."
+					"removal_body": "Gathering data and uploaded images are stored using cloud database and storage providers (Neon, Upstash, AWS, and Cloudflare), and the About page embeds Google Maps for Gao Ren Guan's location. You can edit or remove your roster info while the gathering is open, or contact the host anytime to have a name, note, or photo deleted."
 				}
 			},
 			"terms": {
 				"title": "Terms of Use",
-				"summary": "Simple ground rules for using the Yao Yao Dinner website.",
+				"summary": "Simple ground rules for using the YaoYao Furum After Gathering (FAG) 2026 website.",
 				"intro": "By using this website to join a table, pre-order food from Gao Ren Guan, or post on the feedback wall, you agree to a few straightforward ground rules.",
 				"items": {
 					"non_commercial_title": "Personal, non-commercial project",
-					"non_commercial_body": "This website is provided free of charge as a personal project for Yao Yao's dinner gatherings. It is offered on an as-is, best-effort basis and may be updated or paused at any time.",
-					"access_codes_title": "Keep the dinner PIN & table codes private",
-					"access_codes_body": "The dinner PIN and table codes are meant only for invited friends attending the dinner. Please do not share them publicly or attempt to access tables or admin tools you were not invited to use.",
+					"non_commercial_body": "This website is provided free of charge as a personal project for the YaoYao Furum After Gathering (FAG) 2026. It is offered on an as-is, best-effort basis and may be updated or paused at any time.",
+					"access_codes_title": "Keep the gathering PIN & table codes private",
+					"access_codes_body": "The gathering PIN and table codes are meant only for invited friends attending the private post-Furum gathering. Please do not share them publicly or attempt to access tables or admin tools you were not invited to use.",
 					"unverified_names_title": "Shared, unverified usernames",
 					"unverified_names_body": "Guest names are unverified labels chosen by attendees. Because anyone with a table code can add or claim a name at that table, usernames do not establish real-world identity.",
 					"bills_title": "No payments happen on this site",
@@ -388,7 +397,7 @@
 			"guidelines": {
 				"title": "Community Guidelines",
 				"summary": "Keep the table rosters and feedback wall friendly and welcoming.",
-				"intro": "This space exists so Yao Yao's friends and fellow furs can relax, eat well at Gao Ren Guan, and enjoy the night together. Please help keep it welcoming for everyone.",
+				"intro": "This space exists so Yao Yao's friends and fellow furs can relax after FURUM, eat well at Gao Ren Guan, and enjoy the night together. Please help keep it welcoming for everyone.",
 				"items": {
 					"be_kind_title": "Be friendly and respectful",
 					"be_kind_body": "Treat fellow guests, table hosts, and Gao Ren Guan staff with kindness. Harassment, hate speech, or mean-spirited posts have no place here.",
@@ -397,16 +406,16 @@
 					"respect_tables_title": "Don't mess with other people's seats or orders",
 					"respect_tables_body": "Only unlock the table you are actually sitting at, and only claim your own name. Never edit or delete someone else's food order without asking them.",
 					"moderation_title": "Host & admin moderation",
-					"moderation_body": "Yao Yao and the dinner admins can remove inappropriate posts or photos, adjust table rosters, or reset table codes if needed to keep the dinner running smoothly."
+					"moderation_body": "Yao Yao and the gathering admins can remove inappropriate posts or photos, adjust table rosters, or reset table codes if needed to keep the gathering running smoothly."
 				}
 			},
 			"preorder": {
 				"title": "Food Pre-order Rules",
 				"summary": "How Gao Ren Guan ordering stages, shared dishes, dietary notes, and bill splits work.",
-				"intro": "To help 高人馆 · Gao Ren Guan prepare food on time for all of our tables, ordering moves through clear stages before and during the dinner.",
+				"intro": "To help 高人馆 · Gao Ren Guan prepare food on time for all of our tables, ordering moves through clear stages before and during the gathering.",
 				"items": {
 					"stages_title": "Ordering stages & deadlines",
-					"stages_body": "While pre-ordering is open, you can add or edit dishes for your table. Once pre-orders are confirmed at the deadline, pre-orders lock so Gao Ren Guan's kitchen can prepare in advance. Extra dishes ordered at the restaurant can be added during dinner before the bill is finalized.",
+					"stages_body": "While pre-ordering is open, you can add or edit dishes for your table. Once pre-orders are confirmed at the deadline, pre-orders lock so Gao Ren Guan's kitchen can prepare in advance. Extra dishes ordered at the restaurant can be added during the dinner before the bill is finalized.",
 					"splitting_title": "Personal vs. shared dishes",
 					"splitting_body": "When adding a dish, you can assign it to just yourself, specific tablemates, or the whole table. Preset set menus or included items follow the table's shared split rules shown on the Splits tab.",
 					"dietary_notes_title": "Dietary notes & food allergies",
@@ -421,11 +430,11 @@
 				"intro": "Need a hand with your table, spotted a bug, or want a photo, note, or feedback post removed? Reach out directly and we'll sort it out.",
 				"items": {
 					"report_issue_title": "Report a post, photo, or table issue",
-					"report_issue_body": "If someone posted an unwanted photo on the feedback wall or made a mistake on your table's roster or orders, message Yao Yao or an admin at the dinner.",
+					"report_issue_body": "If someone posted an unwanted photo on the feedback wall or made a mistake on your table's roster or orders, message Yao Yao or an admin at the gathering.",
 					"content_removal_title": "Request data or photo removal",
-					"content_removal_body": "Want your display name, avatar, or feedback post removed from the current or a past Yao Yao dinner? Contact the host via the social links below and it will be removed promptly.",
-					"host_help_title": "Dinner host & technical support",
-					"host_help_body": "The dinner is hosted by Chee Yao (Yao Yao / Aster 归星). For technical issues or website help, reach out to hatohui on X (@_Hatohui), Telegram (hatohui), Bluesky (hatohui), or Facebook (hatohui).",
+					"content_removal_body": "Want your display name, avatar, or feedback post removed from the current or a past Yao Yao gathering? Contact the host via the social links below and it will be removed promptly.",
+					"host_help_title": "Gathering host & technical support",
+					"host_help_body": "The post-Furum gathering is hosted by Chee Yao (Yao Yao / Aster 归星). For technical issues or website help, reach out to hatohui on X (@_Hatohui), Telegram (hatohui), Bluesky (hatohui), or Facebook (hatohui).",
 					"self_service_title": "Quick fixes for common mix-ups",
 					"self_service_body": "Tapped \"That's me\" on the wrong person or joined the wrong table? You can log out from the top-right name menu or tap the Leave Table button anytime."
 				}
@@ -944,6 +953,8 @@
 	"landing": {
 		"created_by": "Website created by",
 		"order_by": "Order by",
-		"where": "Where"
+		"where": "Where",
+		"event_name": "YaoYao Furum After Gathering (FAG) 2026",
+		"event_subtitle": "A private post-Furum gathering hosted by Yao Yao"
 	}
 }

@@ -50,7 +50,7 @@ export function FoodDetailView({
 	onUpdateVariant,
 	variant = 'page',
 }: FoodDetailViewProps) {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const pin = useGuest(s => s.pin)
 	const { isAdmin } = useIsAdmin()
@@ -62,9 +62,14 @@ export function FoodDetailView({
 	const modal = variant === 'modal'
 
 	const shareLink = () => {
-		navigator.clipboard.writeText(
-			`${window.location.origin}/menu/${food.id}${window.location.search}`
-		)
+		const url = new URL(`${window.location.origin}/menu/${food.id}`)
+		const currentLang = new URLSearchParams(window.location.search).get('lang')
+		if (currentLang) {
+			url.searchParams.set('lang', currentLang)
+		} else if (i18n.language && i18n.language !== 'en') {
+			url.searchParams.set('lang', i18n.language)
+		}
+		navigator.clipboard?.writeText(url.toString())
 		toast.success(t('roster.link_copied'))
 	}
 

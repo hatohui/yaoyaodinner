@@ -44,13 +44,21 @@ const LandingPage = (): React.JSX.Element => {
 
 			<div className='relative z-10 flex h-full flex-col justify-end overflow-y-auto overscroll-contain px-6 pb-16 pt-6 sm:px-12 sm:pb-20 lg:px-20'>
 				<div className='flex max-w-xl flex-col gap-4 sm:gap-5'>
-					<span className='text-xs font-bold uppercase tracking-widest text-white/75 sm:text-sm'>
-						{t('menu.restaurant_name')} · {t('menu.restaurant_en')}
-					</span>
 					<AppLogo
 						className='h-12 w-auto self-start drop-shadow-lg sm:h-20'
 						alwaysInvert
 					/>
+					<div className='flex flex-col gap-1.5'>
+						<span className='text-xs font-bold uppercase tracking-widest text-white/75 sm:text-sm'>
+							{t('menu.restaurant_name')} · {t('menu.restaurant_en')}
+						</span>
+						<h1 className='text-2xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-3xl md:text-4xl'>
+							{t('landing.event_name')}
+						</h1>
+						<p className='text-xs font-medium text-white/80 sm:text-sm'>
+							{t('landing.event_subtitle')}
+						</p>
+					</div>
 					<QuoteSection />
 					<EventFacts />
 					{(showMenu || showTables) && (

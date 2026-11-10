@@ -1,4 +1,9 @@
 {
+	"site": {
+		"title": "YaoYao Furum After Gathering (FAG) 2026",
+		"short_name": "YaoYao FAG 2026",
+		"description": "Buổi tụ họp riêng hậu Furum do Yao Yao tổ chức"
+	},
 	"config": {
 		"select_language": "Chọn ngôn ngữ"
 	},
@@ -61,7 +66,7 @@
 		"visible_to_all": "Hiển thị ở đầu ứng dụng",
 		"hidden": "Đang ẩn với khách",
 		"message_label": "Nội dung thông báo",
-		"placeholder": "VD: YaoYao Dinner bắt đầu lúc 19:00! Vui lòng chốt món đặt trước.",
+		"placeholder": "VD: YaoYao Furum After Gathering bắt đầu lúc 19:00! Vui lòng chốt món đặt trước.",
 		"preview": "Xem trước"
 	},
 	"dinner": {
@@ -311,74 +316,78 @@
 		"categories": "Danh mục"
 	},
 	"about": {
+		"hero_tag": "Tụ họp thân mật",
+		"hero_badge_private": "Hậu sự kiện Furum 2026",
+		"hero_title": "YaoYao Furum After Gathering (FAG) 2026",
+		"hero_subtitle": "Buổi tụ họp riêng hậu sự kiện Furum do Yao Yao tổ chức, gắn kết bạn bè và cộng đồng furry cùng thưởng thức món ngon và tận hưởng buổi tối đáng nhớ tại Malaysia.",
 		"location_title": "Tìm chúng tôi ở đâu",
 		"address_label": "Địa chỉ",
 		"get_directions": "Chỉ đường",
-		"details_tag": "Chuyện hậu trường",
+		"details_tag": "Chủ trì buổi tiệc",
 		"details_title": "Gặp gỡ Chee Yao (Yao Yao)",
-		"details_body_1": "Còn được biết đến trong fandom với tên Aster (归星) @AsterTheDragon, Chee Yao là người mời mọi người đến sự kiện đặc biệt này!",
-		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón những người bạn furry cùng tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia.",
+		"details_body_1": "Còn được biết đến trong fandom với tên Aster (归星) @AsterTheDragon, Chee Yao là người tổ chức YaoYao Furum After Gathering (FAG) 2026 — mời bạn bè và anh em furry cùng thư giãn sau sự kiện!",
+		"details_body_2": "Được miêu tả như một chiếc bánh việt quất thích xoài, anh ấy chào đón mọi người tụ tập để có một đêm tuyệt vời với đồ ăn ngon và trò chuyện ở Malaysia.",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster (归星)",
 		"social_label": "{{name}} trên {{platform}}",
 		"project": {
 			"tag": "Về trang web này",
-			"title": "Dành riêng cho bữa tối của Yao Yao tại Gao Ren Guan",
-			"intro": "Trang web này là dự án cá nhân miễn phí, phi thương mại được làm riêng cho Yao Yao (Chee Yao / Aster 归星) và bạn bè tụ họp ăn tối tại 高人馆 · Gao Ren Guan ở Subang Jaya — giúp sắp xếp chỗ ngồi, đặt món trước và chia hóa đơn gọn gàng mà không cần bảng tính hay tin nhắn nhóm rối rắm.",
+			"title": "Xây dựng riêng cho YaoYao Furum After Gathering (FAG) 2026",
+			"intro": "Trang web này là dự án cá nhân miễn phí, phi thương mại được làm riêng cho YaoYao Furum After Gathering (FAG) 2026 — buổi tụ họp riêng hậu Furum của Yao Yao (Chee Yao / Aster 归星) và bạn bè tại 高人馆 · Gao Ren Guan ở Subang Jaya — giúp sắp xếp chỗ ngồi, đặt món trước và chia hóa đơn gọn gàng mà không cần bảng tính hay tin nhắn nhóm rối rắm.",
 			"features": {
-				"gatherings_title": "Sắp xếp bữa tối của Yao Yao",
-				"gatherings_body": "Tổng hợp thời gian ăn tối, hạn đặt món trước và chỉ đường đến nhà hàng Gao Ren Guan tại một nơi.",
+				"gatherings_title": "Sắp xếp buổi tiệc YaoYao FAG 2026",
+				"gatherings_body": "Tổng hợp thời gian tiệc, hạn đặt món trước và chỉ đường đến nhà hàng Gao Ren Guan tại một nơi cho tất cả người tham gia.",
 				"spaces_title": "Sơ đồ bàn tại Gao Ren Guan",
 				"spaces_body": "Xem trực quan các bàn ở tầng trệt và tầng một của Gao Ren Guan để biết mình ngồi đâu và ngồi cùng ai.",
 				"codes_title": "Vào bàn bằng mã PIN & mã bàn",
-				"codes_body": "Dùng mã PIN chung của bữa tiệc và mã riêng của từng bàn để bạn bè được mời nhận chỗ mà không cần đăng ký tài khoản.",
+				"codes_body": "Dùng mã PIN chung của buổi tụ họp và mã riêng của từng bàn để bạn bè được mời nhận chỗ mà không cần đăng ký tài khoản.",
 				"memories_title": "Chia sẻ ảnh, bài viết & cảm xúc",
 				"memories_body": "Đăng lời nhắn, tải ảnh trong đêm tiệc và thả biểu tượng cảm xúc trên tường góp ý chung.",
 				"preorders_title": "Đặt trước thực đơn Gao Ren Guan",
 				"preorders_body": "Xem thực đơn nhà hàng bằng 4 ngôn ngữ, ghi chú khẩu vị, đặt món trước cho bàn và chia hóa đơn công bằng.",
-				"archive_title": "Lưu giữ kỷ niệm mỗi buổi tiệc",
-				"archive_body": "Lưu lại danh sách bàn, các món được gọi nhiều nhất và những khoảnh khắc đáng nhớ từ các buổi ăn tối của Yao Yao."
+				"archive_title": "Lưu giữ kỷ niệm mỗi buổi họp mặt",
+				"archive_body": "Lưu lại danh sách bàn, các món được gọi nhiều nhất và những khoảnh khắc đáng nhớ từ các buổi tụ họp của Yao Yao."
 			},
 			"identity_title": "Không cần tài khoản, mật khẩu hay đăng ký email",
-			"identity_body_1": "Trang web chủ đích không yêu cầu tạo tài khoản truyền thống, mật khẩu hay đăng ký email. Bạn chỉ cần nhập mã PIN bữa tiệc và mã bàn để tham gia.",
+			"identity_body_1": "Trang web chủ đích không yêu cầu tạo tài khoản truyền thống, mật khẩu hay đăng ký email. Bạn chỉ cần nhập mã PIN sự kiện và mã bàn để tham gia.",
 			"identity_body_2": "Tên hiển thị tại bàn hoặc trên tường góp ý là tên chung không qua xác minh, chỉ dùng để sắp xếp chỗ ngồi và món ăn. Việc chọn hoặc nhập một tên không xác nhận danh tính ngoài đời thực của bất kỳ ai."
 		}
 	},
 	"legal": {
 		"tag": "Thông tin & quy định",
 		"title": "Quyền riêng tư, Điều khoản & Quy tắc",
-		"subtitle": "Thông tin ngắn gọn, dễ hiểu về cách trang web Yao Yao Dinner hoạt động.",
+		"subtitle": "Thông tin ngắn gọn, dễ hiểu về cách trang web YaoYao Furum After Gathering (FAG) 2026 hoạt động.",
 		"view_all": "Xem tất cả",
 		"all_sections": "Tất cả mục",
 		"back_to_about": "Quay lại Giới thiệu",
 		"contact_faq_cta": "Xem Hỏi đáp để xử lý nhanh",
-		"contact_host_label": "Chủ tiệc (Yao Yao)",
+		"contact_host_label": "Chủ trì buổi tiệc (Yao Yao)",
 		"contact_tech_label": "Kỹ thuật & trang web (hatohui)",
 		"sections": {
 			"privacy": {
 				"title": "Thông báo quyền riêng tư",
 				"summary": "Thông tin nào được lưu khi bạn vào bàn, đặt món hoặc đăng ảnh.",
-				"intro": "Đây là trang web cá nhân phi thương mại được làm riêng cho bạn bè tham dự bữa tối của Yao Yao tại 高人馆 · Gao Ren Guan. Chúng tôi chỉ lưu những thông tin tối thiểu cần thiết cho bữa tiệc.",
+				"intro": "Trang web cá nhân, phi thương mại này được xây dựng riêng cho bạn bè tham gia YaoYao Furum After Gathering (FAG) 2026 — buổi tụ họp riêng sau Furum do Yao Yao chủ trì tại 高人馆 · Gao Ren Guan. Chúng tôi thu thập dữ liệu ở mức tối thiểu cần thiết để phục vụ sự kiện.",
 				"items": {
 					"no_accounts_title": "Không thu thập dữ liệu tài khoản cá nhân",
 					"no_accounts_body": "Chúng tôi không yêu cầu hay lưu trữ địa chỉ email, mật khẩu, số điện thoại, tên thật pháp lý hoặc thông tin thanh toán.",
 					"shared_info_title": "Thông tin hiển thị với khách khác",
-					"shared_info_body": "Tên hiển thị, ảnh đại diện tùy chọn, ghi chú khẩu vị, món đã đặt, phần chia tiền và bài đăng/ảnh trên tường góp ý sẽ hiển thị với những người có mã PIN của bữa tối.",
+					"shared_info_body": "Tên hiển thị, ảnh đại diện tùy chọn, ghi chú khẩu vị, món đã đặt, phần chia tiền và bài đăng/ảnh trên tường góp ý sẽ hiển thị với những người có mã PIN của buổi tụ họp.",
 					"device_storage_title": "Chỉ lưu cục bộ trên trình duyệt",
-					"device_storage_body": "Trang web không dùng cookie quảng cáo hay theo dõi. Bộ nhớ trình duyệt (localStorage) chỉ lưu ngôn ngữ, giao diện sáng/tối, mã PIN bữa tối, mã bàn và tên bạn đã chọn trên thiết bị của bạn.",
+					"device_storage_body": "Trang web không dùng cookie quảng cáo hay theo dõi. Bộ nhớ trình duyệt (localStorage) chỉ lưu ngôn ngữ, giao diện sáng/tối, mã PIN sự kiện, mã bàn và tên bạn đã chọn trên thiết bị của bạn.",
 					"removal_title": "Lưu trữ & xóa thông tin",
-					"removal_body": "Dữ liệu bữa tiệc và ảnh tải lên được lưu trên các dịch vụ đám mây (Neon, Upstash, AWS và Cloudflare), và trang Giới thiệu có nhúng bản đồ Google Maps chỉ đường tới Gao Ren Guan. Bạn có thể tự sửa/xóa tên khi bữa tiệc đang mở hoặc nhắn người tổ chức bất cứ lúc nào để xóa tên, ghi chú hay hình ảnh."
+					"removal_body": "Dữ liệu sự kiện và ảnh tải lên được lưu trên các dịch vụ đám mây (Neon, Upstash, AWS và Cloudflare), và trang Giới thiệu có nhúng bản đồ Google Maps chỉ đường tới Gao Ren Guan. Bạn có thể tự sửa/xóa tên khi sự kiện đang mở hoặc nhắn người tổ chức bất cứ lúc nào để xóa tên, ghi chú hay hình ảnh."
 				}
 			},
 			"terms": {
 				"title": "Điều khoản sử dụng",
-				"summary": "Những nguyên tắc cơ bản khi sử dụng trang web Yao Yao Dinner.",
+				"summary": "Các quy tắc cơ bản khi sử dụng trang web YaoYao Furum After Gathering (FAG) 2026.",
 				"intro": "Khi sử dụng trang web để vào bàn, đặt món trước tại Gao Ren Guan hoặc đăng bài trên tường góp ý, bạn đồng ý với một vài nguyên tắc đơn giản sau.",
 				"items": {
 					"non_commercial_title": "Dự án cá nhân, phi thương mại",
-					"non_commercial_body": "Trang web được vận hành miễn phí phục vụ riêng cho các buổi ăn tối của Yao Yao và bạn bè. Dịch vụ được cung cấp theo hiện trạng và có thể được cập nhật hoặc tạm dừng bất cứ lúc nào.",
+					"non_commercial_body": "Trang web này được cung cấp miễn phí dưới dạng dự án cá nhân cho YaoYao Furum After Gathering (FAG) 2026 theo tinh thần nỗ lực tối đa và có thể được cập nhật hoặc tạm dừng bất cứ lúc nào.",
 					"access_codes_title": "Giữ kín mã PIN & mã bàn",
-					"access_codes_body": "Mã PIN bữa tối và mã bàn chỉ dành cho bạn bè được mời tham dự. Vui lòng không chia sẻ công khai hoặc cố truy cập vào bàn hay trang quản trị khi chưa được phép.",
+					"access_codes_body": "Mã PIN sự kiện và mã bàn chỉ dành cho bạn bè được mời tham dự buổi họp mặt. Vui lòng không chia sẻ công khai hoặc cố truy cập vào bàn hay trang quản trị khi chưa được phép.",
 					"unverified_names_title": "Tên hiển thị chung, không xác minh",
 					"unverified_names_body": "Tên khách là nhãn hiển thị chưa xác minh do người tham dự tự nhập hoặc chọn. Vì bất kỳ ai có mã bàn đều có thể chọn tên tại bàn đó, tên hiển thị không xác lập danh tính thực tế.",
 					"bills_title": "Không thanh toán qua trang web",
@@ -388,7 +397,7 @@
 			"guidelines": {
 				"title": "Nguyên tắc cộng đồng",
 				"summary": "Giữ cho danh sách bàn và tường góp ý luôn vui vẻ, lịch sự.",
-				"intro": "Không gian này giúp bạn bè của Yao Yao thư giãn, thưởng thức món ngon tại Gao Ren Guan và trò chuyện vui vẻ. Hãy cùng giữ bầu không khí thân thiện cho tất cả mọi người.",
+				"intro": "Không gian này để bạn bè và cộng đồng furry của Yao Yao cùng thư giãn sau FURUM, thưởng thức món ngon tại Gao Ren Guan và trò chuyện vui vẻ. Hãy cùng giữ bầu không khí thân thiện cho tất cả mọi người.",
 				"items": {
 					"be_kind_title": "Thân thiện và tôn trọng nhau",
 					"be_kind_body": "Hãy cư xử tử tế với bạn bè, chủ bàn và nhân viên nhà hàng Gao Ren Guan. Không đăng nội dung quấy rối, xúc phạm hoặc gây mất đoàn kết.",
@@ -403,7 +412,7 @@
 			"preorder": {
 				"title": "Quy định đặt món trước",
 				"summary": "Cách thức hoạt động của các giai đoạn đặt món tại Gao Ren Guan, chia phần ăn và ghi chú khẩu vị.",
-				"intro": "Để nhà hàng 高人馆 · Gao Ren Guan chuẩn bị món ăn kịp giờ cho tất cả các bàn, việc đặt món sẽ đi qua các giai đoạn rõ ràng trước và trong bữa tối.",
+				"intro": "Để nhà hàng 高人馆 · Gao Ren Guan chuẩn bị món ăn kịp giờ cho tất cả các bàn, việc đặt món sẽ đi qua các giai đoạn rõ ràng trước và trong buổi tụ họp.",
 				"items": {
 					"stages_title": "Các giai đoạn & hạn đặt món",
 					"stages_body": "Khi mở đặt trước, bạn có thể thêm hoặc sửa món cho bàn mình. Đến hạn chốt, đơn đặt trước sẽ khóa để bếp Gao Ren Guan chuẩn bị. Các món gọi thêm tại nhà hàng sẽ được nhập trong lúc ăn tối trước khi chốt sổ.",
@@ -421,11 +430,11 @@
 				"intro": "Cần hỗ trợ tại bàn, phát hiện lỗi trên web hoặc muốn xóa ảnh, ghi chú hay bài góp ý? Hãy liên hệ trực tiếp để được hỗ trợ ngay.",
 				"items": {
 					"report_issue_title": "Báo cáo bài đăng, ảnh hoặc sự cố tại bàn",
-					"report_issue_body": "Nếu có ảnh hoặc bài đăng không mong muốn trên tường góp ý, hoặc nhầm lẫn trong danh sách bàn/đơn hàng, hãy nhắn cho Yao Yao hoặc quản trị viên tại bữa tiệc.",
+					"report_issue_body": "Nếu có ảnh hoặc bài đăng không mong muốn trên tường góp ý, hoặc nhầm lẫn trong danh sách bàn/đơn hàng, hãy nhắn cho Yao Yao hoặc quản trị viên tại buổi tụ họp.",
 					"content_removal_title": "Yêu cầu xóa dữ liệu hoặc hình ảnh",
-					"content_removal_body": "Nếu bạn muốn xóa tên hiển thị, ảnh đại diện hoặc bài góp ý khỏi bữa tiệc hiện tại hay trước đây của Yao Yao, hãy nhắn qua các liên kết mạng xã hội bên dưới.",
+					"content_removal_body": "Nếu bạn muốn xóa tên hiển thị, ảnh đại diện hoặc bài góp ý khỏi buổi tụ họp hiện tại hay trước đây của Yao Yao, hãy nhắn qua các liên kết mạng xã hội bên dưới.",
 					"host_help_title": "Chủ tiệc & hỗ trợ kỹ thuật",
-					"host_help_body": "Bữa tiệc được tổ chức bởi Chee Yao (Yao Yao / Aster 归星). Về vấn đề kỹ thuật hoặc trang web, hãy liên hệ hatohui qua X (@_Hatohui), Telegram (hatohui), Bluesky (hatohui) hoặc Facebook (hatohui).",
+					"host_help_body": "Buổi tụ họp được tổ chức bởi Chee Yao (Yao Yao / Aster 归星). Về vấn đề kỹ thuật hoặc trang web, hãy liên hệ hatohui qua X (@_Hatohui), Telegram (hatohui), Bluesky (hatohui) hoặc Facebook (hatohui).",
 					"self_service_title": "Tự xử lý nhanh khi bấm nhầm",
 					"self_service_body": "Lỡ bấm \"Là tôi\" nhầm người hoặc vào nhầm bàn? Bạn có thể chọn Đăng xuất ở menu tên góc trên bên phải hoặc bấm nút Rời bàn bất cứ lúc nào."
 				}
@@ -944,6 +953,8 @@
 	"landing": {
 		"created_by": "Trang web được tạo bởi",
 		"order_by": "Đặt món trước",
-		"where": "Địa điểm"
+		"where": "Địa điểm",
+		"event_name": "YaoYao Furum After Gathering (FAG) 2026",
+		"event_subtitle": "Buổi tụ họp riêng hậu sự kiện Furum do Yao Yao tổ chức"
 	}
 }

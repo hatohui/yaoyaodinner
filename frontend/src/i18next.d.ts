@@ -66,6 +66,11 @@ declare module 'react-i18next' {
 					title: string
 					description: string
 				}
+				site: {
+					title: string
+					short_name: string
+					description: string
+				}
 				a11y: {
 					toggle_theme: string
 					clear_search: string
@@ -74,6 +79,8 @@ declare module 'react-i18next' {
 					created_by: string
 					order_by: string
 					where: string
+					event_name: string
+					event_subtitle: string
 				}
 				nav: {
 					faq: string
@@ -307,6 +314,10 @@ declare module 'react-i18next' {
 					}
 				}
 				about: {
+					hero_tag: string
+					hero_badge_private: string
+					hero_title: string
+					hero_subtitle: string
 					location_title: string
 					address_label: string
 					get_directions: string
@@ -317,6 +328,28 @@ declare module 'react-i18next' {
 					persona_yaoyao: string
 					persona_aster: string
 					social_label: string
+					project: {
+						tag: string
+						title: string
+						intro: string
+						features: {
+							gatherings_title: string
+							gatherings_body: string
+							spaces_title: string
+							spaces_body: string
+							codes_title: string
+							codes_body: string
+							memories_title: string
+							memories_body: string
+							preorders_title: string
+							preorders_body: string
+							archive_title: string
+							archive_body: string
+						}
+						identity_title: string
+						identity_body_1: string
+						identity_body_2: string
+					}
 				}
 				food_detail: {
 					title: string

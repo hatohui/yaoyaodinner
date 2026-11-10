@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -18,6 +19,14 @@ export default function FoodDetailPage() {
 		updateFood,
 		updateVariant,
 	} = useFoodDetail()
+
+	useEffect(() => {
+		if (!food?.name) return
+		document.title = `${food.name} · YaoYao Furum After Gathering (FAG) 2026`
+		return () => {
+			document.title = 'YaoYao Furum After Gathering (FAG) 2026'
+		}
+	}, [food?.name])
 
 	if (isLoading) {
 		return (

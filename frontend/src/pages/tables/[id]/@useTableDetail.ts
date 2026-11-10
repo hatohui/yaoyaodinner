@@ -12,7 +12,7 @@ import type { TableDto, UpdateTableDetailsDto } from '@/api/model'
 
 export function useTableDetail() {
 	const { id = '' } = useParams()
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
 
@@ -40,7 +40,15 @@ export function useTableDetail() {
 	})
 
 	const shareLink = () => {
-		navigator.clipboard?.writeText(window.location.href)
+		const url = new URL(window.location.href)
+		if (
+			i18n.language &&
+			i18n.language !== 'en' &&
+			!url.searchParams.has('lang')
+		) {
+			url.searchParams.set('lang', i18n.language)
+		}
+		navigator.clipboard?.writeText(url.toString())
 		toast.success(t('roster.link_copied'))
 	}
 

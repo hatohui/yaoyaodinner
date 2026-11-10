@@ -1,4 +1,9 @@
 {
+	"site": {
+		"title": "YaoYao Furum After Gathering (FAG) 2026",
+		"short_name": "YaoYao FAG 2026",
+		"description": "由 Yao Yao 主办的 Furum 赛后私人聚会"
+	},
 	"config": {
 		"select_language": "选择语言"
 	},
@@ -61,7 +66,7 @@
 		"visible_to_all": "显示在应用顶部",
 		"hidden": "对客人隐藏",
 		"message_label": "公告内容",
-		"placeholder": "例如：YaoYao 晚宴 19:00 开始！请尽快确认预订。",
+		"placeholder": "例如：YaoYao Furum After Gathering 晚上 7:00 开始！请尽快确认提前点单。",
 		"preview": "预览"
 	},
 	"dinner": {
@@ -311,74 +316,78 @@
 		"categories": "分类"
 	},
 	"about": {
+		"hero_tag": "私人聚会",
+		"hero_badge_private": "Furum 2026 赛后聚餐",
+		"hero_title": "YaoYao Furum After Gathering (FAG) 2026",
+		"hero_subtitle": "由 Yao Yao 主办的 Furum 赛后私人聚会，邀请各位好友与兽迷齐聚马来西亚，畅享美食、欢聚交流，度过难忘的夜晚。",
 		"location_title": "我们在这里",
 		"address_label": "地址",
 		"get_directions": "获取路线",
-		"details_tag": "内幕消息",
+		"details_tag": "聚会主办人",
 		"details_title": "认识一下 Chee Yao (Yao Yao)",
-		"details_body_1": "他在兽圈里也被称为 Aster（归星）@AsterTheDragon。正是 Chee Yao 邀请大家参加这次特别的聚会！",
-		"details_body_2": "他被称为喜欢芒果的蓝莓派，欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。",
+		"details_body_1": "他在兽圈里也被称为 Aster（归星）@AsterTheDragon。正是 Chee Yao 主办了本次 YaoYao Furum After Gathering (FAG) 2026，邀请大家在展会后欢聚一堂！",
+		"details_body_2": "他被称为喜欢芒果的蓝莓派，热情欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster（归星）",
 		"social_label": "{{name}} 的 {{platform}}",
 		"project": {
 			"tag": "关于本网站",
-			"title": "专为 Yao Yao 在高人馆的聚餐而建",
-			"intro": "本网站是由个人运营的免费、非商业项目，专为 Yao Yao（Chee Yao / Aster 归星）与朋友们在梳邦再也（Subang Jaya）高人馆 · Gao Ren Guan 的聚餐而打造——让大家无需面对繁琐的表格或群聊刷屏，就能轻松安排座位、提前点菜并分摊各桌账单。",
+			"title": "专为 YaoYao Furum After Gathering (FAG) 2026 聚餐而建",
+			"intro": "本网站是由个人运营的免费、非商业项目，专为 YaoYao Furum After Gathering (FAG) 2026 —— 即 Yao Yao（Chee Yao / Aster 归星）与朋友们在梳邦再也（Subang Jaya）高人馆 · Gao Ren Guan 的 Furum 赛后私人聚会而打造——让大家无需面对繁琐的表格或群聊刷屏，就能轻松安排座位、提前点菜并分摊各桌账单。",
 			"features": {
-				"gatherings_title": "统筹 Yao Yao 聚餐",
-				"gatherings_body": "集中展示开饭时间、预订截止时间和雪兰莪高人馆的导航路线，方便每位参与的朋友查看。",
+				"gatherings_title": "统筹 YaoYao FAG 2026 聚餐",
+				"gatherings_body": "集中展示聚餐时间、预订截止时间和雪兰莪高人馆的导航路线，方便每位参与的朋友查看。",
 				"spaces_title": "高人馆楼层平面图与餐桌",
 				"spaces_body": "直观查看高人馆一楼和二楼的餐桌分布，轻松找到自己的座位和同桌伙伴。",
-				"codes_title": "凭聚餐 PIN 码与桌码入座",
-				"codes_body": "使用共享的聚餐 PIN 码和各桌专属代码即可认领座位，无需繁琐的注册流程。",
+				"codes_title": "凭聚会 PIN 码与桌码入座",
+				"codes_body": "使用共享的聚会 PIN 码和各桌专属代码即可认领座位，无需繁琐的注册流程。",
 				"memories_title": "分享照片、留言与互动",
 				"memories_body": "在留言墙上发布动态、上传当晚的聚餐照片，并用表情符号与大家互动。",
 				"preorders_title": "提前点选高人馆菜单",
 				"preorders_body": "支持四种语言浏览高人馆菜单、添加忌口备注、为所在餐桌提前点菜，并公平计算账单分摊。",
-				"archive_title": "珍藏每次聚餐回忆",
-				"archive_body": "保留往期 Yao Yao 聚餐的餐桌名单、热门菜品和留言照片，留住每次相聚的美好瞬间。"
+				"archive_title": "珍藏每次聚会回忆",
+				"archive_body": "保留往期 Yao Yao 聚会的餐桌名单、热门菜品和留言照片，留住每次相聚的美好瞬间。"
 			},
 			"identity_title": "无需账号、密码或邮箱注册",
-			"identity_body_1": "本网站特意不设传统的用户账号、密码或邮箱注册。你只需输入聚餐 PIN 码并用桌码解锁自己所在的餐桌即可参与。",
+			"identity_body_1": "本网站特意不设传统的用户账号、密码或邮箱注册。你只需输入聚会 PIN 码并用桌码解锁自己所在的餐桌即可参与。",
 			"identity_body_2": "餐桌名单或留言墙上的名字仅是大家共享、未经验证的称呼，仅用于安排座位和统计点单。认领或输入名字并不代表或验证任何人的真实身份。"
 		}
 	},
 	"legal": {
 		"tag": "信息与规则",
 		"title": "隐私、条款与聚餐指南",
-		"subtitle": "用简单明了的语言说明 Yao Yao Dinner 网站的运作方式。",
+		"subtitle": "用简单明了的语言说明 YaoYao Furum After Gathering (FAG) 2026 网站的运作方式。",
 		"view_all": "查看全部",
 		"all_sections": "全部主题",
 		"back_to_about": "返回关于页面",
 		"contact_faq_cta": "查看常见问题快速解决",
-		"contact_host_label": "聚餐主办方 (Yao Yao)",
+		"contact_host_label": "聚会主办方 (Yao Yao)",
 		"contact_tech_label": "技术与网站支持 (hatohui)",
 		"sections": {
 			"privacy": {
 				"title": "隐私说明",
 				"summary": "当你加入餐桌、点餐或上传照片时，网站会保存哪些信息。",
-				"intro": "这是一个由个人运营、专为参加 Yao Yao 高人馆（Gao Ren Guan）聚餐的朋友们打造的非商业网站。我们仅保存维持聚餐协调所必需的最少信息。",
+				"intro": "这是一个由个人运营、专为参加 Yao Yao 在高人馆（Gao Ren Guan）主办的 YaoYao Furum After Gathering (FAG) 2026 赛后私人聚会的朋友们打造的非商业网站。我们仅保存维持聚会协调所必需的最少信息。",
 				"items": {
 					"no_accounts_title": "不收集个人账号信息",
 					"no_accounts_body": "我们不会索取或保存电子邮件地址、密码、电话号码、法定真名或任何支付信息。",
 					"shared_info_title": "其他参与者可见的信息",
-					"shared_info_body": "你填写的显示名称、可选头像、饮食忌口备注、点餐记录、账单分摊以及在留言墙发布的文字和照片，对所有持有本次聚餐 PIN 码的参与者可见。",
+					"shared_info_body": "你填写的显示名称、可选头像、饮食忌口备注、点餐记录、账单分摊以及在留言墙发布的文字和照片，对所有持有本次聚会 PIN 码的参与者可见。",
 					"device_storage_title": "仅使用浏览器本地存储",
-					"device_storage_body": "我们不使用任何广告追踪器或分析 Cookie。浏览器的 localStorage 仅用于在你的设备上记住语言、深浅主题、聚餐 PIN 码、餐桌代码以及你认领的名字。",
+					"device_storage_body": "我们不使用任何广告追踪器或分析 Cookie。浏览器的 localStorage 仅用于在你的设备上记住语言、深浅主题、聚会 PIN 码、餐桌代码以及你认领的名字。",
 					"removal_title": "数据托管与删除方式",
-					"removal_body": "聚餐数据与上传的图片托管在云数据库与存储服务（Neon、Upstash、AWS 和 Cloudflare）上，关于页面嵌入了高人馆位置的 Google 地图。聚餐开放期间你可以随时修改或移除自己的信息，也可随时联系主办方删除你的名字、备注或照片。"
+					"removal_body": "聚会数据与上传的图片托管在云数据库与存储服务（Neon、Upstash、AWS 和 Cloudflare）上，关于页面嵌入了高人馆位置的 Google 地图。聚会开放期间你可以随时修改或移除自己的信息，也可随时联系主办方删除你的名字、备注或照片。"
 				}
 			},
 			"terms": {
 				"title": "使用条款",
-				"summary": "使用 Yao Yao Dinner 网站的简单基本准则。",
+				"summary": "使用 YaoYao Furum After Gathering (FAG) 2026 网站的简单基本准则。",
 				"intro": "当你使用本网站加入餐桌、提前点选高人馆菜品或在留言墙发帖时，即表示你同意遵守以下几条基本约定。",
 				"items": {
 					"non_commercial_title": "个人非商业项目",
-					"non_commercial_body": "本网站作为个人非商业项目免费提供，专用于 Yao Yao 与朋友们的聚餐协调。网站按现状尽力提供服务，可随时更新、暂停或重置。",
-					"access_codes_title": "请勿公开分享聚餐 PIN 码与桌码",
-					"access_codes_body": "聚餐 PIN 码和餐桌代码仅供受邀参加聚餐的朋友使用。请勿将其公开转发，也不要尝试访问未受邀的餐桌或管理后台。",
+					"non_commercial_body": "本网站作为个人非商业项目免费提供，专用于 YaoYao Furum After Gathering (FAG) 2026 聚会协调。网站按现状尽力提供服务，可随时更新、暂停或重置。",
+					"access_codes_title": "请勿公开分享聚会 PIN 码与桌码",
+					"access_codes_body": "聚会 PIN 码和餐桌代码仅供受邀参加聚会的朋友使用。请勿将其公开转发，也不要尝试访问未受邀的餐桌或管理后台。",
 					"unverified_names_title": "共享且未经验证的称呼",
 					"unverified_names_body": "网站上的名字是由参与者自行输入或认领的未验证标识。任何持有桌码的人都可以在该桌添加或认领名字，因此名字不构成真实身份证明。",
 					"bills_title": "网站不处理任何实际付款",
@@ -388,7 +397,7 @@
 			"guidelines": {
 				"title": "社区指南",
 				"summary": "共同维护友好、愉快、互相尊重的餐桌与留言墙氛围。",
-				"intro": "这个空间是为了让 Yao Yao 的朋友们在高人馆开心地聚餐交流而建，请大家一起维护温馨友好的环境。",
+				"intro": "这个空间是为了让 Yao Yao 的朋友们和兽迷们在 FURUM 之后放松心情、在高人馆开心地聚餐交流而建，请大家一起维护温馨友好的环境。",
 				"items": {
 					"be_kind_title": "友善待人、互相尊重",
 					"be_kind_body": "请友善对待每一位朋友、桌主和高人馆餐厅工作人员。请勿发布任何骚扰、攻击或令人不适的内容。",
@@ -397,13 +406,13 @@
 					"respect_tables_title": "尊重他人的座位与订单",
 					"respect_tables_body": "请只解锁你实际就座的餐桌，并只认领你自己的名字。未经他人同意，请勿修改或删除别人的点餐记录。",
 					"moderation_title": "主办方与管理员维护",
-					"moderation_body": "为了保证聚餐顺利进行，Yao Yao 和管理员可以移除不当留言或照片、调整餐桌名单，或在必要时重置餐桌代码。"
+					"moderation_body": "为了保证聚会顺利进行，Yao Yao 和管理员可以移除不当留言或照片、调整餐桌名单，或在必要时重置餐桌代码。"
 				}
 			},
 			"preorder": {
 				"title": "提前点餐规则",
 				"summary": "了解高人馆点餐阶段、拼菜分摊、饮食忌口备注及账单计算方式。",
-				"intro": "为了让高人馆 · Gao Ren Guan 能准时为所有餐桌备菜，点餐流程在聚餐前和聚餐期间分为几个清晰的阶段。",
+				"intro": "为了让高人馆 · Gao Ren Guan 能准时为所有餐桌备菜，点餐流程在聚会前和聚会期间分为几个清晰的阶段。",
 				"items": {
 					"stages_title": "点餐阶段与截止时间",
 					"stages_body": "预订开放期间，你可以为所在餐桌添加或修改菜品。到达截止时间后预订将锁定，以便高人馆后厨提前备菜。聚餐开始后在餐厅现场加点的菜品，可在账单最终结算前继续录入。",
@@ -423,9 +432,9 @@
 					"report_issue_title": "举报不当留言、照片或餐桌问题",
 					"report_issue_body": "如果留言墙上出现了不合适的照片，或者你们桌的名单、订单被误改，请直接联系 Yao Yao 或现场管理员。",
 					"content_removal_title": "申请删除个人名字或照片",
-					"content_removal_body": "如果你希望从当前或往期 Yao Yao 聚餐中删除自己的显示名称、头像或留言照片，可通过下方的社交链接联系主办方，我们会尽快为你删除。",
-					"host_help_title": "聚餐主办方与技术支持",
-					"host_help_body": "聚餐由 Chee Yao（Yao Yao / Aster 归星）主办。如遇网站技术问题，可通过 X (@_Hatohui)、Telegram (hatohui)、Bluesky (hatohui) 或 Facebook (hatohui) 联系 hatohui。",
+					"content_removal_body": "如果你希望从当前或往期 Yao Yao 聚会中删除自己的显示名称、头像或留言照片，可通过下方的社交链接联系主办方，我们会尽快为你删除。",
+					"host_help_title": "聚会主办方与技术支持",
+					"host_help_body": "聚会由 Chee Yao（Yao Yao / Aster 归星）主办。如遇网站技术问题，可通过 X (@_Hatohui)、Telegram (hatohui)、Bluesky (hatohui) 或 Facebook (hatohui) 联系 hatohui。",
 					"self_service_title": "常见误操作快速自助处理",
 					"self_service_body": "不小心在别人的名字旁点了“这是我”或进错了餐桌？你可以随时点击右上角名字菜单中的“退出”，或点击餐桌页面上的“离开餐桌”按钮。"
 				}
@@ -944,6 +953,8 @@
 	"landing": {
 		"created_by": "网站制作：",
 		"order_by": "预订截止",
-		"where": "地点"
+		"where": "地点",
+		"event_name": "YaoYao Furum After Gathering (FAG) 2026",
+		"event_subtitle": "由 Yao Yao 主办的 Furum 赛后私人聚会"
 	}
 }
