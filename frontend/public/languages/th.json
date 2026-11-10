@@ -184,6 +184,27 @@
 		"leave_confirm_body": "คุณจะดูได้อย่างเดียวและต้องใส่รหัสอีกครั้งเพื่อแก้ไข",
 		"not_your_table": "คุณแก้ไขได้เฉพาะโต๊ะของคุณเท่านั้น"
 	},
+	"table_audit": {
+		"open": "ประวัติ",
+		"title": "ประวัติโต๊ะ",
+		"description": "การเปลี่ยนแปลงล่าสุดของโต๊ะ ใหม่สุดอยู่ด้านบน",
+		"empty": "ยังไม่มีการเปลี่ยนแปลง",
+		"load_error": "โหลดประวัติไม่สำเร็จ",
+		"by_guest": "โดยแขก",
+		"actions": {
+			"created": "สร้างโต๊ะ {{no}} · {{name}}",
+			"bulk_created": "สร้างโต๊ะ {{count}} โต๊ะ",
+			"renamed": "เปลี่ยนชื่อโต๊ะ {{no}} จาก “{{from}}” เป็น “{{to}}”",
+			"capacity_changed": "โต๊ะ {{no}} · {{name}}: จำนวนแขกสูงสุด {{from}} → {{to}}",
+			"banner_changed": "เปลี่ยนรูปของโต๊ะ {{no}} · {{name}}",
+			"banner_removed": "ลบรูปของโต๊ะ {{no}} · {{name}}",
+			"host_changed": "โต๊ะ {{no}} · {{name}}: ตั้ง {{to}} เป็นเจ้าภาพ",
+			"host_removed": "โต๊ะ {{no}} · {{name}}: ลบเจ้าภาพ",
+			"numbers_swapped": "สลับหมายเลขโต๊ะ {{no}} · {{name}} กับโต๊ะ {{withNo}} · {{withName}}",
+			"moved_to_staging": "ย้ายโต๊ะ {{no}} · {{name}} ไปที่โต๊ะเตรียมไว้",
+			"deleted": "ลบโต๊ะ {{no}} · {{name}} (มีคนนั่ง {{seated}} คน)"
+		}
+	},
 	"tables": {
 		"delete_title": "ลบโต๊ะ {{no}} · {{name}}?",
 		"open_table": "เปิดโต๊ะ",

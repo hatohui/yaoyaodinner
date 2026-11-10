@@ -184,6 +184,27 @@
 		"leave_confirm_body": "You'll go back to view only and need the code again to make changes.",
 		"not_your_table": "You can only make changes at your own table"
 	},
+	"table_audit": {
+		"open": "History",
+		"title": "Table history",
+		"description": "Recent changes to tables, newest first.",
+		"empty": "No changes yet",
+		"load_error": "Couldn't load the history",
+		"by_guest": "by a guest",
+		"actions": {
+			"created": "Created table {{no}} · {{name}}",
+			"bulk_created": "Created {{count}} tables",
+			"renamed": "Renamed table {{no}} from “{{from}}” to “{{to}}”",
+			"capacity_changed": "Table {{no}} · {{name}}: max guests {{from}} → {{to}}",
+			"banner_changed": "Changed the image of table {{no}} · {{name}}",
+			"banner_removed": "Removed the image of table {{no}} · {{name}}",
+			"host_changed": "Table {{no}} · {{name}}: host set to {{to}}",
+			"host_removed": "Table {{no}} · {{name}}: host removed",
+			"numbers_swapped": "Swapped table {{no}} · {{name}} with table {{withNo}} · {{withName}}",
+			"moved_to_staging": "Moved table {{no}} · {{name}} to staging",
+			"deleted": "Deleted table {{no}} · {{name}} ({{seated}} seated)"
+		}
+	},
 	"tables": {
 		"delete_title": "Delete table {{no}} · {{name}}?",
 		"open_table": "Open table",

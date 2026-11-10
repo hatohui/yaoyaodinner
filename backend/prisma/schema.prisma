@@ -337,3 +337,23 @@ model EventSeasonalPrice {
   @@id([eventId, variantId])
   @@map("event_seasonal_price")
 }
+
+/// Who changed which table and how - kept after the table is gone so mistakes can be traced.
+model TableAudit {
+  id        String   @id @db.VarChar(255)
+  /// created | renamed | capacity_changed | banner_changed | host_changed | numbers_swapped | moved_to_staging | deleted
+  action    String   @db.VarChar(32)
+  /// admin | guest
+  actor     String   @db.VarChar(16)
+  tableId   String?  @map("table_id") @db.VarChar(255)
+  eventId   String?  @map("event_id") @db.VarChar(255)
+  tableNo   Int?     @map("table_no")
+  tableName String?  @map("table_name") @db.VarChar(255)
+  /// Before/after values, e.g. { from, to } or the swapped partner
+  details   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("table_audit")
+  @@index([createdAt])
+  @@index([eventId, createdAt])
+}

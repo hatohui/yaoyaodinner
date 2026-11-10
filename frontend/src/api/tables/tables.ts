@@ -28,11 +28,13 @@ import type {
   BulkCreateTableDto,
   CreateTableDto,
   ExportTablesParams,
+  GetTableAuditParams,
   GetTablesParams,
   IdsDto,
   PersonDto,
   ReassignTablesDto,
   SwapTablesDto,
+  TableAuditDto,
   TableCodeDto,
   TableCodeResponseDto,
   TableCodeVerifyResponseDto,
@@ -268,6 +270,93 @@ export function useGetStagedTables<TData = Awaited<ReturnType<typeof getStagedTa
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetStagedTablesQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+export const getTableAudit = (
+    params?: GetTableAuditParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableAuditDto[]>(
+      {url: `/api/tables/audit`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetTableAuditQueryKey = (params?: GetTableAuditParams,) => {
+    return [
+    `/api/tables/audit`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetTableAuditQueryOptions = <TData = Awaited<ReturnType<typeof getTableAudit>>, TError = unknown>(params?: GetTableAuditParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAudit>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTableAuditQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTableAudit>>> = ({ signal }) => getTableAudit(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTableAudit>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTableAuditQueryResult = NonNullable<Awaited<ReturnType<typeof getTableAudit>>>
+export type GetTableAuditQueryError = unknown
+
+
+export function useGetTableAudit<TData = Awaited<ReturnType<typeof getTableAudit>>, TError = unknown>(
+ params: undefined |  GetTableAuditParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAudit>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableAudit>>,
+          TError,
+          Awaited<ReturnType<typeof getTableAudit>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableAudit<TData = Awaited<ReturnType<typeof getTableAudit>>, TError = unknown>(
+ params?: GetTableAuditParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAudit>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableAudit>>,
+          TError,
+          Awaited<ReturnType<typeof getTableAudit>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableAudit<TData = Awaited<ReturnType<typeof getTableAudit>>, TError = unknown>(
+ params?: GetTableAuditParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAudit>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetTableAudit<TData = Awaited<ReturnType<typeof getTableAudit>>, TError = unknown>(
+ params?: GetTableAuditParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAudit>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTableAuditQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

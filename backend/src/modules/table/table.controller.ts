@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
+import { TableAuditService } from './table-audit.service';
 import { PeopleService } from '@modules/people/people.service';
 import { AdminGuard } from '@common/guards/admin.guard';
 import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
@@ -33,6 +34,7 @@ import { ReassignTablesDto } from './dto/reassign-tables.dto';
 import { SwapTablesDto } from './dto/swap-tables.dto';
 import { TableDto, TableListDto } from './dto/table-response.dto';
 import { TableExportDto } from './dto/table-export.dto';
+import { TableAuditDto } from './dto/table-audit.dto';
 import {
   TableCodeDto,
   TableCodeResponseDto,
@@ -50,6 +52,7 @@ export class TableController {
     private people: PeopleService,
     private config: ConfigService,
     private access: TableAccessService,
+    private audit: TableAuditService,
   ) {}
 
   @Get()
@@ -76,6 +79,17 @@ export class TableController {
   @ApiResponse({ status: 200, type: [TableDto] })
   findStaged() {
     return this.table.findStaged();
+  }
+
+  @Get('audit')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'getTableAudit' })
+  @ApiQuery({ name: 'count', required: false, type: Number })
+  @ApiResponse({ status: 200, type: [TableAuditDto] })
+  getAudit(@Query('count') count = '100') {
+    return this.audit.list(
+      Math.min(500, Math.max(1, parseInt(count, 10) || 100)),
+    );
   }
 
   @Get('export')
@@ -209,14 +223,15 @@ export class TableController {
   ) {
     // name and banner need the table's code; who hosts is the admin's call
     await this.access.forTable(id, headers);
-    if (dto.tableLeaderId !== undefined) {
-      const passphrase = await this.config.getAdminPassphrase();
-      const adminSecret = headers[ADMIN_HEADER];
-      if (!adminSecret || !passphrase || adminSecret !== passphrase) {
-        throw new ForbiddenException('Only admins can change the host');
-      }
+    const passphrase = await this.config.getAdminPassphrase();
+    const adminSecret = headers[ADMIN_HEADER];
+    const isAdmin = Boolean(
+      adminSecret && passphrase && adminSecret === passphrase,
+    );
+    if (dto.tableLeaderId !== undefined && !isAdmin) {
+      throw new ForbiddenException('Only admins can change the host');
     }
-    return this.table.updateDetails(id, dto);
+    return this.table.updateDetails(id, dto, isAdmin ? 'admin' : 'guest');
   }
 
   @Patch(':id/position')

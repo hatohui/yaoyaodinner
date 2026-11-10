@@ -5,6 +5,7 @@ import {
 	useUpdateTable,
 	useSwapTableNumbers,
 	useDeleteTable,
+	useUpdateTableDetails,
 } from '@/api/tables/tables'
 import { useToast } from '@/hooks/useToast'
 
@@ -33,6 +34,14 @@ export function useTableEditActions() {
 		mutation: {
 			meta: { ownErrorToast: true },
 			onError: () => toast.error(t('admin.tables.rename_failed')),
+			onSettled: invalidate,
+		},
+	})
+
+	const { mutate: updateDetails } = useUpdateTableDetails({
+		mutation: {
+			meta: { ownErrorToast: true },
+			onError: () => toast.error(t('roster.update_failed')),
 			onSettled: invalidate,
 		},
 	})
@@ -66,6 +75,8 @@ export function useTableEditActions() {
 		renameTable: (id: string, name: string) => update({ id, data: { name } }),
 		updateCapacity: (id: string, capacity: number) =>
 			update({ id, data: { capacity } }),
+		updateBanner: (id: string, bannerUrl: string | null) =>
+			updateDetails({ id, data: { bannerUrl } }),
 		swapNumbers: (a: string, b: string) => swap({ data: { ids: [a, b] } }),
 		deleteTable: (id: string) => remove({ id }),
 	}

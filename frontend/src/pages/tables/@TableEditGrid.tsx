@@ -1,17 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	DndContext,
-	DragOverlay,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from '@dnd-kit/core'
 import { GripVertical } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { SwapDnd } from '@/components/common/SwapDnd'
 import { SwapNumberDialog } from '../admin/tables/@SwapNumberDialog'
+import { TableAuditDialog } from '../admin/tables/@TableAuditDialog'
 import { TableEditCard } from './@TableEditCard'
 import { useTableEditActions } from './@useTableEditActions'
 
@@ -22,74 +16,43 @@ interface TableEditGridProps {
 
 export function TableEditGrid({ tables, className }: TableEditGridProps) {
 	const { t } = useTranslation()
-	const { renameTable, updateCapacity, swapNumbers, deleteTable } =
-		useTableEditActions()
-	const [dragId, setDragId] = useState<string | null>(null)
-	const [overId, setOverId] = useState<string | null>(null)
+	const {
+		renameTable,
+		updateCapacity,
+		updateBanner,
+		swapNumbers,
+		deleteTable,
+	} = useTableEditActions()
 	const [swapping, setSwapping] = useState<TableDto | null>(null)
 	const [deleting, setDeleting] = useState<TableDto | null>(null)
-	const sensors = useSensors(
-		useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
-		useSensor(KeyboardSensor)
-	)
-	const dragged = tables.find(tb => tb.id === dragId)
-
-	const endDrag = () => {
-		setDragId(null)
-		setOverId(null)
-	}
 
 	return (
 		<>
-			<p className='mb-3 flex items-center gap-1.5 text-xs text-muted-foreground'>
-				<GripVertical className='size-3.5 shrink-0' />
-				{t('tables.drag_to_swap')}
-			</p>
-			<DndContext
-				sensors={sensors}
-				onDragStart={e => setDragId(String(e.active.id))}
-				onDragOver={e => setOverId(e.over ? String(e.over.id) : null)}
-				onDragCancel={endDrag}
-				onDragEnd={e => {
-					const target = e.over && String(e.over.id)
-					if (target && target !== e.active.id)
-						swapNumbers(String(e.active.id), target)
-					endDrag()
-				}}
-			>
+			<div className='mb-3 flex items-center justify-between gap-3'>
+				<p className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+					<GripVertical className='size-3.5 shrink-0' />
+					{t('tables.drag_to_swap')}
+				</p>
+				<TableAuditDialog className='shrink-0' />
+			</div>
+			<SwapDnd items={tables} onSwap={swapNumbers}>
 				<ul className={className}>
 					{tables.map(table => (
 						<li key={table.id}>
 							<TableEditCard
 								table={table}
-								swapPreviewNo={
-									overId === table.id && dragId !== table.id
-										? dragged?.no
-										: undefined
-								}
 								onRename={name => renameTable(table.id, name)}
 								onCapacityChange={capacity =>
 									updateCapacity(table.id, capacity)
 								}
+								onBannerChange={bannerUrl => updateBanner(table.id, bannerUrl)}
 								onSwapClick={() => setSwapping(table)}
 								onDeleteClick={() => setDeleting(table)}
 							/>
 						</li>
 					))}
 				</ul>
-				<DragOverlay>
-					{dragged && (
-						<span className='flex w-fit cursor-grabbing items-center gap-2 rounded-full border border-primary bg-card py-1 pl-1 pr-3 shadow-lg'>
-							<span className='flex h-7 min-w-7 items-center justify-center rounded-full bg-primary px-2 text-sm font-bold tabular-nums text-primary-foreground'>
-								{dragged.no}
-							</span>
-							<span className='max-w-40 truncate text-sm font-semibold text-foreground'>
-								{dragged.name}
-							</span>
-						</span>
-					)}
-				</DragOverlay>
-			</DndContext>
+			</SwapDnd>
 
 			<SwapNumberDialog
 				liveEvent

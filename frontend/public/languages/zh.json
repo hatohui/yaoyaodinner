@@ -184,6 +184,27 @@
 		"leave_confirm_body": "你将只能查看，需要再次输入代码才能编辑。",
 		"not_your_table": "你只能修改自己所在的餐桌"
 	},
+	"table_audit": {
+		"open": "历史",
+		"title": "餐桌历史",
+		"description": "最近的餐桌改动，最新的在最上面。",
+		"empty": "还没有改动",
+		"load_error": "无法加载历史记录",
+		"by_guest": "由客人修改",
+		"actions": {
+			"created": "创建了 {{no}} 号桌 · {{name}}",
+			"bulk_created": "创建了 {{count}} 张桌子",
+			"renamed": "将 {{no}} 号桌从“{{from}}”改名为“{{to}}”",
+			"capacity_changed": "{{no}} 号桌 · {{name}}：最多人数 {{from}} → {{to}}",
+			"banner_changed": "更换了 {{no}} 号桌 · {{name}} 的图片",
+			"banner_removed": "移除了 {{no}} 号桌 · {{name}} 的图片",
+			"host_changed": "{{no}} 号桌 · {{name}}：桌长设为 {{to}}",
+			"host_removed": "{{no}} 号桌 · {{name}}：已移除桌长",
+			"numbers_swapped": "将 {{no}} 号桌 · {{name}} 与 {{withNo}} 号桌 · {{withName}} 互换桌号",
+			"moved_to_staging": "将 {{no}} 号桌 · {{name}} 移至待发布",
+			"deleted": "删除了 {{no}} 号桌 · {{name}}（{{seated}} 人入座）"
+		}
+	},
 	"tables": {
 		"delete_title": "删除 {{no}} 号桌 · {{name}}？",
 		"open_table": "打开餐桌",

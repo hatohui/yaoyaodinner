@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { useDraggable, useDroppable } from '@dnd-kit/core'
 import {
 	ArrowLeftRight,
 	ArrowUpRight,
@@ -10,13 +9,16 @@ import {
 } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { InlineEdit } from '@/components/common/InlineEdit'
+import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
+import { useSwapItem } from '@/components/common/SwapDnd'
+import { defaultBannerSrc } from './@tableCardUtils'
 import { cn } from '@/utils/shadcn'
 
 interface TableEditCardProps {
 	table: TableDto
-	swapPreviewNo?: number
 	onRename: (name: string) => void
 	onCapacityChange: (capacity: number) => void
+	onBannerChange: (bannerUrl: string | null) => void
 	onSwapClick: () => void
 	onDeleteClick: () => void
 }
@@ -26,35 +28,45 @@ const iconButton =
 
 export function TableEditCard({
 	table,
-	swapPreviewNo,
 	onRename,
 	onCapacityChange,
+	onBannerChange,
 	onSwapClick,
 	onDeleteClick,
 }: TableEditCardProps) {
 	const { t } = useTranslation()
-	const drag = useDraggable({ id: table.id })
-	const drop = useDroppable({ id: table.id })
-	const dropTarget = drop.isOver && !drag.isDragging
+	const { setNodeRef, handleProps, isDragging, isTarget, swapPreviewNo } =
+		useSwapItem(table.id)
 
 	return (
 		<div
-			ref={node => {
-				drag.setNodeRef(node)
-				drop.setNodeRef(node)
-			}}
+			ref={setNodeRef}
 			className={cn(
-				'flex h-full flex-col gap-2 rounded-2xl border border-dashed border-primary/40 bg-card p-3 shadow-sm transition-all',
-				drag.isDragging && 'opacity-40',
-				dropTarget && 'scale-[1.02] border-solid border-primary bg-primary/10'
+				'flex h-full flex-col gap-2 rounded-2xl border border-dashed border-primary/40 bg-card p-2.5 shadow-sm transition-all',
+				isDragging && 'opacity-40',
+				isTarget && 'scale-[1.02] border-solid border-primary bg-primary/10'
 			)}
 		>
+			<ImageUploadSlot
+				shape='banner'
+				folder='table-banners'
+				imageKey={table.bannerUrl}
+				onChange={onBannerChange}
+				aspect={16 / 9}
+				fallback={
+					<img
+						src={defaultBannerSrc(table.no)}
+						alt=''
+						loading='lazy'
+						className='size-full rounded-xl object-cover'
+					/>
+				}
+				className='aspect-video h-auto rounded-xl'
+			/>
 			<div className='flex items-center gap-1.5'>
 				<button
 					type='button'
-					ref={drag.setActivatorNodeRef}
-					{...drag.listeners}
-					{...drag.attributes}
+					{...handleProps}
 					aria-label={t('tables.drag_to_swap')}
 					title={t('tables.drag_to_swap')}
 					className='flex cursor-grab touch-none items-center gap-0.5 rounded-full active:cursor-grabbing'

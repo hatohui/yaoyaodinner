@@ -181,6 +181,28 @@ declare module 'react-i18next' {
 					feedback_q: string
 					feedback_a: string
 				}
+				table_audit: {
+					open: string
+					title: string
+					description: string
+					empty: string
+					load_error: string
+					by_guest: string
+					actions: Record<
+						| 'created'
+						| 'bulk_created'
+						| 'renamed'
+						| 'capacity_changed'
+						| 'banner_changed'
+						| 'banner_removed'
+						| 'host_changed'
+						| 'host_removed'
+						| 'numbers_swapped'
+						| 'moved_to_staging'
+						| 'deleted',
+						string
+					>
+				}
 				tables: {
 					no_host: string
 					your_table: string

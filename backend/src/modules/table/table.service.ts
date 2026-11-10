@@ -12,6 +12,8 @@ import { EventService } from "@modules/event/event.service";
 import { ConfigService } from "@modules/config/config.service";
 import { ImagesService } from "@modules/images/images.service";
 import { TableSlotService } from "./table-slot.service";
+import { TableAuditService } from "./table-audit.service";
+import type { TableAuditActor } from "./dto/table-audit.dto";
 import { CreateTableDto } from "./dto/create-table.dto";
 import { BulkCreateTableDto } from "./dto/bulk-create-table.dto";
 import { UpdateTableDto } from "./dto/update-table.dto";
@@ -48,6 +50,7 @@ export class TableService {
     private slots: TableSlotService,
     private images: ImagesService,
     private config: ConfigService,
+    private audit: TableAuditService,
   ) {}
 
   private async newCode() {
@@ -367,7 +370,17 @@ export class TableService {
       },
       include: withSlot,
     });
-    return this.toDto(table);
+    const created = this.toDto(table);
+    await this.audit.log({
+      action: "created",
+      actor: "admin",
+      tableId: created.id,
+      eventId,
+      tableNo: created.no,
+      tableName: created.name,
+      details: { to: String(created.capacity) },
+    });
+    return created;
   }
 
   /**
@@ -416,6 +429,13 @@ export class TableService {
       })),
     });
 
+    await this.audit.log({
+      action: "bulk_created",
+      actor: "admin",
+      eventId,
+      details: { count: reuse.length },
+    });
+
     return {
       created: reuse.length,
       reused: reuse.length - Math.max(0, missing),
@@ -424,6 +444,13 @@ export class TableService {
 
   async update(id: string, dto: UpdateTableDto) {
     const table = await this.findOne(id);
+    const base = {
+      actor: "admin" as const,
+      tableId: id,
+      eventId: table.eventId,
+      tableNo: table.no,
+      tableName: table.name,
+    };
 
     // name belongs to the physical slot, capacity to this event's seating
     if (dto.name !== undefined && table.slotId) {
@@ -437,22 +464,52 @@ export class TableService {
       });
     }
 
+    await this.audit.log(
+      ...(dto.name !== undefined && dto.name !== table.name
+        ? [
+            {
+              ...base,
+              action: "renamed" as const,
+              details: { from: table.name, to: dto.name },
+            },
+          ]
+        : []),
+      ...(dto.capacity !== undefined && dto.capacity !== table.capacity
+        ? [
+            {
+              ...base,
+              action: "capacity_changed" as const,
+              details: {
+                from: String(table.capacity),
+                to: String(dto.capacity),
+              },
+            },
+          ]
+        : []),
+    );
+
     return this.findOne(id);
   }
 
-  async updateDetails(id: string, dto: UpdateTableDetailsDto) {
+  async updateDetails(
+    id: string,
+    dto: UpdateTableDetailsDto,
+    actor: TableAuditActor,
+  ) {
     const table = await this.findOne(id);
+    let newHostName: string | null = null;
 
     if (dto.tableLeaderId) {
       const person = await prisma.people.findUnique({
         where: { id: dto.tableLeaderId },
-        select: { tableId: true },
+        select: { tableId: true, name: true },
       });
       if (!person || person.tableId !== id) {
         throw new BadRequestException(
           "That person is not seated at this table",
         );
       }
+      newHostName = person.name;
     }
 
     if (dto.name !== undefined && table.slotId) {
@@ -473,6 +530,44 @@ export class TableService {
         data: { bannerUrl: dto.bannerUrl },
       });
     }
+
+    const base = {
+      actor,
+      tableId: id,
+      eventId: table.eventId,
+      tableNo: table.no,
+      tableName: table.name,
+    };
+    await this.audit.log(
+      ...(dto.name !== undefined && dto.name !== table.name
+        ? [
+            {
+              ...base,
+              action: "renamed" as const,
+              details: { from: table.name, to: dto.name },
+            },
+          ]
+        : []),
+      ...(dto.tableLeaderId !== undefined &&
+      dto.tableLeaderId !== table.tableLeaderId
+        ? [
+            {
+              ...base,
+              action: "host_changed" as const,
+              details: { from: table.tableLeaderName ?? null, to: newHostName },
+            },
+          ]
+        : []),
+      ...(dto.bannerUrl !== undefined && dto.bannerUrl !== table.bannerUrl
+        ? [
+            {
+              ...base,
+              action: "banner_changed" as const,
+              details: { from: table.bannerUrl, to: dto.bannerUrl },
+            },
+          ]
+        : []),
+    );
 
     return this.findOne(id);
   }
@@ -546,10 +641,23 @@ export class TableService {
       throw new BadRequestException("Both tables must be in the same event");
     }
 
+    const [first, second] = await Promise.all([
+      this.findOne(a.id),
+      this.findOne(b.id),
+    ]);
     await prisma.$transaction([
       prisma.table.update({ where: { id: a.id }, data: { no: b.no } }),
       prisma.table.update({ where: { id: b.id }, data: { no: a.no } }),
     ]);
+    await this.audit.log({
+      action: "numbers_swapped",
+      actor: "admin",
+      tableId: a.id,
+      eventId: a.eventId,
+      tableNo: a.no,
+      tableName: first.name,
+      details: { withNo: b.no, withName: second.name },
+    });
     return Promise.all([this.findOne(a.id), this.findOne(b.id)]);
   }
 
@@ -557,13 +665,29 @@ export class TableService {
     const existing = await this.findOne(id);
     await prisma.table.delete({ where: { id } });
     if (existing.bannerUrl) await this.images.deleteKey(existing.bannerUrl);
+    await this.audit.log({
+      action: "deleted",
+      actor: "admin",
+      tableId: id,
+      eventId: existing.eventId,
+      tableNo: existing.no,
+      tableName: existing.name,
+      details: { seated: existing.seated },
+    });
     return { id };
   }
 
   async bulkRemove(ids: string[]) {
     const existing = await prisma.table.findMany({
       where: { id: { in: ids } },
-      select: { bannerUrl: true },
+      select: {
+        id: true,
+        no: true,
+        eventId: true,
+        bannerUrl: true,
+        slot: { select: { name: true } },
+        _count: { select: { people: true } },
+      },
     });
     await prisma.table.deleteMany({ where: { id: { in: ids } } });
     await Promise.all(
@@ -571,6 +695,17 @@ export class TableService {
         .map((t) => t.bannerUrl)
         .filter((k): k is string => Boolean(k))
         .map((k) => this.images.deleteKey(k)),
+    );
+    await this.audit.log(
+      ...existing.map((t) => ({
+        action: "deleted" as const,
+        actor: "admin" as const,
+        tableId: t.id,
+        eventId: t.eventId,
+        tableNo: t.no,
+        tableName: t.slot?.name ?? null,
+        details: { seated: t._count.people },
+      })),
     );
     return { removed: ids.length };
   }
@@ -580,10 +715,32 @@ export class TableService {
       const event = await prisma.event.findUnique({ where: { id: eventId } });
       if (!event) throw new BadRequestException("Target event not found");
     }
+    const moving =
+      eventId === null
+        ? await prisma.table.findMany({
+            where: { id: { in: ids }, isStaging: false },
+            select: {
+              id: true,
+              no: true,
+              eventId: true,
+              slot: { select: { name: true } },
+            },
+          })
+        : [];
     await prisma.table.updateMany({
       where: { id: { in: ids } },
       data: { eventId, isStaging: eventId === null },
     });
+    await this.audit.log(
+      ...moving.map((t) => ({
+        action: "moved_to_staging" as const,
+        actor: "admin" as const,
+        tableId: t.id,
+        eventId: t.eventId,
+        tableNo: t.no,
+        tableName: t.slot?.name ?? null,
+      })),
+    );
     return { reassigned: ids.length };
   }
 }

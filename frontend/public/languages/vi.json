@@ -184,6 +184,27 @@
 		"leave_confirm_body": "Bạn sẽ chỉ được xem và cần nhập lại mã để chỉnh sửa.",
 		"not_your_table": "Bạn chỉ có thể chỉnh sửa bàn của mình"
 	},
+	"table_audit": {
+		"open": "Lịch sử",
+		"title": "Lịch sử bàn",
+		"description": "Các thay đổi gần đây, mới nhất ở trên.",
+		"empty": "Chưa có thay đổi nào",
+		"load_error": "Không tải được lịch sử",
+		"by_guest": "bởi khách",
+		"actions": {
+			"created": "Đã tạo bàn {{no}} · {{name}}",
+			"bulk_created": "Đã tạo {{count}} bàn",
+			"renamed": "Đổi tên bàn {{no}} từ “{{from}}” thành “{{to}}”",
+			"capacity_changed": "Bàn {{no}} · {{name}}: số khách tối đa {{from}} → {{to}}",
+			"banner_changed": "Đã đổi ảnh bàn {{no}} · {{name}}",
+			"banner_removed": "Đã xoá ảnh bàn {{no}} · {{name}}",
+			"host_changed": "Bàn {{no}} · {{name}}: chủ bàn là {{to}}",
+			"host_removed": "Bàn {{no}} · {{name}}: đã bỏ chủ bàn",
+			"numbers_swapped": "Đã đổi số bàn {{no}} · {{name}} với bàn {{withNo}} · {{withName}}",
+			"moved_to_staging": "Đã chuyển bàn {{no}} · {{name}} về khu chuẩn bị",
+			"deleted": "Đã xoá bàn {{no}} · {{name}} ({{seated}} người đang ngồi)"
+		}
+	},
 	"tables": {
 		"delete_title": "Xoá bàn {{no}} · {{name}}?",
 		"open_table": "Mở bàn",
