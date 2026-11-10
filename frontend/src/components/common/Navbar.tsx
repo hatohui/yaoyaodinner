@@ -117,13 +117,10 @@ export function Navbar() {
 				<Link
 					to='/'
 					onClick={handleLogoClick}
-					className='flex min-w-0 shrink items-center gap-2 font-bold tracking-tight text-foreground transition-opacity hover:opacity-80'
+					className='flex min-w-0 shrink items-center gap-1.5 font-bold tracking-tight text-foreground transition-opacity hover:opacity-70'
 					title={t('site.title')}
 				>
 					<AppLogo className='h-5 w-auto' />
-					<span className='hidden sm:inline font-bold text-sm tracking-tight truncate max-w-[160px] md:max-w-none'>
-						{t('site.short_name')}
-					</span>
 				</Link>
 
 				<DesktopNav
