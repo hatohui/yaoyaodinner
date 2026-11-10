@@ -545,6 +545,8 @@
 		"author_table": "{{no}} 号桌 · {{name}}",
 		"go_to_table": "去这桌",
 		"title": "反馈墙",
+		"copy_link": "复制链接",
+		"link_copied": "链接已复制",
 		"name_placeholder": "你的名字（可选）",
 		"content_placeholder": "说点什么…",
 		"post": "发布",

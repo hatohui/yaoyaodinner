@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { Share2 } from 'lucide-react'
 import type { FeedbackItemDto } from '@/api/model'
 import { useConfig } from '@/hooks/useConfig'
+import { useToast } from '@/hooks/useToast'
 import { DeleteFeedbackButton } from '@/components/common/DeleteFeedbackButton'
 import { ViewableImage } from '@/components/common/ViewableImage'
 import { cn } from '@/utils/shadcn'
@@ -12,14 +14,46 @@ interface FeedbackCardProps {
 	item: FeedbackItemDto
 	onReact: (emoji: string) => void
 	onDelete?: () => void
+	isHighlighted?: boolean
 }
 
-export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
-	const { i18n } = useTranslation()
+export function FeedbackCard({
+	item,
+	onReact,
+	onDelete,
+	isHighlighted = false,
+}: FeedbackCardProps) {
+	const { t, i18n } = useTranslation()
+	const toast = useToast()
 	const { suggestedReactions } = useConfig()
 
+	const shareLink = () => {
+		const url = new URL(`${window.location.origin}/feedback`)
+		url.searchParams.set('id', item.id)
+		if (i18n.language && i18n.language !== 'en') {
+			url.searchParams.set('lang', i18n.language)
+		}
+		navigator.clipboard?.writeText(url.toString())
+		toast.success(t('feedback.link_copied'))
+	}
+
 	return (
-		<div className='flex flex-col gap-2 rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
+		<div
+			id={`feedback-${item.id}`}
+			data-feedback-id={item.id}
+			className={cn(
+				'relative flex flex-col gap-2 rounded-2xl border bg-card p-4 shadow-sm transition-all',
+				isHighlighted
+					? 'border-primary ring-2 ring-primary shadow-md'
+					: 'border-border/60'
+			)}
+		>
+			{isHighlighted && (
+				<span
+					className='pointer-events-none absolute -inset-1 rounded-[inherit] ring-4 ring-primary/60 motion-safe:animate-pulse'
+					aria-hidden
+				/>
+			)}
 			<div className='flex items-center justify-between'>
 				<FeedbackAuthor by={item.by} author={item.author} />
 				<div className='flex items-center gap-1'>
@@ -29,6 +63,15 @@ export function FeedbackCard({ item, onReact, onDelete }: FeedbackCardProps) {
 							timeStyle: 'short',
 						}).format(new Date(item.createdAt))}
 					</span>
+					<button
+						type='button'
+						onClick={shareLink}
+						aria-label={t('feedback.copy_link')}
+						title={t('feedback.copy_link')}
+						className='inline-flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+					>
+						<Share2 className='size-3.5' />
+					</button>
 					{onDelete && <DeleteFeedbackButton onDelete={onDelete} />}
 				</div>
 			</div>

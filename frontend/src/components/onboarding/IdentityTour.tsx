@@ -74,8 +74,9 @@ export function IdentityTour() {
 
 	const onList = pathname === '/tables'
 	const onTable = TABLE_ROUTE.test(pathname)
+	const onFeedback = pathname.startsWith('/feedback')
 	const active = open && !isAdmin
-	const showWelcome = active && !me && path === null && !onTable
+	const showWelcome = active && !me && path === null && !onTable && !onFeedback
 
 	const resolve = useCallback((): TourStep | null => {
 		if (me) return step('done', [one('identity')])

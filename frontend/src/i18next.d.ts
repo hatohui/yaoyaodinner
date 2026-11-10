@@ -447,6 +447,8 @@ declare module 'react-i18next' {
 					author_table: string
 					go_to_table: string
 					title: string
+					copy_link: string
+					link_copied: string
 					name_placeholder: string
 					content_placeholder: string
 					post: string

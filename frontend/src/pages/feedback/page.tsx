@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router'
 import { CardGridSkeleton } from '@/components/common/ListSkeletons'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { FeedbackForm } from './@FeedbackForm'
@@ -10,6 +12,8 @@ import { cn } from '@/utils/shadcn'
 
 export default function FeedbackPage() {
 	const { t } = useTranslation()
+	const [searchParams] = useSearchParams()
+	const targetId = searchParams.get('id') || searchParams.get('highlight')
 	const {
 		feedback,
 		isLoading,
@@ -19,9 +23,17 @@ export default function FeedbackPage() {
 		post,
 		react,
 		isPosting,
-	} = useFeedback()
+	} = useFeedback(targetId)
 	const { editing } = useEditMode()
 	const { deleteFeedback } = useDeleteFeedback()
+
+	useEffect(() => {
+		if (!targetId || isLoading) return
+		const el = document.getElementById(`feedback-${targetId}`)
+		if (el) {
+			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+		}
+	}, [targetId, isLoading, feedback])
 
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
@@ -65,6 +77,7 @@ export default function FeedbackPage() {
 							<FeedbackCard
 								key={item.id}
 								item={item}
+								isHighlighted={item.id === targetId}
 								onReact={emoji => react(item.id, emoji)}
 								onDelete={editing ? () => deleteFeedback(item.id) : undefined}
 							/>

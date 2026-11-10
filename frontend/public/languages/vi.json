@@ -545,6 +545,8 @@
 		"author_table": "Bàn {{no}} · {{name}}",
 		"go_to_table": "Đến bàn",
 		"title": "Bảng góp ý",
+		"copy_link": "Sao chép liên kết",
+		"link_copied": "Đã sao chép liên kết",
 		"name_placeholder": "Tên của bạn (không bắt buộc)",
 		"content_placeholder": "Viết gì đó…",
 		"post": "Đăng",

@@ -16,14 +16,14 @@ import type {
 } from '@/api/model'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 
-export function useFeedback() {
+export function useFeedback(targetId?: string | null) {
 	const { t } = useTranslation()
 	const toast = useToast()
 	const qc = useQueryClient()
 	const [sort, setSort] = useState<GetFeedbackSort>('recent')
 	const [total, setTotal] = useState(0)
 
-	const pagination = usePagination({ initialCount: 10, total })
+	const pagination = usePagination({ initialCount: targetId ? 50 : 10, total })
 	const { page, count } = pagination
 
 	const params = { page, count, sort }

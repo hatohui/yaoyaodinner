@@ -545,6 +545,8 @@
 		"author_table": "โต๊ะ {{no}} · {{name}}",
 		"go_to_table": "ไปที่โต๊ะ",
 		"title": "กระดานความคิดเห็น",
+		"copy_link": "คัดลอกลิงก์",
+		"link_copied": "คัดลอกลิงก์แล้ว",
 		"name_placeholder": "ชื่อของคุณ (ไม่บังคับ)",
 		"content_placeholder": "พูดอะไรสักอย่าง…",
 		"post": "โพสต์",
