@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { ArrowLeft, Link as LinkIcon, Map } from 'lucide-react'
@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useGetTablePeople } from '@/api/tables/tables'
 import { useGetOrders } from '@/api/orders/orders'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
+import { useIdentityTour } from '@/hooks/useIdentityTour'
 import { useTableAccess } from '@/hooks/useTableCode'
 import { useTableTab } from '@/hooks/useTableTab'
 import { useToast } from '@/hooks/useToast'
@@ -35,6 +36,11 @@ export default function TableDetailPage() {
 	const { id, table, isLoading, isError, shareLink, updateTable } =
 		useTableDetail()
 	const { tab, setTab } = useTableTab(id)
+	const tourQuery = useIdentityTour(s => s.query)
+
+	useEffect(() => {
+		if (tourQuery) setTab('people')
+	}, [tourQuery, setTab])
 	const { canEdit, canJoin, isAdmin } = useTableAccess(id)
 	const {
 		floorPlan,

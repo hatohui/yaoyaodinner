@@ -1,7 +1,7 @@
 import type { MouseEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Check, Eye, EyeOff, Trash2 } from 'lucide-react'
+import { Check, Eye, EyeOff, Trash2, UtensilsCrossed } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { FoodTags } from '@/components/common/FoodTags'
@@ -80,8 +80,8 @@ export function FoodCard({
 					alt={food.name}
 					className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
 					fallback={
-						<div className='flex h-full w-full items-center justify-center bg-secondary/70'>
-							<span className='text-5xl'>🍽️</span>
+						<div className='flex h-full w-full items-center justify-center bg-secondary/70 text-muted-foreground'>
+							<UtensilsCrossed className='size-10' />
 						</div>
 					}
 				/>

@@ -9,6 +9,7 @@ import { TruncatedText } from '@/components/common/TruncatedText'
 import { RosterSkeleton } from './@Skeletons'
 import { cn } from '@/utils/shadcn'
 import { useGuest } from '@/hooks/useGuest'
+import { useIdentityTour } from '@/hooks/useIdentityTour'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { ROSTER_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useRoster } from './@useRoster'
@@ -36,12 +37,35 @@ export function Roster({
 	const me = useGuest(s => s.me)
 	const setMe = useGuest(s => s.setMe)
 	const clearMe = useGuest(s => s.clearMe)
+	const tourOpen = useIdentityTour(s => s.open)
+	const tourQuery = useIdentityTour(s => s.query)
+	const setTourQuery = useIdentityTour(s => s.setQuery)
 	const [pending, setPending] = useState<PersonDto | null>(null)
 	const [editingId, setEditingId] = useState<string | null>(null)
 	const [viewing, setViewing] = useState<PersonDto | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { view, setView } = useListView(ROSTER_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
+	const needle = !tourOpen ? tourQuery.toLowerCase() : ''
+
+	useEffect(() => {
+		if (!needle || isLoading) return
+		const el = document
+			.querySelectorAll<HTMLElement>('[data-tour="person"]')
+			.values()
+			.find(node =>
+				node.getAttribute('data-name')?.toLowerCase().includes(needle)
+			)
+		el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+	}, [needle, isLoading, people.length])
+
+	useEffect(() => {
+		return () => {
+			if (!useIdentityTour.getState().open) {
+				useIdentityTour.getState().setQuery('')
+			}
+		}
+	}, [])
 
 	// hide quick-add once every seat is taken (live list beats the cached count)
 	const isFull = (isLoading ? table.seated : people.length) >= table.capacity
@@ -110,20 +134,31 @@ export function Roster({
 						compact ? 'gap-1.5' : 'gap-2 sm:gap-3'
 					)}
 				>
-					{people.map(person => (
-						<RosterItem
-							key={person.id}
-							person={person}
-							isMe={person.id === me?.id}
-							isHost={person.id === table.tableLeaderId}
-							showClaim={canJoin && !me}
-							canEdit={canEdit}
-							compact={compact}
-							onClaim={() => claim(person)}
-							onOpen={() => setEditingId(person.id)}
-							onView={() => setViewing(person)}
-						/>
-					))}
+					{people.map(person => {
+						const isMatched =
+							Boolean(needle) && person.name.toLowerCase().includes(needle)
+						return (
+							<RosterItem
+								key={person.id}
+								person={person}
+								isMe={person.id === me?.id}
+								isHost={person.id === table.tableLeaderId}
+								isMatched={isMatched}
+								showClaim={canJoin && !me}
+								canEdit={canEdit}
+								compact={compact}
+								onClaim={() => {
+									if (!tourOpen) setTourQuery('')
+									claim(person)
+								}}
+								onOpen={() => {
+									if (!tourOpen) setTourQuery('')
+									setEditingId(person.id)
+								}}
+								onView={() => setViewing(person)}
+							/>
+						)
+					})}
 				</ul>
 			)}
 
@@ -194,6 +229,7 @@ function RosterItem({
 	person,
 	isMe,
 	isHost,
+	isMatched,
 	showClaim,
 	canEdit,
 	compact,
@@ -204,6 +240,7 @@ function RosterItem({
 	person: PersonDto
 	isMe: boolean
 	isHost: boolean
+	isMatched: boolean
 	showClaim: boolean
 	canEdit: boolean
 	compact: boolean
@@ -240,9 +277,16 @@ function RosterItem({
 				editable &&
 					'hover:-translate-y-0.5 hover:border-primary/50 hover:bg-brand-muted/35 hover:shadow-md',
 				isMe &&
-					'border-primary ring-2 ring-primary/30 hover:border-primary hover:ring-primary/50'
+					'border-primary ring-2 ring-primary/30 hover:border-primary hover:ring-primary/50',
+				isMatched && 'border-primary ring-2 ring-primary'
 			)}
 		>
+			{isMatched && (
+				<span
+					aria-hidden
+					className='pointer-events-none absolute -inset-1 rounded-[inherit] ring-4 ring-primary/60 motion-safe:animate-pulse'
+				/>
+			)}
 			{editable && (
 				<button
 					type='button'

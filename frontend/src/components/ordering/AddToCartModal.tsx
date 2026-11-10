@@ -94,7 +94,18 @@ export function AddToCartModal({
 		if (!food || !variantId) return
 		const selectedVariant = variants.find(v => v.id === variantId)
 		const price = selectedVariant?.price ?? food.price ?? 0
-		onAdd(food, variantId, price, quantity, mode, chosen)
+		onAdd(
+			{
+				...food,
+				currency: selectedVariant?.currency ?? food.currency ?? null,
+				shouldCalculate: detail?.shouldCalculate ?? food.shouldCalculate,
+			},
+			variantId,
+			price,
+			quantity,
+			mode,
+			chosen
+		)
 		onOpenChange(false)
 	}
 

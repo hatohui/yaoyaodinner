@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Minus, Plus, Trash2, ChevronDown } from 'lucide-react'
+import { Minus, Plus, Trash2, ChevronDown, UtensilsCrossed } from 'lucide-react'
 import { useGetFoodById } from '@/api/foods/foods'
 import type { FoodDetailDto, PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
@@ -57,8 +57,8 @@ export function CartLine({
 						alt={line.name}
 						className='size-full object-cover'
 						fallback={
-							<div className='flex size-full items-center justify-center text-xl'>
-								🍽️
+							<div className='flex size-full items-center justify-center text-muted-foreground'>
+								<UtensilsCrossed className='size-5' />
 							</div>
 						}
 					/>

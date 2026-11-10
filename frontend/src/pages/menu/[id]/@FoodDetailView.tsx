@@ -1,6 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { ArrowLeft, Link as LinkIcon, ShoppingCart, Users } from 'lucide-react'
+import {
+	ArrowLeft,
+	Link as LinkIcon,
+	ShoppingCart,
+	Users,
+	UtensilsCrossed,
+} from 'lucide-react'
 import type { FoodDetailWithStatsDto, FoodVariantDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { InlineEdit } from '@/components/common/InlineEdit'
@@ -107,11 +113,11 @@ export function FoodDetailView({
 				fallback={
 					<div
 						className={cn(
-							'flex aspect-[4/3] w-full items-center justify-center bg-secondary/70',
+							'flex aspect-[4/3] w-full items-center justify-center bg-secondary/70 text-muted-foreground',
 							modal && 'md:aspect-auto md:h-full'
 						)}
 					>
-						<span className='text-6xl'>🍽️</span>
+						<UtensilsCrossed className='size-14' />
 					</div>
 				}
 			/>

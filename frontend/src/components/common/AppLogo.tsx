@@ -14,12 +14,12 @@ export const AppLogo: React.FC<AppLogoProps> = ({
 	alwaysInvert = false,
 }) => {
 	return (
-		<>
+		<span className='inline-grid w-fit items-center justify-items-start'>
 			{/* Light mode: Yao Yao logo */}
 			<img
 				src='/images/logo.png'
 				className={cn(
-					'object-contain dark:hidden',
+					'col-start-1 row-start-1 object-contain dark:invisible',
 					alwaysInvert && 'invert',
 					className
 				)}
@@ -29,13 +29,13 @@ export const AppLogo: React.FC<AppLogoProps> = ({
 			<img
 				src='/images/asterlogo.webp?v=2'
 				className={cn(
-					'hidden object-contain dark:block scale-110 origin-left',
+					'invisible col-start-1 row-start-1 origin-left scale-110 object-contain dark:visible',
 					alwaysInvert ? 'invert' : 'dark:invert',
 					className
 				)}
 				alt={alt || 'Aster Logo'}
 			/>
-		</>
+		</span>
 	)
 }
 

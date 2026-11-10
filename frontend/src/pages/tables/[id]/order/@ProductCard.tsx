@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Check, Minus, Plus, ShoppingCart } from 'lucide-react'
+import { Check, Minus, Plus, ShoppingCart, UtensilsCrossed } from 'lucide-react'
 import type { FoodItemDto } from '@/api/model'
 import { StoredImage } from '@/components/common/StoredImage'
 import { Button } from '@/components/ui/button'
@@ -36,8 +36,8 @@ export function ProductCard({
 					alt={food.name}
 					className='size-full object-cover'
 					fallback={
-						<div className='flex size-full items-center justify-center bg-secondary/70 text-4xl'>
-							🍽️
+						<div className='flex size-full items-center justify-center bg-secondary/70 text-muted-foreground'>
+							<UtensilsCrossed className='size-8' />
 						</div>
 					}
 				/>

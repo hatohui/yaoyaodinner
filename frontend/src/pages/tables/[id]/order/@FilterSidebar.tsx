@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { ArrowUpDown, Flame, Sparkles } from 'lucide-react'
-import type { CategoryItemDto } from '@/api/model'
+import type { CategoryItemDto, FoodSuggestionDto } from '@/api/model'
 import type { MenuSort } from '@/utils/searchParams'
 import {
 	Select,
@@ -17,6 +17,7 @@ import { SearchSuggest } from '@/pages/menu/@SearchSuggest'
 interface FilterSidebarProps {
 	search: string
 	onSearchChange: (value: string) => void
+	onSuggestionSelect?: (suggestion: FoodSuggestionDto) => void
 	activeCategory: string
 	categories: CategoryItemDto[]
 	categoriesState: CategoriesState
@@ -40,6 +41,7 @@ const idleClass = 'text-foreground/85 hover:bg-primary/10 hover:text-primary'
 export function FilterSidebar({
 	search,
 	onSearchChange,
+	onSuggestionSelect,
 	activeCategory,
 	categories,
 	categoriesState,
@@ -57,11 +59,17 @@ export function FilterSidebar({
 	) => onFilterChange({ category, ...flags })
 
 	return (
-		<div className='flex flex-col gap-4 rounded-2xl border border-border bg-card p-3 shadow-sm'>
-			<SearchSuggest value={search} onChange={onSearchChange} />
+		<div className='flex max-h-[calc(100vh-6rem)] flex-col gap-4 rounded-2xl border border-border bg-card p-3 shadow-sm'>
+			<div className='shrink-0'>
+				<SearchSuggest
+					value={search}
+					onChange={onSearchChange}
+					onSelect={onSuggestionSelect}
+				/>
+			</div>
 
 			<Select value={sort} onValueChange={val => onSortChange(val as MenuSort)}>
-				<SelectTrigger className='w-full gap-1.5 rounded-full border-border bg-card font-semibold *:data-[slot=select-value]:flex-1 data-[size=default]:h-10 dark:bg-white/10 dark:hover:bg-white/15'>
+				<SelectTrigger className='w-full shrink-0 gap-1.5 rounded-full border-border bg-card font-semibold *:data-[slot=select-value]:flex-1 data-[size=default]:h-10 dark:bg-white/10 dark:hover:bg-white/15'>
 					<ArrowUpDown className='size-3.5 shrink-0 text-foreground/75' />
 					<SelectValue />
 				</SelectTrigger>
@@ -76,7 +84,10 @@ export function FilterSidebar({
 				</SelectContent>
 			</Select>
 
-			<nav aria-label={t('menu.categories')} className='flex flex-col gap-0.5'>
+			<nav
+				aria-label={t('menu.categories')}
+				className='scrollbar-thin flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto'
+			>
 				<p className='m-0 px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 					{t('menu.categories')}
 				</p>

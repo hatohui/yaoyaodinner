@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Map } from 'lucide-react'
-import { SearchBar } from '@/components/common/SearchBar'
+import { TableSearchSuggest } from './@TableSearchSuggest'
 import { PaginationBar } from '@/components/common/PaginationBar'
 import { TableList } from './@TableList'
 import { TableListSkeleton } from './@TableListSkeleton'
@@ -62,7 +62,7 @@ export default function TablesPage() {
 			</div>
 
 			<div data-tour='search'>
-				<SearchBar
+				<TableSearchSuggest
 					value={search}
 					onChange={setSearch}
 					placeholder={t('tables.search_placeholder')}

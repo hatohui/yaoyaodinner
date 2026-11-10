@@ -15,7 +15,11 @@ import {
 	SheetTitle,
 } from '@/components/ui/sheet'
 import { useGetOrders } from '@/api/orders/orders'
-import type { FoodItemDto, OrderResponseDto } from '@/api/model'
+import type {
+	FoodItemDto,
+	FoodSuggestionDto,
+	OrderResponseDto,
+} from '@/api/model'
 import { ProductCard } from './@ProductCard'
 import { CartPanel } from '@/components/ordering/CartPanel'
 import { OrderedList } from '@/components/ordering/OrderedList'
@@ -78,6 +82,22 @@ export default function TableOrderPage() {
 	const [activeFood, setActiveFood] = useState<FoodItemDto | null>(null)
 	const [panelTab, setPanelTab] = useState<SidePanelTab>('cart')
 	const [sheetOpen, setSheetOpen] = useState(false)
+
+	const selectSuggestion = (s: FoodSuggestionDto) => {
+		const found = foods.find(f => f.id === s.id)
+		setActiveFood(
+			found ?? {
+				id: s.id,
+				name: s.name,
+				imageUrl: s.imageUrl,
+				isAvailable: true,
+				isPopular: false,
+				isRecommended: false,
+				shouldCalculate: true,
+				variantCount: 1,
+			}
+		)
+	}
 
 	const checkout = async () => {
 		// land on what was just ordered so people can see it went through
@@ -157,10 +177,11 @@ export default function TableOrderPage() {
 			) : (
 				<div className='flex gap-6'>
 					<aside className='hidden w-60 shrink-0 xl:block'>
-						<div className='scrollbar-thin sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto'>
+						<div className='sticky top-20'>
 							<FilterSidebar
 								search={search}
 								onSearchChange={setSearch}
+								onSuggestionSelect={selectSuggestion}
 								activeCategory={category}
 								categories={categories}
 								categoriesState={categoriesState}
@@ -178,6 +199,7 @@ export default function TableOrderPage() {
 							<FilterBar
 								search={search}
 								onSearchChange={setSearch}
+								onSuggestionSelect={selectSuggestion}
 								activeCategory={category}
 								categories={categories}
 								categoriesState={categoriesState}
