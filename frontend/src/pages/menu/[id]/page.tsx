@@ -22,9 +22,9 @@ export default function FoodDetailPage() {
 
 	useEffect(() => {
 		if (!food?.name) return
-		document.title = `${food.name} · YaoYao Furum After Gathering (FAG)`
+		document.title = `${food.name} · Furum After Gathering`
 		return () => {
-			document.title = 'YaoYao Furum After Gathering (FAG)'
+			document.title = 'Furum After Gathering'
 		}
 	}, [food?.name])
 

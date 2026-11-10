@@ -126,7 +126,7 @@ export const onRequestGet = async (
 		}
 
 		const food = (await apiRes.json()) as FoodMetaDto
-		const title = food.name?.trim() || 'YaoYao Furum After Gathering (FAG)'
+		const title = food.name?.trim() || 'Furum After Gathering'
 		const description = formatFoodDescription(food, lang)
 		const imageUrl = resolveFoodImageUrl(food, url.origin, assetBase)
 

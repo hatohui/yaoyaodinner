@@ -1,7 +1,7 @@
 {
 	"site": {
-		"title": "YaoYao Furum After Gathering (FAG)",
-		"short_name": "YaoYao FAG",
+		"title": "Furum After Gathering",
+		"short_name": "FAG",
 		"description": "A private post-Furum gathering hosted by Yao Yao"
 	},
 	"config": {
@@ -66,7 +66,7 @@
 		"visible_to_all": "Visible at the top of the app",
 		"hidden": "Hidden from guests",
 		"message_label": "Banner message",
-		"placeholder": "e.g. YaoYao Furum After Gathering starts at 7:00 PM! Please finalize pre-orders.",
+		"placeholder": "e.g. Furum After Gathering starts at 7:00 PM! Please finalize pre-orders.",
 		"preview": "Preview"
 	},
 	"dinner": {
@@ -318,24 +318,24 @@
 	"about": {
 		"hero_tag": "Private Gathering",
 		"hero_badge_private": "Post-Furum",
-		"hero_title": "YaoYao Furum After Gathering (FAG)",
+		"hero_title": "Furum After Gathering",
 		"hero_subtitle": "A private post-Furum gathering hosted by Yao Yao, welcoming friends and fellow furs to unwind, enjoy delicious food, and celebrate together in Malaysia.",
 		"location_title": "Where to find us",
 		"address_label": "Address",
 		"get_directions": "Get directions",
 		"details_tag": "The Host",
 		"details_title": "Meet Chee Yao (Yao Yao)",
-		"details_body_1": "Also known in the fandom as Aster (归星) @AsterTheDragon, Chee Yao is hosting the YaoYao Furum After Gathering (FAG) — inviting friends and fellow furs together for this special post-convention evening!",
+		"details_body_1": "Also known in the fandom as Aster (归星) @AsterTheDragon, Chee Yao is hosting the Furum After Gathering — inviting friends and fellow furs together for this special post-convention evening!",
 		"details_body_2": "Described as a Blueberry Pie who loves Mangos, he welcomes everyone to gather for a great night of delicious food and hanging out in Malaysia.",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster (归星)",
 		"social_label": "{{name}} on {{platform}}",
 		"project": {
 			"tag": "About this website",
-			"title": "Built for YaoYao Furum After Gathering (FAG)",
-			"intro": "This website is a personally operated, free, non-commercial project made specifically for YaoYao Furum After Gathering (FAG) — a private post-Furum gathering hosted by Yao Yao (Chee Yao / Aster 归星) for friends and fellow furs at 高人馆 · Gao Ren Guan in Subang Jaya, keeping seats, pre-orders, and table bills organized without spreadsheet or group-chat chaos.",
+			"title": "Built for Furum After Gathering",
+			"intro": "This website is a personally operated, free, non-commercial project made specifically for Furum After Gathering — a private post-Furum gathering hosted by Yao Yao (Chee Yao / Aster 归星) for friends and fellow furs at 高人馆 · Gao Ren Guan in Subang Jaya, keeping seats, pre-orders, and table bills organized without spreadsheet or group-chat chaos.",
 			"features": {
-				"gatherings_title": "Organise YaoYao's FAG",
+				"gatherings_title": "Organise Furum After Gathering",
 				"gatherings_body": "Keep the gathering time, pre-order deadline, and Gao Ren Guan venue details in one place for everyone attending.",
 				"spaces_title": "Gao Ren Guan floor plan & tables",
 				"spaces_body": "Browse the ground-floor and first-floor tables at Gao Ren Guan to see where you are sitting and who is at your table.",
@@ -356,7 +356,7 @@
 	"legal": {
 		"tag": "Info & rules",
 		"title": "Legal, Privacy & Guidelines",
-		"subtitle": "Plain-language notes on how the YaoYao Furum After Gathering (FAG) website works.",
+		"subtitle": "Plain-language notes on how the Furum After Gathering website works.",
 		"view_all": "View all",
 		"all_sections": "All topics",
 		"back_to_about": "Back to About",
@@ -367,7 +367,7 @@
 			"privacy": {
 				"title": "Privacy Notice",
 				"summary": "What information is stored when you join a table, pre-order food, or post photos.",
-				"intro": "This is a personally operated, non-commercial website built specifically for friends attending the YaoYao Furum After Gathering (FAG) — a private post-Furum gathering hosted by Yao Yao at 高人馆 · Gao Ren Guan. We keep data collection to the bare minimum needed to run the gathering.",
+				"intro": "This is a personally operated, non-commercial website built specifically for friends attending the Furum After Gathering — a private post-Furum gathering hosted by Yao Yao at 高人馆 · Gao Ren Guan. We keep data collection to the bare minimum needed to run the gathering.",
 				"items": {
 					"no_accounts_title": "No personal account data",
 					"no_accounts_body": "We do not ask for or store email addresses, passwords, phone numbers, real legal names, or payment details.",
@@ -383,11 +383,11 @@
 			},
 			"terms": {
 				"title": "Terms of Use",
-				"summary": "Simple ground rules for using the YaoYao Furum After Gathering (FAG) website.",
+				"summary": "Simple ground rules for using the Furum After Gathering website.",
 				"intro": "By using this website to join a table, pre-order food from Gao Ren Guan, or post on the feedback wall, you agree to a few straightforward ground rules.",
 				"items": {
 					"non_commercial_title": "Personal, non-commercial project",
-					"non_commercial_body": "This website is provided free of charge as a personal project for the YaoYao Furum After Gathering (FAG). It is offered on an as-is, best-effort basis and may be updated or paused at any time.",
+					"non_commercial_body": "This website is provided free of charge as a personal project for the Furum After Gathering. It is offered on an as-is, best-effort basis and may be updated or paused at any time.",
 					"access_codes_title": "Keep the gathering PIN & table codes private",
 					"access_codes_body": "The gathering PIN and table codes are meant only for invited friends attending the private post-Furum gathering. Please do not share them publicly or attempt to access tables or admin tools you were not invited to use.",
 					"unverified_names_title": "Shared, unverified usernames",
@@ -958,7 +958,7 @@
 		"created_by": "Website created by",
 		"order_by": "Order by",
 		"where": "Where",
-		"event_name": "YaoYao Furum After Gathering (FAG)",
+		"event_name": "Furum After Gathering",
 		"event_subtitle": "A private post-Furum gathering hosted by Yao Yao"
 	}
 }

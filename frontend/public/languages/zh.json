@@ -1,7 +1,7 @@
 {
 	"site": {
-		"title": "YaoYao Furum After Gathering (FAG)",
-		"short_name": "YaoYao FAG",
+		"title": "Furum After Gathering",
+		"short_name": "FAG",
 		"description": "由 Yao Yao 主办的 Furum 赛后私人聚会"
 	},
 	"config": {
@@ -66,7 +66,7 @@
 		"visible_to_all": "显示在应用顶部",
 		"hidden": "对客人隐藏",
 		"message_label": "公告内容",
-		"placeholder": "例如：YaoYao Furum After Gathering 晚上 7:00 开始！请尽快确认提前点单。",
+		"placeholder": "例如：Furum After Gathering 晚上 7:00 开始！请尽快确认提前点单。",
 		"preview": "预览"
 	},
 	"dinner": {
@@ -318,24 +318,24 @@
 	"about": {
 		"hero_tag": "私人聚会",
 		"hero_badge_private": "Furum 赛后聚餐",
-		"hero_title": "YaoYao Furum After Gathering (FAG)",
+		"hero_title": "Furum After Gathering",
 		"hero_subtitle": "由 Yao Yao 主办的 Furum 赛后私人聚会，邀请各位好友与兽迷齐聚马来西亚，畅享美食、欢聚交流，度过难忘的夜晚。",
 		"location_title": "我们在这里",
 		"address_label": "地址",
 		"get_directions": "获取路线",
 		"details_tag": "聚会主办人",
 		"details_title": "认识一下 Chee Yao (Yao Yao)",
-		"details_body_1": "他在兽圈里也被称为 Aster（归星）@AsterTheDragon。正是 Chee Yao 主办了本次 YaoYao Furum After Gathering (FAG)，邀请大家在展会后欢聚一堂！",
+		"details_body_1": "他在兽圈里也被称为 Aster（归星）@AsterTheDragon。正是 Chee Yao 主办了本次 Furum After Gathering，邀请大家在展会后欢聚一堂！",
 		"details_body_2": "他被称为喜欢芒果的蓝莓派，热情欢迎各位兽迷们齐聚马来西亚，共享美食，度过一个美好的夜晚。",
 		"persona_yaoyao": "Yao Yao",
 		"persona_aster": "Aster（归星）",
 		"social_label": "{{name}} 的 {{platform}}",
 		"project": {
 			"tag": "关于本网站",
-			"title": "专为 YaoYao Furum After Gathering (FAG) 聚餐而建",
-			"intro": "本网站是由个人运营的免费、非商业项目，专为 YaoYao Furum After Gathering (FAG) —— 即 Yao Yao（Chee Yao / Aster 归星）与朋友们在梳邦再也（Subang Jaya）高人馆 · Gao Ren Guan 的 Furum 赛后私人聚会而打造——让大家无需面对繁琐的表格或群聊刷屏，就能轻松安排座位、提前点菜并分摊各桌账单。",
+			"title": "专为 Furum After Gathering 聚餐而建",
+			"intro": "本网站是由个人运营的免费、非商业项目，专为 Furum After Gathering —— 即 Yao Yao（Chee Yao / Aster 归星）与朋友们在梳邦再也（Subang Jaya）高人馆 · Gao Ren Guan 的 Furum 赛后私人聚会而打造——让大家无需面对繁琐的表格或群聊刷屏，就能轻松安排座位、提前点菜并分摊各桌账单。",
 			"features": {
-				"gatherings_title": "统筹 YaoYao FAG 聚餐",
+				"gatherings_title": "统筹 Furum After Gathering 聚餐",
 				"gatherings_body": "集中展示聚餐时间、预订截止时间和雪兰莪高人馆的导航路线，方便每位参与的朋友查看。",
 				"spaces_title": "高人馆楼层平面图与餐桌",
 				"spaces_body": "直观查看高人馆一楼和二楼的餐桌分布，轻松找到自己的座位和同桌伙伴。",
@@ -356,7 +356,7 @@
 	"legal": {
 		"tag": "信息与规则",
 		"title": "隐私、条款与聚餐指南",
-		"subtitle": "用简单明了的语言说明 YaoYao Furum After Gathering (FAG) 网站的运作方式。",
+		"subtitle": "用简单明了的语言说明 Furum After Gathering 网站的运作方式。",
 		"view_all": "查看全部",
 		"all_sections": "全部主题",
 		"back_to_about": "返回关于页面",
@@ -367,7 +367,7 @@
 			"privacy": {
 				"title": "隐私说明",
 				"summary": "当你加入餐桌、点餐或上传照片时，网站会保存哪些信息。",
-				"intro": "这是一个由个人运营、专为参加 Yao Yao 在高人馆（Gao Ren Guan）主办的 YaoYao Furum After Gathering (FAG) 赛后私人聚会的朋友们打造的非商业网站。我们仅保存维持聚会协调所必需的最少信息。",
+				"intro": "这是一个由个人运营、专为参加 Yao Yao 在高人馆（Gao Ren Guan）主办的 Furum After Gathering 赛后私人聚会的朋友们打造的非商业网站。我们仅保存维持聚会协调所必需的最少信息。",
 				"items": {
 					"no_accounts_title": "不收集个人账号信息",
 					"no_accounts_body": "我们不会索取或保存电子邮件地址、密码、电话号码、法定真名或任何支付信息。",
@@ -381,11 +381,11 @@
 			},
 			"terms": {
 				"title": "使用条款",
-				"summary": "使用 YaoYao Furum After Gathering (FAG) 网站的简单基本准则。",
+				"summary": "使用 Furum After Gathering 网站的简单基本准则。",
 				"intro": "当你使用本网站加入餐桌、提前点选高人馆菜品或在留言墙发帖时，即表示你同意遵守以下几条基本约定。",
 				"items": {
 					"non_commercial_title": "个人非商业项目",
-					"non_commercial_body": "本网站作为个人非商业项目免费提供，专用于 YaoYao Furum After Gathering (FAG) 聚会协调。网站按现状尽力提供服务，可随时更新、暂停或重置。",
+					"non_commercial_body": "本网站作为个人非商业项目免费提供，专用于 Furum After Gathering 聚会协调。网站按现状尽力提供服务，可随时更新、暂停或重置。",
 					"access_codes_title": "请勿公开分享聚会 PIN 码与桌码",
 					"access_codes_body": "聚会 PIN 码和餐桌代码仅供受邀参加聚会的朋友使用。请勿将其公开转发，也不要尝试访问未受邀的餐桌或管理后台。",
 					"unverified_names_title": "共享且未经验证的称呼",
@@ -956,7 +956,7 @@
 		"created_by": "网站制作：",
 		"order_by": "预订截止",
 		"where": "地点",
-		"event_name": "YaoYao Furum After Gathering (FAG)",
+		"event_name": "Furum After Gathering",
 		"event_subtitle": "由 Yao Yao 主办的 Furum 赛后私人聚会"
 	}
 }

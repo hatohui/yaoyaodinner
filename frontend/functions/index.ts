@@ -13,7 +13,7 @@ interface OrderingStatusDto {
 	dinnerTime: string | null
 }
 
-const EVENT_TITLE = 'YaoYao Furum After Gathering (FAG)'
+const EVENT_TITLE = 'Furum After Gathering'
 const VENUE = '高人馆 · Gao Ren Guan, Subang Jaya'
 
 const LANDING_COPY: Record<

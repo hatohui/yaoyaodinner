@@ -100,7 +100,7 @@ export async function getBaseHtmlResponse(
 	}
 
 	return new Response(
-		'<!doctype html><html><head><title>YaoYao Furum After Gathering (FAG)</title><meta name="description" content="YaoYao Furum After Gathering (FAG) — A private post-Furum gathering hosted by Yao Yao" /><meta property="og:title" content="YaoYao Furum After Gathering (FAG)" /><meta property="og:description" content="A private post-Furum gathering hosted by Yao Yao" /><meta property="og:image" content="https://yaoyaodinner.party/images/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="YaoYao Furum After Gathering (FAG)" /><meta name="twitter:description" content="A private post-Furum gathering hosted by Yao Yao" /><meta name="twitter:image" content="https://yaoyaodinner.party/images/banner.png" /></head><body><div id="root"></div></body></html>',
+		'<!doctype html><html><head><title>Furum After Gathering</title><meta name="description" content="Furum After Gathering — A private post-Furum gathering hosted by Yao Yao" /><meta property="og:title" content="Furum After Gathering" /><meta property="og:description" content="A private post-Furum gathering hosted by Yao Yao" /><meta property="og:image" content="https://yaoyaodinner.party/images/banner.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Furum After Gathering" /><meta name="twitter:description" content="A private post-Furum gathering hosted by Yao Yao" /><meta name="twitter:image" content="https://yaoyaodinner.party/images/banner.png" /></head><body><div id="root"></div></body></html>',
 		{
 			headers: { 'Content-Type': 'text/html; charset=utf-8' },
 			status: 200,
@@ -123,7 +123,7 @@ export function rewriteMetaResponse(
 ): Response {
 	const locale = LOCALE_MAP[meta.lang]
 	const documentTitle =
-		meta.pageTitle ?? `${meta.title} · YaoYao Furum After Gathering (FAG)`
+		meta.pageTitle ?? `${meta.title} · Furum After Gathering`
 
 	const rewritten = new HTMLRewriter()
 		.on('html', {

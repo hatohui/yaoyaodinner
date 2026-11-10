@@ -47,9 +47,9 @@ export default function TableDetailPage() {
 		const label = table.name
 			? t('feedback.author_table', { no: table.no, name: table.name })
 			: t('roster.table_no', { no: table.no })
-		document.title = `${label} · YaoYao Furum After Gathering (FAG)`
+		document.title = `${label} · Furum After Gathering`
 		return () => {
-			document.title = 'YaoYao Furum After Gathering (FAG)'
+			document.title = 'Furum After Gathering'
 		}
 	}, [table, t])
 	const { canEdit, canJoin, isAdmin } = useTableAccess(id)
