@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 import { CardGridSkeleton } from '@/components/common/ListSkeletons'
@@ -14,6 +14,9 @@ export default function FeedbackPage() {
 	const { t } = useTranslation()
 	const [searchParams] = useSearchParams()
 	const targetId = searchParams.get('id') || searchParams.get('highlight')
+	const [highlightedId, setHighlightedId] = useState<string | null>(targetId)
+	const hasScrolledRef = useRef(false)
+
 	const {
 		feedback,
 		isLoading,
@@ -27,13 +30,61 @@ export default function FeedbackPage() {
 	const { editing } = useEditMode()
 	const { deleteFeedback } = useDeleteFeedback()
 
+	const dismissHighlight = useCallback(() => {
+		setHighlightedId(null)
+		const newUrl = new URL(window.location.href)
+		if (newUrl.searchParams.has('id') || newUrl.searchParams.has('highlight')) {
+			newUrl.searchParams.delete('id')
+			newUrl.searchParams.delete('highlight')
+			window.history.replaceState(null, '', newUrl.toString())
+		}
+	}, [])
+
 	useEffect(() => {
-		if (!targetId || isLoading) return
+		setHighlightedId(targetId)
+		hasScrolledRef.current = false
+	}, [targetId])
+
+	useEffect(() => {
+		if (!targetId || isLoading || hasScrolledRef.current) return
 		const el = document.getElementById(`feedback-${targetId}`)
 		if (el) {
+			hasScrolledRef.current = true
 			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 		}
 	}, [targetId, isLoading, feedback])
+
+	useEffect(() => {
+		if (!highlightedId || isLoading) return
+
+		let cleanupListeners: (() => void) | undefined
+
+		const readyTimer = setTimeout(() => {
+			const handleInteraction = () => {
+				dismissHighlight()
+			}
+
+			window.addEventListener('click', handleInteraction, { capture: true })
+			window.addEventListener('keydown', handleInteraction, { capture: true })
+
+			const autoDismissTimer = setTimeout(dismissHighlight, 8000)
+
+			cleanupListeners = () => {
+				window.removeEventListener('click', handleInteraction, {
+					capture: true,
+				})
+				window.removeEventListener('keydown', handleInteraction, {
+					capture: true,
+				})
+				clearTimeout(autoDismissTimer)
+			}
+		}, 500)
+
+		return () => {
+			clearTimeout(readyTimer)
+			cleanupListeners?.()
+		}
+	}, [highlightedId, isLoading, dismissHighlight])
 
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
@@ -77,8 +128,12 @@ export default function FeedbackPage() {
 							<FeedbackCard
 								key={item.id}
 								item={item}
-								isHighlighted={item.id === targetId}
-								onReact={emoji => react(item.id, emoji)}
+								isHighlighted={item.id === highlightedId}
+								onDismissHighlight={dismissHighlight}
+								onReact={emoji => {
+									if (item.id === highlightedId) dismissHighlight()
+									react(item.id, emoji)
+								}}
 								onDelete={editing ? () => deleteFeedback(item.id) : undefined}
 							/>
 						))}

@@ -15,6 +15,7 @@ interface FeedbackCardProps {
 	onReact: (emoji: string) => void
 	onDelete?: () => void
 	isHighlighted?: boolean
+	onDismissHighlight?: () => void
 }
 
 export function FeedbackCard({
@@ -22,12 +23,14 @@ export function FeedbackCard({
 	onReact,
 	onDelete,
 	isHighlighted = false,
+	onDismissHighlight,
 }: FeedbackCardProps) {
 	const { t, i18n } = useTranslation()
 	const toast = useToast()
 	const { suggestedReactions } = useConfig()
 
 	const shareLink = () => {
+		if (isHighlighted) onDismissHighlight?.()
 		const url = new URL(`${window.location.origin}/feedback`)
 		url.searchParams.set('id', item.id)
 		if (i18n.language && i18n.language !== 'en') {
@@ -41,8 +44,11 @@ export function FeedbackCard({
 		<div
 			id={`feedback-${item.id}`}
 			data-feedback-id={item.id}
+			onClick={() => {
+				if (isHighlighted) onDismissHighlight?.()
+			}}
 			className={cn(
-				'relative flex flex-col gap-2 rounded-2xl border bg-card p-4 shadow-sm transition-all',
+				'relative flex flex-col gap-2 rounded-2xl border bg-card p-4 shadow-sm transition-all duration-300',
 				isHighlighted
 					? 'border-primary ring-2 ring-primary shadow-md'
 					: 'border-border/60'
