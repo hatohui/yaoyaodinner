@@ -37,12 +37,11 @@ const isMenuSort = (value: string | null): value is MenuSort =>
 	value === 'price_desc' ||
 	value === 'popular'
 
-export function useMenuSearchParams() {
-	const [searchParams, setSearchParams] = useSearchParams()
-	const [defaultCount, setDefaultCount] = useState(getResponsiveMenuCount)
+export function useResponsiveGridCount(): number {
+	const [count, setCount] = useState(getResponsiveMenuCount)
 
 	useEffect(() => {
-		const update = () => setDefaultCount(getResponsiveMenuCount())
+		const update = () => setCount(getResponsiveMenuCount())
 		const mql2xl = window.matchMedia('(min-width: 1536px)')
 		const mqlXl = window.matchMedia('(min-width: 1280px)')
 		mql2xl.addEventListener('change', update)
@@ -52,6 +51,13 @@ export function useMenuSearchParams() {
 			mqlXl.removeEventListener('change', update)
 		}
 	}, [])
+
+	return count
+}
+
+export function useMenuSearchParams() {
+	const [searchParams, setSearchParams] = useSearchParams()
+	const defaultCount = useResponsiveGridCount()
 
 	const pageParam = parseInt(searchParams.get('page') || '1', 10)
 	const page = Number.isFinite(pageParam) ? Math.max(1, pageParam) : 1

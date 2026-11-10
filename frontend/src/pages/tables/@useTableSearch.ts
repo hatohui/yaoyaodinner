@@ -6,6 +6,7 @@ import { useDebounce } from '@/hooks/useDebounce'
 import type { TableDto, TableListDto } from '@/api/model'
 import { TABLE_FETCH_ALL_COUNT } from '@/common/constants'
 import { useIdentityTour } from '@/hooks/useIdentityTour'
+import { useResponsiveGridCount } from '@/utils/searchParams'
 
 export const TABLE_SORTS = [
 	'number',
@@ -54,7 +55,8 @@ export function useTableSearch() {
 		[data?.tables, sort]
 	)
 
-	const pagination = usePagination({ total: tables.length, initialCount: 12 })
+	const initialCount = useResponsiveGridCount()
+	const pagination = usePagination({ total: tables.length, initialCount })
 	const { page, count, setPage } = pagination
 
 	useEffect(() => {
