@@ -185,6 +185,7 @@
 		"not_your_table": "You can only make changes at your own table"
 	},
 	"tables": {
+		"delete_title": "Delete table {{no}} · {{name}}?",
 		"open_table": "Open table",
 		"max_guests": "Max guests",
 		"drag_to_swap": "Drag onto another table to swap numbers",

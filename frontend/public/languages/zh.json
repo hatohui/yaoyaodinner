@@ -185,6 +185,7 @@
 		"not_your_table": "你只能修改自己所在的餐桌"
 	},
 	"tables": {
+		"delete_title": "删除 {{no}} 号桌 · {{name}}？",
 		"open_table": "打开餐桌",
 		"max_guests": "最多人数",
 		"drag_to_swap": "拖到另一张桌子上以交换桌号",

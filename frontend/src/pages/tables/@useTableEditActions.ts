@@ -4,6 +4,7 @@ import {
 	useCreateTable,
 	useUpdateTable,
 	useSwapTableNumbers,
+	useDeleteTable,
 } from '@/api/tables/tables'
 import { useToast } from '@/hooks/useToast'
 
@@ -47,6 +48,17 @@ export function useTableEditActions() {
 		},
 	})
 
+	const { mutate: remove } = useDeleteTable({
+		mutation: {
+			meta: { ownErrorToast: true },
+			onSuccess: () => {
+				invalidate()
+				toast.success(t('admin.tables.deleted'))
+			},
+			onError: () => toast.error(t('admin.tables.delete_failed')),
+		},
+	})
+
 	return {
 		creating,
 		createTable: (name: string, capacity: number, isStaging: boolean) =>
@@ -55,5 +67,6 @@ export function useTableEditActions() {
 		updateCapacity: (id: string, capacity: number) =>
 			update({ id, data: { capacity } }),
 		swapNumbers: (a: string, b: string) => swap({ data: { ids: [a, b] } }),
+		deleteTable: (id: string) => remove({ id }),
 	}
 }

@@ -1,22 +1,24 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { ArrowLeftRight, ArrowUpRight, GripVertical, Users } from 'lucide-react'
+import { useDraggable, useDroppable } from '@dnd-kit/core'
+import {
+	ArrowLeftRight,
+	ArrowUpRight,
+	GripVertical,
+	Trash2,
+	Users,
+} from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { cn } from '@/utils/shadcn'
 
 interface TableEditCardProps {
 	table: TableDto
-	dragging: boolean
-	dropTarget: boolean
 	swapPreviewNo?: number
-	onDragStart: () => void
-	onDragEnter: () => void
-	onDragEnd: () => void
-	onDrop: () => void
 	onRename: (name: string) => void
 	onCapacityChange: (capacity: number) => void
 	onSwapClick: () => void
+	onDeleteClick: () => void
 }
 
 const iconButton =
@@ -24,50 +26,44 @@ const iconButton =
 
 export function TableEditCard({
 	table,
-	dragging,
-	dropTarget,
 	swapPreviewNo,
-	onDragStart,
-	onDragEnter,
-	onDragEnd,
-	onDrop,
 	onRename,
 	onCapacityChange,
 	onSwapClick,
+	onDeleteClick,
 }: TableEditCardProps) {
 	const { t } = useTranslation()
+	const drag = useDraggable({ id: table.id })
+	const drop = useDroppable({ id: table.id })
+	const dropTarget = drop.isOver && !drag.isDragging
 
 	return (
 		<div
-			onDragEnter={onDragEnter}
-			onDragOver={e => e.preventDefault()}
-			onDrop={e => {
-				e.preventDefault()
-				onDrop()
+			ref={node => {
+				drag.setNodeRef(node)
+				drop.setNodeRef(node)
 			}}
 			className={cn(
 				'flex h-full flex-col gap-2 rounded-2xl border border-dashed border-primary/40 bg-card p-3 shadow-sm transition-all',
-				dragging && 'opacity-40',
+				drag.isDragging && 'opacity-40',
 				dropTarget && 'scale-[1.02] border-solid border-primary bg-primary/10'
 			)}
 		>
 			<div className='flex items-center gap-1.5'>
-				<span
-					draggable
-					onDragStart={e => {
-						e.dataTransfer.effectAllowed = 'move'
-						e.dataTransfer.setData('text/plain', table.id)
-						onDragStart()
-					}}
-					onDragEnd={onDragEnd}
+				<button
+					type='button'
+					ref={drag.setActivatorNodeRef}
+					{...drag.listeners}
+					{...drag.attributes}
+					aria-label={t('tables.drag_to_swap')}
 					title={t('tables.drag_to_swap')}
-					className='flex cursor-grab items-center gap-0.5 rounded-full active:cursor-grabbing'
+					className='flex cursor-grab touch-none items-center gap-0.5 rounded-full active:cursor-grabbing'
 				>
 					<GripVertical className='size-4 shrink-0 text-muted-foreground' />
 					<span className='flex h-7 min-w-7 items-center justify-center rounded-full bg-primary px-2 text-sm font-bold tabular-nums text-primary-foreground'>
 						{table.no}
 					</span>
-				</span>
+				</button>
 				{swapPreviewNo !== undefined && (
 					<span className='flex items-center gap-1 text-sm font-bold tabular-nums text-primary'>
 						<ArrowLeftRight className='size-3.5' />
@@ -92,6 +88,18 @@ export function TableEditCard({
 				>
 					<ArrowUpRight className='size-4' />
 				</Link>
+				<button
+					type='button'
+					onClick={onDeleteClick}
+					aria-label={t('admin.tables.delete_selected')}
+					title={t('admin.tables.delete_selected')}
+					className={cn(
+						iconButton,
+						'hover:bg-destructive/10 hover:text-destructive'
+					)}
+				>
+					<Trash2 className='size-4' />
+				</button>
 			</div>
 
 			<InlineEdit

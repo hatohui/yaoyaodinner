@@ -185,6 +185,7 @@
 		"not_your_table": "Bạn chỉ có thể chỉnh sửa bàn của mình"
 	},
 	"tables": {
+		"delete_title": "Xoá bàn {{no}} · {{name}}?",
 		"open_table": "Mở bàn",
 		"max_guests": "Số khách tối đa",
 		"drag_to_swap": "Kéo sang bàn khác để đổi số",
