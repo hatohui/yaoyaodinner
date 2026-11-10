@@ -108,13 +108,13 @@ function VariantPriceField({
 	}
 
 	return (
-		<div className='flex flex-col gap-1'>
+		<div className='flex items-center gap-2'>
 			{showLabel && variant.label && (
-				<span className='truncate text-[11px] font-medium text-muted-foreground'>
+				<span className='w-6 shrink-0 truncate text-xs font-medium text-muted-foreground'>
 					{variant.label}
 				</span>
 			)}
-			<label className='flex items-center gap-1.5 text-xs font-medium text-muted-foreground'>
+			<label className='flex min-w-0 flex-1 items-center gap-1.5 text-xs font-medium text-muted-foreground'>
 				<Input
 					type='number'
 					inputMode='decimal'
@@ -367,25 +367,28 @@ export function FoodTable({
 							<button
 								type='button'
 								onClick={() => setEditing(food)}
-								className='block aspect-[4/3] w-full bg-muted'
+								className='relative block aspect-[4/3] w-full shrink-0 overflow-hidden bg-muted'
 							>
 								<StoredImage
 									imageKey={food.imageUrl}
 									alt={food.name}
-									className='size-full object-cover'
+									className='absolute inset-0 size-full object-cover'
 									fallback={
-										<div className='flex size-full items-center justify-center text-muted-foreground'>
+										<div className='absolute inset-0 flex items-center justify-center text-muted-foreground'>
 											<UtensilsCrossed className='size-6' />
 										</div>
 									}
 								/>
 							</button>
-							<div className='flex flex-1 flex-col gap-2 p-3'>
-								<div className='flex items-baseline justify-between gap-2'>
-									<p className='truncate text-sm font-medium text-foreground'>
+							<div className='flex flex-1 flex-col gap-2 p-2.5 sm:p-3'>
+								<div className='flex items-start justify-between gap-2'>
+									<p
+										title={food.name}
+										className='m-0 line-clamp-2 min-h-[2lh] min-w-0 text-sm font-medium leading-snug text-foreground'
+									>
 										{food.name}
 									</p>
-									<span className='shrink-0 text-[11px] tabular-nums text-muted-foreground'>
+									<span className='shrink-0 pt-0.5 text-[11px] tabular-nums text-muted-foreground'>
 										{food.orderCount}×
 									</span>
 								</div>
@@ -417,14 +420,14 @@ export function FoodTable({
 							<button
 								type='button'
 								onClick={() => setEditing(food)}
-								className='block aspect-[4/3] w-full bg-muted'
+								className='relative block aspect-[4/3] w-full shrink-0 overflow-hidden bg-muted'
 							>
 								<StoredImage
 									imageKey={food.imageUrl}
 									alt={food.name}
-									className='size-full object-cover'
+									className='absolute inset-0 size-full object-cover'
 									fallback={
-										<div className='flex size-full items-center justify-center text-muted-foreground'>
+										<div className='absolute inset-0 flex items-center justify-center text-muted-foreground'>
 											<UtensilsCrossed className='size-6' />
 										</div>
 									}
