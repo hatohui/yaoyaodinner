@@ -185,7 +185,7 @@ export function useFoodCatalog() {
 	const { mutate: updateVariantMutate } = useUpdateFoodVariant({
 		mutation: {
 			onMutate: ({ variantId, data: patch }) => {
-				const owner = foods.find(f => f.variantId === variantId)
+				const owner = foods.find(f => f.variants.some(v => v.id === variantId))
 				if (!owner) return undefined
 				return patchRow(owner.id, f => ({
 					...f,
@@ -269,7 +269,12 @@ export function useFoodCatalog() {
 			}),
 		updateVariant: (
 			variantId: string,
-			patch: { label?: string; price?: number; isAvailable?: boolean }
+			patch: {
+				label?: string
+				price?: number | null
+				isSeasonal?: boolean
+				isAvailable?: boolean
+			}
 		) =>
 			updateVariantMutate({
 				variantId,
