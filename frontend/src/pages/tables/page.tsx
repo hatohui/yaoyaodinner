@@ -9,6 +9,9 @@ import { useTableSearch } from './@useTableSearch'
 import { TableSortSelect } from './@TableSortSelect'
 import { useConfig } from '@/hooks/useConfig'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useEditMode } from '@/hooks/useEditMode'
+import { CreateTableDialog } from '../admin/tables/@CreateTableDialog'
+import { useTableEditActions } from './@useTableEditActions'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { TABLE_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { cn } from '@/utils/shadcn'
@@ -30,6 +33,8 @@ export default function TablesPage() {
 	} = useTableSearch()
 	const { floorPlan } = useConfig()
 	const { isAdmin } = useIsAdmin()
+	const { editing } = useEditMode()
+	const { createTable, creating } = useTableEditActions()
 	const { view, setView } = useListView(TABLE_LIST_VIEW_STORAGE_KEY)
 	const showTotal = sort === 'most_ordered' || sort === 'least_ordered'
 
@@ -41,6 +46,9 @@ export default function TablesPage() {
 				</h1>
 				<div className='flex items-center gap-2'>
 					<IdentityTourButton />
+					{editing && (
+						<CreateTableDialog pending={creating} onCreate={createTable} />
+					)}
 					{(floorPlan || isAdmin) && (
 						<Link
 							to='/tables/map'
@@ -86,7 +94,9 @@ export default function TablesPage() {
 					aria-busy={isRefreshing}
 					className={cn('transition-opacity', isRefreshing && 'opacity-60')}
 				>
-					{view === 'compact' ? (
+					{editing ? (
+						<TableList tables={tables} />
+					) : view === 'compact' ? (
 						<TableList tables={tables} compact showTotal={showTotal} />
 					) : (
 						<>

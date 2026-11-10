@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
-import { ArrowLeft, Link as LinkIcon, Map, Users } from 'lucide-react'
+import { ArrowLeft, Link as LinkIcon, Map } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useGetTablePeople } from '@/api/tables/tables'
@@ -17,6 +17,7 @@ import { Roster } from './@Roster'
 import { OrdersTab } from './@OrdersTab'
 import { SplitsTab } from './@SplitsTab'
 import { TableBanner } from './@TableBanner'
+import { SeatCountChip } from './@SeatCountChip'
 import { TableCodeBar } from './@TableCodeBar'
 import { TableCodeDialog } from './@TableCodeDialog'
 import { groupOrders } from '@/components/ordering/groupOrders'
@@ -124,10 +125,7 @@ export default function TableDetailPage() {
 							table.name
 						)}
 					</h1>
-					<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/25'>
-						<Users className='size-3.5' />
-						{table.seated}
-					</span>
+					<SeatCountChip table={table} />
 				</div>
 				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}

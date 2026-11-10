@@ -185,6 +185,9 @@
 		"not_your_table": "You can only make changes at your own table"
 	},
 	"tables": {
+		"open_table": "Open table",
+		"max_guests": "Max guests",
+		"drag_to_swap": "Drag onto another table to swap numbers",
 		"find_title": "Find your table",
 		"search_placeholder": "Search table or name…",
 		"all_tables": "All tables",

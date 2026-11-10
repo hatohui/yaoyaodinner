@@ -185,6 +185,9 @@
 		"not_your_table": "你只能修改自己所在的餐桌"
 	},
 	"tables": {
+		"open_table": "打开餐桌",
+		"max_guests": "最多人数",
+		"drag_to_swap": "拖到另一张桌子上以交换桌号",
 		"find_title": "找到你的餐桌",
 		"search_placeholder": "搜索餐桌或姓名…",
 		"all_tables": "所有餐桌",

@@ -198,6 +198,9 @@ declare module 'react-i18next' {
 					view_card: string
 					view_compact: string
 					nobody_seated: string
+					open_table: string
+					max_guests: string
+					drag_to_swap: string
 					find_title: string
 					search_placeholder: string
 					all_tables: string

@@ -185,6 +185,9 @@
 		"not_your_table": "Bạn chỉ có thể chỉnh sửa bàn của mình"
 	},
 	"tables": {
+		"open_table": "Mở bàn",
+		"max_guests": "Số khách tối đa",
+		"drag_to_swap": "Kéo sang bàn khác để đổi số",
 		"find_title": "Tìm bàn của bạn",
 		"search_placeholder": "Tìm bàn hoặc tên…",
 		"all_tables": "Tất cả bàn",

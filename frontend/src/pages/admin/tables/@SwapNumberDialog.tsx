@@ -16,12 +16,15 @@ interface SwapNumberDialogProps {
 	table: TableDto | null
 	onOpenChange: (open: boolean) => void
 	onSwap: (ids: string[]) => void
+	/** Pick from the live event even when the admin is scoped to a past one */
+	liveEvent?: boolean
 }
 
 export function SwapNumberDialog({
 	table,
 	onOpenChange,
 	onSwap,
+	liveEvent = false,
 }: SwapNumberDialogProps) {
 	const { t } = useTranslation()
 	const { scopedEventId } = useAdminEvents()
@@ -30,7 +33,7 @@ export function SwapNumberDialog({
 
 	// The live list is paginated, so fetch the whole event to pick from.
 	const { data: live, isLoading: liveLoading } = useGetTables<TableListDto>(
-		{ count: 100, eventId: scopedEventId },
+		{ count: 100, eventId: liveEvent ? undefined : scopedEventId },
 		{ query: { enabled: open && !staged } }
 	)
 	const { data: stagedTables = [], isLoading: stagedLoading } =
