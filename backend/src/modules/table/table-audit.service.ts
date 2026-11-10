@@ -44,6 +44,15 @@ export class TableAuditService {
     }
   }
 
+  async pruneOlderThan(days: number) {
+    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const { count } = await prisma.tableAudit.deleteMany({
+      where: { createdAt: { lt: cutoff } },
+    });
+    this.logger.log(`Pruned ${count} table audit rows older than ${days} days`);
+    return { pruned: count };
+  }
+
   async list(count: number): Promise<TableAuditDto[]> {
     const rows = await prisma.tableAudit.findMany({
       orderBy: { createdAt: 'desc' },

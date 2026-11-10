@@ -15,6 +15,8 @@ resource "aws_lambda_function" "yaoyao_function" {
       PORT     = "8080"
       NODE_ENV = "production"
 
+      AWS_LWA_PASS_THROUGH_PATH = "/api/scheduled"
+
       DATABASE_URL = local.doppler_database_url
       REDIS_URL    = local.doppler_redis_url
 

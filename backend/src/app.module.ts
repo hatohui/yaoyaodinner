@@ -16,6 +16,7 @@ import { SeasonalPriceModule } from "./modules/seasonal-price/seasonal-price.mod
 import { StatsModule } from "./modules/stats/stats.module";
 import { ImagesModule } from "./modules/images/images.module";
 import { ImageUploadModule } from "./modules/images/image-upload.module";
+import { ScheduledModule } from "./modules/scheduled/scheduled.module";
 import { ConfigModule as AppConfigModule } from "./modules/config/config.module";
 
 @Module({
@@ -38,6 +39,7 @@ import { ConfigModule as AppConfigModule } from "./modules/config/config.module"
     StatsModule,
     ImagesModule,
     ImageUploadModule,
+    ScheduledModule,
   ],
 })
 export class AppModule {}

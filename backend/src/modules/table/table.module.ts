@@ -20,6 +20,6 @@ import { ImagesModule } from '@modules/images/images.module';
   ],
   controllers: [TableController, TableSlotController],
   providers: [TableService, TableSlotService, TableAuditService],
-  exports: [TableService, TableSlotService],
+  exports: [TableService, TableSlotService, TableAuditService],
 })
 export class TableModule {}
