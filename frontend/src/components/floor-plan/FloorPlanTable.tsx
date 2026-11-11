@@ -1,10 +1,30 @@
-import { type ComponentProps, useLayoutEffect, useRef, useState } from 'react'
+import {
+	type ComponentProps,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react'
 import { MapPin, Users } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { cn } from '@/utils/shadcn'
 import { tableDiameter } from './layout'
 
 const NAME_MAX_WIDTH = 0.8
+const TABLE_WORD = /\b(table|tbl)\b|^bàn\s+|桌$|^โต๊ะ\s*/gi
+
+function nameCandidates(name: string) {
+	const trimmed = name.trim()
+	const stripped = trimmed.replace(TABLE_WORD, '').replace(/\s+/g, ' ').trim()
+	const words = (stripped || trimmed).split(' ').filter(Boolean)
+	const initials =
+		words.length > 1
+			? words
+					.map(word => (/^\d+$/.test(word) ? word : word[0].toUpperCase()))
+					.join('')
+			: ''
+	return [...new Set([trimmed, stripped, initials].filter(Boolean))]
+}
 
 interface FloorPlanTableProps extends ComponentProps<'button'> {
 	table: TableDto
@@ -20,20 +40,26 @@ export function FloorPlanTable({
 	...props
 }: FloorPlanTableProps) {
 	const buttonRef = useRef<HTMLButtonElement | null>(null)
-	const nameRef = useRef<HTMLSpanElement>(null)
-	const [nameFits, setNameFits] = useState(false)
+	const measureRefs = useRef<(HTMLSpanElement | null)[]>([])
+	const candidates = useMemo(() => nameCandidates(table.name), [table.name])
+	const [label, setLabel] = useState<string | null>(null)
 
 	useLayoutEffect(() => {
 		const button = buttonRef.current
-		const name = nameRef.current
-		if (!button || !name) return
-		const check = () =>
-			setNameFits(name.scrollWidth <= button.clientWidth * NAME_MAX_WIDTH)
+		if (!button) return
+		measureRefs.current.length = candidates.length
+		const check = () => {
+			const maxWidth = button.clientWidth * NAME_MAX_WIDTH
+			const index = measureRefs.current.findIndex(
+				span => span && span.scrollWidth <= maxWidth
+			)
+			setLabel(index === -1 ? null : candidates[index])
+		}
 		check()
 		const observer = new ResizeObserver(check)
 		observer.observe(button)
 		return () => observer.disconnect()
-	}, [table.name])
+	}, [candidates])
 
 	const setRefs = (node: HTMLButtonElement | null) => {
 		buttonRef.current = node
@@ -45,6 +71,7 @@ export function FloorPlanTable({
 		<button
 			ref={setRefs}
 			type='button'
+			title={table.name}
 			style={{
 				left: `${table.x}%`,
 				top: `${table.y}%`,
@@ -61,17 +88,23 @@ export function FloorPlanTable({
 			{isMine && (
 				<MapPin className='absolute -top-[1.2cqw] size-[max(2.6cqw,12px)] fill-primary text-primary-foreground' />
 			)}
-			<span
-				ref={nameRef}
-				aria-hidden={!nameFits}
-				className={cn(
-					'text-[max(2.4cqw,10px)] whitespace-nowrap text-foreground',
-					!nameFits && 'invisible absolute'
-				)}
-			>
-				{table.name}
-			</span>
-			{!nameFits && (
+			{candidates.map((candidate, index) => (
+				<span
+					key={candidate}
+					ref={node => {
+						measureRefs.current[index] = node
+					}}
+					aria-hidden
+					className='invisible absolute text-[max(2.4cqw,10px)] whitespace-nowrap'
+				>
+					{candidate}
+				</span>
+			))}
+			{label ? (
+				<span className='text-[max(2.4cqw,10px)] whitespace-nowrap text-foreground'>
+					{label}
+				</span>
+			) : (
 				<span className='text-[max(3.2cqw,12px)] text-foreground'>
 					{table.no}
 				</span>
