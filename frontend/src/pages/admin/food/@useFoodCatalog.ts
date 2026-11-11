@@ -22,6 +22,7 @@ import type {
 import { usePagination } from '@/hooks/usePagination'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useToast } from '@/hooks/useToast'
+import { useAiJobs } from '@/hooks/useAiJobs'
 import { updateFood as apiUpdateFood } from '@/api/foods/foods'
 
 /** Default variant's price/id flattened onto the row so the grid can edit it in place. */
@@ -137,12 +138,21 @@ export function useFoodCatalog() {
 		onError()
 	}
 
+	const translations = useAiJobs({
+		onSettled: (id, status) => {
+			invalidate()
+			if (status === 'failed') {
+				const food = foods.find(f => f.id === id)
+				if (food) setFailedTranslationFood({ id, name: food.name })
+			}
+		},
+	})
+
 	const { mutateAsync: createFoodAsync, isPending: creating } = useCreateFood({
 		mutation: {
 			onSuccess: data => {
 				invalidate()
-				if (data?.aiTranslationFailed)
-					setFailedTranslationFood({ id: data.id, name: data.name })
+				translations.watch(data.id)
 			},
 			onError,
 		},
@@ -180,7 +190,13 @@ export function useFoodCatalog() {
 		mutation: { onSuccess: invalidate, onError },
 	})
 	const { mutate: addVariantMutate } = useAddFoodVariant({
-		mutation: { onSuccess: invalidate, onError },
+		mutation: {
+			onSuccess: (_variant, { id }) => {
+				invalidate()
+				translations.watch(id)
+			},
+			onError,
+		},
 	})
 	const { mutate: updateVariantMutate } = useUpdateFoodVariant({
 		mutation: {

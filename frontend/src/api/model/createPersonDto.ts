@@ -7,6 +7,7 @@
  */
 
 export interface CreatePersonDto {
+  /** @maxLength 60 */
   name: string;
   /** Table to seat this person at */
   tableId: string;

@@ -14,5 +14,4 @@ export interface CategoryItemDto {
   /** @nullable */
   description: string | null;
   isAvailable: boolean;
-  aiTranslationFailed?: boolean;
 }

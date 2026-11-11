@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Languages, Trash2 } from 'lucide-react'
+import { Languages, Sparkles, Trash2 } from 'lucide-react'
+import { useDescribeDish } from '@/api/content-health/content-health'
+import { useToast } from '@/hooks/useToast'
+import { Spinner } from '@/components/ui/spinner'
 import type { CategoryItemDto } from '@/api/model'
 import type { FoodGridRow } from './@useFoodCatalog'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -36,8 +39,18 @@ export function EditFoodDialog({
 	onTranslate,
 	onClose,
 }: EditFoodDialogProps) {
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
+	const toast = useToast()
 	const [draft, setDraft] = useState(food)
+	const { mutate: describe, isPending: describing } = useDescribeDish({
+		mutation: {
+			onSuccess: ({ description }) => {
+				if (description) setDraft(prev => ({ ...prev, description }))
+				else toast.error(t('admin.content.fill_failed'))
+			},
+			onError: () => toast.error(t('admin.content.fill_failed')),
+		},
+	})
 	const [confirmDelete, setConfirmDelete] = useState(false)
 
 	const set = <K extends keyof FoodGridRow>(key: K, value: FoodGridRow[K]) =>
@@ -79,9 +92,33 @@ export function EditFoodDialog({
 					</div>
 
 					<div className='flex flex-col gap-1.5'>
-						<Label htmlFor='edit-food-description'>
-							{t('admin.food.description')}
-						</Label>
+						<div className='flex items-center justify-between gap-2'>
+							<Label htmlFor='edit-food-description'>
+								{t('admin.food.description')}
+							</Label>
+							<Button
+								type='button'
+								variant='ghost'
+								size='sm'
+								className='gap-1.5 rounded-full text-primary'
+								disabled={describing || !draft.name.trim()}
+								onClick={() =>
+									describe({
+										data: {
+											name: draft.name,
+											category:
+												categories.find(c => c.id === draft.categoryId)
+													?.name ?? null,
+											imageKey: draft.imageUrl ?? undefined,
+											lang: i18n.language,
+										},
+									})
+								}
+							>
+								{describing ? <Spinner className='size-3.5' /> : <Sparkles />}
+								{t('admin.content.ai_describe')}
+							</Button>
+						</div>
 						<Textarea
 							id='edit-food-description'
 							value={draft.description ?? ''}

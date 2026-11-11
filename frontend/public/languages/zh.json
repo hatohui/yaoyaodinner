@@ -313,7 +313,9 @@
 		"suggestions": "建议",
 		"price_from": "起价",
 		"seasonal_price": "时价",
-		"categories": "分类"
+		"categories": "分类",
+		"ai_translated": "AI 翻译",
+		"ai_translated_hint": "此内容为自动翻译，可能有误。"
 	},
 	"about": {
 		"hero_tag": "私人聚会",
@@ -649,7 +651,9 @@
 			"settings": "设置",
 			"collapse": "收起侧边栏",
 			"expand": "展开侧边栏",
-			"seasonal": "时价"
+			"seasonal": "时价",
+			"content": "内容检查",
+			"glossary": "术语表"
 		},
 		"dashboard": {
 			"title": "仪表盘",
@@ -921,6 +925,52 @@
 			"price_for": "{{name}} 的价格",
 			"empty": "暂无时价菜品。请在“菜品”中将菜品标记为时价。",
 			"not_set": "未设置"
+		},
+		"content": {
+			"title": "内容检查",
+			"subtitle": "缺少翻译、描述或图片的菜品和分类。AI 只填补缺失内容，绝不覆盖你的修改。",
+			"tabs": {
+				"translations": "翻译",
+				"descriptions": "描述",
+				"images": "图片",
+				"categories": "分类"
+			},
+			"missing": "缺少",
+			"hidden": "已隐藏",
+			"untitled": "未命名",
+			"ai_translate": "AI 翻译",
+			"ai_describe": "AI 撰写",
+			"fix_all": "AI 全部修复（{{count}}）",
+			"fixing": "修复中 {{done}}/{{total}}",
+			"all_good": "这里没有缺失内容",
+			"fill_done": "已填写",
+			"fill_all_done": "已全部填写",
+			"fill_partial": "{{count}} 项未能填写，请重试。",
+			"fill_failed": "AI 无法填写。请检查 AI 设置后重试。",
+			"image_saved": "图片已保存",
+			"batch_running": "已有 AI 批量任务在运行",
+			"review_title": "保存前检查",
+			"drafting": "正在生成草稿…",
+			"draft_failed": "AI 无法为这道菜生成内容，请重新生成。",
+			"nothing_to_fill": "这道菜已没有需要填写的内容。",
+			"regenerate": "重新生成",
+			"current": "当前：{{value}}",
+			"variant_label": "选项：{{label}}"
+		},
+		"glossary": {
+			"title": "术语表",
+			"subtitle": "本地菜式用词及其在各语言中的写法。AI 会始终使用这些用词，不会自行猜测。",
+			"fields": {
+				"en": "英文",
+				"vi": "越南文",
+				"zh": "中文",
+				"th": "泰文",
+				"note": "含义"
+			},
+			"add": "添加术语",
+			"delete": "删除术语",
+			"empty": "还没有术语。",
+			"save_failed": "无法保存术语"
 		}
 	},
 	"faq": {

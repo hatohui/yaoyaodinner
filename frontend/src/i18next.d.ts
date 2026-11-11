@@ -283,6 +283,8 @@ declare module 'react-i18next' {
 					unavailable: string
 					popular: string
 					recommended: string
+					ai_translated: string
+					ai_translated_hint: string
 					sort_name: string
 					sort_name_desc: string
 					sort_price: string
@@ -575,6 +577,8 @@ declare module 'react-i18next' {
 						toggle: string
 						collapse: string
 						expand: string
+						content: string
+						glossary: string
 						tables: string
 						floor_plan: string
 						food: string
@@ -584,6 +588,52 @@ declare module 'react-i18next' {
 						feedback: string
 						settings: string
 						seasonal: string
+					}
+					glossary: {
+						title: string
+						subtitle: string
+						fields: {
+							en: string
+							vi: string
+							zh: string
+							th: string
+							note: string
+						}
+						add: string
+						delete: string
+						empty: string
+						save_failed: string
+					}
+					content: {
+						title: string
+						subtitle: string
+						tabs: {
+							translations: string
+							descriptions: string
+							images: string
+							categories: string
+						}
+						missing: string
+						hidden: string
+						untitled: string
+						ai_translate: string
+						ai_describe: string
+						fix_all: string
+						fixing: string
+						all_good: string
+						fill_done: string
+						fill_all_done: string
+						fill_partial: string
+						fill_failed: string
+						image_saved: string
+						batch_running: string
+						review_title: string
+						drafting: string
+						draft_failed: string
+						nothing_to_fill: string
+						regenerate: string
+						current: string
+						variant_label: string
 					}
 					seasonal: {
 						title: string

@@ -11,6 +11,22 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const thumbKeyOf = (key: string) => `${key}_thumb`;
 
+export type ImageFormat = 'png' | 'jpeg' | 'gif' | 'webp';
+export type StoredImage = { format: ImageFormat; bytes: Uint8Array };
+
+const MAX_AI_IMAGE_BYTES = 3_500_000;
+const DEFAULT_ASSET_URL = 'https://assets.yaoyaodinner.party';
+
+function sniffFormat(bytes: Uint8Array): ImageFormat | null {
+  const ascii = (start: number, end: number) =>
+    String.fromCharCode(...bytes.subarray(start, end));
+  if (bytes[0] === 0x89 && ascii(1, 4) === 'PNG') return 'png';
+  if (bytes[0] === 0xff && bytes[1] === 0xd8) return 'jpeg';
+  if (ascii(0, 3) === 'GIF') return 'gif';
+  if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP') return 'webp';
+  return null;
+}
+
 @Injectable()
 export class ImagesService {
   private readonly logger = new Logger(ImagesService.name);
@@ -51,6 +67,28 @@ export class ImagesService {
     );
 
     return { url, key, thumbUrl, thumbKey };
+  }
+
+  async readImage(key: string): Promise<StoredImage | null> {
+    const base = this.config.get<string>('ASSET_URL') ?? DEFAULT_ASSET_URL;
+    const origin = new URL(base).origin;
+    const urls = key.startsWith('http')
+      ? [key]
+      : [`${base}/${thumbKeyOf(key)}`, `${base}/${key}`];
+
+    for (const url of urls) {
+      if (new URL(url).origin !== origin) continue;
+      const res = await fetch(url, {
+        redirect: 'error',
+        signal: AbortSignal.timeout(5_000),
+      }).catch(() => null);
+      if (!res?.ok) continue;
+      if (Number(res.headers.get('content-length') ?? 0) > MAX_AI_IMAGE_BYTES) continue;
+      const bytes = new Uint8Array(await res.arrayBuffer());
+      const format = bytes.length <= MAX_AI_IMAGE_BYTES ? sniffFormat(bytes) : null;
+      if (format) return { format, bytes };
+    }
+    return null;
   }
 
   /** Best-effort delete of an image and its thumbnail — swallows errors so a missing object never blocks an update. */

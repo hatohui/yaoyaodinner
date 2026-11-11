@@ -313,7 +313,9 @@
 		"suggestions": "Suggestions",
 		"price_from": "From",
 		"seasonal_price": "Seasonal price",
-		"categories": "Categories"
+		"categories": "Categories",
+		"ai_translated": "AI translated",
+		"ai_translated_hint": "Translated automatically, so it may contain mistakes."
 	},
 	"about": {
 		"hero_tag": "Private Gathering",
@@ -651,7 +653,9 @@
 			"settings": "Settings",
 			"collapse": "Collapse sidebar",
 			"expand": "Expand sidebar",
-			"seasonal": "Seasonal prices"
+			"seasonal": "Seasonal prices",
+			"content": "Content check",
+			"glossary": "Glossary"
 		},
 		"dashboard": {
 			"title": "Dashboard",
@@ -923,6 +927,52 @@
 			"price_for": "Price for {{name}}",
 			"empty": "No seasonal dishes. Mark a food as seasonal in Food.",
 			"not_set": "Not set"
+		},
+		"content": {
+			"title": "Content check",
+			"subtitle": "Dishes and categories missing translations, descriptions or photos. AI fills only what's missing and never overwrites your edits.",
+			"tabs": {
+				"translations": "Translations",
+				"descriptions": "Descriptions",
+				"images": "Images",
+				"categories": "Categories"
+			},
+			"missing": "Missing",
+			"hidden": "Hidden",
+			"untitled": "Untitled",
+			"ai_translate": "Translate with AI",
+			"ai_describe": "Write with AI",
+			"fix_all": "Fix all with AI ({{count}})",
+			"fixing": "Fixing {{done}}/{{total}}",
+			"all_good": "Nothing missing here",
+			"fill_done": "Filled in",
+			"fill_all_done": "All filled in",
+			"fill_partial": "{{count}} couldn't be filled. Try them again.",
+			"fill_failed": "AI couldn't fill this. Check that AI is set up, then try again.",
+			"image_saved": "Image saved",
+			"batch_running": "An AI batch is already running",
+			"review_title": "Review before saving",
+			"drafting": "Writing a draft…",
+			"draft_failed": "AI couldn't draft this dish. Try regenerating.",
+			"nothing_to_fill": "Nothing left to fill for this dish.",
+			"regenerate": "Regenerate",
+			"current": "Now: {{value}}",
+			"variant_label": "Option: {{label}}"
+		},
+		"glossary": {
+			"title": "Glossary",
+			"subtitle": "Local dish words and how to write them in each language. The AI always uses these and never guesses them.",
+			"fields": {
+				"en": "English",
+				"vi": "Vietnamese",
+				"zh": "Chinese",
+				"th": "Thai",
+				"note": "Meaning"
+			},
+			"add": "Add term",
+			"delete": "Delete term",
+			"empty": "No terms yet.",
+			"save_failed": "Couldn't save the term"
 		}
 	},
 	"faq": {

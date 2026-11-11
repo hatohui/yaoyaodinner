@@ -17,6 +17,8 @@ export interface FoodItemDto {
   categoryId: string | null;
   isAvailable: boolean;
   isPopular: boolean;
+  /** Name, description or a variant label in the requested language was written by AI and not edited by staff. */
+  isAiTranslated?: boolean;
   /** Staff pick: admins flag this food as recommended so the menu shows a recommended tag. */
   isRecommended: boolean;
   /** @nullable */
@@ -29,5 +31,4 @@ export interface FoodItemDto {
   variantCount: number;
   /** Whether orders of this food count toward table/split totals. False for joke/gag menu items that still show a price and can be ordered, but are free. */
   shouldCalculate: boolean;
-  aiTranslationFailed?: boolean;
 }

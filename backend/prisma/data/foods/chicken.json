@@ -125,8 +125,8 @@
           "description": "Gà nấu với sốt Marmite."
         },
         "zh": {
-          "name": "媽蜜鸡块",
-          "description": "媽蜜鸡块"
+          "name": "妈蜜鸡块",
+          "description": "妈蜜鸡块"
         }
       }
     },
@@ -373,7 +373,7 @@
           "description": "Gà xào kiểu Cung Bảo"
         },
         "zh": {
-          "name": "宮保鸡丁",
+          "name": "宫保鸡丁",
           "description": "宫保鸡丁"
         }
       }
@@ -459,8 +459,8 @@
           "description": "Gà nấu với trứng muối và sốt bơ."
         },
         "zh": {
-          "name": "成蛋渥奶油鸡柳",
-          "description": "成蛋渥奶油鸡柳"
+          "name": "咸蛋湿奶油鸡柳",
+          "description": "咸蛋湿奶油鸡柳"
         }
       }
     },
@@ -588,8 +588,8 @@
           "description": "Gà hấp với dầu tỏi."
         },
         "zh": {
-          "name": "葱油菜国鸡",
-          "description": "葱油菜国鸡"
+          "name": "葱油菜园鸡",
+          "description": "葱油菜园鸡"
         }
       }
     },
@@ -674,8 +674,8 @@
           "description": "Gà hấp với sốt gừng."
         },
         "zh": {
-          "name": "姜蓉蒸菜国鸡",
-          "description": "姜蓉蒸菜国鸡"
+          "name": "姜蓉蒸菜园鸡",
+          "description": "姜蓉蒸菜园鸡"
         }
       }
     },

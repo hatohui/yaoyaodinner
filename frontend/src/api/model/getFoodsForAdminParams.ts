@@ -5,11 +5,12 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { GetFoodsForAdminSort } from './getFoodsForAdminSort';
 
 export type GetFoodsForAdminParams = {
 search?: string;
+sort?: GetFoodsForAdminSort;
 category?: string;
-sort?: string;
 count?: number;
 page?: number;
 lang?: string;
