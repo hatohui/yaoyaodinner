@@ -480,6 +480,18 @@ declare module 'react-i18next' {
 				health: Record<string, string>
 				dev: Record<string, unknown>
 				admin: {
+					food: {
+						clownify: {
+							emoji: string
+							button: string
+							title: string
+							description: string
+							working: string
+							created: string
+							failed: string
+							retry: string
+						}
+					}
 					ordering: {
 						title: string
 						stage_closed: string

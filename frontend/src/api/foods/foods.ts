@@ -28,6 +28,7 @@ import type {
   AddFoodVariantDto,
   BulkToggleDto,
   CreateFoodDto,
+  CreateWeirdFoodDto,
   FoodDetailDto,
   FoodDetailWithStatsDto,
   FoodSuggestionDto,
@@ -572,6 +573,63 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getDeleteFoodMutationOptions(options), queryClient);
+    }
+    export const createWeirdFood = (
+    createWeirdFoodDto: CreateWeirdFoodDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<FoodDetailDto>(
+      {url: `/api/foods/weird`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createWeirdFoodDto, signal
+    },
+      );
+    }
+
+
+
+export const getCreateWeirdFoodMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createWeirdFood>>, TError,{data: CreateWeirdFoodDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof createWeirdFood>>, TError,{data: CreateWeirdFoodDto}, TContext> => {
+
+const mutationKey = ['createWeirdFood'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createWeirdFood>>, {data: CreateWeirdFoodDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createWeirdFood(data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateWeirdFoodMutationResult = NonNullable<Awaited<ReturnType<typeof createWeirdFood>>>
+    export type CreateWeirdFoodMutationBody = CreateWeirdFoodDto
+    export type CreateWeirdFoodMutationError = unknown
+
+    export const useCreateWeirdFood = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createWeirdFood>>, TError,{data: CreateWeirdFoodDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createWeirdFood>>,
+        TError,
+        {data: CreateWeirdFoodDto},
+        TContext
+      > => {
+      return useMutation(getCreateWeirdFoodMutationOptions(options), queryClient);
     }
     export const bulkToggleFoods = (
     bulkToggleDto: BulkToggleDto,

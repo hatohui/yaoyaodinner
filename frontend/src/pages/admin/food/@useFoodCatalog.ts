@@ -4,6 +4,7 @@ import { keepPreviousData, useQueryClient } from '@tanstack/react-query'
 import {
 	useGetFoodsForAdmin,
 	useCreateFood,
+	useCreateWeirdFood,
 	useUpdateFood,
 	useDeleteFood,
 	useBulkToggleFoods,
@@ -148,6 +149,17 @@ export function useFoodCatalog() {
 		},
 	})
 
+	const { mutateAsync: clownifyAsync, isPending: clownifying } =
+		useCreateWeirdFood({
+			mutation: {
+				onSuccess: food => {
+					invalidate()
+					translations.watch(food.id)
+					toast.success(t('admin.food.clownify.created', { name: food.name }))
+				},
+			},
+		})
+
 	const { mutateAsync: createFoodAsync, isPending: creating } = useCreateFood({
 		mutation: {
 			onSuccess: data => {
@@ -245,6 +257,8 @@ export function useFoodCatalog() {
 		foods,
 		isLoading,
 		creating,
+		clownifying,
+		clownify: (imageKey: string) => clownifyAsync({ data: { imageKey } }),
 		failedTranslationFood,
 		setFailedTranslationFood,
 		handleSaveTranslations,

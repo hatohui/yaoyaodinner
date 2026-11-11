@@ -37,6 +37,7 @@ export * from './createPersonDto';
 export * from './createPresetDto';
 export * from './createTableDto';
 export * from './createTableSlotDto';
+export * from './createWeirdFoodDto';
 export * from './describeDishDto';
 export * from './describeDishResultDto';
 export * from './draftFoodContentDto';

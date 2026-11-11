@@ -831,7 +831,17 @@
 			"currency": "单位",
 			"image": "图片",
 			"ordered": "已点",
-			"ordered_count": "已点 {{count}} 次"
+			"ordered_count": "已点 {{count}} 次",
+			"clownify": {
+				"emoji": "🤡",
+				"button": "小丑一下",
+				"title": "把菜小丑化",
+				"description": "上传一张照片，AI 会据此编出一道离谱的菜，并用每种语言命名、描述和定价。这是搞笑菜品：可免费点，永远不计入账单。",
+				"working": "小丑正在表演…",
+				"created": "{{name}} 已加入菜单",
+				"failed": "小丑摔了一跤。请重试或换一张照片。",
+				"retry": "重试"
+			}
 		},
 		"presets": {
 			"title": "固定套餐",

@@ -833,7 +833,17 @@
 			"currency": "Unit",
 			"image": "Photo",
 			"ordered": "Ordered",
-			"ordered_count": "Ordered {{count}}×"
+			"ordered_count": "Ordered {{count}}×",
+			"clownify": {
+				"emoji": "🤡",
+				"button": "Clownify",
+				"title": "Clownify a dish",
+				"description": "Upload a photo and the AI invents a ridiculous dish from it, then names, describes and prices it in every language. It's a joke item: free to order and never added to the bill.",
+				"working": "Clowning around…",
+				"created": "{{name}} just joined the menu",
+				"failed": "The clown tripped. Try again or pick another photo.",
+				"retry": "Try again"
+			}
 		},
 		"presets": {
 			"title": "Preset menus",

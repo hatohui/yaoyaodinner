@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import { CreateFoodDto } from "./dto/create-food.dto";
 import { UpdateFoodDto } from "./dto/update-food.dto";
 import { AddFoodVariantDto } from "./dto/add-food-variant.dto";
@@ -7,6 +13,7 @@ import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
 import { CacheSettings } from "@common/cache/constants";
+import { AiService } from "@libs/ai";
 import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 import { ImagesService } from "@modules/images/images.service";
 import { EventService } from "@modules/event/event.service";
@@ -364,6 +371,63 @@ export class FoodService {
       count: foods.length,
       total,
     };
+  }
+
+  async createWeird(imageKey: string) {
+    const image = await this.images.readImage(imageKey);
+    if (!image) throw new BadRequestException("Couldn't read that photo");
+
+    const categories = await prisma.category.findMany({
+      where: { isAvailable: true },
+      orderBy: { key: "asc" },
+      select: {
+        id: true,
+        key: true,
+        translations: { where: { language: "en" }, select: { name: true } },
+      },
+    });
+    if (categories.length === 0) throw new BadRequestException("Add a category first");
+
+    const dish = await AiService.inventDish(
+      image,
+      categories.map((c) => ({ id: c.id, name: c.translations[0]?.name ?? c.key })),
+    );
+    if (!dish) throw new ServiceUnavailableException("AI couldn't invent a dish");
+
+    const foodId = uuidv4();
+    const food = await prisma.food.create({
+      data: {
+        id: foodId,
+        imageUrl: imageKey,
+        categoryId: dish.categoryId ?? categories[0].id,
+        shouldCalculate: false,
+        translations: {
+          create: Object.entries(dish.locales).map(([language, t]) => ({
+            language,
+            name: t.name,
+            description: t.description,
+            isNameAiGenerated: true,
+            isDescriptionAiGenerated: true,
+          })),
+        },
+        variants: {
+          create: [
+            {
+              id: uuidv4(),
+              price: dish.price,
+              currency: "RM",
+              isAvailable: true,
+              translations: { create: [{ language: "en", label: "Regular" }] },
+            },
+          ],
+        },
+      },
+      include: this.foodDetailInclude("en"),
+    });
+    await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await this.aiJobs.enqueue({ kind: "food", id: foodId });
+
+    return this.toDetailDto(food);
   }
 
   async create(dto: CreateFoodDto) {

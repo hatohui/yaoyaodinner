@@ -831,7 +831,17 @@
 			"currency": "Đơn vị",
 			"image": "Ảnh",
 			"ordered": "Đã gọi",
-			"ordered_count": "Đã gọi {{count}} lần"
+			"ordered_count": "Đã gọi {{count}} lần",
+			"clownify": {
+				"emoji": "🤡",
+				"button": "Hề hóa",
+				"title": "Hề hóa một món",
+				"description": "Tải ảnh lên và AI sẽ bịa ra một món ăn thật buồn cười, rồi đặt tên, mô tả và định giá bằng mọi ngôn ngữ. Đây là món đùa: gọi miễn phí và không bao giờ tính vào hóa đơn.",
+				"working": "Đang làm trò hề…",
+				"created": "{{name}} vừa gia nhập thực đơn",
+				"failed": "Chú hề vấp ngã rồi. Thử lại hoặc chọn ảnh khác.",
+				"retry": "Thử lại"
+			}
 		},
 		"presets": {
 			"title": "Thực đơn cố định",

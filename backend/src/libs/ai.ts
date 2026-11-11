@@ -15,13 +15,18 @@ const MODEL =
 const TOOL_NAME = "submit";
 
 type Schema = {
-  type: "string" | "object" | "array";
+  type: "string" | "number" | "object" | "array";
   description?: string;
   properties?: Record<string, Schema>;
   items?: Schema;
   required?: string[];
 };
-const Type = { STRING: "string", OBJECT: "object", ARRAY: "array" } as const;
+const Type = {
+  STRING: "string",
+  NUMBER: "number",
+  OBJECT: "object",
+  ARRAY: "array",
+} as const;
 
 const LOCALE_NAMES: Record<string, string> = {
   en: "English",
@@ -129,6 +134,7 @@ function fixedLabel(label: string, sourceLang: string, lang: string) {
 type CallOptions = { timeoutMs: number; maxTokens: number; temperature: number };
 const SINGLE_CALL: CallOptions = { timeoutMs: 20_000, maxTokens: 2_048, temperature: 0 };
 const RETRY_CALL: CallOptions = { ...SINGLE_CALL, temperature: 0.7 };
+const PLAYFUL_CALL: CallOptions = { ...SINGLE_CALL, temperature: 1 };
 const BATCH_CALL: CallOptions = { timeoutMs: 45_000, maxTokens: 5_000, temperature: 0 };
 
 let _client: BedrockRuntimeClient | null = null;
@@ -700,6 +706,21 @@ async function saveFoodContent(
   return updated;
 }
 
+export type InventedDish = {
+  categoryId: string | null;
+  price: number;
+  locales: Record<string, { name: string; description: string }>;
+};
+
+const INVENT_INSTRUCTION = [
+  "You invent playful joke dishes for the gag section of a Malaysian Chinese restaurant's menu.",
+  `Always answer by calling the ${TOOL_NAME} tool.`,
+  "Look at the photo and invent an absurd, funny dish it could be; puns and silly twists are welcome.",
+  "Keep it friendly and family-safe: no insults, no real people or brands, nothing crude, and no health or allergen claims.",
+  "Write the joke in English first, then give each locale a version that is funny to a native speaker, adapting the pun rather than translating word for word.",
+  "Locale codes: en is English, vi is Vietnamese, zh is Simplified Chinese, th is Thai.",
+].join(" ");
+
 export const AiService = {
   clearGlossaryCache() {
     glossaryCache = null;
@@ -845,6 +866,77 @@ export const AiService = {
     return description && isInLanguage(description, lang, true)
       ? description
       : null;
+  },
+
+  async inventDish(
+    image: StoredImage,
+    categories: { id: string; name: string }[],
+  ): Promise<InventedDish | null> {
+    const result = await generateJson<Record<string, unknown>>(
+      "joke dish",
+      [
+        {
+          text: `Invent a joke dish from the photo that follows, pick the menu section it belongs in, and give it a playful price.\n\n${JSON.stringify(
+            { categories },
+          )}`,
+        },
+        { image: { format: image.format, source: { bytes: image.bytes } } },
+      ],
+      {
+        type: Type.OBJECT,
+        properties: {
+          categoryId: {
+            type: Type.STRING,
+            description: "The id of the menu section it belongs in, copied exactly from categories.",
+          },
+          price: {
+            type: Type.NUMBER,
+            description: "A playful price in RM, between 1 and 99.",
+          },
+          ...Object.fromEntries(
+            SUPPORTED_LOCALES.map((lang) => [
+              lang,
+              {
+                type: Type.OBJECT,
+                description: `The joke dish in ${LOCALE_NAMES[lang] ?? lang}`,
+                properties: { name: FIELD.dishName, description: FIELD.dishDescription },
+                required: ["name", "description"],
+              },
+            ]),
+          ),
+        },
+        required: ["categoryId", "price", ...SUPPORTED_LOCALES],
+      },
+      INVENT_INSTRUCTION,
+      PLAYFUL_CALL,
+    );
+    if (!result) return null;
+
+    const locales: Record<string, { name: string; description: string }> = {};
+    for (const lang of SUPPORTED_LOCALES) {
+      const entry = result[lang] as { name?: string; description?: string } | undefined;
+      const name = entry?.name?.trim();
+      const description = entry?.description?.trim();
+      if (
+        name &&
+        description &&
+        isInLanguage(name, lang, false) &&
+        isInLanguage(description, lang, true)
+      )
+        locales[lang] = { name, description };
+    }
+    if (Object.keys(locales).length === 0) return null;
+
+    const price = Number(result.price);
+    return {
+      categoryId: categories.some((c) => c.id === result.categoryId)
+        ? (result.categoryId as string)
+        : null,
+      price: Number.isFinite(price)
+        ? Math.round(Math.min(99, Math.max(1, price)) * 100) / 100
+        : 9.99,
+      locales,
+    };
   },
 
   async translatePresetNote(
