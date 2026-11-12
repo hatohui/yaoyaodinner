@@ -3,13 +3,14 @@ import {
   NotFoundException,
   BadRequestException,
 } from "@nestjs/common";
-import { OrderRound } from "@prisma/client";
+import { OrderRound, Prisma } from "@prisma/client";
 import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
 import { CacheSettings } from "@common/cache/constants";
 import { CreateOrderDto } from "./dto/create-order.dto";
 import { BatchCreateOrderDto } from "./dto/batch-create-order.dto";
+import { ApplyOrderChangesDto } from "./dto/apply-order-changes.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
 
 const orderIncludeWithLang = (lang: string) => ({
@@ -212,41 +213,154 @@ export class OrderService {
     return this.toResponseDto(order);
   }
 
-  async createBatch(dto: BatchCreateOrderDto, round: OrderRound, lang = "en") {
-    const eventId = await this.orderableTableEventId(dto.tableId);
-    const splitAll = dto.splitAll ?? true;
-    const priced = await Promise.all(
-      dto.items.map(async (item) => ({
-        item,
+  /**
+   * Adds many dishes at once: one lookup for lines to merge into, one insert for the
+   * new shared lines, and no per-row reads, so a whole plan lands in a few round trips.
+   */
+  private async addLines(
+    tx: Pick<typeof prisma, 'order' | 'orderSplit'>,
+    batch: {
+      tableId: string;
+      eventId: string | null;
+      round: OrderRound;
+      splitAll: boolean;
+      personIds?: string[];
+      items: { variantId: string; quantity: number; price: number }[];
+    },
+  ) {
+    // repeats of one dish at one price merge, as they would one by one
+    const merged = new Map<string, { variantId: string; quantity: number; price: number }>();
+    for (const item of batch.items) {
+      const key = `${item.variantId}|${item.price}`;
+      const existing = merged.get(key);
+      if (existing) existing.quantity += item.quantity;
+      else merged.set(key, { ...item });
+    }
+    const wanted = [...new Set(batch.personIds ?? [])].sort().join(",");
+    const candidates = await tx.order.findMany({
+      where: {
+        tableId: batch.tableId,
+        variantId: { in: [...new Set(batch.items.map((i) => i.variantId))] },
+        splitAll: batch.splitAll,
+        round: batch.round,
+        priceEdited: false,
+      },
+      include: { splits: { select: { personId: true } } },
+    });
+
+    const ids: string[] = [];
+    const fresh: Prisma.OrderCreateManyInput[] = [];
+    for (const item of merged.values()) {
+      const match = candidates.find(
+        (o) =>
+          o.variantId === item.variantId &&
+          Number(o.price) === item.price &&
+          (batch.splitAll ||
+            o.splits
+              .map((s) => s.personId)
+              .sort()
+              .join(",") === wanted),
+      );
+      if (match) {
+        await tx.order.update({
+          where: { id: match.id },
+          data: { quantity: { increment: item.quantity } },
+          select: { id: true },
+        });
+        ids.push(match.id);
+        continue;
+      }
+      const id = uuidv4();
+      ids.push(id);
+      fresh.push({
+        id,
+        tableId: batch.tableId,
+        variantId: item.variantId,
+        eventId: batch.eventId,
+        quantity: item.quantity,
+        price: item.price,
+        splitAll: batch.splitAll,
+        round: batch.round,
+      });
+    }
+    if (fresh.length > 0) {
+      await tx.order.createMany({ data: fresh });
+      const splits = this.splitData(batch.splitAll, batch.personIds);
+      if (splits)
+        await tx.orderSplit.createMany({
+          data: fresh.flatMap((o) =>
+            splits.create.map(({ personId }) => ({ orderId: o.id!, personId })),
+          ),
+        });
+    }
+    return ids;
+  }
+
+  private async priced(items: { variantId: string; quantity?: number }[], eventId: string | null) {
+    return Promise.all(
+      items.map(async (item) => ({
+        variantId: item.variantId,
+        quantity: item.quantity ?? 1,
         price: await this.resolvePrice(item.variantId, eventId),
       })),
     );
+  }
 
-    // sequential so repeats within one batch merge into the same line
-    const orders = await prisma.$transaction(async (tx) => {
-      const placed: Awaited<ReturnType<typeof this.placeOrMerge>>[] = [];
-      for (const { item, price } of priced) {
-        placed.push(
-          await this.placeOrMerge(
-            tx,
-            {
-              tableId: dto.tableId,
-              variantId: item.variantId,
-              eventId,
-              quantity: item.quantity ?? 1,
-              price,
-              splitAll,
-              round,
-              personIds: dto.personIds,
-            },
-            lang,
-          ),
-        );
-      }
-      return placed;
+  private async responsesFor(ids: string[], lang: string) {
+    const rows = await prisma.order.findMany({
+      where: { id: { in: ids } },
+      include: orderIncludeWithLang(lang),
+    });
+    const byId = new Map(rows.map((r) => [r.id, r]));
+    return [...new Set(ids)].flatMap((id) => {
+      const row = byId.get(id);
+      return row ? [this.toResponseDto(row)] : [];
+    });
+  }
+
+  async createBatch(dto: BatchCreateOrderDto, round: OrderRound, lang = "en") {
+    const eventId = await this.orderableTableEventId(dto.tableId);
+    const items = await this.priced(dto.items, eventId);
+    const ids = await prisma.$transaction((tx) =>
+      this.addLines(tx, {
+        tableId: dto.tableId,
+        eventId,
+        round,
+        splitAll: dto.splitAll ?? true,
+        personIds: dto.personIds,
+        items,
+      }),
+    );
+    await this.bustPopular();
+    return this.responsesFor(ids, lang);
+  }
+
+  /**
+   * Applies an AI suggestion in one transaction: new shared dishes are added and
+   * the trimmed orders shrink or go, so the table never sees half of it.
+   */
+  async applyChanges(dto: ApplyOrderChangesDto, round: OrderRound | null) {
+    const eventId = await this.orderableTableEventId(dto.tableId);
+    const items = await this.priced(dto.adds, eventId);
+    await prisma.$transaction(async (tx) => {
+      if (items.length > 0 && round)
+        await this.addLines(tx, {
+          tableId: dto.tableId,
+          eventId,
+          round,
+          splitAll: true,
+          items,
+        });
+      const deleting = dto.cuts.filter((c) => c.quantity === 0).map((c) => c.orderId);
+      if (deleting.length > 0)
+        await tx.order.deleteMany({ where: { id: { in: deleting }, tableId: dto.tableId } });
+      for (const cut of dto.cuts.filter((c) => c.quantity > 0))
+        await tx.order.updateMany({
+          where: { id: cut.orderId, tableId: dto.tableId },
+          data: { quantity: cut.quantity },
+        });
     });
     await this.bustPopular();
-    return orders.map((o) => this.toResponseDto(o));
   }
 
   async update(id: string, dto: UpdateOrderDto, lang = "en") {

@@ -25,6 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ApplyOrderChangesDto,
   BatchCreateOrderDto,
   CreateOrderBatchParams,
   CreateOrderDto,
@@ -244,6 +245,63 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getCreateOrderBatchMutationOptions(options), queryClient);
+    }
+    export const applyOrderChanges = (
+    applyOrderChangesDto: ApplyOrderChangesDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/orders/apply-changes`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: applyOrderChangesDto, signal
+    },
+      );
+    }
+
+
+
+export const getApplyOrderChangesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof applyOrderChanges>>, TError,{data: ApplyOrderChangesDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof applyOrderChanges>>, TError,{data: ApplyOrderChangesDto}, TContext> => {
+
+const mutationKey = ['applyOrderChanges'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof applyOrderChanges>>, {data: ApplyOrderChangesDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  applyOrderChanges(data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ApplyOrderChangesMutationResult = NonNullable<Awaited<ReturnType<typeof applyOrderChanges>>>
+    export type ApplyOrderChangesMutationBody = ApplyOrderChangesDto
+    export type ApplyOrderChangesMutationError = unknown
+
+    export const useApplyOrderChanges = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof applyOrderChanges>>, TError,{data: ApplyOrderChangesDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof applyOrderChanges>>,
+        TError,
+        {data: ApplyOrderChangesDto},
+        TContext
+      > => {
+      return useMutation(getApplyOrderChangesMutationOptions(options), queryClient);
     }
     export const updateOrder = (
     id: string,

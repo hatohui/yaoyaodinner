@@ -14,6 +14,7 @@ import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { BatchCreateOrderDto } from './dto/batch-create-order.dto';
+import { ApplyOrderChangesDto } from './dto/apply-order-changes.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderResponseDto } from './dto/order-response.dto';
 import { TableAccessService } from '@modules/table-access/table-access.service';
@@ -66,6 +67,22 @@ export class OrderController {
     await this.access.forTable(dto.tableId, headers);
     const round = await this.access.roundForNewOrder(dto.tableId, headers);
     return this.order.createBatch(dto, round, lang);
+  }
+
+  @Post('apply-changes')
+  @ApiOperation({ operationId: 'applyOrderChanges' })
+  @ApiResponse({ status: 201, description: 'Every change applied, or none' })
+  async applyChanges(
+    @Body() dto: ApplyOrderChangesDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forTable(dto.tableId, headers);
+    const round =
+      dto.adds.length > 0 ? await this.access.roundForNewOrder(dto.tableId, headers) : null;
+    // each trimmed order must belong to this table and still be open for changes
+    for (const cut of dto.cuts)
+      await this.access.forOrderChange(cut.orderId, headers, { items: true });
+    await this.order.applyChanges(dto, round);
   }
 
   @Patch(':id')
