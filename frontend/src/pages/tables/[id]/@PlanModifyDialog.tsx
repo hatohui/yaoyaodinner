@@ -6,7 +6,6 @@ import { Textarea } from '@/components/ui/textarea'
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
@@ -35,12 +34,9 @@ export function PlanModifyDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='sm:max-w-sm'>
+			<DialogContent className='sm:max-w-sm' aria-describedby={undefined}>
 				<DialogHeader>
 					<DialogTitle>{t('table_plan.modify_dialog_title')}</DialogTitle>
-					<DialogDescription>
-						{t('table_plan.modify_dialog_body')}
-					</DialogDescription>
 				</DialogHeader>
 				<form
 					className='flex flex-col gap-4'

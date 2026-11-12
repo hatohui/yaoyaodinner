@@ -6,7 +6,6 @@ import {
 	RefreshCw,
 	RotateCcw,
 	Sparkles,
-	Wand2,
 } from 'lucide-react'
 import type {
 	OrderResponseDto,
@@ -49,12 +48,17 @@ interface TablePlanCardProps {
 	seatedCount: number
 	/** What the table has ordered; once there is something, the AI edits it instead. */
 	orders: OrderResponseDto[]
+	/** The change-with-AI box, opened from the orders toolbar. */
+	modifying: boolean
+	onModifyingChange: (open: boolean) => void
 }
 
 export function TablePlanCard({
 	tableId,
 	seatedCount,
 	orders,
+	modifying,
+	onModifyingChange: setModifying,
 }: TablePlanCardProps) {
 	const { t } = useTranslation()
 	const {
@@ -69,7 +73,6 @@ export function TablePlanCard({
 		isAccepting,
 	} = useTablePlan(tableId)
 	const [asking, setAsking] = useState(false)
-	const [modifying, setModifying] = useState(false)
 	const [confirming, setConfirming] = useState(false)
 	const [collapsed, setCollapsed] = useState(false)
 	// edits stay on this device until the table accepts the plan
@@ -121,36 +124,32 @@ export function TablePlanCard({
 	if (isLoading) return null
 
 	if (!plan && !isPlanning) {
-		const hasOrders = orders.length > 0
-		const Icon = hasOrders ? Wand2 : Sparkles
+		// once the table has ordered, editing lives in the orders toolbar instead
+		if (orders.length > 0) return dialog
 		return (
 			<>
 				<div className='flex flex-wrap items-center gap-3 rounded-2xl border border-banner-border bg-banner px-4 py-3 shadow-sm'>
 					<span className='flex size-9 shrink-0 items-center justify-center rounded-full bg-banner-icon text-banner-icon-foreground'>
-						<Icon className='size-4' />
+						<Sparkles className='size-4' />
 					</span>
 					<div className='flex min-w-0 flex-1 basis-40 flex-col'>
 						<span className='text-sm font-semibold text-banner-foreground'>
-							{t(
-								hasOrders ? 'table_plan.modify_title' : 'table_plan.cta_title'
-							)}
+							{t('table_plan.cta_title')}
 						</span>
 						<span className='text-xs text-banner-muted'>
-							{status === 'failed'
-								? t('table_plan.failed')
-								: t(
-										hasOrders ? 'table_plan.modify_body' : 'table_plan.cta_body'
-									)}
+							{t(
+								status === 'failed'
+									? 'table_plan.failed'
+									: 'table_plan.cta_body'
+							)}
 						</span>
 					</div>
 					<Button
 						className='ml-auto h-9 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
 						onClick={startOver}
 					>
-						<Icon className='size-4' />
-						{status === 'failed'
-							? t('table_plan.retry')
-							: t(hasOrders ? 'table_plan.modify_cta' : 'table_plan.cta')}
+						<Sparkles className='size-4' />
+						{t(status === 'failed' ? 'table_plan.retry' : 'table_plan.cta')}
 					</Button>
 				</div>
 				{dialog}

@@ -510,11 +510,8 @@ declare module 'react-i18next' {
 					cta_title: string
 					cta_body: string
 					char_count: string
-					modify_title: string
-					modify_body: string
 					modify_cta: string
 					modify_dialog_title: string
-					modify_dialog_body: string
 					modify_label: string
 					modify_placeholder: string
 					modify_submit: string

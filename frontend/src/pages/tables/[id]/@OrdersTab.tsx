@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Plus } from 'lucide-react'
+import { Plus, Wand2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { PersonDto, TableDto } from '@/api/model'
@@ -74,6 +74,10 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const [editing, setEditing] = useState<OrderedLine | null>(null)
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)
 	const [pricing, setPricing] = useState<OrderedLine | null>(null)
+	const [modifying, setModifying] = useState(false)
+	const canUseAi = Boolean(
+		tablePlan && canOrder && myPersonId && stage === 'open'
+	)
 
 	if (isLoading) {
 		return (
@@ -123,11 +127,13 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		<div className='flex flex-col gap-3'>
 			<IncludedNote eventId={table.eventId} />
 			<OrderingStageNotice />
-			{tablePlan && canOrder && myPersonId && stage === 'open' && (
+			{canUseAi && (
 				<TablePlanCard
 					tableId={table.id}
 					seatedCount={people.length}
 					orders={orders}
+					modifying={modifying}
+					onModifyingChange={setModifying}
 				/>
 			)}
 
@@ -144,15 +150,27 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 			) : (
 				<div className='flex items-center justify-between gap-2'>
 					{canOrder ? (
-						<Button
-							asChild
-							className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
-						>
-							<Link to={`/tables/${table.id}/order`}>
-								<Plus className='size-4' />
-								{t('orders.add_order')}
-							</Link>
-						</Button>
+						<div className='flex min-w-0 items-center gap-2'>
+							<Button
+								asChild
+								className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+							>
+								<Link to={`/tables/${table.id}/order`}>
+									<Plus className='size-4' />
+									{t('orders.add_order')}
+								</Link>
+							</Button>
+							{canUseAi && (
+								<Button
+									variant='outline'
+									className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai motion-safe:before:animate-ai-sheen'
+									onClick={() => setModifying(true)}
+								>
+									<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
+									{t('table_plan.modify_cta')}
+								</Button>
+							)}
+						</div>
 					) : (
 						<span />
 					)}

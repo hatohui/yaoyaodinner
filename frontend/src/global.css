@@ -68,11 +68,15 @@
 	--animate-progress: progress 1.1s ease-in-out infinite;
 	--animate-flame: flame-flicker 1.8s ease-in-out infinite;
 	--animate-ember: ember-glow 1.6s ease-in-out infinite;
+	--animate-ai-twinkle: ai-twinkle 2.8s ease-in-out infinite;
+	--animate-ai-sheen: ai-sheen 3.2s ease-in-out infinite;
 	--color-fire: var(--fire);
 	--color-fire-glow: var(--fire-glow);
 	--color-ember: var(--ember);
 	--color-fire-foreground: var(--fire-foreground);
 	--color-action: var(--action);
+	--color-ai: var(--ai);
+	--color-ai-muted: var(--ai-muted);
 	--color-action-foreground: var(--action-foreground);
 	--color-banner: var(--banner);
 	--color-banner-foreground: var(--banner-foreground);
@@ -94,7 +98,8 @@
 	}
 
 	@keyframes ember-glow {
-		0%, 100% {
+		0%,
+		100% {
 			box-shadow: 0 0 0 0 color-mix(in oklch, var(--fire) 0%, transparent);
 		}
 		50% {
@@ -102,8 +107,38 @@
 		}
 	}
 
+	/* the AI wand gives a little flick every few seconds */
+	@keyframes ai-twinkle {
+		0%,
+		60%,
+		100% {
+			transform: rotate(0deg) scale(1);
+		}
+		68% {
+			transform: rotate(-14deg) scale(1.15);
+		}
+		76% {
+			transform: rotate(10deg) scale(1.1);
+		}
+		84% {
+			transform: rotate(-4deg) scale(1);
+		}
+	}
+
+	/* a soft light that sweeps across AI buttons */
+	@keyframes ai-sheen {
+		0%,
+		55% {
+			transform: translateX(-120%) skewX(-20deg);
+		}
+		100% {
+			transform: translateX(360%) skewX(-20deg);
+		}
+	}
+
 	@keyframes flame-flicker {
-		0%, 100% {
+		0%,
+		100% {
 			transform: scale(1) rotate(0deg);
 		}
 		20% {
@@ -277,6 +312,9 @@
 	--fire-foreground: oklch(0.99 0.005 323);
 	/* YaoYao: header actions in the black-and-magenta of her ears, banners in her magenta fur */
 	--action: oklch(0.3 0.09 335);
+	/* AI features in the violet of her eyes, so they never read as the magenta tabs */
+	--ai: oklch(0.5 0.2 295);
+	--ai-muted: oklch(0.95 0.04 295);
 	--action-foreground: oklch(0.99 0.005 323);
 	--banner: oklch(0.96 0.035 330);
 	--banner-foreground: oklch(0.249 0.063 340);
@@ -325,6 +363,9 @@
 	--fire-foreground: oklch(0.16 0.05 40);
 	/* Aster: header actions in his cyan streak, banners in lifted navy trimmed with his gold */
 	--action: oklch(0.688 0.127 222.5);
+	/* AI features in his gold on lifted navy, apart from the cyan actions */
+	--ai: oklch(0.81 0.115 82);
+	--ai-muted: oklch(0.31 0.075 264.7);
 	--action-foreground: oklch(0.14 0.05 264.7);
 	--banner: oklch(0.31 0.075 264.7);
 	--banner-foreground: oklch(0.95 0.01 264.7);
