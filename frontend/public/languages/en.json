@@ -900,7 +900,9 @@
 			"on": "Editing"
 		},
 		"features": {
-			"menu": "Menu"
+			"menu": "Menu",
+			"table_roast": "Table roasts",
+			"guest_roast": "Guest roasts"
 		},
 		"ordering": {
 			"title": "Ordering",
@@ -949,6 +951,10 @@
 				"categories": "Categories"
 			},
 			"missing": "Missing",
+			"missing_name": "Name",
+			"missing_description": "Description",
+			"missing_options": "Options",
+			"missing_options_with_labels": "Options ({{labels}})",
 			"hidden": "Hidden",
 			"untitled": "Untitled",
 			"ai_translate": "Translate with AI",

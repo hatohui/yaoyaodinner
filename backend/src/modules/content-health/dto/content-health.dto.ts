@@ -20,6 +20,14 @@ export class FoodContentIssueDto {
       'Locales missing the name, a description other locales have, or a variant label',
   })
   missingTranslations: string[];
+  @ApiProperty({ type: [String], required: false })
+  missingNames?: string[];
+  @ApiProperty({ type: [String], required: false })
+  missingDescriptions?: string[];
+  @ApiProperty({ type: [String], required: false })
+  missingVariants?: string[];
+  @ApiProperty({ type: [String], required: false })
+  variantLabels?: string[];
   @ApiProperty({ description: 'No locale has a description' })
   missingDescription: boolean;
   @ApiProperty() missingImage: boolean;
@@ -30,6 +38,7 @@ export class CategoryContentIssueDto {
   @ApiProperty() name: string;
   @ApiProperty() isAvailable: boolean;
   @ApiProperty({ type: [String] }) missingTranslations: string[];
+  @ApiProperty({ type: [String], required: false }) missingNames?: string[];
 }
 
 export class ContentHealthSummaryDto {

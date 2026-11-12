@@ -898,7 +898,9 @@
 			"on": "Đang chỉnh sửa"
 		},
 		"features": {
-			"menu": "Thực Đơn"
+			"menu": "Thực Đơn",
+			"table_roast": "AI cà khịa bàn",
+			"guest_roast": "AI cà khịa khách"
 		},
 		"ordering": {
 			"title": "Đặt món",
@@ -947,6 +949,10 @@
 				"categories": "Danh mục"
 			},
 			"missing": "Thiếu",
+			"missing_name": "Tên món",
+			"missing_description": "Mô tả",
+			"missing_options": "Tùy chọn",
+			"missing_options_with_labels": "Tùy chọn ({{labels}})",
 			"hidden": "Đang ẩn",
 			"untitled": "Chưa đặt tên",
 			"ai_translate": "Dịch bằng AI",

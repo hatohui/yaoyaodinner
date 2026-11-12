@@ -898,7 +898,9 @@
 			"on": "编辑中"
 		},
 		"features": {
-			"menu": "菜单"
+			"menu": "菜单",
+			"table_roast": "AI 吐槽餐桌",
+			"guest_roast": "AI 吐槽宾客"
 		},
 		"ordering": {
 			"title": "点餐",
@@ -947,6 +949,10 @@
 				"categories": "分类"
 			},
 			"missing": "缺少",
+			"missing_name": "菜名",
+			"missing_description": "描述",
+			"missing_options": "选项",
+			"missing_options_with_labels": "选项 ({{labels}})",
 			"hidden": "已隐藏",
 			"untitled": "未命名",
 			"ai_translate": "AI 翻译",

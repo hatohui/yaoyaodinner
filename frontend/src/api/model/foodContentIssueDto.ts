@@ -16,6 +16,10 @@ export interface FoodContentIssueDto {
   isAvailable: boolean;
   /** Locales missing the name, a description other locales have, or a variant label */
   missingTranslations: string[];
+  missingNames?: string[];
+  missingDescriptions?: string[];
+  missingVariants?: string[];
+  variantLabels?: string[];
   /** No locale has a description */
   missingDescription: boolean;
   missingImage: boolean;

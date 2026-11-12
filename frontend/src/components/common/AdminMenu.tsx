@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import {
 	CheckCircle2,
 	Copy,
+	Flame,
 	LayoutDashboard,
 	Leaf,
 	Lock,
@@ -58,8 +59,15 @@ export function AdminMenu() {
 	const { isAdmin, editing, toggle } = useEditMode()
 	const lock = useAdmin(s => s.clear)
 	const { activeEvent, setStage, settingStage } = useAdminEvents()
-	const { bannerEnabled, bannerMessage, menu, floorPlan, feedbackWall } =
-		useConfig()
+	const {
+		bannerEnabled,
+		bannerMessage,
+		menu,
+		floorPlan,
+		feedbackWall,
+		tableRoast,
+		guestRoast,
+	} = useConfig()
 
 	const [bannerOpen, setBannerOpen] = useState(false)
 	const [pendingStage, setPendingStage] = useState<PendingStageAction>(null)
@@ -345,6 +353,38 @@ export function AdminMenu() {
 						</span>
 						<Switch
 							checked={feedbackWall}
+							size='sm'
+							className='pointer-events-none'
+						/>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
+						onSelect={e => {
+							e.preventDefault()
+							toggleConfig('feature.tableRoast', tableRoast)
+						}}
+						className='cursor-pointer'
+					>
+						<Flame className='size-4' />
+						<span className='flex-1'>{t('admin.features.table_roast')}</span>
+						<Switch
+							checked={tableRoast}
+							size='sm'
+							className='pointer-events-none'
+						/>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
+						onSelect={e => {
+							e.preventDefault()
+							toggleConfig('feature.guestRoast', guestRoast)
+						}}
+						className='cursor-pointer'
+					>
+						<Flame className='size-4' />
+						<span className='flex-1'>{t('admin.features.guest_roast')}</span>
+						<Switch
+							checked={guestRoast}
 							size='sm'
 							className='pointer-events-none'
 						/>

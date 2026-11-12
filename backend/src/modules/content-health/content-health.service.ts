@@ -22,17 +22,6 @@ function displayName(rows: Translation[], lang: string) {
   );
 }
 
-function missingLocales(rows: Translation[], extra?: (lang: string) => boolean) {
-  const byLang = new Map(rows.map((r) => [r.language, r]));
-  const anyDescription = rows.some((r) => r.description?.trim());
-  return SUPPORTED_LOCALES.filter((lang) => {
-    const t = byLang.get(lang);
-    if (!t?.name.trim()) return true;
-    if (anyDescription && !t.description?.trim()) return true;
-    return extra?.(lang) ?? false;
-  });
-}
-
 @Injectable()
 export class ContentHealthService {
   constructor(
@@ -52,20 +41,64 @@ export class ContentHealthService {
     ]);
 
     const foodIssues = foods
-      .map((f) => ({
-        id: f.id,
-        name: displayName(f.translations, lang),
-        imageUrl: f.imageUrl,
-        categoryId: f.categoryId,
-        isAvailable: f.isAvailable,
-        missingTranslations: missingLocales(f.translations, (l) =>
-          f.variants.some(
-            (v) => !v.translations.some((t) => t.language === l && t.label.trim()),
+      .map((f) => {
+        const byLang = new Map(f.translations.map((t) => [t.language, t]));
+        const anyDescription = f.translations.some((t) => t.description?.trim());
+        const labelledVariants = f.variants.filter((v) =>
+          v.translations.some((t) => t.label.trim().length > 0),
+        );
+
+        const missingNames = SUPPORTED_LOCALES.filter(
+          (l) => !byLang.get(l)?.name.trim(),
+        );
+        const missingDescriptions = anyDescription
+          ? SUPPORTED_LOCALES.filter((l) => !byLang.get(l)?.description?.trim())
+          : [];
+        const missingVariants =
+          labelledVariants.length > 0
+            ? SUPPORTED_LOCALES.filter((l) =>
+                labelledVariants.some(
+                  (v) =>
+                    !v.translations.some((t) => t.language === l && t.label.trim()),
+                ),
+              )
+            : [];
+
+        const missingTranslations = [
+          ...new Set([...missingNames, ...missingDescriptions, ...missingVariants]),
+        ];
+
+        const variantLabels = [
+          ...new Set(
+            labelledVariants
+              .map(
+                (v) =>
+                  (
+                    v.translations.find((t) => t.language === lang)?.label ??
+                    v.translations.find((t) => t.language === 'en')?.label ??
+                    v.translations.find((t) => t.label.trim())?.label ??
+                    ''
+                  ).trim(),
+              )
+              .filter(Boolean),
           ),
-        ),
-        missingDescription: !f.translations.some((t) => t.description?.trim()),
-        missingImage: !f.imageUrl,
-      }))
+        ];
+
+        return {
+          id: f.id,
+          name: displayName(f.translations, lang),
+          imageUrl: f.imageUrl,
+          categoryId: f.categoryId,
+          isAvailable: f.isAvailable,
+          missingTranslations,
+          missingNames,
+          missingDescriptions,
+          missingVariants,
+          variantLabels,
+          missingDescription: !anyDescription,
+          missingImage: !f.imageUrl,
+        };
+      })
       .filter(
         (f) =>
           f.missingTranslations.length > 0 || f.missingDescription || f.missingImage,
@@ -77,12 +110,19 @@ export class ContentHealthService {
       );
 
     const categoryIssues = categories
-      .map((c) => ({
-        id: c.id,
-        name: displayName(c.translations, lang) || c.key,
-        isAvailable: c.isAvailable,
-        missingTranslations: missingLocales(c.translations),
-      }))
+      .map((c) => {
+        const byLang = new Map(c.translations.map((t) => [t.language, t]));
+        const missingTranslations = SUPPORTED_LOCALES.filter(
+          (l) => !byLang.get(l)?.name.trim(),
+        );
+        return {
+          id: c.id,
+          name: displayName(c.translations, lang) || c.key,
+          isAvailable: c.isAvailable,
+          missingTranslations,
+          missingNames: missingTranslations,
+        };
+      })
       .filter((c) => c.missingTranslations.length > 0)
       .sort((a, b) => a.name.localeCompare(b.name));
 

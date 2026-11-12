@@ -113,6 +113,10 @@ export default function AdminContentHealthPage() {
 										isAvailable={food.isAvailable}
 										imageKey={food.imageUrl}
 										missingLocales={food.missingTranslations}
+										missingNames={food.missingNames}
+										missingDescriptions={food.missingDescriptions}
+										missingVariants={food.missingVariants}
+										variantLabels={food.variantLabels}
 									>
 										<AiFillButton
 											label={t('admin.content.ai_translate')}
@@ -198,6 +202,7 @@ export default function AdminContentHealthPage() {
 										isAvailable={category.isAvailable}
 										showImage={false}
 										missingLocales={category.missingTranslations}
+										missingNames={category.missingNames ?? category.missingTranslations}
 									>
 										<AiFillButton
 											label={t('admin.content.ai_translate')}

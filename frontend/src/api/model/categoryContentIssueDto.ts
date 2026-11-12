@@ -11,4 +11,5 @@ export interface CategoryContentIssueDto {
   name: string;
   isAvailable: boolean;
   missingTranslations: string[];
+  missingNames?: string[];
 }

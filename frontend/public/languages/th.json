@@ -898,7 +898,9 @@
 			"on": "กำลังแก้ไข"
 		},
 		"features": {
-			"menu": "เมนู"
+			"menu": "เมนู",
+			"table_roast": "AI แซวโต๊ะ",
+			"guest_roast": "AI แซวแขก"
 		},
 		"ordering": {
 			"title": "การสั่งอาหาร",
@@ -947,6 +949,10 @@
 				"categories": "หมวดหมู่"
 			},
 			"missing": "ขาด",
+			"missing_name": "ชื่ออาหาร",
+			"missing_description": "คำอธิบาย",
+			"missing_options": "ตัวเลือก",
+			"missing_options_with_labels": "ตัวเลือก ({{labels}})",
 			"hidden": "ซ่อนอยู่",
 			"untitled": "ไม่มีชื่อ",
 			"ai_translate": "แปลด้วย AI",

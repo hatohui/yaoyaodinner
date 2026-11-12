@@ -557,6 +557,8 @@ declare module 'react-i18next' {
 					}
 					features: {
 						menu: string
+						table_roast: string
+						guest_roast: string
 					}
 					ordering: {
 						title: string
@@ -641,6 +643,10 @@ declare module 'react-i18next' {
 							categories: string
 						}
 						missing: string
+						missing_name: string
+						missing_description: string
+						missing_options: string
+						missing_options_with_labels: string
 						hidden: string
 						untitled: string
 						ai_translate: string
