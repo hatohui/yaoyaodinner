@@ -5,7 +5,7 @@ import {
 	useRef,
 	useState,
 } from 'react'
-import { MapPin, Users } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { cn } from '@/utils/shadcn'
 import { tableDiameter } from './layout'
@@ -67,6 +67,11 @@ export function FloorPlanTable({
 		else if (ref) ref.current = node
 	}
 
+	const isJustNumber =
+		!label ||
+		label.trim() === String(table.no) ||
+		label.trim().toLowerCase() === `table ${table.no}`
+
 	return (
 		<button
 			ref={setRefs}
@@ -100,19 +105,20 @@ export function FloorPlanTable({
 					{candidate}
 				</span>
 			))}
-			{label ? (
-				<span className='text-[max(2.4cqw,10px)] whitespace-nowrap text-foreground'>
-					{label}
+			{isJustNumber ? (
+				<span className='text-[max(3.2cqw,13px)] font-bold tabular-nums text-foreground'>
+					#{table.no}
 				</span>
 			) : (
-				<span className='text-[max(3.2cqw,12px)] text-foreground'>
-					{table.no}
-				</span>
+				<>
+					<span className='text-[max(2.4cqw,10px)] font-semibold whitespace-nowrap text-foreground'>
+						{label}
+					</span>
+					<span className='text-[max(1.8cqw,8px)] font-medium tabular-nums text-muted-foreground'>
+						#{table.no}
+					</span>
+				</>
 			)}
-			<span className='flex items-center gap-[0.4cqw] text-[max(1.8cqw,8px)] font-medium text-muted-foreground'>
-				<Users className='size-[max(1.8cqw,8px)]' />
-				{table.seated}/{table.capacity}
-			</span>
 		</button>
 	)
 }
