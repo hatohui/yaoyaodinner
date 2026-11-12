@@ -832,7 +832,7 @@ export type PersonRoastInput = {
 
 const ROAST_RULES = [
   "This is a private, invite-only dinner among adult furries who know each other, so roast savagely like a friend who knows too much.",
-  "When the request says to go dirty, cheeky furry double meanings or innuendos (knots, heat, rut, yiff, collars, leashes and similar) are fair game if their material naturally offers an angle. Never force sexual innuendo onto clean absurd humor, memes, brainrot, gibberish (e.g. singing, soundbites, copypastas) or ordinary food—roast those for their fried attention span, cringe factor, or chaos instead.",
+  "When the request says to go dirty, line one must land as a clearly filthy furry double meaning built on their own name, note or picture, not a word merely mentioned: knots, heat, rut, yiff, tails, presenting, collars, leashes and similar are fair game. The innuendo must make literal sense as a joke; never bolt a furry word onto something it does not fit, like a knot on food. When the request says to keep it clean, strictly keep it clean with zero sexual innuendo, roasting their humor, quirks, or vibe instead.",
   "Keep it a joke rather than a description: never describe sex acts or bodies in graphic detail, nothing involving minors or non-consent, no slurs or attacks on any group, and no real people or brands.",
   "Refer to guests by name or as they, never he or she, unless their note says otherwise.",
   "Write natively in the requested locale, not as a translation.",
@@ -949,7 +949,7 @@ const INVENT_INSTRUCTION = [
   "Look at the photo and invent the most chaotic, deranged dish it could possibly be: fursuits, tails, paws, ears, howling, zoomies, convention chaos, feral energy, uwu, cursed puns and fourth-wall breaks are all welcome, and the description should commit fully to the bit.",
   "This is a private, invite-only dinner among friends, so there is no taste limit: gross-out humour, crude jokes, dark humour and fursuit horror stories are all fair game, and tamer is worse.",
   "Every dish must roast whoever orders it: mock their fursona, their con habits, their questionable life choices and their reasons for ordering this, like a friend who knows too much.",
-  "Cheeky innuendo and double meanings are welcome when they fit naturally, but don't force everything to be sexual: cursed puns, chaos, brainrot, gross-out humor, and convention disasters are just as funny.",
+  "Lean hard on innuendo: every name or description should carry at least one suggestive double meaning, the cheekier the better, while staying a wink rather than a description.",
   "The only lines: nothing explicit or graphic, no slurs or attacks on any group, and no real people or brands.",
   "Write the joke in English first, then give each locale a version that is funny to a native speaker, adapting the pun rather than translating word for word.",
   "Locale codes: en is English, vi is Vietnamese, zh is Simplified Chinese, th is Thai.",
@@ -1194,7 +1194,7 @@ export const AiService = {
         .sort(() => Math.random() - 0.5),
     };
     const hasOrders = !!orders && orders.length > 0;
-    const tone = `${cringe ? ` ${CRINGE_DIRECTION}` : ""}${dirty ? " Playful dirty humor is welcome if the vibe fits, but don't force clean jokes to become horny." : " Keep this one a clean roast unless a note has an explicit innuendo hook."}`;
+    const tone = `${cringe ? ` ${CRINGE_DIRECTION}` : ""}${dirty ? " Go dirty with this one." : " Keep this one a clean roast unless a note has a sexual hook."}`;
     const note =
       orders === null
         ? ""
@@ -1287,7 +1287,7 @@ export const AiService = {
             input.onlyOneWithout.length > 0
               ? ` They are the only guest at the table without a ${input.onlyOneWithout.join(" or a ")}.`
               : " Never joke about a missing profile picture, face or note."
-          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a suggestive or double-meaning hook, so line one should lean into that." : input.dirty ? " Playful dirty roast is welcome if there is a natural opening, but keep it witty—never force sexual innuendo onto clean absurd memes or silly jokes." : " Keep this one a clean roast."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
+          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a horny or double-meaning hook (eating, swallowing, nuts, riding and the like), so line one must take that bait and go filthy." : input.dirty ? " Go dirty with this one." : " Keep this one a clean roast."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
         },
         ...(image
           ? [

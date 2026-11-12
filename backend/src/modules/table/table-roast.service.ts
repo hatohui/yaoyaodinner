@@ -54,7 +54,7 @@ export class TableRoastService {
   ) {}
 
   private async settings() {
-    const [tableCooldown, personCooldown, personDailyLimit, dailyLimit, maxMembers, ordering] =
+    const [tableCooldown, personCooldown, personDailyLimit, dailyLimit, maxMembers, ordering, dirtyChance] =
       await Promise.all([
         this.config.get<number>(CONFIG_KEYS.roastTableCooldown),
         this.config.get<number>(CONFIG_KEYS.roastPersonCooldown),
@@ -62,6 +62,7 @@ export class TableRoastService {
         this.config.get<number>(CONFIG_KEYS.roastDailyLimit),
         this.config.get<number>(CONFIG_KEYS.roastMaxMembers),
         this.config.get<boolean>(CONFIG_KEYS.featureMenu),
+        this.config.get<number>(CONFIG_KEYS.roastDirtyChance),
       ]);
     return {
       tableCooldown,
@@ -70,6 +71,7 @@ export class TableRoastService {
       dailyLimit,
       maxMembers,
       ordering,
+      dirtyChance: typeof dirtyChance === 'number' ? dirtyChance : DIRTY_CHANCE,
     };
   }
 
@@ -263,17 +265,17 @@ export class TableRoastService {
       }));
   }
 
-  async roastTable(tableId: string, lang: string) {
+  async roastTable(tableId: string, lang: string, isAdmin = false) {
     const { people, tableFingerprint, tableInput, settings } = await this.load(tableId, lang);
-    const { tableCooldown, dailyLimit } = settings;
-    if ((await CacheService.increment(`roast:cooldown:table:${tableId}`, tableCooldown)) > 1)
+    const { tableCooldown, dailyLimit, dirtyChance } = settings;
+    if (!isAdmin && (await CacheService.increment(`roast:cooldown:table:${tableId}`, tableCooldown)) > 1)
       tooMany('This table was just roasted. Give it a minute.');
-    await this.spendBudget(dailyLimit);
+    if (!isAdmin) await this.spendBudget(dailyLimit);
 
     const text = await AiService.roastTable(lang, {
       ...tableInput,
       dirty:
-        Math.random() < DIRTY_CHANCE ||
+        Math.random() < dirtyChance ||
         tableInput.members.some((m) => HORNY_HOOK.test(`${m.name} ${m.note ?? ''}`)),
       cringe: Math.random() < CRINGE_CHANCE,
       earlierRoasts: await this.earlierRoasts(tableId, people, false),
@@ -294,17 +296,17 @@ export class TableRoastService {
     return this.state(tableId, lang);
   }
 
-  async roastPerson(tableId: string, personId: string, lang: string) {
+  async roastPerson(tableId: string, personId: string, lang: string, isAdmin = false) {
     const { people, host, tableName, settings } = await this.load(tableId, lang);
-    const { personDailyLimit, personCooldown, dailyLimit } = settings;
+    const { personDailyLimit, personCooldown, dailyLimit, dirtyChance } = settings;
     const person = people.find((p) => p.id === personId);
     if (!person) throw new NotFoundException('Person not found at this table');
 
     const used = Number((await CacheService.get<number>(this.personCountKey(personId))) ?? 0);
-    if (used >= personDailyLimit) tooMany(`${person.name} has been roasted enough for today.`);
-    if ((await CacheService.increment(`roast:cooldown:person:${personId}`, personCooldown)) > 1)
+    if (!isAdmin && used >= personDailyLimit) tooMany(`${person.name} has been roasted enough for today.`);
+    if (!isAdmin && (await CacheService.increment(`roast:cooldown:person:${personId}`, personCooldown)) > 1)
       tooMany(`${person.name} was just roasted. Give it a moment.`);
-    await this.spendBudget(dailyLimit);
+    if (!isAdmin) await this.spendBudget(dailyLimit);
 
     const image = person.pfpUrl
       ? await this.images.readImage(person.pfpUrl).catch(() => null)
@@ -319,7 +321,7 @@ export class TableRoastService {
         note,
         tableName,
         host,
-        dirty: Math.random() < DIRTY_CHANCE,
+        dirty: Math.random() < dirtyChance,
         cringe: Math.random() < CRINGE_CHANCE,
         hornyHook: HORNY_HOOK.test(`${person.name} ${note ?? ''}`),
         mates: others
@@ -356,5 +358,28 @@ export class TableRoastService {
       ),
     ]);
     return this.state(tableId, lang);
+  }
+
+  async clearAll() {
+    await CacheService.deleteByPrefix('roast:');
+    return { ok: true };
+  }
+
+  async clearTable(tableId: string) {
+    const table = await prisma.table.findUnique({
+      where: { id: tableId },
+      select: { people: { select: { id: true } } },
+    });
+    const keys = [
+      this.tableKey(tableId),
+      `roast:cooldown:table:${tableId}`,
+      ...(table?.people.flatMap((p) => [
+        this.personKey(p.id),
+        this.personCountKey(p.id),
+        `roast:cooldown:person:${p.id}`,
+      ]) ?? []),
+    ];
+    await Promise.all(keys.map((k) => CacheService.delete(k)));
+    return { ok: true };
   }
 }

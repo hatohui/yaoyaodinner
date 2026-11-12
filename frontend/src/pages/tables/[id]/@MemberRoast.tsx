@@ -18,6 +18,7 @@ import {
 	startIdleBumps,
 } from '@/utils/fireFx'
 import { cn } from '@/utils/shadcn'
+import { useEditMode } from '@/hooks/useEditMode'
 import { RoastText } from './@RoastText'
 
 const HOVER_OPEN_MS = 180
@@ -44,6 +45,7 @@ export function MemberRoast({
 	onRoast,
 }: MemberRoastProps) {
 	const { t } = useTranslation()
+	const { editing } = useEditMode()
 	const [open, setOpen] = useState(false)
 	const [side, setSide] = useState<'top' | 'bottom'>('bottom')
 	const buttonRef = useRef<HTMLButtonElement | null>(null)
@@ -144,7 +146,7 @@ export function MemberRoast({
 	}, [open])
 
 	const roastNow = () => {
-		if (remaining === 0 || isRoasting) return
+		if ((!editing && remaining === 0) || isRoasting) return
 		pinned.current = true
 		setOpen(true)
 		onRoast()
@@ -244,12 +246,12 @@ export function MemberRoast({
 				)}
 				<div className='flex items-center justify-between gap-2 pt-1'>
 					<span className='text-xs text-muted-foreground'>
-						{t('roast.left_today', { count: remaining })}
+						{editing ? '∞ left today' : t('roast.left_today', { count: remaining })}
 					</span>
 					<Button
 						size='sm'
 						className='h-7 gap-1.5 rounded-full bg-gradient-to-r from-fire to-fire-glow px-3 text-xs font-semibold text-fire-foreground transition-transform hover:scale-105 active:scale-95 disabled:opacity-50'
-						disabled={isRoasting || remaining === 0}
+						disabled={isRoasting || (!editing && remaining === 0)}
 						onClick={roastNow}
 					>
 						{hasRoast ? (

@@ -9,6 +9,7 @@ import {
 	TABLE_CODE_STORAGE_KEY,
 } from './constants'
 import { useAdmin } from '@/hooks/useAdmin'
+import { useGuest } from '@/hooks/useGuest'
 import { localStorage } from '@/utils/localstorage'
 
 const ApiUrl = API_URL
@@ -58,6 +59,15 @@ axios.interceptors.response.use(
 			useAdmin.getState().passphrase
 		)
 			useAdmin.getState().clear()
+
+		if (
+			(error.response?.status === 401 && !error.config?.headers?.[ADMIN_HEADER]) ||
+			(error.response?.status === 403 &&
+				typeof error.response?.data?.message === 'string' &&
+				error.response.data.message.toLowerCase().includes('pin'))
+		) {
+			useGuest.getState().clear()
+		}
 		if (!error.response)
 			error.message =
 				error.code === 'ECONNABORTED' ? 'timeout' : 'network_error'

@@ -8,6 +8,7 @@ import {
 	useRoastTable,
 	useRoastTablePerson,
 } from '@/api/tables/tables'
+import { clearTableRoast } from '@/api/roast'
 import type {
 	MemberRoastDto,
 	RoastTableDtoLang,
@@ -54,14 +55,31 @@ export function useTableRoast(tableId: string, enabled: boolean) {
 		[data?.members]
 	)
 
+	const [isClearing, setIsClearing] = React.useState(false)
+
+	const clearRoast = async () => {
+		try {
+			setIsClearing(true)
+			await clearTableRoast(tableId)
+			await qc.invalidateQueries({ queryKey: getGetTableRoastQueryKey(tableId, params) })
+			toast.success(t('roast.clear_success', 'Roasts cleared'))
+		} catch {
+			toast.error(t('roast.clear_failed', 'Failed to clear roasts'))
+		} finally {
+			setIsClearing(false)
+		}
+	}
+
 	return {
 		tableRoast: data?.table ?? null,
 		members,
 		isLoading,
 		isRoastingTable,
+		isClearing,
 		roastingPersonId: isRoastingPerson ? personVariables?.personId : undefined,
 		roastTable: () => roastTable({ id: tableId, data: body }),
 		roastPerson: (personId: string) =>
 			roastPerson({ id: tableId, personId, data: body }),
+		clearRoast,
 	}
 }

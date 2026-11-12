@@ -902,6 +902,14 @@
 			"table_roast": "AI 吐槽餐桌",
 			"guest_roast": "AI 吐槽宾客"
 		},
+		"roast": {
+			"clear_all": "清除所有吐槽与每日限制",
+			"clear_all_desc": "清除缓存、冷却时间并重置每日次数",
+			"clear_all_btn": "清除吐槽",
+			"clear_all_confirm": "这将删除所有桌子的吐槽内容并重置次数。确定吗？",
+			"clear_all_success": "已清除所有吐槽与限制",
+			"clear_table": "清除本桌吐槽"
+		},
 		"ordering": {
 			"title": "点餐",
 			"stage_closed": "未开放",
@@ -1041,6 +1049,8 @@
 		"left_today": "今天还剩 {{count}} 次",
 		"failed": "吐槽没成功，再试一次。",
 		"too_soon": "吐槽冷却中，稍后再试。",
-		"show_all": "显示全部吐槽"
+		"show_all": "显示全部吐槽",
+		"clear_success": "已清除吐槽",
+		"clear_failed": "清除吐槽失败"
 	}
 }

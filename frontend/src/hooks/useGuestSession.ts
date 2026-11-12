@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { verifyPin } from '@/api/auth/auth'
 import { useGuest } from '@/hooks/useGuest'
 
-const RECHECK_MS = 30_000
+const RECHECK_MS = 3 * 60 * 1000
 
 /** Drops the stored PIN once the event it unlocked is gone or its PIN changed. */
 export function useGuestSession() {
@@ -21,10 +21,6 @@ export function useGuestSession() {
 
 		check()
 		const timer = setInterval(check, RECHECK_MS)
-		window.addEventListener('focus', check)
-		return () => {
-			clearInterval(timer)
-			window.removeEventListener('focus', check)
-		}
+		return () => clearInterval(timer)
 	}, [pin, clear])
 }

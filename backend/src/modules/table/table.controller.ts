@@ -131,11 +131,24 @@ export class TableController {
     return this.table.rerollCodes(dto.ids);
   }
 
+  @Delete('roasts')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'clearAllRoasts' })
+  clearAllRoasts() {
+    return this.roasts.clearAll();
+  }
+
   @Get(':id')
   @ApiOperation({ operationId: 'getTableById' })
   @ApiResponse({ status: 200, type: TableDto })
   findOne(@Param('id') id: string) {
     return this.table.findOne(id);
+  }
+
+  private async checkAdmin(headers: Record<string, string>): Promise<boolean> {
+    const passphrase = await this.config.getAdminPassphrase();
+    const adminSecret = headers[ADMIN_HEADER];
+    return Boolean(adminSecret && passphrase && adminSecret === passphrase);
   }
 
   @Get(':id/roast')
@@ -146,14 +159,26 @@ export class TableController {
     return this.roasts.get(id, lang);
   }
 
+  @Delete(':id/roast')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'clearTableRoast' })
+  clearTableRoast(@Param('id') id: string) {
+    return this.roasts.clearTable(id);
+  }
+
   @Post(':id/roast')
   @RequireFeature(CONFIG_KEYS.featureTableRoast)
   @UseGuards(RateLimitGuard)
   @RateLimit(20, 60)
   @ApiOperation({ operationId: 'roastTable' })
   @ApiResponse({ status: 201, type: TableRoastStateDto })
-  roastTable(@Param('id') id: string, @Body() dto: RoastTableDto) {
-    return this.roasts.roastTable(id, dto.lang ?? 'en');
+  async roastTable(
+    @Param('id') id: string,
+    @Body() dto: RoastTableDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    const isAdmin = await this.checkAdmin(headers);
+    return this.roasts.roastTable(id, dto.lang ?? 'en', isAdmin);
   }
 
   @Post(':id/people/:personId/roast')
@@ -162,12 +187,14 @@ export class TableController {
   @RateLimit(60, 60)
   @ApiOperation({ operationId: 'roastTablePerson' })
   @ApiResponse({ status: 201, type: TableRoastStateDto })
-  roastPerson(
+  async roastPerson(
     @Param('id') id: string,
     @Param('personId') personId: string,
     @Body() dto: RoastTableDto,
+    @Headers() headers: Record<string, string>,
   ) {
-    return this.roasts.roastPerson(id, personId, dto.lang ?? 'en');
+    const isAdmin = await this.checkAdmin(headers);
+    return this.roasts.roastPerson(id, personId, dto.lang ?? 'en', isAdmin);
   }
 
   @Get(':id/people')

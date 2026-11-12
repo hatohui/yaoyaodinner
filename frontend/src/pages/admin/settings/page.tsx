@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useAdminEvents } from '@/hooks/useAdminEvents'
+import { useToast } from '@/hooks/useToast'
+import { clearAllRoasts } from '@/api/roast'
 import { ConfigRow } from './@ConfigRow'
 import { useAdminConfig } from './@useAdminConfig'
 
@@ -22,9 +24,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 export default function AdminSettingsPage() {
 	const { t } = useTranslation()
+	const toast = useToast()
 	const { groups, isLoading, save } = useAdminConfig()
 	const { selectedEvent, remove, deleting } = useAdminEvents()
 	const [confirmDelete, setConfirmDelete] = useState(false)
+	const [confirmClearRoasts, setConfirmClearRoasts] = useState(false)
+	const [clearingRoasts, setClearingRoasts] = useState(false)
 
 	const eventLabel = selectedEvent?.name || selectedEvent?.id || ''
 
@@ -59,6 +64,27 @@ export default function AdminSettingsPage() {
 							{items.map(item => (
 								<ConfigRow key={item.key} item={item} onSave={save} />
 							))}
+							{category === 'roast' && (
+								<div className='flex items-center justify-between py-2.5'>
+									<div className='flex flex-col'>
+										<span className='text-sm font-medium text-foreground'>
+											{t('admin.roast.clear_all', 'Clear all roasts & limits')}
+										</span>
+										<span className='text-xs text-muted-foreground'>
+											{t('admin.roast.clear_all_desc', 'Purge all cached roasts, cooldowns, and daily limits')}
+										</span>
+									</div>
+									<Button
+										variant='destructive'
+										size='sm'
+										className='h-8 text-xs'
+										onClick={() => setConfirmClearRoasts(true)}
+									>
+										<Trash2 className='mr-1.5 size-3.5' />
+										{t('admin.roast.clear_all_btn', 'Clear roasts')}
+									</Button>
+								</div>
+							)}
 						</Card>
 					</div>
 				))
@@ -109,6 +135,28 @@ export default function AdminSettingsPage() {
 						remove(selectedEvent.id, passphrase)
 					}
 					setConfirmDelete(false)
+				}}
+			/>
+
+			<ConfirmDialog
+				open={confirmClearRoasts}
+				onOpenChange={setConfirmClearRoasts}
+				title={t('admin.roast.clear_all', 'Clear all roasts & limits')}
+				description={t('admin.roast.clear_all_confirm', 'This will delete all generated roasts for all tables and reset daily limits for everyone. Are you sure?')}
+				confirmLabel={t('admin.roast.clear_all_btn', 'Clear roasts')}
+				variant='destructive'
+				loading={clearingRoasts}
+				onConfirm={async () => {
+					try {
+						setClearingRoasts(true)
+						await clearAllRoasts()
+						toast.success(t('admin.roast.clear_all_success', 'All roasts and limits cleared'))
+						setConfirmClearRoasts(false)
+					} catch {
+						toast.error(t('roast.failed', 'Failed to clear roasts'))
+					} finally {
+						setClearingRoasts(false)
+					}
 				}}
 			/>
 		</div>

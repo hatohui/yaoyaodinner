@@ -28,6 +28,7 @@ export const CONFIG_KEYS = {
   featureTableCodes: "feature.tableCodes",
   featureTableRoast: "feature.tableRoast",
   featureGuestRoast: "feature.guestRoast",
+  roastDirtyChance: "roast.dirtyChance",
   roastTableCooldown: "roast.tableCooldownSeconds",
   roastPersonCooldown: "roast.personCooldownSeconds",
   roastPersonDailyLimit: "roast.personDailyLimit",
@@ -179,6 +180,14 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     category: "features",
     label: "Guest roasts",
     value: true,
+  },
+  {
+    key: CONFIG_KEYS.roastDirtyChance,
+    type: "number",
+    isPublic: false,
+    category: "roast",
+    label: "Dirty roast chance (0.0 to 1.0)",
+    value: 0.5,
   },
   {
     key: CONFIG_KEYS.roastTableCooldown,

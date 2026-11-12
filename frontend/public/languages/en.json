@@ -904,6 +904,14 @@
 			"table_roast": "Table roasts",
 			"guest_roast": "Guest roasts"
 		},
+		"roast": {
+			"clear_all": "Clear all roasts & limits",
+			"clear_all_desc": "Purge all cached roasts, cooldowns, and daily limits",
+			"clear_all_btn": "Clear roasts",
+			"clear_all_confirm": "This will delete all generated roasts for all tables and reset daily limits for everyone. Are you sure?",
+			"clear_all_success": "All roasts and limits cleared",
+			"clear_table": "Clear table roasts"
+		},
 		"ordering": {
 			"title": "Ordering",
 			"stage_closed": "Not open yet",
@@ -1043,6 +1051,8 @@
 		"left_today": "{{count}} left today",
 		"failed": "The roast didn't land. Try again.",
 		"too_soon": "Roasts are on cooldown. Try again in a bit.",
-		"show_all": "Show all roasts"
+		"show_all": "Show all roasts",
+		"clear_success": "Roasts cleared",
+		"clear_failed": "Failed to clear roasts"
 	}
 }

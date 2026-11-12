@@ -175,7 +175,7 @@ export default function TableDetailPage() {
 					</h1>
 					<SeatCountChip table={table} />
 				</div>
-				<div className='flex flex-wrap items-center gap-1.5 sm:shrink-0 sm:gap-2'>
+				<div className='flex items-center gap-1.5 sm:shrink-0 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
 					{tableRoast && (
 						<Tooltip>
@@ -235,20 +235,20 @@ export default function TableDetailPage() {
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
 							aria-label={t('floor_plan.view_map')}
-							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-2.5 py-1.5 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3'
+							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
 						>
 							<Map className='size-4' />
-							<span className='inline'>{t('floor_plan.view_map')}</span>
+							<span className='hidden sm:inline'>{t('floor_plan.view_map')}</span>
 						</Link>
 					)}
 					<button
 						type='button'
 						onClick={shareLink}
 						aria-label={t('roster.copy_link')}
-						className='inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-control px-2.5 py-1.5 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3'
+						className='inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
 					>
 						<LinkIcon className='size-4' />
-						<span className='inline'>{t('roster.copy_link')}</span>
+						<span className='hidden sm:inline'>{t('roster.copy_link')}</span>
 					</button>
 				</div>
 			</div>
@@ -268,6 +268,8 @@ export default function TableDetailPage() {
 					isLoading={roasts.isLoading}
 					isRoasting={roasts.isRoastingTable}
 					onRoast={roasts.roastTable}
+					onClear={roasts.clearRoast}
+					isClearing={roasts.isClearing}
 				/>
 			)}
 

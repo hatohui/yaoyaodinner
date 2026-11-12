@@ -902,6 +902,14 @@
 			"table_roast": "AI cà khịa bàn",
 			"guest_roast": "AI cà khịa khách"
 		},
+		"roast": {
+			"clear_all": "Xóa toàn bộ cà khịa & giới hạn",
+			"clear_all_desc": "Xóa bộ nhớ đệm, thời gian chờ và đặt lại giới hạn ngày",
+			"clear_all_btn": "Xóa cà khịa",
+			"clear_all_confirm": "Thao tác này sẽ xóa mọi lời cà khịa đã tạo cho tất cả bàn và đặt lại giới hạn. Bạn có chắc không?",
+			"clear_all_success": "Đã xóa toàn bộ cà khịa và giới hạn",
+			"clear_table": "Xóa cà khịa bàn này"
+		},
 		"ordering": {
 			"title": "Đặt món",
 			"stage_closed": "Chưa mở",
@@ -1041,6 +1049,8 @@
 		"left_today": "Còn {{count}} lần hôm nay",
 		"failed": "Cà khịa trượt rồi. Thử lại nhé.",
 		"too_soon": "Đang trong thời gian chờ. Thử lại sau chút nữa.",
-		"show_all": "Hiện tất cả"
+		"show_all": "Hiện tất cả",
+		"clear_success": "Đã xóa cà khịa",
+		"clear_failed": "Xóa cà khịa thất bại"
 	}
 }

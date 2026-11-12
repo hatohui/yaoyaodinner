@@ -18,8 +18,10 @@ import {
 	Settings,
 	ShieldCheck,
 	ShoppingCart,
+	Trash2,
 	UtensilsCrossed,
 } from 'lucide-react'
+import { clearAllRoasts } from '@/api/roast'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -389,6 +391,25 @@ export function AdminMenu() {
 							className='pointer-events-none'
 						/>
 					</DropdownMenuItem>
+
+					{(tableRoast || guestRoast) && (
+						<DropdownMenuItem
+							onSelect={async e => {
+								e.preventDefault()
+								try {
+									await clearAllRoasts()
+									qc.invalidateQueries({ queryKey: ['/api/tables'] })
+									toast.success(t('admin.roast.clear_all_success', 'All roasts and limits cleared'))
+								} catch {
+									toast.error(t('roast.failed', 'Failed to clear roasts'))
+								}
+							}}
+							className='cursor-pointer text-muted-foreground hover:text-destructive'
+						>
+							<Trash2 className='size-4' />
+							<span className='flex-1'>{t('admin.roast.clear_all', 'Clear all roasts & limits')}</span>
+						</DropdownMenuItem>
+					)}
 
 					<DropdownMenuSeparator />
 					<DropdownMenuItem asChild>
