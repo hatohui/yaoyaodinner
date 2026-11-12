@@ -10,19 +10,11 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover'
-import {
-	bump,
-	burstFlames,
-	canHover,
-	startBurning,
-	startIdleBumps,
-} from '@/utils/fireFx'
+import { bump, burstFlames, startBurning, startIdleBumps } from '@/utils/fireFx'
 import { cn } from '@/utils/shadcn'
 import { useEditMode } from '@/hooks/useEditMode'
 import { RoastText } from './@RoastText'
 
-const HOVER_OPEN_MS = 180
-const HOVER_CLOSE_MS = 220
 const DRAWER_ROOM_PX = 220
 
 let closeActiveDrawer: (() => void) | null = null
@@ -33,7 +25,10 @@ interface MemberRoastProps {
 	isRoasting: boolean
 	compact: boolean
 	showsInline: boolean
-	onRoast: () => void
+	/** Clicking the guest's row opens and closes their roast. */
+	rowToggles: boolean
+	/** Missing when this device hasn't claimed a seat here: the roast is read-only. */
+	onRoast?: () => void
 }
 
 export function MemberRoast({
@@ -42,6 +37,7 @@ export function MemberRoast({
 	isRoasting,
 	compact,
 	showsInline,
+	rowToggles,
 	onRoast,
 }: MemberRoastProps) {
 	const { t } = useTranslation()
@@ -51,9 +47,7 @@ export function MemberRoast({
 	const buttonRef = useRef<HTMLButtonElement | null>(null)
 	const [buttonEl, setButtonEl] = useState<HTMLButtonElement | null>(null)
 	const cardRef = useRef<HTMLElement | null>(null)
-	const hoverTimer = useRef<number | undefined>(undefined)
 	const pinned = useRef(false)
-	const contentRef = useRef<HTMLDivElement>(null)
 	const wasRoasting = useRef(false)
 	const [fresh, setFresh] = useState(false)
 	const remaining = roast?.remainingToday ?? 0
@@ -109,25 +103,15 @@ export function MemberRoast({
 
 	useEffect(() => {
 		const el = card()
-		if (!el || !hasRoast || showsInline || !canHover()) return
-		const schedule = (next: boolean, ms: number) => {
-			window.clearTimeout(hoverTimer.current)
-			hoverTimer.current = window.setTimeout(() => setOpen(next), ms)
+		if (!el || !hasRoast || showsInline || !rowToggles) return
+		const toggle = (event: MouseEvent) => {
+			if ((event.target as Element).closest('button, a, input')) return
+			pinned.current = !pinned.current
+			setOpen(pinned.current)
 		}
-		const enter = () => schedule(true, HOVER_OPEN_MS)
-		const leave = (event: MouseEvent) => {
-			if (contentRef.current?.contains(event.relatedTarget as Node | null)) return
-			if (pinned.current) window.clearTimeout(hoverTimer.current)
-			else schedule(false, HOVER_CLOSE_MS)
-		}
-		el.addEventListener('mouseenter', enter)
-		el.addEventListener('mouseleave', leave)
-		return () => {
-			el.removeEventListener('mouseenter', enter)
-			el.removeEventListener('mouseleave', leave)
-			window.clearTimeout(hoverTimer.current)
-		}
-	}, [hasRoast, showsInline])
+		el.addEventListener('click', toggle)
+		return () => el.removeEventListener('click', toggle)
+	}, [hasRoast, showsInline, rowToggles])
 
 	useEffect(() => {
 		if (showsInline) setOpen(false)
@@ -146,7 +130,7 @@ export function MemberRoast({
 	}, [open])
 
 	const roastNow = () => {
-		if ((!editing && remaining === 0) || isRoasting) return
+		if (!onRoast || (!editing && remaining === 0) || isRoasting) return
 		pinned.current = true
 		setOpen(true)
 		onRoast()
@@ -195,20 +179,10 @@ export function MemberRoast({
 				</button>
 			</PopoverTrigger>
 			<PopoverContent
-				ref={contentRef}
 				side={side}
 				align='center'
 				sideOffset={-1}
 				avoidCollisions={false}
-				onMouseEnter={() => window.clearTimeout(hoverTimer.current)}
-				onMouseLeave={() => {
-					if (!canHover() || pinned.current) return
-					window.clearTimeout(hoverTimer.current)
-					hoverTimer.current = window.setTimeout(
-						() => setOpen(false),
-						HOVER_CLOSE_MS
-					)
-				}}
 				onOpenAutoFocus={event => event.preventDefault()}
 				onInteractOutside={event => {
 					if (card()?.contains(event.target as Node)) event.preventDefault()
@@ -244,24 +218,28 @@ export function MemberRoast({
 						{t('roast.stale_member')}
 					</p>
 				)}
-				<div className='flex items-center justify-between gap-2 pt-1'>
-					<span className='text-xs text-muted-foreground'>
-						{editing ? '∞ left today' : t('roast.left_today', { count: remaining })}
-					</span>
-					<Button
-						size='sm'
-						className='h-7 gap-1.5 rounded-full bg-gradient-to-r from-fire to-fire-glow px-3 text-xs font-semibold text-fire-foreground transition-transform hover:scale-105 active:scale-95 disabled:opacity-50'
-						disabled={isRoasting || (!editing && remaining === 0)}
-						onClick={roastNow}
-					>
-						{hasRoast ? (
-							<RefreshCw className='size-3.5' />
-						) : (
-							<Flame className='size-3.5 fill-fire-foreground motion-safe:animate-flame' />
-						)}
-						{t(hasRoast ? 'roast.again' : 'roast.cta_member')}
-					</Button>
-				</div>
+				{onRoast && (
+					<div className='flex items-center justify-between gap-2 pt-1'>
+						<span className='text-xs text-muted-foreground'>
+							{editing
+								? '∞ left today'
+								: t('roast.left_today', { count: remaining })}
+						</span>
+						<Button
+							size='sm'
+							className='h-7 gap-1.5 rounded-full bg-gradient-to-r from-fire to-fire-glow px-3 text-xs font-semibold text-fire-foreground transition-transform hover:scale-105 active:scale-95 disabled:opacity-50'
+							disabled={isRoasting || (!editing && remaining === 0)}
+							onClick={roastNow}
+						>
+							{hasRoast ? (
+								<RefreshCw className='size-3.5' />
+							) : (
+								<Flame className='size-3.5 fill-fire-foreground motion-safe:animate-flame' />
+							)}
+							{t(hasRoast ? 'roast.again' : 'roast.cta_member')}
+						</Button>
+					</div>
+				)}
 			</PopoverContent>
 		</Popover>
 	)

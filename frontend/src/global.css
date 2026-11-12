@@ -72,6 +72,14 @@
 	--color-fire-glow: var(--fire-glow);
 	--color-ember: var(--ember);
 	--color-fire-foreground: var(--fire-foreground);
+	--color-action: var(--action);
+	--color-action-foreground: var(--action-foreground);
+	--color-banner: var(--banner);
+	--color-banner-foreground: var(--banner-foreground);
+	--color-banner-muted: var(--banner-muted);
+	--color-banner-border: var(--banner-border);
+	--color-banner-icon: var(--banner-icon);
+	--color-banner-icon-foreground: var(--banner-icon-foreground);
 
 	@keyframes progress {
 		0% {
@@ -267,6 +275,15 @@
 	--fire-glow: oklch(0.82 0.14 85);
 	--ember: oklch(0.5 0.2 355);
 	--fire-foreground: oklch(0.99 0.005 323);
+	/* YaoYao: header actions in the black-and-magenta of her ears, banners in her magenta fur */
+	--action: oklch(0.3 0.09 335);
+	--action-foreground: oklch(0.99 0.005 323);
+	--banner: oklch(0.96 0.035 330);
+	--banner-foreground: oklch(0.249 0.063 340);
+	--banner-muted: oklch(0.42 0.07 330);
+	--banner-border: oklch(0.82 0.1 330);
+	--banner-icon: oklch(0.56 0.2 330);
+	--banner-icon-foreground: oklch(0.99 0 0);
 }
 
 [data-theme='dark'] {
@@ -306,6 +323,15 @@
 	--fire-glow: oklch(0.86 0.15 80);
 	--ember: oklch(0.66 0.21 32);
 	--fire-foreground: oklch(0.16 0.05 40);
+	/* Aster: header actions in his cyan streak, banners in lifted navy trimmed with his gold */
+	--action: oklch(0.688 0.127 222.5);
+	--action-foreground: oklch(0.14 0.05 264.7);
+	--banner: oklch(0.31 0.075 264.7);
+	--banner-foreground: oklch(0.95 0.01 264.7);
+	--banner-muted: oklch(0.8 0.04 264.7);
+	--banner-border: oklch(0.62 0.1 82);
+	--banner-icon: oklch(0.81 0.115 82);
+	--banner-icon-foreground: oklch(0.12 0.05 264.7);
 
 	--destructive: oklch(0.704 0.191 22.216);
 	--success: oklch(0.74 0.16 150);

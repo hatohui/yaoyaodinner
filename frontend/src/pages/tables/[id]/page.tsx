@@ -18,6 +18,7 @@ import { useTableTab } from '@/hooks/useTableTab'
 import { useToast } from '@/hooks/useToast'
 import { useConfig } from '@/hooks/useConfig'
 import { useRoastVisible } from '@/hooks/useRoastVisible'
+import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { cn } from '@/utils/shadcn'
 import { bump, burstFlames, startIdleBumps } from '@/utils/fireFx'
 import { isOnMap } from '@/components/floor-plan/layout'
@@ -63,6 +64,9 @@ export default function TableDetailPage() {
 		}
 	}, [table, t])
 	const { canEdit, canJoin, isAdmin } = useTableAccess(id)
+	const { personId: myPersonId } = useWhoAmI(id)
+	// AI generations are for guests who claimed a seat here
+	const canTriggerAi = Boolean(myPersonId) || isAdmin
 	const {
 		floorPlan,
 		tableCodes,
@@ -90,7 +94,7 @@ export default function TableDetailPage() {
 		? {
 				members: roasts.members,
 				roastingPersonId: roasts.roastingPersonId,
-				onRoast: roasts.roastPerson,
+				onRoast: canTriggerAi ? roasts.roastPerson : undefined,
 			}
 		: undefined
 	const showOrdering = menu || isAdmin
@@ -178,80 +182,70 @@ export default function TableDetailPage() {
 					</h1>
 					<SeatCountChip table={table} />
 				</div>
-				<div className='flex items-center gap-1.5 sm:shrink-0 sm:gap-2'>
+				<div className='flex w-full items-center gap-2 sm:w-auto sm:shrink-0'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
-					{tableRoast && (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<button
-									ref={roastButtonRef}
-									type='button'
-									onMouseEnter={() => bump(roastButtonRef.current)}
-									onClick={() => {
-										bump(roastButtonRef.current, 1.6)
-										if (roastButtonRef.current)
-											burstFlames(roastButtonRef.current, 8)
-										showRoast()
-										roasts.roastTable()
-									}}
-									disabled={roasts.isRoastingTable}
-									aria-label={t(
-										roasts.tableRoast ? 'roast.again' : 'roast.toggle'
-									)}
-									className={cn(
-										'group relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait',
-										roasts.isRoastingTable
-											? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-lg shadow-fire/30 ring-2 ring-fire/40 motion-safe:animate-pulse'
-											: roasts.tableRoast
-												? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-md shadow-fire/25 ring-2 ring-fire/30'
-												: 'border-fire/50 bg-card text-fire shadow-sm hover:border-fire hover:bg-fire hover:text-fire-foreground'
-									)}
-								>
-									{roasts.isRoastingTable ? (
-										<>
-											<Flame className='size-4 fill-fire-foreground text-fire-foreground motion-safe:animate-bounce' />
-											<span>{t('roast.roasting')}</span>
-										</>
-									) : (
-										<>
-											<Flame
-												className={cn(
-													'size-4 motion-safe:animate-flame',
-													roasts.tableRoast
-														? 'fill-fire-foreground text-fire-foreground'
-														: 'fill-fire/30 text-fire group-hover:fill-fire-foreground/30 group-hover:text-fire-foreground'
-												)}
-											/>
-											<span>
-												{t(roasts.tableRoast ? 'roast.again' : 'roast.toggle')}
-											</span>
-										</>
-									)}
-								</button>
-							</TooltipTrigger>
-							<TooltipContent side='bottom'>
-								{t('roast.tooltip')}
-							</TooltipContent>
-						</Tooltip>
-					)}
+					{tableRoast &&
+						canTriggerAi &&
+						!roasts.isLoading &&
+						!roasts.tableRoast && (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<button
+										ref={roastButtonRef}
+										type='button'
+										onMouseEnter={() => bump(roastButtonRef.current)}
+										onClick={() => {
+											bump(roastButtonRef.current, 1.6)
+											if (roastButtonRef.current)
+												burstFlames(roastButtonRef.current, 8)
+											showRoast()
+											roasts.roastTable()
+										}}
+										disabled={roasts.isRoastingTable}
+										aria-label={t('roast.toggle')}
+										className={cn(
+											'group relative inline-flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border px-3 text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait sm:flex-none',
+											roasts.isRoastingTable
+												? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-lg shadow-fire/30 ring-2 ring-fire/40 motion-safe:animate-pulse'
+												: 'border-fire bg-fire text-fire-foreground shadow-md hover:bg-fire-glow'
+										)}
+									>
+										{roasts.isRoastingTable ? (
+											<>
+												<Flame className='size-4 fill-fire-foreground text-fire-foreground motion-safe:animate-bounce' />
+												<span>{t('roast.roasting')}</span>
+											</>
+										) : (
+											<>
+												<Flame className='size-4 fill-fire-foreground/30 text-fire-foreground motion-safe:animate-flame' />
+												<span>{t('roast.toggle')}</span>
+											</>
+										)}
+									</button>
+								</TooltipTrigger>
+								<TooltipContent side='bottom'>
+									{t('roast.tooltip')}
+								</TooltipContent>
+							</Tooltip>
+						)}
 					{showFloorPlan && isOnMap(table) && (
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
 							aria-label={t('floor_plan.view_map')}
-							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
+							className='inline-flex h-9 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-transparent bg-action px-3 text-sm font-medium text-action-foreground shadow-md transition-colors hover:bg-primary hover:text-primary-foreground sm:flex-none'
 						>
 							<Map className='size-4' />
-							<span className='hidden sm:inline'>{t('floor_plan.view_map')}</span>
+							<span>{t('floor_plan.view_map')}</span>
 						</Link>
 					)}
 					<button
 						type='button'
 						onClick={shareLink}
 						aria-label={t('roster.copy_link')}
-						className='inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
+						className='inline-flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-transparent bg-action px-3 text-sm font-medium text-action-foreground shadow-md transition-colors hover:bg-primary hover:text-primary-foreground sm:flex-none'
 					>
 						<LinkIcon className='size-4' />
-						<span className='hidden sm:inline'>{t('roster.copy_link')}</span>
+						<span>{t('roster.copy_link')}</span>
 					</button>
 				</div>
 			</div>
@@ -270,7 +264,7 @@ export default function TableDetailPage() {
 					roast={roasts.tableRoast}
 					isLoading={roasts.isLoading}
 					isRoasting={roasts.isRoastingTable}
-					onRoast={roasts.roastTable}
+					onRoast={canTriggerAi ? roasts.roastTable : undefined}
 					onClear={roasts.clearRoast}
 					isClearing={roasts.isClearing}
 				/>

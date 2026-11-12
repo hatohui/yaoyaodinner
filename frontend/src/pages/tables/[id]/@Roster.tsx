@@ -28,7 +28,7 @@ interface RosterProps {
 	roast?: {
 		members: Record<string, MemberRoastDto>
 		roastingPersonId: string | undefined
-		onRoast: (personId: string) => void
+		onRoast?: (personId: string) => void
 	}
 }
 
@@ -122,7 +122,9 @@ export function Roster({
 				</p>
 				{people.length > 0 && (
 					<div className='flex items-center gap-2'>
-						{roast && <ShowAllRoastsToggle />}
+						{roast && Object.values(roast.members).some(m => m.text) && (
+							<ShowAllRoastsToggle />
+						)}
 						<ViewToggle view={view} onChange={setView} />
 					</div>
 				)}
@@ -175,7 +177,9 @@ export function Roster({
 										? {
 												data: roast.members[person.id],
 												isRoasting: roast.roastingPersonId === person.id,
-												onRoast: () => roast.onRoast(person.id),
+												onRoast: roast.onRoast
+													? () => roast.onRoast?.(person.id)
+													: undefined,
 											}
 										: undefined
 								}
@@ -274,7 +278,7 @@ function RosterItem({
 	roast?: {
 		data: MemberRoastDto | undefined
 		isRoasting: boolean
-		onRoast: () => void
+		onRoast?: () => void
 	}
 }) {
 	const { t } = useTranslation()
@@ -291,6 +295,10 @@ function RosterItem({
 	)
 	const showAllRoasts = useRoastVisible(s => s.showAll)
 	const inlineRoast = showAllRoasts ? roast?.data?.text : undefined
+	const roastingInline = showAllRoasts && Boolean(roast?.isRoasting)
+	// a roast opens by clicking the row, unless the row already opens the guest for editing
+	const rowTogglesRoast =
+		!editable && !showAllRoasts && Boolean(roast?.data?.text)
 	const avatarClass = cn(
 		'flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-muted font-semibold text-primary ring-1 ring-primary/25 ring-inset',
 		compact ? 'size-8 text-xs' : 'size-11 text-sm sm:size-12'
@@ -302,11 +310,12 @@ function RosterItem({
 			data-name={person.name}
 			className={cn(
 				'group relative flex items-center gap-3 border border-border bg-card shadow-sm transition-all',
-				inlineRoast && 'flex-wrap border-fire/40',
+				(inlineRoast || roastingInline) && 'flex-wrap border-fire/40',
 				compact
 					? 'rounded-xl px-3 py-2'
 					: 'min-h-[4.5rem] rounded-2xl px-4 py-3 sm:gap-4 sm:px-5 sm:py-4',
-				(editable || roast) && 'hover:bg-secondary hover:shadow-md',
+				(editable || rowTogglesRoast) &&
+					'cursor-pointer hover:bg-secondary hover:shadow-md',
 				editable && 'hover:-translate-y-0.5 hover:border-primary/50',
 				isMe &&
 					'border-primary ring-2 ring-primary/30 hover:border-primary hover:ring-primary/50',
@@ -411,25 +420,42 @@ function RosterItem({
 					{t('roster.this_is_me')}
 				</button>
 			)}
-			{roast && (
+			{roast && (roast.onRoast || roast.data?.text) && (
 				<MemberRoast
 					name={person.name}
 					roast={roast.data}
 					isRoasting={roast.isRoasting}
 					compact={compact}
 					showsInline={showAllRoasts}
+					rowToggles={!editable}
 					onRoast={roast.onRoast}
 				/>
 			)}
 			{editable && (
 				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
 			)}
-			{inlineRoast && (
+			{(inlineRoast || roastingInline) && (
 				<div className='relative flex basis-full flex-col gap-1.5 border-t border-fire/30 pt-2'>
-					<RoastText text={inlineRoast} />
-					<p className='text-xs text-muted-foreground'>
-						{t('roast.left_today', { count: roast?.data?.remainingToday ?? 0 })}
-					</p>
+					{roastingInline ? (
+						<div className='flex flex-col gap-2 py-0.5'>
+							<span className='text-xs font-medium text-fire'>
+								{t('roast.roasting')}
+							</span>
+							<div className='h-4 w-5/6 animate-pulse rounded-md bg-fire/15' />
+							<div className='h-4 w-4/6 animate-pulse rounded-md bg-fire/10' />
+						</div>
+					) : (
+						inlineRoast && (
+							<>
+								<RoastText text={inlineRoast} />
+								<p className='text-xs text-muted-foreground'>
+									{t('roast.left_today', {
+										count: roast?.data?.remainingToday ?? 0,
+									})}
+								</p>
+							</>
+						)
+					)}
 				</div>
 			)}
 		</li>

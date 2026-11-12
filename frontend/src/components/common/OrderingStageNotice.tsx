@@ -55,16 +55,16 @@ export function OrderingStageNotice({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				'flex items-center gap-3 rounded-2xl border border-primary/35 bg-brand-muted px-4 py-3 shadow-2xs',
+				'flex items-center gap-3 rounded-2xl border border-banner-border bg-banner px-4 py-3 shadow-sm',
 				className
 			)}
 		>
-			<span className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary'>
+			<span className='flex size-9 shrink-0 items-center justify-center rounded-full bg-banner-icon text-banner-icon-foreground'>
 				<Icon className='size-4' />
 			</span>
 			<div className='flex min-w-0 flex-col'>
-				<span className='text-sm font-semibold text-foreground'>{title}</span>
-				<span className='text-xs text-muted-foreground'>{body}</span>
+				<span className='text-sm font-semibold text-banner-foreground'>{title}</span>
+				<span className='text-xs text-banner-muted'>{body}</span>
 			</div>
 		</div>
 	)

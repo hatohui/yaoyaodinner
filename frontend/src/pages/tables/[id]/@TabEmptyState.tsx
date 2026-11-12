@@ -20,7 +20,10 @@ export function TabEmptyState({
 		<div className='flex flex-col items-center gap-3 py-10 text-center'>
 			<p className='text-sm text-muted-foreground'>{message}</p>
 			{canEdit && (
-				<Button asChild className='gap-1.5 rounded-full'>
+				<Button
+					asChild
+					className='h-9 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+				>
 					<Link to={`/tables/${tableId}/order`}>
 						<Plus className='size-4' />
 						{t('orders.add_order')}

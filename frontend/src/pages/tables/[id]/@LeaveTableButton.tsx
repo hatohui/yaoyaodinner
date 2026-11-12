@@ -18,7 +18,7 @@ export function LeaveTableButton() {
 				onClick={() => setConfirming(true)}
 				aria-label={t('table_code.leave')}
 				title={t('table_code.leave')}
-				className='inline-flex cursor-pointer items-center rounded-full border border-destructive/40 bg-destructive/10 p-2 text-destructive transition-colors hover:border-destructive/60 hover:bg-destructive/20'
+				className='inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-destructive/40 bg-card shadow-sm text-destructive transition-colors hover:border-destructive/60 hover:bg-destructive/20'
 			>
 				<DoorOpen className='size-4' />
 			</button>

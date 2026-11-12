@@ -7,13 +7,18 @@ import { Spinner } from '@/components/ui/spinner'
 import { useEditMode } from '@/hooks/useEditMode'
 import { burstFlames, startBurning } from '@/utils/fireFx'
 import { cn } from '@/utils/shadcn'
+import { localStorage } from '@/utils/localstorage'
+import { TABLE_ROAST_COLLAPSED_STORAGE_KEY } from '@/common/constants'
+
+const saveCollapsed = (collapsed: boolean) =>
+	localStorage.save(TABLE_ROAST_COLLAPSED_STORAGE_KEY, String(collapsed))
 import { RoastText } from './@RoastText'
 
 interface TableRoastCardProps {
 	roast: TableRoastDto | null
 	isLoading: boolean
 	isRoasting: boolean
-	onRoast: () => void
+	onRoast?: () => void
 	onClear?: () => void
 	isClearing?: boolean
 }
@@ -30,12 +35,19 @@ export function TableRoastCard({
 	const { editing } = useEditMode()
 	const ref = useRef<HTMLElement>(null)
 	const [fresh, setFresh] = useState(false)
-	const [collapsed, setCollapsed] = useState(false)
+	const [collapsed, setCollapsedState] = useState(
+		() => localStorage.load(TABLE_ROAST_COLLAPSED_STORAGE_KEY) === 'true'
+	)
+	const setCollapsed = (next: boolean) => {
+		setCollapsedState(next)
+		saveCollapsed(next)
+	}
 
 	useEffect(() => {
 		if (!isRoasting || !ref.current) return
 		setFresh(true)
-		setCollapsed(false)
+		setCollapsedState(false)
+		saveCollapsed(false)
 		return startBurning(ref.current)
 	}, [isRoasting])
 
@@ -66,7 +78,7 @@ export function TableRoastCard({
 			<div className='flex items-center justify-between gap-2'>
 				<button
 					type='button'
-					onClick={() => setCollapsed(c => !c)}
+					onClick={() => setCollapsed(!collapsed)}
 					aria-expanded={!collapsed}
 					className='flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-fire transition-opacity hover:opacity-80'
 				>
@@ -96,13 +108,16 @@ export function TableRoastCard({
 							)}
 						</Button>
 					)}
-					{roast && (
+					{roast && onRoast && (
 						<Button
 							variant='ghost'
 							size='sm'
 							className='h-7 gap-1.5 rounded-full text-xs text-fire transition-transform hover:bg-fire/10 hover:text-fire active:scale-95'
 							disabled={isRoasting || isClearing}
-							onClick={onRoast}
+							onClick={() => {
+								if (ref.current) burstFlames(ref.current, 10)
+								onRoast()
+							}}
 						>
 							{isRoasting ? (
 								<Spinner className='size-3.5' />
@@ -133,6 +148,11 @@ export function TableRoastCard({
 					{roast?.isStale && !isRoasting && (
 						<p className='text-xs text-muted-foreground'>
 							{t('roast.stale_table')}
+						</p>
+					)}
+					{roast && !isRoasting && (
+						<p className='text-xs text-muted-foreground'>
+							{t('roast.hide_tip')}
 						</p>
 					)}
 				</>
