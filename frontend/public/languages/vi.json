@@ -837,7 +837,7 @@
 				"emoji": "🤡",
 				"button": "Hề hóa",
 				"title": "Hề hóa một món",
-				"description": "Tải ảnh lên và AI sẽ bịa ra một món ăn thật buồn cười, rồi đặt tên, mô tả và định giá bằng mọi ngôn ngữ. Đây là món đùa: gọi miễn phí và không bao giờ tính vào hóa đơn.",
+				"description": "Tải ảnh lên và AI sẽ bịa ra một món ăn thật buồn cười.",
 				"working": "Đang làm trò hề…",
 				"created": "{{name}} vừa gia nhập thực đơn",
 				"failed": "Chú hề vấp ngã rồi. Thử lại hoặc chọn ảnh khác.",

@@ -143,7 +143,7 @@ export default function TableDetailPage() {
 				onChange={bannerUrl => updateTable({ bannerUrl })}
 			/>
 
-			<div className='flex items-center justify-between gap-2'>
+			<div className='flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
 				<div className='flex min-w-0 items-center gap-2'>
 					<span
 						aria-label={t('roster.table_no', { no: table.no })}
@@ -163,7 +163,7 @@ export default function TableDetailPage() {
 					</h1>
 					<SeatCountChip table={table} />
 				</div>
-				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
+				<div className='flex flex-wrap items-center gap-1.5 sm:shrink-0 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
 					{canRoast && (
 						<button
@@ -172,36 +172,41 @@ export default function TableDetailPage() {
 							aria-pressed={roastVisible}
 							aria-label={t('roast.toggle')}
 							className={cn(
-								'inline-flex cursor-pointer items-center gap-1.5 rounded-full border p-2 text-sm transition-colors sm:px-3 sm:py-1.5',
+								'group relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-95',
 								roastVisible
-									? 'border-primary bg-primary text-primary-foreground'
-									: 'border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+									? 'border-orange-500 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-orange-400/30'
+									: 'border-orange-500/30 bg-orange-500/10 text-orange-400 hover:border-orange-500/60 hover:bg-orange-500/20 hover:text-orange-300'
 							)}
 						>
-							<Flame className='size-4' />
-							<span className='hidden sm:inline'>{t('roast.toggle')}</span>
+							<Flame
+								className={cn(
+									'size-4 transition-transform motion-safe:animate-flame',
+									roastVisible
+										? 'fill-white text-white'
+										: 'fill-orange-400/30 text-orange-400 group-hover:scale-110'
+								)}
+							/>
+							<span>{t('roast.toggle')}</span>
 						</button>
 					)}
 					{showFloorPlan && isOnMap(table) && (
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
 							aria-label={t('floor_plan.view_map')}
-							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
+							className='inline-flex items-center gap-1.5 rounded-full border border-border bg-control px-2.5 py-1.5 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3'
 						>
 							<Map className='size-4' />
-							<span className='hidden sm:inline'>
-								{t('floor_plan.view_map')}
-							</span>
+							<span className='inline'>{t('floor_plan.view_map')}</span>
 						</Link>
 					)}
 					<button
 						type='button'
 						onClick={shareLink}
 						aria-label={t('roster.copy_link')}
-						className='inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-control p-2 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3 sm:py-1.5'
+						className='inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border bg-control px-2.5 py-1.5 text-sm text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:px-3'
 					>
 						<LinkIcon className='size-4' />
-						<span className='hidden sm:inline'>{t('roster.copy_link')}</span>
+						<span className='inline'>{t('roster.copy_link')}</span>
 					</button>
 				</div>
 			</div>

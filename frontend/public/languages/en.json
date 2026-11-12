@@ -839,7 +839,7 @@
 				"emoji": "🤡",
 				"button": "Clownify",
 				"title": "Clownify a dish",
-				"description": "Upload a photo and the AI invents a ridiculous dish from it, then names, describes and prices it in every language. It's a joke item: free to order and never added to the bill.",
+				"description": "Upload a photo and the AI invents a ridiculous dish from it.",
 				"working": "Clowning around…",
 				"created": "{{name}} just joined the menu",
 				"failed": "The clown tripped. Try again or pick another photo.",
