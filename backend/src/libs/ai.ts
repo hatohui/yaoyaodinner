@@ -832,7 +832,7 @@ export type PersonRoastInput = {
 
 const ROAST_RULES = [
   "This is a private, invite-only dinner among adult furries who know each other, so roast savagely like a friend who knows too much.",
-  "When the request says to go dirty, line one must land as a clearly filthy furry double meaning built on their own name, note or picture, not a word merely mentioned: knots, heat, rut, yiff, tails, presenting, collars, leashes and similar are fair game. The innuendo must make literal sense as a joke; never bolt a furry word onto something it does not fit, like a knot on food. When the request says to keep it clean, strictly keep it clean with zero sexual innuendo, roasting their humor, quirks, or vibe instead.",
+  "When the request says to go dirty, line one must land as a clearly filthy furry double meaning built on their own name, note or picture, not a word merely mentioned: knots, heat, rut, yiff, tails, presenting, collars, leashes and similar are fair game. The innuendo must make literal sense as a joke; never bolt a furry word onto something it does not fit, like a knot on food. When the request says to keep it clean, keep the punchline focused on their humor, quirks, or habits without forcing explicit innuendo, but cheeky banter, saucy teasing, and furry culture jokes are still fair game.",
   "Keep it a joke rather than a description: never describe sex acts or bodies in graphic detail, nothing involving minors or non-consent, no slurs or attacks on any group, and no real people or brands.",
   "Refer to guests by name or as they, never he or she, unless their note says otherwise.",
   "Write natively in the requested locale, not as a translation.",
@@ -925,7 +925,7 @@ const PERSON_ROAST_INSTRUCTION = [
   `Always answer by calling the ${TOOL_NAME} tool.`,
   "Write exactly two lines, each one short sentence of at most 18 words with the punchline at the end; short and brutal beats long and clever.",
   "Line one targets only the guest: twist their display or fursona name, their profile picture and their note into the sharpest joke the material allows; do not mention the table.",
-  "Line two keeps the tone of line one unless the tablemate gives its own opening.",
+  "Line two keeps the tone of line one (matching its spicy innuendo or playful banter) and escalates the roast unless the tablemate gives a distinct opening.",
   "Line two is a separate jab that follows the direction given for it; never start it by addressing the table or with a label.",
   CRINGE_RULE,
   "Never joke about a missing picture or note unless the request says they are the only guest at the table without one.",
@@ -1194,7 +1194,7 @@ export const AiService = {
         .sort(() => Math.random() - 0.5),
     };
     const hasOrders = !!orders && orders.length > 0;
-    const tone = `${cringe ? ` ${CRINGE_DIRECTION}` : ""}${dirty ? " Go dirty with this one." : " Keep this one a clean roast unless a note has a sexual hook."}`;
+    const tone = `${cringe ? ` ${CRINGE_DIRECTION}` : ""}${dirty ? " Go dirty with this one: roast their group dynamic with unapologetic spicy innuendo and unhinged furry humor." : " Keep this one a clean roast unless a note has a sexual hook."}`;
     const note =
       orders === null
         ? ""
@@ -1287,7 +1287,7 @@ export const AiService = {
             input.onlyOneWithout.length > 0
               ? ` They are the only guest at the table without a ${input.onlyOneWithout.join(" or a ")}.`
               : " Never joke about a missing profile picture, face or note."
-          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a horny or double-meaning hook (eating, swallowing, nuts, riding and the like), so line one must take that bait and go filthy." : input.dirty ? " Go dirty with this one." : " Keep this one a clean roast."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
+          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a horny or double-meaning hook (eating, swallowing, nuts, riding and the like), so line one must take that bait and deliver an unapologetic, filthy roast." : input.dirty ? " Go dirty with this one: deliver sharp, unapologetic furry innuendo and spicy double meanings across both lines." : " Keep this one a clean roast without forcing innuendo."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
         },
         ...(image
           ? [
