@@ -250,6 +250,46 @@ export const CacheService = {
     return next;
   },
 
+  async pushList(key: string, value: unknown, ttlSeconds: number): Promise<void> {
+    await initializeClient();
+    if (_client && _isAvailable) {
+      try {
+        await _client.multi().rpush(key, JSON.stringify(value)).expire(key, ttlSeconds).exec();
+        return;
+      } catch (err) {
+        console.warn("[Redis] Push operation failed:", err instanceof Error ? err.message : String(err));
+      }
+    }
+    const list = getFallbackCache<unknown[]>(key) ?? [];
+    setFallbackCache(key, [...list, value], ttlSeconds);
+  },
+
+  async popList<T>(key: string): Promise<T | null> {
+    await initializeClient();
+    if (_client && _isAvailable) {
+      try {
+        const raw = await _client.lpop(key);
+        return raw ? (JSON.parse(raw) as T) : null;
+      } catch (err) {
+        console.warn("[Redis] Pop operation failed:", err instanceof Error ? err.message : String(err));
+      }
+    }
+    const list = getFallbackCache<T[]>(key);
+    return list?.shift() ?? null;
+  },
+
+  async listLength(key: string): Promise<number> {
+    await initializeClient();
+    if (_client && _isAvailable) {
+      try {
+        return await _client.llen(key);
+      } catch (err) {
+        console.warn("[Redis] Length operation failed:", err instanceof Error ? err.message : String(err));
+      }
+    }
+    return getFallbackCache<unknown[]>(key)?.length ?? 0;
+  },
+
   isAvailable(): boolean {
     return _isAvailable;
   },

@@ -1,10 +1,9 @@
-import { timingSafeEqual } from 'node:crypto';
 import { ConflictException, Injectable } from '@nestjs/common';
-import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { v4 as uuidv4 } from 'uuid';
 import { AiService, type DraftMode } from '@libs/ai';
 import { CacheService } from '@libs/redis';
 import { ImagesService } from '@modules/images/images.service';
+import { WorkerService } from '@modules/worker/worker.service';
 
 export type BatchItem =
   | {
@@ -40,24 +39,17 @@ const DESCRIBE_GROUP_SIZE = 4;
 const MIN_REQUEST_GAP_MS = 6_500;
 
 const FUNCTION_NAME = process.env.AWS_LAMBDA_FUNCTION_NAME;
-const JOB_SECRET = process.env.AI_JOB_SECRET ?? '';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 @Injectable()
 export class AiJobsService {
-  private lambda: LambdaClient | null = null;
-
-  constructor(private images: ImagesService) {}
+  constructor(
+    private images: ImagesService,
+    private worker: WorkerService,
+  ) {}
 
   private loadImage = (key: string) => this.images.readImage(key);
-
-  isAuthorized(key: string | undefined) {
-    if (!JOB_SECRET || !key) return false;
-    const expected = Buffer.from(JOB_SECRET);
-    const given = Buffer.from(key);
-    return expected.length === given.length && timingSafeEqual(expected, given);
-  }
 
   async enqueue(job: Exclude<AiJob, { kind: 'batch' }>) {
     await CacheService.set(STATUS_PREFIX + job.id, 'pending', PENDING_TTL);
@@ -194,25 +186,8 @@ export class AiJobsService {
   }
 
   private async dispatch(job: AiJob) {
-    if (!FUNCTION_NAME) {
-      setImmediate(() => void this.run(job));
-      return;
-    }
-
     try {
-      if (!JOB_SECRET) throw new Error('AI_JOB_SECRET is not set');
-      this.lambda ??= new LambdaClient({});
-      await this.lambda.send(
-        new InvokeCommand({
-          FunctionName: FUNCTION_NAME,
-          InvocationType: 'Event',
-          Payload: JSON.stringify({
-            task: 'ai-job',
-            key: JOB_SECRET,
-            job,
-          }),
-        }),
-      );
+      await this.worker.dispatch('ai-job', () => this.run(job), job);
     } catch (err) {
       console.error(`[AI job] Failed to dispatch ${job.kind}`, err);
       const ids = job.kind === 'batch' ? job.items.slice(job.offset).map((i) => i.id) : [job.id];

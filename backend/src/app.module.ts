@@ -20,6 +20,7 @@ import { ScheduledModule } from "./modules/scheduled/scheduled.module";
 import { ConfigModule as AppConfigModule } from "./modules/config/config.module";
 import { ContentHealthModule } from "./modules/content-health/content-health.module";
 import { AiJobsModule } from "./modules/ai-jobs/ai-jobs.module";
+import { WorkerModule } from "./modules/worker/worker.module";
 import { GlossaryModule } from "./modules/glossary/glossary.module";
 
 @Module({
@@ -44,6 +45,7 @@ import { GlossaryModule } from "./modules/glossary/glossary.module";
     ImageUploadModule,
     ScheduledModule,
     AiJobsModule,
+    WorkerModule,
     ContentHealthModule,
     GlossaryModule,
   ],
