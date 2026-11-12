@@ -196,6 +196,8 @@ declare module 'react-i18next' {
 					empty: string
 					load_error: string
 					by_guest: string
+					by_name: string
+					by_admin: string
 					actions: Record<
 						| 'created'
 						| 'bulk_created'
@@ -207,9 +209,31 @@ declare module 'react-i18next' {
 						| 'host_removed'
 						| 'numbers_swapped'
 						| 'moved_to_staging'
-						| 'deleted',
+						| 'deleted'
+						| 'ai_roast_table'
+						| 'ai_roast_guest'
+						| 'ai_plan',
 						string
 					>
+				}
+				ai_limit: string
+				ai_usage: {
+					open: string
+					title: string
+					description: string
+					empty: string
+					load_error: string
+					admins: string
+					unknown: string
+					table: string
+					total_one: string
+					total_other: string
+					summary_one: string
+					summary_other: string
+					table_roasts: string
+					guest_roasts: string
+					plans: string
+					last: string
 				}
 				tables: {
 					no_host: string
@@ -480,7 +504,89 @@ declare module 'react-i18next' {
 				}
 				health: Record<string, string>
 				dev: Record<string, unknown>
+				table_plan: {
+					title: string
+					cta: string
+					cta_title: string
+					cta_body: string
+					char_count: string
+					modify_title: string
+					modify_body: string
+					modify_cta: string
+					modify_dialog_title: string
+					modify_dialog_body: string
+					modify_label: string
+					modify_placeholder: string
+					modify_submit: string
+					modify_total: string
+					modify_stale: string
+					change_new: string
+					removing: string
+					apply: string
+					no_changes: string
+					apply_confirm_title_one: string
+					apply_confirm_title_other: string
+					apply_confirm_body: string
+					apply_confirm: string
+					applied_one: string
+					applied_other: string
+					ordered_one: string
+					ordered_other: string
+					accept_confirm_title_one: string
+					accept_confirm_title_other: string
+					accept_confirm_body: string
+					accept_confirm: string
+					retry: string
+					dialog_title: string
+					dialog_body: string
+					headcount: string
+					budget: string
+					budget_placeholder: string
+					budget_hint: string
+					preference: string
+					preference_placeholder: string
+					alcohol: string
+					alcohol_hint: string
+					submit: string
+					planning: string
+					planning_body: string
+					queued_one: string
+					queued_other: string
+					again: string
+					for_people_one: string
+					for_people_other: string
+					course_main: string
+					course_vegetable: string
+					course_carb: string
+					course_drink: string
+					course_dessert: string
+					course_snack: string
+					estimated_total: string
+					budget_line_one: string
+					budget_line_other: string
+					on_top_of_set_menu: string
+					price_pending: string
+					stale: string
+					disclaimer: string
+					restrictions_title: string
+					unsure: string
+					not_restriction: string
+					restrictions_body: string
+					failed: string
+					too_soon: string
+					tap_to_edit: string
+					less: string
+					more: string
+					remove: string
+					save_dish: string
+					refine_label: string
+					refine_placeholder: string
+					refine: string
+					accept: string
+					reset_edits: string
+				}
 				roast: {
+					hide_tip: string
 					show_all: string
 					tooltip: string
 					toggle: string

@@ -1,12 +1,18 @@
 import {
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { AI_AUDIT_ACTIONS } from '@modules/table/dto/table-audit.dto';
 import { prisma } from '../../libs/prisma';
 import { ADMIN_HEADER } from '@common/auth/admin';
 import {
+  CLIENT_HEADER,
+  CLIENT_NAME,
   EVENT_PIN_HEADER,
+  PERSON_HEADER,
   TABLE_ACCESS_HEADER,
 } from '@common/auth/table-access';
 import { OrderRound } from '@prisma/client';
@@ -20,6 +26,31 @@ const first = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value;
 
 const FINALIZED = 'This event is finalized';
+
+const allowedOrigins = () =>
+  (process.env.CORS_ORIGIN ?? '')
+    .split(',')
+    .map((o) => o.trim().replace(/\/$/, ''))
+    .filter((o) => o && o !== '*');
+
+const originOf = (headers: Headers) => {
+  const origin = first(headers.origin);
+  if (origin) return origin.replace(/\/$/, '');
+  const referer = first(headers.referer);
+  if (!referer) return null;
+  try {
+    return new URL(referer).origin;
+  } catch {
+    return null;
+  }
+};
+
+/** Who asked for an AI generation, for the audit log. */
+export type AiCaller = {
+  actor: 'admin' | 'guest';
+  person: { id: string; name: string } | null;
+  table: { id: string; eventId: string | null; no: number; name: string | null };
+};
 
 /**
  * Edits to a table's people, notes, orders and details need that table's code
@@ -168,5 +199,74 @@ export class TableAccessService {
     });
     if (!note) throw new NotFoundException('Note not found');
     return this.forPerson(note.personId, headers);
+  }
+
+  /**
+   * AI calls cost money, so they need our web client, the event PIN and a
+   * claimed guest who sits at this table. Admins only need the web client.
+   */
+  async forAi(tableId: string, headers: Headers): Promise<AiCaller> {
+    const allowed = allowedOrigins();
+    const origin = originOf(headers);
+    if (
+      first(headers[CLIENT_HEADER]) !== CLIENT_NAME ||
+      (allowed.length > 0 && (!origin || !allowed.includes(origin)))
+    ) {
+      throw new ForbiddenException('Use the YaoYao app to do this');
+    }
+
+    const found = await prisma.table.findUnique({
+      where: { id: tableId },
+      select: { id: true, eventId: true, no: true, slot: { select: { name: true } } },
+    });
+    if (!found) throw new NotFoundException('Table not found');
+    const table = {
+      id: found.id,
+      eventId: found.eventId,
+      no: found.no,
+      name: found.slot?.name || null,
+    };
+
+    if (await this.isAdmin(headers)) {
+      return { actor: 'admin', person: null, table };
+    }
+
+    await this.forEventPin(headers);
+    const meta = await this.events.getActiveMeta();
+    if (!meta || table.eventId !== meta.id) {
+      throw new ForbiddenException('This table is not part of the current event');
+    }
+
+    const personId = first(headers[PERSON_HEADER]);
+    const person = personId
+      ? await prisma.people.findUnique({
+          where: { id: personId },
+          select: { id: true, name: true, tableId: true },
+        })
+      : null;
+    if (!person || person.tableId !== table.id) {
+      throw new ForbiddenException('Pick who you are at this table first');
+    }
+    await this.withinAiLimit(person.id);
+    return { actor: 'guest', person: { id: person.id, name: person.name }, table };
+  }
+
+  /** One prankster can't run up the AI bill: every guest gets a daily allowance. */
+  private async withinAiLimit(personId: string) {
+    const limit = await this.config.get<number>(CONFIG_KEYS.aiGuestDailyLimit);
+    if (!limit || limit <= 0) return;
+    const used = await prisma.tableAudit.count({
+      where: {
+        action: { in: [...AI_AUDIT_ACTIONS] },
+        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        details: { path: ['personId'], equals: personId },
+      },
+    });
+    if (used >= limit) {
+      throw new HttpException(
+        { statusCode: HttpStatus.TOO_MANY_REQUESTS, code: 'ai_daily_limit', message: 'You have used the AI a lot today. Try again tomorrow.' },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
   }
 }

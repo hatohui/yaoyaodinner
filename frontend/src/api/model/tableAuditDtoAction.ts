@@ -19,4 +19,7 @@ export const TableAuditDtoAction = {
   numbers_swapped: 'numbers_swapped',
   moved_to_staging: 'moved_to_staging',
   deleted: 'deleted',
+  ai_roast_table: 'ai_roast_table',
+  ai_roast_guest: 'ai_roast_guest',
+  ai_plan: 'ai_plan',
 } as const;

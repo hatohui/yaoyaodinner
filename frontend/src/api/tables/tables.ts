@@ -25,14 +25,17 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AiUsageDto,
   BulkCreateTableDto,
   CreateTableDto,
   ExportTablesParams,
   GetTableAuditParams,
+  GetTablePlanParams,
   GetTableRoastParams,
   GetTablesParams,
   IdsDto,
   PersonDto,
+  PlanTableDto,
   ReassignTablesDto,
   RoastTableDto,
   SwapTablesDto,
@@ -43,6 +46,7 @@ import type {
   TableDto,
   TableExportDto,
   TableListDto,
+  TablePlanStateDto,
   TablePositionDto,
   TableRoastStateDto,
   UpdateTableDetailsDto,
@@ -371,6 +375,92 @@ export function useGetTableAudit<TData = Awaited<ReturnType<typeof getTableAudit
 
 
 
+export const getAiUsage = (
+
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<AiUsageDto[]>(
+      {url: `/api/tables/audit/ai-usage`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
+
+export const getGetAiUsageQueryKey = () => {
+    return [
+    `/api/tables/audit/ai-usage`
+    ] as const;
+    }
+
+
+export const getGetAiUsageQueryOptions = <TData = Awaited<ReturnType<typeof getAiUsage>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAiUsage>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAiUsageQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAiUsage>>> = ({ signal }) => getAiUsage(signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAiUsage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAiUsageQueryResult = NonNullable<Awaited<ReturnType<typeof getAiUsage>>>
+export type GetAiUsageQueryError = unknown
+
+
+export function useGetAiUsage<TData = Awaited<ReturnType<typeof getAiUsage>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAiUsage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAiUsage>>,
+          TError,
+          Awaited<ReturnType<typeof getAiUsage>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAiUsage<TData = Awaited<ReturnType<typeof getAiUsage>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAiUsage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAiUsage>>,
+          TError,
+          Awaited<ReturnType<typeof getAiUsage>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAiUsage<TData = Awaited<ReturnType<typeof getAiUsage>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAiUsage>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetAiUsage<TData = Awaited<ReturnType<typeof getAiUsage>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAiUsage>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAiUsageQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
 export const exportTables = (
     params?: ExportTablesParams,
  signal?: AbortSignal
@@ -600,6 +690,61 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getRerollTableCodesMutationOptions(options), queryClient);
+    }
+    export const clearAllRoasts = (
+
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/tables/roasts`, method: 'DELETE', signal
+    },
+      );
+    }
+
+
+
+export const getClearAllRoastsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearAllRoasts>>, TError,void, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof clearAllRoasts>>, TError,void, TContext> => {
+
+const mutationKey = ['clearAllRoasts'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof clearAllRoasts>>, void> = () => {
+
+
+          return  clearAllRoasts()
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ClearAllRoastsMutationResult = NonNullable<Awaited<ReturnType<typeof clearAllRoasts>>>
+
+    export type ClearAllRoastsMutationError = unknown
+
+    export const useClearAllRoasts = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearAllRoasts>>, TError,void, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof clearAllRoasts>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getClearAllRoastsMutationOptions(options), queryClient);
     }
     export const getTableById = (
     id: string,
@@ -894,7 +1039,62 @@ export function useGetTableRoast<TData = Awaited<ReturnType<typeof getTableRoast
 
 
 
-export const roastTable = (
+export const clearTableRoast = (
+    id: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/tables/${id}/roast`, method: 'DELETE', signal
+    },
+      );
+    }
+
+
+
+export const getClearTableRoastMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearTableRoast>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof clearTableRoast>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['clearTableRoast'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof clearTableRoast>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  clearTableRoast(id,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ClearTableRoastMutationResult = NonNullable<Awaited<ReturnType<typeof clearTableRoast>>>
+
+    export type ClearTableRoastMutationError = unknown
+
+    export const useClearTableRoast = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearTableRoast>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof clearTableRoast>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getClearTableRoastMutationOptions(options), queryClient);
+    }
+    export const roastTable = (
     id: string,
     roastTableDto: RoastTableDto,
  signal?: AbortSignal
@@ -1010,6 +1210,213 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getRoastTablePersonMutationOptions(options), queryClient);
+    }
+    export const getTablePlan = (
+    id: string,
+    params?: GetTablePlanParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TablePlanStateDto>(
+      {url: `/api/tables/${id}/plan`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetTablePlanQueryKey = (id: string,
+    params?: GetTablePlanParams,) => {
+    return [
+    `/api/tables/${id}/plan`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetTablePlanQueryOptions = <TData = Awaited<ReturnType<typeof getTablePlan>>, TError = unknown>(id: string,
+    params?: GetTablePlanParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTablePlan>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTablePlanQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTablePlan>>> = ({ signal }) => getTablePlan(id,params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTablePlan>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTablePlanQueryResult = NonNullable<Awaited<ReturnType<typeof getTablePlan>>>
+export type GetTablePlanQueryError = unknown
+
+
+export function useGetTablePlan<TData = Awaited<ReturnType<typeof getTablePlan>>, TError = unknown>(
+ id: string,
+    params: undefined |  GetTablePlanParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTablePlan>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTablePlan>>,
+          TError,
+          Awaited<ReturnType<typeof getTablePlan>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTablePlan<TData = Awaited<ReturnType<typeof getTablePlan>>, TError = unknown>(
+ id: string,
+    params?: GetTablePlanParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTablePlan>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTablePlan>>,
+          TError,
+          Awaited<ReturnType<typeof getTablePlan>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTablePlan<TData = Awaited<ReturnType<typeof getTablePlan>>, TError = unknown>(
+ id: string,
+    params?: GetTablePlanParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTablePlan>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetTablePlan<TData = Awaited<ReturnType<typeof getTablePlan>>, TError = unknown>(
+ id: string,
+    params?: GetTablePlanParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTablePlan>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTablePlanQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+export const planTable = (
+    id: string,
+    planTableDto: PlanTableDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TablePlanStateDto>(
+      {url: `/api/tables/${id}/plan`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: planTableDto, signal
+    },
+      );
+    }
+
+
+
+export const getPlanTableMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof planTable>>, TError,{id: string;data: PlanTableDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof planTable>>, TError,{id: string;data: PlanTableDto}, TContext> => {
+
+const mutationKey = ['planTable'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof planTable>>, {id: string;data: PlanTableDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  planTable(id,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PlanTableMutationResult = NonNullable<Awaited<ReturnType<typeof planTable>>>
+    export type PlanTableMutationBody = PlanTableDto
+    export type PlanTableMutationError = unknown
+
+    export const usePlanTable = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof planTable>>, TError,{id: string;data: PlanTableDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof planTable>>,
+        TError,
+        {id: string;data: PlanTableDto},
+        TContext
+      > => {
+      return useMutation(getPlanTableMutationOptions(options), queryClient);
+    }
+    export const clearTablePlan = (
+    id: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<void>(
+      {url: `/api/tables/${id}/plan`, method: 'DELETE', signal
+    },
+      );
+    }
+
+
+
+export const getClearTablePlanMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearTablePlan>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof clearTablePlan>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['clearTablePlan'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof clearTablePlan>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  clearTablePlan(id,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ClearTablePlanMutationResult = NonNullable<Awaited<ReturnType<typeof clearTablePlan>>>
+
+    export type ClearTablePlanMutationError = unknown
+
+    export const useClearTablePlan = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof clearTablePlan>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof clearTablePlan>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getClearTablePlanMutationOptions(options), queryClient);
     }
     export const getTablePeople = (
     id: string,

@@ -7,6 +7,7 @@ import { BulkCreateDialog } from './@BulkCreateDialog'
 import { TableListSection } from './@TableListSection'
 import { TableCodesDialog } from './@TableCodesDialog'
 import { TableAuditDialog } from './@TableAuditDialog'
+import { AiUsageDialog } from './@AiUsageDialog'
 import { PeopleOverview } from './@PeopleOverview'
 import { useAdminTables } from './@useAdminTables'
 import { useConfig } from '@/hooks/useConfig'
@@ -43,6 +44,7 @@ export default function AdminTablesPage() {
 				</h1>
 				<div className='flex flex-wrap items-center gap-2'>
 					<TableAuditDialog />
+					<AiUsageDialog />
 					{tableCodes && <TableCodesDialog codes={codes} />}
 					<BulkCreateDialog pending={bulkCreating} onCreate={bulkCreate} />
 					<CreateTableDialog pending={creating} onCreate={createTable} />

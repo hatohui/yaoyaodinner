@@ -18,6 +18,8 @@ import { TableService } from './table.service';
 import { TableAuditService } from './table-audit.service';
 import { TableRoastService } from './table-roast.service';
 import { RoastTableDto, TableRoastStateDto } from './dto/table-roast.dto';
+import { TablePlanService } from './table-plan.service';
+import { PlanTableDto, TablePlanStateDto } from './dto/table-plan.dto';
 import { PeopleService } from '@modules/people/people.service';
 import { AdminGuard } from '@common/guards/admin.guard';
 import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
@@ -36,7 +38,9 @@ import { ReassignTablesDto } from './dto/reassign-tables.dto';
 import { SwapTablesDto } from './dto/swap-tables.dto';
 import { TableDto, TableListDto } from './dto/table-response.dto';
 import { TableExportDto } from './dto/table-export.dto';
-import { TableAuditDto } from './dto/table-audit.dto';
+import { AiUsageDto, TableAuditAction, TableAuditDto } from './dto/table-audit.dto';
+import { prisma } from '../../libs/prisma';
+import type { AiCaller } from '@modules/table-access/table-access.service';
 import {
   TableCodeDto,
   TableCodeResponseDto,
@@ -56,6 +60,7 @@ export class TableController {
     private access: TableAccessService,
     private audit: TableAuditService,
     private roasts: TableRoastService,
+    private plans: TablePlanService,
   ) {}
 
   @Get()
@@ -93,6 +98,14 @@ export class TableController {
     return this.audit.list(
       Math.min(500, Math.max(1, parseInt(count, 10) || 100)),
     );
+  }
+
+  @Get('audit/ai-usage')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'getAiUsage' })
+  @ApiResponse({ status: 200, type: [AiUsageDto] })
+  getAiUsage() {
+    return this.audit.aiUsage();
   }
 
   @Get('export')
@@ -145,6 +158,23 @@ export class TableController {
     return this.table.findOne(id);
   }
 
+  private logAi(action: TableAuditAction, caller: AiCaller, targetName?: string) {
+    return this.audit.log({
+      action,
+      actor: caller.actor,
+      tableId: caller.table.id,
+      eventId: caller.table.eventId,
+      tableNo: caller.table.no,
+      tableName: caller.table.name,
+      details: {
+        ...(caller.person
+          ? { personId: caller.person.id, personName: caller.person.name }
+          : {}),
+        ...(targetName ? { targetName } : {}),
+      },
+    });
+  }
+
   private async checkAdmin(headers: Record<string, string>): Promise<boolean> {
     const passphrase = await this.config.getAdminPassphrase();
     const adminSecret = headers[ADMIN_HEADER];
@@ -177,8 +207,10 @@ export class TableController {
     @Body() dto: RoastTableDto,
     @Headers() headers: Record<string, string>,
   ) {
-    const isAdmin = await this.checkAdmin(headers);
-    return this.roasts.roastTable(id, dto.lang ?? 'en', isAdmin);
+    const caller = await this.access.forAi(id, headers);
+    const state = await this.roasts.roastTable(id, dto.lang ?? 'en', caller.actor === 'admin');
+    await this.logAi('ai_roast_table', caller);
+    return state;
   }
 
   @Post(':id/people/:personId/roast')
@@ -193,8 +225,74 @@ export class TableController {
     @Body() dto: RoastTableDto,
     @Headers() headers: Record<string, string>,
   ) {
-    const isAdmin = await this.checkAdmin(headers);
-    return this.roasts.roastPerson(id, personId, dto.lang ?? 'en', isAdmin);
+    const caller = await this.access.forAi(id, headers);
+    const state = await this.roasts.roastPerson(
+      id,
+      personId,
+      dto.lang ?? 'en',
+      caller.actor === 'admin',
+    );
+    const target = await prisma.people.findUnique({
+      where: { id: personId },
+      select: { name: true },
+    });
+    await this.logAi('ai_roast_guest', caller, target?.name);
+    return state;
+  }
+
+  @Get(':id/plan')
+  @RequireFeature(CONFIG_KEYS.featureTablePlan)
+  @ApiOperation({ operationId: 'getTablePlan' })
+  @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
+  @ApiResponse({ status: 200, type: TablePlanStateDto })
+  getPlan(@Param('id') id: string, @Query('lang') lang = 'en') {
+    return this.plans.get(id, lang);
+  }
+
+  @Post(':id/plan')
+  @RequireFeature(CONFIG_KEYS.featureTablePlan)
+  @UseGuards(RateLimitGuard)
+  @RateLimit(20, 60)
+  @ApiOperation({ operationId: 'planTable' })
+  @ApiResponse({ status: 201, type: TablePlanStateDto })
+  async planTable(
+    @Param('id') id: string,
+    @Body() dto: PlanTableDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    const caller = await this.access.forAi(id, headers);
+    await this.access.forTable(id, headers);
+    const state = await this.plans.request(
+      id,
+      dto.lang ?? 'en',
+      {
+        headcount: dto.headcount ?? null,
+        budgetPerPerson: dto.budgetPerPerson ?? null,
+        preference: dto.preference?.trim() || null,
+        alcohol: dto.alcohol ?? true,
+        modify: dto.modify && dto.note?.trim() ? { note: dto.note.trim() } : null,
+      },
+      caller.actor === 'admin',
+      dto.dismiss,
+      // a modify request carries its note in the options; a rework edits a finished plan
+      !dto.modify && (dto.note?.trim() || dto.current)
+        ? { note: dto.note?.trim() || null, current: dto.current ?? [] }
+        : null,
+    );
+    await this.logAi('ai_plan', caller);
+    return state;
+  }
+
+  @Delete(':id/plan')
+  @RequireFeature(CONFIG_KEYS.featureTablePlan)
+  @ApiOperation({ operationId: 'clearTablePlan' })
+  async clearPlan(
+    @Param('id') id: string,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forAi(id, headers);
+    await this.access.forTable(id, headers);
+    await this.plans.clear(id);
   }
 
   @Get(':id/people')

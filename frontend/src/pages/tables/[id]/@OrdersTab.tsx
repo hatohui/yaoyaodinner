@@ -11,6 +11,8 @@ import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNote } from './@IncludedNote'
+import { TablePlanCard } from './@TablePlanCard'
+import { useConfig } from '@/hooks/useConfig'
 import { PriceDialog } from './@PriceDialog'
 import { OrderListSkeleton } from './@Skeletons'
 import { OrderRoundSection } from './@OrderRoundSection'
@@ -59,6 +61,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { stage, canAdd, canSplit, canChangeItems, canEditPrice } =
 		useOrderingStage()
 	const canOrder = canEdit && canAdd
+	const { tablePlan } = useConfig()
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
 	const lines = useMemo(() => groupOrders(orders), [orders])
@@ -120,6 +123,13 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		<div className='flex flex-col gap-3'>
 			<IncludedNote eventId={table.eventId} />
 			<OrderingStageNotice />
+			{tablePlan && canOrder && myPersonId && stage === 'open' && (
+				<TablePlanCard
+					tableId={table.id}
+					seatedCount={people.length}
+					orders={orders}
+				/>
+			)}
 
 			{people.length === 0 ? (
 				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
@@ -134,7 +144,10 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 			) : (
 				<div className='flex items-center justify-between gap-2'>
 					{canOrder ? (
-						<Button asChild className='gap-1.5 self-start rounded-full'>
+						<Button
+							asChild
+							className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+						>
 							<Link to={`/tables/${table.id}/order`}>
 								<Plus className='size-4' />
 								{t('orders.add_order')}

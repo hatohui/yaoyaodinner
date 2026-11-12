@@ -4,10 +4,12 @@ import {
 	ArchiveRestore,
 	ArrowLeftRight,
 	Crown,
+	Flame,
 	History,
 	ImageIcon,
 	Pencil,
 	Plus,
+	Sparkles,
 	Trash2,
 	Users,
 	type LucideIcon,
@@ -37,6 +39,9 @@ const ICONS: Record<TableAuditDtoAction, LucideIcon> = {
 	numbers_swapped: ArrowLeftRight,
 	moved_to_staging: ArchiveRestore,
 	deleted: Trash2,
+	ai_roast_table: Flame,
+	ai_roast_guest: Flame,
+	ai_plan: Sparkles,
 }
 
 const AUDIT_COUNT = 200
@@ -51,6 +56,13 @@ function messageKey(entry: TableAuditDto) {
 export function TableAuditDialog({ className }: { className?: string }) {
 	const { t, i18n } = useTranslation()
 	const [open, setOpen] = useState(false)
+	const byLabel = (entry: TableAuditDto) => {
+		if (entry.details?.personName)
+			return t('table_audit.by_name', { name: entry.details.personName })
+		if (entry.actor === 'guest') return t('table_audit.by_guest')
+		if (entry.action.startsWith('ai_')) return t('table_audit.by_admin')
+		return null
+	}
 	const { data, isLoading, isError } = useGetTableAudit<TableAuditDto[]>(
 		{ count: AUDIT_COUNT },
 		{ query: { enabled: open, refetchOnMount: 'always' } }
@@ -114,6 +126,7 @@ export function TableAuditDialog({ className }: { className?: string }) {
 												withName: entry.details?.withName,
 												count: entry.details?.count,
 												seated: entry.details?.seated ?? 0,
+												target: entry.details?.targetName,
 											})}
 										</p>
 										<p className='flex items-center gap-1.5 text-xs text-muted-foreground'>
@@ -125,9 +138,9 @@ export function TableAuditDialog({ className }: { className?: string }) {
 											>
 												{relativeTime(entry.createdAt, i18n.language)}
 											</time>
-											{entry.actor === 'guest' && (
+											{byLabel(entry) && (
 												<span className='rounded-full bg-muted px-1.5 py-px font-medium'>
-													{t('table_audit.by_guest')}
+													{byLabel(entry)}
 												</span>
 											)}
 										</p>

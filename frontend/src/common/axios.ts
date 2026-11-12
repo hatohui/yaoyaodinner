@@ -3,7 +3,9 @@ import { API_URL } from './app'
 import {
 	ADMIN_HEADER,
 	ADMIN_PASSPHRASE_STORAGE_KEY,
+	CLIENT_HEADER,
 	EVENT_PIN_HEADER,
+	PERSON_HEADER,
 	PIN_STORAGE_KEY,
 	TABLE_ACCESS_HEADER,
 	TABLE_CODE_STORAGE_KEY,
@@ -19,6 +21,7 @@ const axios = a.create({
 	timeout: 30000,
 	headers: {
 		'Content-Type': 'application/json',
+		[CLIENT_HEADER]: 'web',
 	},
 })
 
@@ -28,6 +31,9 @@ axios.interceptors.request.use(config => {
 
 	const pin = localStorage.load(PIN_STORAGE_KEY)
 	if (pin) config.headers[EVENT_PIN_HEADER] = pin
+
+	const me = useGuest.getState().me
+	if (me) config.headers[PERSON_HEADER] = me.id
 
 	// the server checks this table's code on edits; read from storage to avoid
 	// an import cycle with the table-code store
@@ -61,7 +67,8 @@ axios.interceptors.response.use(
 			useAdmin.getState().clear()
 
 		if (
-			(error.response?.status === 401 && !error.config?.headers?.[ADMIN_HEADER]) ||
+			(error.response?.status === 401 &&
+				!error.config?.headers?.[ADMIN_HEADER]) ||
 			(error.response?.status === 403 &&
 				typeof error.response?.data?.message === 'string' &&
 				error.response.data.message.toLowerCase().includes('pin'))

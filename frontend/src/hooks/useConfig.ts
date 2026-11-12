@@ -18,6 +18,7 @@ const FALLBACK: GetPublicConfig200 = {
 	'feature.tableCodes': true,
 	'feature.tableRoast': true,
 	'feature.guestRoast': true,
+	'feature.tablePlan': true,
 	'banner.enabled': false,
 	'banner.message': '',
 }
@@ -46,6 +47,7 @@ export function useConfig() {
 		tableCodes: cfg['feature.tableCodes'] !== false,
 		tableRoast: cfg['feature.tableRoast'] !== false,
 		guestRoast: cfg['feature.guestRoast'] !== false,
+		tablePlan: cfg['feature.tablePlan'] !== false,
 		bannerEnabled: cfg['banner.enabled'] === true,
 		bannerMessage:
 			cfg['banner.enabled'] === true

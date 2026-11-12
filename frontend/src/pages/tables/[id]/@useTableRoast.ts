@@ -15,6 +15,7 @@ import type {
 	TableRoastStateDto,
 } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
+import { isAiLimit } from '@/utils/aiLimit'
 
 export function useTableRoast(tableId: string, enabled: boolean) {
 	const { t, i18n } = useTranslation()
@@ -33,9 +34,11 @@ export function useTableRoast(tableId: string, enabled: boolean) {
 		qc.setQueryData(getGetTableRoastQueryKey(tableId, params), state)
 	const onError = (err: unknown) =>
 		toast.error(
-			isAxiosError(err) && err.response?.status === 429
-				? t('roast.too_soon')
-				: t('roast.failed')
+			isAiLimit(err)
+				? t('ai_limit')
+				: isAxiosError(err) && err.response?.status === 429
+					? t('roast.too_soon')
+					: t('roast.failed')
 		)
 
 	const { mutate: roastTable, isPending: isRoastingTable } = useRoastTable({
@@ -61,7 +64,9 @@ export function useTableRoast(tableId: string, enabled: boolean) {
 		try {
 			setIsClearing(true)
 			await clearTableRoast(tableId)
-			await qc.invalidateQueries({ queryKey: getGetTableRoastQueryKey(tableId, params) })
+			await qc.invalidateQueries({
+				queryKey: getGetTableRoastQueryKey(tableId, params),
+			})
 			toast.success(t('roast.clear_success', 'Roasts cleared'))
 		} catch {
 			toast.error(t('roast.clear_failed', 'Failed to clear roasts'))

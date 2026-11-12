@@ -19,4 +19,10 @@ export interface TableAuditDetailsDto {
   count?: number;
   /** People seated when deleted */
   seated?: number;
+  /** Guest who triggered an AI generation */
+  personId?: string;
+  /** Their name at the time */
+  personName?: string;
+  /** Guest being roasted */
+  targetName?: string;
 }

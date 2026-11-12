@@ -28,12 +28,14 @@ export const CONFIG_KEYS = {
   featureTableCodes: "feature.tableCodes",
   featureTableRoast: "feature.tableRoast",
   featureGuestRoast: "feature.guestRoast",
+  featureTablePlan: "feature.tablePlan",
   roastDirtyChance: "roast.dirtyChance",
   roastTableCooldown: "roast.tableCooldownSeconds",
   roastPersonCooldown: "roast.personCooldownSeconds",
   roastPersonDailyLimit: "roast.personDailyLimit",
   roastDailyLimit: "roast.dailyLimit",
   roastMaxMembers: "roast.maxMembers",
+  aiGuestDailyLimit: "ai.guestDailyLimit",
 } as const;
 
 export const CONFIG_DEFAULTS: ConfigDefault[] = [
@@ -182,6 +184,14 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     value: true,
   },
   {
+    key: CONFIG_KEYS.featureTablePlan,
+    type: "boolean",
+    isPublic: true,
+    category: "features",
+    label: "AI table plans",
+    value: true,
+  },
+  {
     key: CONFIG_KEYS.roastDirtyChance,
     type: "number",
     isPublic: false,
@@ -228,6 +238,14 @@ export const CONFIG_DEFAULTS: ConfigDefault[] = [
     category: "roast",
     label: "Max guests per table roast",
     value: 16,
+  },
+  {
+    key: CONFIG_KEYS.aiGuestDailyLimit,
+    type: "number",
+    isPublic: false,
+    category: "roast",
+    label: "AI uses per guest per day (roasts and plans together)",
+    value: 30,
   },
 ];
 

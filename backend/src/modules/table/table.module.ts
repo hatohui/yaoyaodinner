@@ -4,6 +4,7 @@ import { TableController } from './table.controller';
 import { TableService } from './table.service';
 import { TableAuditService } from './table-audit.service';
 import { TableRoastService } from './table-roast.service';
+import { TablePlanService } from './table-plan.service';
 import { TableSlotController } from './table-slot.controller';
 import { TableSlotService } from './table-slot.service';
 import { PeopleModule } from '@modules/people/people.module';
@@ -25,7 +26,8 @@ import { ImagesModule } from '@modules/images/images.module';
     TableSlotService,
     TableAuditService,
     TableRoastService,
+    TablePlanService,
   ],
-  exports: [TableService, TableSlotService, TableAuditService],
+  exports: [TableService, TableSlotService, TableAuditService, TablePlanService],
 })
 export class TableModule {}

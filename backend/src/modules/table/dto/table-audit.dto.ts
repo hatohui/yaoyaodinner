@@ -10,7 +10,11 @@ export const TABLE_AUDIT_ACTIONS = [
   'numbers_swapped',
   'moved_to_staging',
   'deleted',
+  'ai_roast_table',
+  'ai_roast_guest',
+  'ai_plan',
 ] as const;
+export const AI_AUDIT_ACTIONS = ['ai_roast_table', 'ai_roast_guest', 'ai_plan'] as const;
 export type TableAuditAction = (typeof TABLE_AUDIT_ACTIONS)[number];
 
 export const TABLE_AUDIT_ACTORS = ['admin', 'guest'] as const;
@@ -25,6 +29,28 @@ export class TableAuditDetailsDto {
   count?: number;
   @ApiPropertyOptional({ description: 'People seated when deleted' })
   seated?: number;
+  @ApiPropertyOptional({ description: 'Guest who triggered an AI generation' })
+  personId?: string;
+  @ApiPropertyOptional({ description: 'Their name at the time' })
+  personName?: string;
+  @ApiPropertyOptional({ description: 'Guest being roasted' })
+  targetName?: string;
+}
+
+export class AiUsageDto {
+  @ApiProperty({ nullable: true, type: String, description: 'Null for admin calls' })
+  personId: string | null;
+  @ApiProperty({ nullable: true, type: String })
+  personName: string | null;
+  @ApiPropertyOptional({ nullable: true, type: Number })
+  tableNo: number | null;
+  @ApiPropertyOptional({ nullable: true, type: String })
+  tableName: string | null;
+  @ApiProperty() total: number;
+  @ApiProperty() tableRoasts: number;
+  @ApiProperty() guestRoasts: number;
+  @ApiProperty() plans: number;
+  @ApiProperty({ type: String, format: 'date-time' }) lastAt: Date;
 }
 
 export class TableAuditDto {
