@@ -5,6 +5,7 @@ import { TABLE_ROAST_VISIBLE_STORAGE_KEY } from '@/common/constants'
 interface RoastVisibleState {
 	visible: boolean
 	toggle: () => void
+	show: () => void
 }
 
 export const useRoastVisible = create<RoastVisibleState>(set => ({
@@ -13,5 +14,10 @@ export const useRoastVisible = create<RoastVisibleState>(set => ({
 		set(s => {
 			localStorage.save(TABLE_ROAST_VISIBLE_STORAGE_KEY, String(!s.visible))
 			return { visible: !s.visible }
+		}),
+	show: () =>
+		set(() => {
+			localStorage.save(TABLE_ROAST_VISIBLE_STORAGE_KEY, 'true')
+			return { visible: true }
 		}),
 }))

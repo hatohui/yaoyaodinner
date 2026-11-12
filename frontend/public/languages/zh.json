@@ -1027,6 +1027,7 @@
 		"event_subtitle": "由 Yao Yao 主办的 Furum 赛后私人聚会"
 	},
 	"roast": {
+		"tooltip": "让混沌燃烧吧……！！",
 		"toggle": "吐槽",
 		"title": "全桌吐槽",
 		"cta_table": "吐槽这一桌",

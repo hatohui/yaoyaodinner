@@ -1029,6 +1029,7 @@
 		"event_subtitle": "A private post-Furum gathering hosted by Yao Yao"
 	},
 	"roast": {
+		"tooltip": "Let the chaos burn...!!",
 		"toggle": "Roast",
 		"title": "Table roast",
 		"cta_table": "Roast this table",

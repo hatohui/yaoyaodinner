@@ -4,6 +4,11 @@ import { Link, useLocation } from 'react-router'
 import { ArrowLeft, Flame, Link as LinkIcon, Map } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { useGetTablePeople } from '@/api/tables/tables'
 import { useGetOrders } from '@/api/orders/orders'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
@@ -66,10 +71,12 @@ export default function TableDetailPage() {
 		isLoading: isConfigLoading,
 	} = useConfig()
 	const roastVisible = useRoastVisible(s => s.visible)
-	const toggleRoast = useRoastVisible(s => s.toggle)
+	const showRoast = useRoastVisible(s => s.show)
 	const canRoast = tableRoast || guestRoast
-	const showRoasts = canRoast && roastVisible
 	const roasts = useTableRoast(id, canRoast)
+	const showRoasts = Boolean(
+		tableRoast && (roastVisible || roasts.isRoastingTable || roasts.tableRoast)
+	)
 	const rosterRoast = guestRoast
 		? {
 				members: roasts.members,
@@ -164,29 +171,55 @@ export default function TableDetailPage() {
 				</div>
 				<div className='flex flex-wrap items-center gap-1.5 sm:shrink-0 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
-					{canRoast && (
-						<button
-							type='button'
-							onClick={toggleRoast}
-							aria-pressed={roastVisible}
-							aria-label={t('roast.toggle')}
-							className={cn(
-								'group relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-all active:scale-95',
-								roastVisible
-									? 'border-orange-500 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-orange-400/30'
-									: 'border-orange-500/30 bg-orange-500/10 text-orange-400 hover:border-orange-500/60 hover:bg-orange-500/20 hover:text-orange-300'
-							)}
-						>
-							<Flame
-								className={cn(
-									'size-4 transition-transform motion-safe:animate-flame',
-									roastVisible
-										? 'fill-white text-white'
-										: 'fill-orange-400/30 text-orange-400 group-hover:scale-110'
-								)}
-							/>
-							<span>{t('roast.toggle')}</span>
-						</button>
+					{tableRoast && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<button
+									type='button'
+									onClick={() => {
+										showRoast()
+										roasts.roastTable()
+									}}
+									disabled={roasts.isRoastingTable}
+									aria-label={t(roasts.tableRoast ? 'roast.again' : 'roast.toggle')}
+									className={cn(
+										'group relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-transform hover:-rotate-3 hover:scale-105 active:scale-95 disabled:cursor-wait disabled:hover:rotate-0 disabled:hover:scale-100',
+										roasts.isRoastingTable
+											? 'border-orange-500 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white shadow-lg shadow-orange-500/30 ring-2 ring-orange-400/40 motion-safe:animate-pulse'
+											: roasts.tableRoast
+												? 'border-orange-500 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-orange-400/30'
+												: 'border-orange-500/30 bg-orange-500/10 text-orange-400 hover:border-orange-500/60 hover:bg-orange-500/20 hover:text-orange-300'
+									)}
+								>
+									{roasts.isRoastingTable ? (
+										<>
+											<Flame className='size-4 fill-white text-white motion-safe:animate-bounce' />
+											<span>{t('roast.roasting')}</span>
+										</>
+									) : (
+										<>
+											<Flame
+												className={cn(
+													'size-4 transition-transform motion-safe:animate-flame group-hover:animate-bounce',
+													roasts.tableRoast
+														? 'fill-white text-white'
+														: 'fill-orange-400/30 text-orange-400'
+												)}
+											/>
+											<span>
+												{t(roasts.tableRoast ? 'roast.again' : 'roast.toggle')}
+											</span>
+										</>
+									)}
+								</button>
+							</TooltipTrigger>
+							<TooltipContent
+								side='bottom'
+								className='border border-orange-500/30 bg-popover font-medium text-popover-foreground shadow-lg'
+							>
+								{t('roast.tooltip')}
+							</TooltipContent>
+						</Tooltip>
 					)}
 					{showFloorPlan && isOnMap(table) && (
 						<Link
@@ -219,7 +252,7 @@ export default function TableDetailPage() {
 				/>
 			)}
 
-			{showRoasts && tableRoast && (
+			{showRoasts && (
 				<TableRoastCard
 					roast={roasts.tableRoast}
 					isLoading={roasts.isLoading}

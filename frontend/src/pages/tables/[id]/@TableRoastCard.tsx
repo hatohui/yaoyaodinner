@@ -21,28 +21,29 @@ export function TableRoastCard({
 
 	if (isLoading) {
 		return (
-			<div className='flex justify-center rounded-2xl border border-primary/30 bg-card p-4'>
+			<div className='flex justify-center rounded-2xl border border-orange-500/30 bg-card p-4'>
 				<Spinner />
 			</div>
 		)
 	}
 
-	if (!roast) {
+	if (isRoasting) {
 		return (
-			<button
-				type='button'
-				onClick={onRoast}
-				disabled={isRoasting}
-				className='flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-primary/50 bg-card px-4 py-3 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 disabled:cursor-wait'
-			>
-				{isRoasting ? (
-					<Spinner className='size-4' />
-				) : (
-					<Flame className='size-4 fill-orange-500/30 text-orange-500 motion-safe:animate-flame' />
-				)}
-				{t(isRoasting ? 'roast.roasting' : 'roast.cta_table')}
-			</button>
+			<section className='flex flex-col gap-3 rounded-2xl border border-orange-500/40 bg-card p-4 shadow-md shadow-orange-500/10 motion-safe:animate-pulse'>
+				<div className='flex items-center gap-2 text-orange-400'>
+					<Flame className='size-4 fill-orange-400 motion-safe:animate-bounce' />
+					<span className='text-sm font-semibold'>{t('roast.roasting')}</span>
+				</div>
+				<div className='flex flex-col gap-2'>
+					<div className='h-4 w-5/6 rounded-md bg-orange-500/15 animate-pulse' />
+					<div className='h-4 w-4/6 rounded-md bg-orange-500/10 animate-pulse' />
+				</div>
+			</section>
 		)
+	}
+
+	if (!roast) {
+		return null
 	}
 
 	return (
@@ -55,7 +56,7 @@ export function TableRoastCard({
 				<Button
 					variant='ghost'
 					size='sm'
-					className='h-7 gap-1.5 rounded-full text-xs text-muted-foreground'
+					className='h-7 gap-1.5 rounded-full text-xs text-orange-400 transition-all hover:bg-orange-500/10 hover:text-orange-300 active:scale-95'
 					disabled={isRoasting}
 					onClick={onRoast}
 				>

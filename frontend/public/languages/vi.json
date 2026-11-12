@@ -1027,6 +1027,7 @@
 		"event_subtitle": "Buổi tụ họp riêng hậu sự kiện Furum do Yao Yao tổ chức"
 	},
 	"roast": {
+		"tooltip": "Cứ để ngọn lửa hỗn loạn bùng cháy...!!",
 		"toggle": "Cà khịa",
 		"title": "Cà khịa cả bàn",
 		"cta_table": "Cà khịa bàn này",
