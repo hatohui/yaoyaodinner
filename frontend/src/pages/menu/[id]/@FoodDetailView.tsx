@@ -136,6 +136,7 @@ export function FoodDetailView({
 					<FoodTags
 						isPopular={food.isPopular}
 						isRecommended={food.isRecommended}
+						isAiTranslated={food.isAiTranslated}
 					/>
 					{food.orderedBy > 0 && (
 						<span className='flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary'>

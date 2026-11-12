@@ -16,6 +16,8 @@ const FALLBACK: GetPublicConfig200 = {
 	'feature.ordering': true,
 	'feature.tables': true,
 	'feature.tableCodes': true,
+	'feature.tableRoast': true,
+	'feature.guestRoast': true,
 	'banner.enabled': false,
 	'banner.message': '',
 }
@@ -42,6 +44,8 @@ export function useConfig() {
 		menu: cfg['feature.ordering'] !== false,
 		tables: cfg['feature.tables'] !== false,
 		tableCodes: cfg['feature.tableCodes'] !== false,
+		tableRoast: cfg['feature.tableRoast'] !== false,
+		guestRoast: cfg['feature.guestRoast'] !== false,
 		bannerEnabled: cfg['banner.enabled'] === true,
 		bannerMessage:
 			cfg['banner.enabled'] === true

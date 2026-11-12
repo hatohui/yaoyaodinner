@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TableController } from './table.controller';
 import { TableService } from './table.service';
 import { TableAuditService } from './table-audit.service';
+import { TableRoastService } from './table-roast.service';
 import { TableSlotController } from './table-slot.controller';
 import { TableSlotService } from './table-slot.service';
 import { PeopleModule } from '@modules/people/people.module';
@@ -19,7 +20,12 @@ import { ImagesModule } from '@modules/images/images.module';
     TableAccessModule,
   ],
   controllers: [TableController, TableSlotController],
-  providers: [TableService, TableSlotService, TableAuditService],
+  providers: [
+    TableService,
+    TableSlotService,
+    TableAuditService,
+    TableRoastService,
+  ],
   exports: [TableService, TableSlotService, TableAuditService],
 })
 export class TableModule {}

@@ -27,8 +27,8 @@ model Category {
   translations CategoryTranslation[]
   foods        Food[]
 
-  @@map("category")
   @@index([key])
+  @@map("category")
 }
 
 model CategoryTranslation {
@@ -56,15 +56,17 @@ model Food {
   variants     FoodVariant[]
   translations FoodTranslation[]
 
-  @@map("food")
   @@index([categoryId, isAvailable])
+  @@map("food")
 }
 
 model FoodTranslation {
-  foodId      String  @map("food_id") @db.VarChar(255)
-  language    String  @db.VarChar(10)
-  name        String  @db.VarChar(255)
-  description String? @db.Text
+  foodId                   String  @map("food_id") @db.VarChar(255)
+  language                 String  @db.VarChar(10)
+  name                     String  @db.VarChar(255)
+  description              String? @db.Text
+  isNameAiGenerated        Boolean @default(false) @map("is_name_ai_generated")
+  isDescriptionAiGenerated Boolean @default(false) @map("is_description_ai_generated")
 
   food Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   lang Language @relation(fields: [language], references: [code], onDelete: Cascade)
@@ -81,20 +83,21 @@ model FoodVariant {
   isSeasonal  Boolean  @default(false) @map("is_seasonal")
   isAvailable Boolean  @default(false) @map("is_available")
 
-  food         Food                    @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  food         Food                     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   orders       Order[]
   presetFoods  PresetMenuFood[]
   translations FoodVariantTranslation[]
   eventPrices  EventSeasonalPrice[]
 
-  @@map("food_variant")
   @@index([foodId])
+  @@map("food_variant")
 }
 
 model FoodVariantTranslation {
-  variantId String @map("variant_id") @db.VarChar(255)
-  language  String @db.VarChar(10)
-  label     String @db.VarChar(255)
+  variantId     String  @map("variant_id") @db.VarChar(255)
+  language      String  @db.VarChar(10)
+  label         String  @db.VarChar(255)
+  isAiGenerated Boolean @default(false) @map("is_ai_generated")
 
   variant FoodVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
   lang    Language    @relation(fields: [language], references: [code], onDelete: Cascade)
@@ -135,8 +138,8 @@ model Event {
 
   seasonalPrices EventSeasonalPrice[]
 
-  @@map("event")
   @@index([isActive])
+  @@map("event")
 }
 
 /// A physical spot in the restaurant. Permanent across events: its number and
@@ -152,8 +155,8 @@ model TableSlot {
 
   tables Table[]
 
-  @@map("table_slot")
   @@index([no])
+  @@map("table_slot")
 }
 
 /// One event's seating at a slot. Disposable: people, orders and the host live
@@ -177,10 +180,10 @@ model Table {
   orders Order[]
 
   @@unique([slotId, eventId])
-  @@map("table")
   @@index([eventId])
   @@index([eventId, no])
   @@index([slotId])
+  @@map("table")
 }
 
 model People {
@@ -195,9 +198,9 @@ model People {
   personalNotes PersonalNote[]
   orderSplits   OrderSplit[]
 
-  @@map("people")
   @@index([tableId])
   @@index([eventId])
+  @@map("people")
 }
 
 model PersonalNote {
@@ -207,8 +210,8 @@ model PersonalNote {
 
   person People @relation(fields: [personId], references: [id], onDelete: Cascade)
 
-  @@map("personal_note")
   @@index([personId])
+  @@map("personal_note")
 }
 
 model Order {
@@ -229,10 +232,10 @@ model Order {
   event   Event?       @relation(fields: [eventId], references: [id], onDelete: Cascade)
   splits  OrderSplit[]
 
-  @@map("order")
   @@index([tableId, createdAt])
   @@index([createdAt])
   @@index([eventId])
+  @@map("order")
 }
 
 model OrderSplit {
@@ -243,8 +246,8 @@ model OrderSplit {
   person People @relation(fields: [personId], references: [id], onDelete: Cascade)
 
   @@id([orderId, personId])
-  @@map("order_split")
   @@index([personId])
+  @@map("order_split")
 }
 
 model Feedback {
@@ -259,9 +262,9 @@ model Feedback {
   event     Event?             @relation(fields: [eventId], references: [id], onDelete: Cascade)
   reactions FeedbackReaction[]
 
-  @@map("feedback")
   @@index([createdAt])
   @@index([eventId])
+  @@map("feedback")
 }
 
 model FeedbackReaction {
@@ -308,8 +311,8 @@ model PresetMenuFood {
   variant FoodVariant @relation(fields: [variantId], references: [id])
 
   @@id([presetId, variantId])
-  @@map("preset_menu_food")
   @@index([variantId])
+  @@map("preset_menu_food")
 }
 
 model AppConfig {
@@ -321,8 +324,8 @@ model AppConfig {
   isPublic  Boolean  @default(false) @map("is_public")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("app_config")
   @@index([category])
+  @@map("app_config")
 }
 
 /// What a seasonal dish costs at one event; the menu itself stays "seasonal".
@@ -353,7 +356,20 @@ model TableAudit {
   details   Json?
   createdAt DateTime @default(now()) @map("created_at")
 
-  @@map("table_audit")
   @@index([createdAt])
   @@index([eventId, createdAt])
+  @@map("table_audit")
+}
+
+model GlossaryTerm {
+  id        String   @id @db.VarChar(255)
+  en        String?  @db.VarChar(255)
+  vi        String?  @db.VarChar(255)
+  zh        String?  @db.VarChar(255)
+  th        String?  @db.VarChar(255)
+  note      String?  @db.VarChar(500)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("glossary_term")
 }

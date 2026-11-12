@@ -29,10 +29,12 @@ import type {
   CreateTableDto,
   ExportTablesParams,
   GetTableAuditParams,
+  GetTableRoastParams,
   GetTablesParams,
   IdsDto,
   PersonDto,
   ReassignTablesDto,
+  RoastTableDto,
   SwapTablesDto,
   TableAuditDto,
   TableCodeDto,
@@ -42,6 +44,7 @@ import type {
   TableExportDto,
   TableListDto,
   TablePositionDto,
+  TableRoastStateDto,
   UpdateTableDetailsDto,
   UpdateTableDto
 } from '../model';
@@ -796,6 +799,217 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getDeleteTableMutationOptions(options), queryClient);
+    }
+    export const getTableRoast = (
+    id: string,
+    params?: GetTableRoastParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableRoastStateDto>(
+      {url: `/api/tables/${id}/roast`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetTableRoastQueryKey = (id: string,
+    params?: GetTableRoastParams,) => {
+    return [
+    `/api/tables/${id}/roast`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetTableRoastQueryOptions = <TData = Awaited<ReturnType<typeof getTableRoast>>, TError = unknown>(id: string,
+    params?: GetTableRoastParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableRoast>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTableRoastQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTableRoast>>> = ({ signal }) => getTableRoast(id,params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTableRoast>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTableRoastQueryResult = NonNullable<Awaited<ReturnType<typeof getTableRoast>>>
+export type GetTableRoastQueryError = unknown
+
+
+export function useGetTableRoast<TData = Awaited<ReturnType<typeof getTableRoast>>, TError = unknown>(
+ id: string,
+    params: undefined |  GetTableRoastParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableRoast>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableRoast>>,
+          TError,
+          Awaited<ReturnType<typeof getTableRoast>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableRoast<TData = Awaited<ReturnType<typeof getTableRoast>>, TError = unknown>(
+ id: string,
+    params?: GetTableRoastParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableRoast>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableRoast>>,
+          TError,
+          Awaited<ReturnType<typeof getTableRoast>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableRoast<TData = Awaited<ReturnType<typeof getTableRoast>>, TError = unknown>(
+ id: string,
+    params?: GetTableRoastParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableRoast>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetTableRoast<TData = Awaited<ReturnType<typeof getTableRoast>>, TError = unknown>(
+ id: string,
+    params?: GetTableRoastParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableRoast>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTableRoastQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+export const roastTable = (
+    id: string,
+    roastTableDto: RoastTableDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableRoastStateDto>(
+      {url: `/api/tables/${id}/roast`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: roastTableDto, signal
+    },
+      );
+    }
+
+
+
+export const getRoastTableMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof roastTable>>, TError,{id: string;data: RoastTableDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof roastTable>>, TError,{id: string;data: RoastTableDto}, TContext> => {
+
+const mutationKey = ['roastTable'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof roastTable>>, {id: string;data: RoastTableDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  roastTable(id,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RoastTableMutationResult = NonNullable<Awaited<ReturnType<typeof roastTable>>>
+    export type RoastTableMutationBody = RoastTableDto
+    export type RoastTableMutationError = unknown
+
+    export const useRoastTable = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof roastTable>>, TError,{id: string;data: RoastTableDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof roastTable>>,
+        TError,
+        {id: string;data: RoastTableDto},
+        TContext
+      > => {
+      return useMutation(getRoastTableMutationOptions(options), queryClient);
+    }
+    export const roastTablePerson = (
+    id: string,
+    personId: string,
+    roastTableDto: RoastTableDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableRoastStateDto>(
+      {url: `/api/tables/${id}/people/${personId}/roast`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: roastTableDto, signal
+    },
+      );
+    }
+
+
+
+export const getRoastTablePersonMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof roastTablePerson>>, TError,{id: string;personId: string;data: RoastTableDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof roastTablePerson>>, TError,{id: string;personId: string;data: RoastTableDto}, TContext> => {
+
+const mutationKey = ['roastTablePerson'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof roastTablePerson>>, {id: string;personId: string;data: RoastTableDto}> = (props) => {
+          const {id,personId,data} = props ?? {};
+
+          return  roastTablePerson(id,personId,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RoastTablePersonMutationResult = NonNullable<Awaited<ReturnType<typeof roastTablePerson>>>
+    export type RoastTablePersonMutationBody = RoastTableDto
+    export type RoastTablePersonMutationError = unknown
+
+    export const useRoastTablePerson = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof roastTablePerson>>, TError,{id: string;personId: string;data: RoastTableDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof roastTablePerson>>,
+        TError,
+        {id: string;personId: string;data: RoastTableDto},
+        TContext
+      > => {
+      return useMutation(getRoastTablePersonMutationOptions(options), queryClient);
     }
     export const getTablePeople = (
     id: string,

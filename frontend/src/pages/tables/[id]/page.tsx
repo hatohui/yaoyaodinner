@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
-import { ArrowLeft, Link as LinkIcon, Map } from 'lucide-react'
+import { ArrowLeft, Flame, Link as LinkIcon, Map } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { useGetTablePeople } from '@/api/tables/tables'
@@ -12,6 +12,8 @@ import { useTableAccess } from '@/hooks/useTableCode'
 import { useTableTab } from '@/hooks/useTableTab'
 import { useToast } from '@/hooks/useToast'
 import { useConfig } from '@/hooks/useConfig'
+import { useRoastVisible } from '@/hooks/useRoastVisible'
+import { cn } from '@/utils/shadcn'
 import { isOnMap } from '@/components/floor-plan/layout'
 import { EditableName } from '@/components/common/EditableName'
 import { Roster } from './@Roster'
@@ -25,6 +27,8 @@ import { groupOrders } from '@/components/ordering/groupOrders'
 import { LeaveTableButton } from './@LeaveTableButton'
 import { useTableDetail } from './@useTableDetail'
 import { RosterSkeleton } from './@Skeletons'
+import { TableRoastCard } from './@TableRoastCard'
+import { useTableRoast } from './@useTableRoast'
 
 const tabTrigger =
 	'rounded-full text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
@@ -57,8 +61,23 @@ export default function TableDetailPage() {
 		floorPlan,
 		tableCodes,
 		menu,
+		tableRoast,
+		guestRoast,
 		isLoading: isConfigLoading,
 	} = useConfig()
+	const roastVisible = useRoastVisible(s => s.visible)
+	const toggleRoast = useRoastVisible(s => s.toggle)
+	const canRoast = tableRoast || guestRoast
+	const showRoasts = canRoast && roastVisible
+	const roasts = useTableRoast(id, showRoasts)
+	const rosterRoast =
+		showRoasts && guestRoast
+			? {
+					members: roasts.members,
+					roastingPersonId: roasts.roastingPersonId,
+					onRoast: roasts.roastPerson,
+				}
+			: undefined
 	const showOrdering = menu || isAdmin
 	const showFloorPlan = floorPlan || isAdmin
 	const { data: people } = useGetTablePeople<PersonDto[]>(id)
@@ -146,6 +165,23 @@ export default function TableDetailPage() {
 				</div>
 				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
+					{canRoast && (
+						<button
+							type='button'
+							onClick={toggleRoast}
+							aria-pressed={roastVisible}
+							aria-label={t('roast.toggle')}
+							className={cn(
+								'inline-flex cursor-pointer items-center gap-1.5 rounded-full border p-2 text-sm transition-colors sm:px-3 sm:py-1.5',
+								roastVisible
+									? 'border-primary bg-primary text-primary-foreground'
+									: 'border-border bg-control text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+							)}
+						>
+							<Flame className='size-4' />
+							<span className='hidden sm:inline'>{t('roast.toggle')}</span>
+						</button>
+					)}
 					{showFloorPlan && isOnMap(table) && (
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
@@ -179,6 +215,15 @@ export default function TableDetailPage() {
 				/>
 			)}
 
+			{showRoasts && tableRoast && (
+				<TableRoastCard
+					roast={roasts.tableRoast}
+					isLoading={roasts.isLoading}
+					isRoasting={roasts.isRoastingTable}
+					onRoast={roasts.roastTable}
+				/>
+			)}
+
 			{showOrdering ? (
 				<Tabs value={activeTab} onValueChange={setTab}>
 					<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
@@ -207,6 +252,7 @@ export default function TableDetailPage() {
 							canJoin={canJoin}
 							canSetHost={isAdmin}
 							onSetHost={personId => updateTable({ tableLeaderId: personId })}
+							roast={rosterRoast}
 						/>
 					</TabsContent>
 					<TabsContent value='orders'>
@@ -223,6 +269,7 @@ export default function TableDetailPage() {
 					canJoin={canJoin}
 					canSetHost={isAdmin}
 					onSetHost={personId => updateTable({ tableLeaderId: personId })}
+					roast={rosterRoast}
 				/>
 			)}
 

@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import { CreateFoodDto } from "./dto/create-food.dto";
 import { UpdateFoodDto } from "./dto/update-food.dto";
 import { AddFoodVariantDto } from "./dto/add-food-variant.dto";
@@ -7,7 +13,8 @@ import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
 import { CacheSettings } from "@common/cache/constants";
-import { AiService } from "@libs/gemini";
+import { AiService } from "@libs/ai";
+import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 import { ImagesService } from "@modules/images/images.service";
 import { EventService } from "@modules/event/event.service";
 
@@ -18,6 +25,7 @@ export class FoodService {
   constructor(
     private images: ImagesService,
     private events: EventService,
+    private aiJobs: AiJobsService,
   ) {}
 
   private async getPopularityMap(): Promise<Map<string, number>> {
@@ -136,6 +144,7 @@ export class FoodService {
         currency: defaultVariant?.currency ?? null,
         variantCount: f.variants.length,
         shouldCalculate: f.shouldCalculate,
+        isAiTranslated: Boolean(t?.isNameAiGenerated || t?.isDescriptionAiGenerated),
       };
     });
 
@@ -213,14 +222,19 @@ export class FoodService {
     isAvailable: boolean;
     shouldCalculate: boolean;
     isRecommended: boolean;
-    translations: { name: string; description: string | null }[];
+    translations: {
+      name: string;
+      description: string | null;
+      isNameAiGenerated: boolean;
+      isDescriptionAiGenerated: boolean;
+    }[];
     variants: {
       id: string;
       price: unknown;
       currency: string;
       isSeasonal: boolean;
       isAvailable: boolean;
-      translations: { label: string }[];
+      translations: { label: string; isAiGenerated: boolean }[];
     }[];
   }, isPopular = false) {
     const t = food.translations[0];
@@ -234,6 +248,9 @@ export class FoodService {
       shouldCalculate: food.shouldCalculate,
       isPopular,
       isRecommended: food.isRecommended,
+      isAiTranslated:
+        Boolean(t?.isNameAiGenerated || t?.isDescriptionAiGenerated) ||
+        food.variants.some((v) => v.translations[0]?.isAiGenerated),
       variants: food.variants.map((v) => this.toVariantDto(v)),
     };
   }
@@ -356,6 +373,63 @@ export class FoodService {
     };
   }
 
+  async createWeird(imageKey: string) {
+    const image = await this.images.readImage(imageKey);
+    if (!image) throw new BadRequestException("Couldn't read that photo");
+
+    const categories = await prisma.category.findMany({
+      where: { isAvailable: true },
+      orderBy: { key: "asc" },
+      select: {
+        id: true,
+        key: true,
+        translations: { where: { language: "en" }, select: { name: true } },
+      },
+    });
+    if (categories.length === 0) throw new BadRequestException("Add a category first");
+
+    const dish = await AiService.inventDish(
+      image,
+      categories.map((c) => ({ id: c.id, name: c.translations[0]?.name ?? c.key })),
+    );
+    if (!dish) throw new ServiceUnavailableException("AI couldn't invent a dish");
+
+    const foodId = uuidv4();
+    const food = await prisma.food.create({
+      data: {
+        id: foodId,
+        imageUrl: imageKey,
+        categoryId: dish.categoryId ?? categories[0].id,
+        shouldCalculate: false,
+        translations: {
+          create: Object.entries(dish.locales).map(([language, t]) => ({
+            language,
+            name: t.name,
+            description: t.description,
+            isNameAiGenerated: true,
+            isDescriptionAiGenerated: true,
+          })),
+        },
+        variants: {
+          create: [
+            {
+              id: uuidv4(),
+              price: dish.price,
+              currency: "RM",
+              isAvailable: true,
+              translations: { create: [{ language: "en", label: "Regular" }] },
+            },
+          ],
+        },
+      },
+      include: this.foodDetailInclude("en"),
+    });
+    await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await this.aiJobs.enqueue({ kind: "food", id: foodId });
+
+    return this.toDetailDto(food);
+  }
+
   async create(dto: CreateFoodDto) {
     const foodId = uuidv4();
     const lang = dto.lang ?? "en";
@@ -393,20 +467,9 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await this.aiJobs.enqueue({ kind: "food", id: foodId });
 
-    const vLabels = (dto.variants ?? [])
-      .map((v, idx) => ({ id: food.variants[idx]?.id, label: v.label }))
-      .filter((v) => v.id && v.label) as { id: string; label: string }[];
-
-    const translated = await AiService.translateFood(
-      foodId,
-      lang,
-      dto.name,
-      dto.description ?? null,
-      vLabels,
-    );
-
-    return { ...this.toDetailDto(food), aiTranslationFailed: !translated };
+    return this.toDetailDto(food);
   }
 
   async update(id: string, dto: UpdateFoodDto) {
@@ -435,6 +498,10 @@ export class FoodService {
                 update: {
                   name: dto.name,
                   description: dto.description,
+                  ...(dto.name !== undefined ? { isNameAiGenerated: false } : {}),
+                  ...(dto.description !== undefined
+                    ? { isDescriptionAiGenerated: false }
+                    : {}),
                 },
               },
             }
@@ -443,6 +510,15 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+
+    if (dto.name?.trim() || dto.description?.trim()) {
+      await this.aiJobs.enqueue({
+        kind: "food",
+        id,
+        mode: "refresh",
+        sourceLang: lang,
+      });
+    }
 
     if (dto.imageUrl !== undefined && existing.imageUrl && dto.imageUrl !== existing.imageUrl) {
       await this.images.deleteKey(existing.imageUrl);
@@ -522,14 +598,9 @@ export class FoodService {
       include: { translations: { where: { language: lang } } },
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await this.aiJobs.enqueue({ kind: "food", id: foodId });
 
-    const translated = await AiService.translateFoodVariant(
-      variant.id,
-      lang,
-      dto.label,
-    );
-
-    return { ...this.toVariantDto(variant), aiTranslationFailed: !translated };
+    return this.toVariantDto(variant);
   }
 
   async updateVariant(variantId: string, dto: UpdateFoodVariantDto) {
@@ -555,7 +626,7 @@ export class FoodService {
               upsert: {
                 where: { variantId_language: { variantId, language: lang } },
                 create: { language: lang, label: dto.label },
-                update: { label: dto.label },
+                update: { label: dto.label, isAiGenerated: false },
               },
             }
             : undefined,
@@ -563,6 +634,14 @@ export class FoodService {
       include: { translations: { where: { language: lang } } },
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    if (dto.label?.trim()) {
+      await this.aiJobs.enqueue({
+        kind: "food",
+        id: existing.foodId,
+        mode: "refresh",
+        sourceLang: lang,
+      });
+    }
 
     return this.toVariantDto(variant);
   }

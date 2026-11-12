@@ -7,5 +7,6 @@
  */
 
 export interface UpdatePersonDto {
+  /** @maxLength 60 */
   name?: string;
 }

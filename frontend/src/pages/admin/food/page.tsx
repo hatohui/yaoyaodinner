@@ -17,6 +17,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { CreateFoodDialog } from './@CreateFoodDialog'
+import { ClownifyDialog } from './@ClownifyDialog'
 import { AdminFoodViewToggle, FoodTable, useAdminFoodView } from './@FoodTable'
 import { useFoodCatalog, type AdminFoodSort } from './@useFoodCatalog'
 import { ManualTranslationDialog } from '@/components/common/ManualTranslationDialog'
@@ -46,6 +47,8 @@ export default function AdminFoodPage() {
 		isLoading,
 		creating,
 		createFood,
+		clownifying,
+		clownify,
 		onDataChange,
 		updateVariant,
 		deleteFood,
@@ -65,11 +68,14 @@ export default function AdminFoodPage() {
 				<h1 className='text-xl font-bold text-foreground'>
 					{t('admin.food.title')}
 				</h1>
-				<CreateFoodDialog
-					categories={categories}
-					pending={creating}
-					onCreate={createFood}
-				/>
+				<div className='flex items-center gap-2'>
+					<ClownifyDialog pending={clownifying} onClownify={clownify} />
+					<CreateFoodDialog
+						categories={categories}
+						pending={creating}
+						onCreate={createFood}
+					/>
+				</div>
 			</div>
 
 			<div className='flex flex-col gap-2 sm:flex-row sm:items-center'>

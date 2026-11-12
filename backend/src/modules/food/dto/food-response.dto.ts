@@ -9,6 +9,13 @@ export class FoodItemDto {
   @ApiProperty() isAvailable: boolean;
   @ApiProperty() isPopular: boolean;
   @ApiProperty({
+    required: false,
+    description:
+      'Name, description or a variant label in the requested language was written by AI and not edited by staff.',
+  })
+  isAiTranslated?: boolean;
+
+  @ApiProperty({
     description:
       'Staff pick: admins flag this food as recommended so the menu shows a recommended tag.',
   })
@@ -26,7 +33,6 @@ export class FoodItemDto {
       'Whether orders of this food count toward table/split totals. False for joke/gag menu items that still show a price and can be ordered, but are free.',
   })
   shouldCalculate: boolean;
-  @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }
 
 export class FoodSuggestionDto {
@@ -49,7 +55,6 @@ export class FoodVariantDto {
   @ApiProperty() currency: string;
   @ApiProperty() isSeasonal: boolean;
   @ApiProperty() isAvailable: boolean;
-  @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }
 
 export class FoodDetailDto {
@@ -70,8 +75,13 @@ export class FoodDetailDto {
       'Staff pick: admins flag this food as recommended so the menu shows a recommended tag.',
   })
   isRecommended: boolean;
+  @ApiProperty({
+    required: false,
+    description:
+      'Name, description or a variant label in the requested language was written by AI and not edited by staff.',
+  })
+  isAiTranslated?: boolean;
   @ApiProperty({ type: [FoodVariantDto] }) variants: FoodVariantDto[];
-  @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }
 
 export class FoodDetailWithStatsDto extends FoodDetailDto {

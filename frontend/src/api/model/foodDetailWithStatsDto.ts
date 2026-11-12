@@ -22,8 +22,9 @@ export interface FoodDetailWithStatsDto {
   isPopular: boolean;
   /** Staff pick: admins flag this food as recommended so the menu shows a recommended tag. */
   isRecommended: boolean;
+  /** Name, description or a variant label in the requested language was written by AI and not edited by staff. */
+  isAiTranslated?: boolean;
   variants: FoodVariantDto[];
-  aiTranslationFailed?: boolean;
   /** People at the active event having this dish, via a shared table order or a personal split. */
   orderedBy: number;
 }

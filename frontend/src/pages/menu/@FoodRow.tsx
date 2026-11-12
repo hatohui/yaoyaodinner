@@ -71,6 +71,7 @@ export function FoodRow({
 				<FoodTags
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
+					isAiTranslated={food.isAiTranslated}
 				/>
 				{categoryName && (
 					<span className='truncate text-[11px] font-semibold uppercase tracking-wide text-primary'>

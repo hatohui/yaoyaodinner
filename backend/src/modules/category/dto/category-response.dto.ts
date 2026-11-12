@@ -6,5 +6,4 @@ export class CategoryItemDto {
   @ApiProperty({ nullable: true, type: String }) name: string | null;
   @ApiProperty({ nullable: true, type: String }) description: string | null;
   @ApiProperty() isAvailable: boolean;
-  @ApiProperty({ required: false }) aiTranslationFailed?: boolean;
 }

@@ -9,5 +9,6 @@ import type { StoredOrderingStage } from './storedOrderingStage';
 
 export interface SetOrderingStageDto {
   stage: StoredOrderingStage;
+  /** Owner passphrase required to re-open a finalized event */
   passphrase?: string;
 }

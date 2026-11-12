@@ -313,7 +313,9 @@
 		"suggestions": "Suggestions",
 		"price_from": "From",
 		"seasonal_price": "Seasonal price",
-		"categories": "Categories"
+		"categories": "Categories",
+		"ai_translated": "AI translated",
+		"ai_translated_hint": "Translated automatically, so it may contain mistakes."
 	},
 	"about": {
 		"hero_tag": "Private Gathering",
@@ -651,7 +653,9 @@
 			"settings": "Settings",
 			"collapse": "Collapse sidebar",
 			"expand": "Expand sidebar",
-			"seasonal": "Seasonal prices"
+			"seasonal": "Seasonal prices",
+			"content": "Content check",
+			"glossary": "Glossary"
 		},
 		"dashboard": {
 			"title": "Dashboard",
@@ -792,6 +796,7 @@
 			"category_features": "Features",
 			"category_banner": "Banner",
 			"category_orders": "Orders",
+			"category_roast": "AI roasts",
 			"category_danger": "Danger zone"
 		},
 		"food": {
@@ -829,7 +834,17 @@
 			"currency": "Unit",
 			"image": "Photo",
 			"ordered": "Ordered",
-			"ordered_count": "Ordered {{count}}×"
+			"ordered_count": "Ordered {{count}}×",
+			"clownify": {
+				"emoji": "🤡",
+				"button": "Clownify",
+				"title": "Clownify a dish",
+				"description": "Upload a photo and the AI invents a ridiculous dish from it, then names, describes and prices it in every language. It's a joke item: free to order and never added to the bill.",
+				"working": "Clowning around…",
+				"created": "{{name}} just joined the menu",
+				"failed": "The clown tripped. Try again or pick another photo.",
+				"retry": "Try again"
+			}
 		},
 		"presets": {
 			"title": "Preset menus",
@@ -923,6 +938,52 @@
 			"price_for": "Price for {{name}}",
 			"empty": "No seasonal dishes. Mark a food as seasonal in Food.",
 			"not_set": "Not set"
+		},
+		"content": {
+			"title": "Content check",
+			"subtitle": "Dishes and categories missing translations, descriptions or photos. AI fills only what's missing and never overwrites your edits.",
+			"tabs": {
+				"translations": "Translations",
+				"descriptions": "Descriptions",
+				"images": "Images",
+				"categories": "Categories"
+			},
+			"missing": "Missing",
+			"hidden": "Hidden",
+			"untitled": "Untitled",
+			"ai_translate": "Translate with AI",
+			"ai_describe": "Write with AI",
+			"fix_all": "Fix all with AI ({{count}})",
+			"fixing": "Fixing {{done}}/{{total}}",
+			"all_good": "Nothing missing here",
+			"fill_done": "Filled in",
+			"fill_all_done": "All filled in",
+			"fill_partial": "{{count}} couldn't be filled. Try them again.",
+			"fill_failed": "AI couldn't fill this. Check that AI is set up, then try again.",
+			"image_saved": "Image saved",
+			"batch_running": "An AI batch is already running",
+			"review_title": "Review before saving",
+			"drafting": "Writing a draft…",
+			"draft_failed": "AI couldn't draft this dish. Try regenerating.",
+			"nothing_to_fill": "Nothing left to fill for this dish.",
+			"regenerate": "Regenerate",
+			"current": "Now: {{value}}",
+			"variant_label": "Option: {{label}}"
+		},
+		"glossary": {
+			"title": "Glossary",
+			"subtitle": "Local dish words and how to write them in each language. The AI always uses these and never guesses them.",
+			"fields": {
+				"en": "English",
+				"vi": "Vietnamese",
+				"zh": "Chinese",
+				"th": "Thai",
+				"note": "Meaning"
+			},
+			"add": "Add term",
+			"delete": "Delete term",
+			"empty": "No terms yet.",
+			"save_failed": "Couldn't save the term"
 		}
 	},
 	"faq": {
@@ -960,5 +1021,20 @@
 		"where": "Where",
 		"event_name": "Furum After Gathering",
 		"event_subtitle": "A private post-Furum gathering hosted by Yao Yao"
+	},
+	"roast": {
+		"toggle": "Roast",
+		"title": "Table roast",
+		"cta_table": "Roast this table",
+		"cta_member": "Roast them",
+		"roasting": "Roasting…",
+		"again": "Roast again",
+		"stale_table": "The table changed since this roast.",
+		"stale_member": "Their name or picture changed since this roast.",
+		"member": "Roast {{name}}",
+		"member_empty": "{{name}} hasn't been roasted yet.",
+		"left_today": "{{count}} left today",
+		"failed": "The roast didn't land. Try again.",
+		"too_soon": "Roasts are on cooldown. Try again in a bit."
 	}
 }

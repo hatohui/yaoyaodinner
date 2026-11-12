@@ -18,6 +18,9 @@ import { ImagesModule } from "./modules/images/images.module";
 import { ImageUploadModule } from "./modules/images/image-upload.module";
 import { ScheduledModule } from "./modules/scheduled/scheduled.module";
 import { ConfigModule as AppConfigModule } from "./modules/config/config.module";
+import { ContentHealthModule } from "./modules/content-health/content-health.module";
+import { AiJobsModule } from "./modules/ai-jobs/ai-jobs.module";
+import { GlossaryModule } from "./modules/glossary/glossary.module";
 
 @Module({
   imports: [
@@ -40,6 +43,9 @@ import { ConfigModule as AppConfigModule } from "./modules/config/config.module"
     ImagesModule,
     ImageUploadModule,
     ScheduledModule,
+    AiJobsModule,
+    ContentHealthModule,
+    GlossaryModule,
   ],
 })
 export class AppModule {}

@@ -3,7 +3,7 @@ resource "aws_lambda_function" "yaoyao_function" {
   role          = aws_iam_role.yaoyao_lambda_role.arn
   package_type  = "Image"
   image_uri     = "${aws_ecr_repository.lambda.repository_url}:latest"
-  timeout       = 30
+  timeout       = 120
   memory_size   = 512
 
   lifecycle {
@@ -26,9 +26,7 @@ resource "aws_lambda_function" "yaoyao_function" {
       CLOUDFLARE_ACCESS_KEY_ID     = local.doppler_cloudflare_access_key
       CLOUDFLARE_SECRET_ACCESS_KEY = local.doppler_cloudflare_secret_key
       CORS_ORIGIN                  = local.doppler_cors_origin
-
-      GEMINI_API_KEY = local.doppler_gemini_api_key
-      GEMINI_MODEL   = local.doppler_gemini_model
+      AI_JOB_SECRET                = local.doppler_ai_job_secret
     }
   }
 

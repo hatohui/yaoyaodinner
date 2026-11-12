@@ -8,5 +8,6 @@
 
 export interface CreateNoteDto {
   personId: string;
+  /** @maxLength 500 */
   content: string;
 }

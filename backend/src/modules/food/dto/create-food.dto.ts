@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsBoolean, IsNumber, IsArray, ValidateNested } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsNumber, IsArray, ValidateNested, IsIn } from 'class-validator';
+import { SUPPORTED_LOCALES } from '@common/locales';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -74,7 +75,7 @@ export class CreateFoodDto {
     default: 'en',
     description: 'Locale the name/description/variant labels are written in',
   })
-  @IsString()
+  @IsIn(SUPPORTED_LOCALES)
   @IsOptional()
   lang?: string;
 }

@@ -16,6 +16,8 @@ import {
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { TableService } from './table.service';
 import { TableAuditService } from './table-audit.service';
+import { TableRoastService } from './table-roast.service';
+import { RoastTableDto, TableRoastStateDto } from './dto/table-roast.dto';
 import { PeopleService } from '@modules/people/people.service';
 import { AdminGuard } from '@common/guards/admin.guard';
 import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
@@ -53,6 +55,7 @@ export class TableController {
     private config: ConfigService,
     private access: TableAccessService,
     private audit: TableAuditService,
+    private roasts: TableRoastService,
   ) {}
 
   @Get()
@@ -133,6 +136,38 @@ export class TableController {
   @ApiResponse({ status: 200, type: TableDto })
   findOne(@Param('id') id: string) {
     return this.table.findOne(id);
+  }
+
+  @Get(':id/roast')
+  @ApiOperation({ operationId: 'getTableRoast' })
+  @ApiQuery({ name: 'lang', required: false, type: String, example: 'en' })
+  @ApiResponse({ status: 200, type: TableRoastStateDto })
+  getRoast(@Param('id') id: string, @Query('lang') lang = 'en') {
+    return this.roasts.get(id, lang);
+  }
+
+  @Post(':id/roast')
+  @RequireFeature(CONFIG_KEYS.featureTableRoast)
+  @UseGuards(RateLimitGuard)
+  @RateLimit(5, 60)
+  @ApiOperation({ operationId: 'roastTable' })
+  @ApiResponse({ status: 201, type: TableRoastStateDto })
+  roastTable(@Param('id') id: string, @Body() dto: RoastTableDto) {
+    return this.roasts.roastTable(id, dto.lang ?? 'en');
+  }
+
+  @Post(':id/people/:personId/roast')
+  @RequireFeature(CONFIG_KEYS.featureGuestRoast)
+  @UseGuards(RateLimitGuard)
+  @RateLimit(10, 60)
+  @ApiOperation({ operationId: 'roastTablePerson' })
+  @ApiResponse({ status: 201, type: TableRoastStateDto })
+  roastPerson(
+    @Param('id') id: string,
+    @Param('personId') personId: string,
+    @Body() dto: RoastTableDto,
+  ) {
+    return this.roasts.roastPerson(id, personId, dto.lang ?? 'en');
   }
 
   @Get(':id/people')

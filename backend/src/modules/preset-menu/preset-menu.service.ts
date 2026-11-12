@@ -5,7 +5,7 @@ import { AddPresetItemDto, UpdatePresetItemDto } from "./dto/preset-item.dto";
 import { prisma } from "../../libs/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
-import { AiService } from "@libs/gemini";
+import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 
 const PRESET_CACHE_PREFIX = "preset-menus:";
 
@@ -29,6 +29,8 @@ type PresetWithInclude = Awaited<
 
 @Injectable()
 export class PresetMenuService {
+  constructor(private aiJobs: AiJobsService) {}
+
   private toResponseDto(preset: PresetWithInclude, isActive = preset.isActive) {
     return {
       id: preset.id,
@@ -150,7 +152,7 @@ export class PresetMenuService {
       create: { presetId, language: lang, note },
       update: { note },
     });
-    await AiService.translatePresetNote(presetId, lang, note);
+    await this.aiJobs.enqueue({ kind: "preset-note", id: presetId, lang, note });
   }
 
   async remove(id: string) {

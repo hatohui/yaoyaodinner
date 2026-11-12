@@ -15,6 +15,7 @@ import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { AddFoodVariantDto } from './dto/add-food-variant.dto';
 import { UpdateFoodVariantDto } from './dto/update-food-variant.dto';
+import { CreateWeirdFoodDto } from './dto/create-weird-food.dto';
 import {
   GetFoodsResponseDto,
   GetFoodsForAdminResponseDto,
@@ -155,6 +156,14 @@ export class FoodController {
   @ApiResponse({ status: 201, type: FoodDetailDto })
   create(@Body() dto: CreateFoodDto) {
     return this.food.create(dto);
+  }
+
+  @Post('weird')
+  @UseGuards(AdminGuard)
+  @ApiOperation({ operationId: 'createWeirdFood' })
+  @ApiResponse({ status: 201, type: FoodDetailDto })
+  createWeird(@Body() dto: CreateWeirdFoodDto) {
+    return this.food.createWeird(dto.imageKey);
   }
 
   @Patch(':id')

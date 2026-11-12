@@ -5,12 +5,14 @@ import { CacheSettings } from "@common/cache/constants";
 import { CacheService } from "@libs/redis";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
-import { AiService } from "@libs/gemini";
+import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 
 const CATEGORY_CACHE_PREFIX = "categories:";
 
 @Injectable()
 export class CategoryService {
+  constructor(private aiJobs: AiJobsService) {}
+
   async findAll(lang = "en") {
     const cacheKey = CacheSettings.categories.all.key(lang);
     const cached = await CacheService.get(cacheKey);
@@ -76,13 +78,9 @@ export class CategoryService {
     });
     await CacheService.deleteByPrefix(CATEGORY_CACHE_PREFIX);
 
-    let aiTranslationFailed = false;
-    if (dto.name) {
-      const success = await AiService.translateCategory(id, lang, dto.name, dto.description ?? null);
-      if (!success) aiTranslationFailed = true;
-    }
+    if (dto.name) await this.aiJobs.enqueue({ kind: "category", id });
 
-    return { ...row, aiTranslationFailed };
+    return row;
   }
 
   async update(id: string, dto: UpdateCategoryDto) {

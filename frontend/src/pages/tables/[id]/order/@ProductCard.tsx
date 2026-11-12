@@ -45,6 +45,7 @@ export function ProductCard({
 				<FoodTags
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
+					isAiTranslated={food.isAiTranslated}
 					className='absolute left-2 top-2 max-w-[calc(100%-1rem)]'
 				/>
 

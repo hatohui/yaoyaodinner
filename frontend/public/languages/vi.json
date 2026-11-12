@@ -313,7 +313,9 @@
 		"suggestions": "Gợi ý",
 		"price_from": "Từ",
 		"seasonal_price": "Theo thời giá",
-		"categories": "Danh mục"
+		"categories": "Danh mục",
+		"ai_translated": "Dịch bằng AI",
+		"ai_translated_hint": "Được dịch tự động nên có thể có sai sót."
 	},
 	"about": {
 		"hero_tag": "Tụ họp thân mật",
@@ -649,7 +651,9 @@
 			"settings": "Cài đặt",
 			"collapse": "Thu gọn thanh bên",
 			"expand": "Mở rộng thanh bên",
-			"seasonal": "Giá theo mùa"
+			"seasonal": "Giá theo mùa",
+			"content": "Kiểm tra nội dung",
+			"glossary": "Thuật ngữ"
 		},
 		"dashboard": {
 			"title": "Bảng điều khiển",
@@ -790,6 +794,7 @@
 			"category_features": "Tính năng",
 			"category_banner": "Thông báo",
 			"category_orders": "Đặt món",
+			"category_roast": "AI cà khịa",
 			"category_danger": "Vùng nguy hiểm"
 		},
 		"food": {
@@ -827,7 +832,17 @@
 			"currency": "Đơn vị",
 			"image": "Ảnh",
 			"ordered": "Đã gọi",
-			"ordered_count": "Đã gọi {{count}} lần"
+			"ordered_count": "Đã gọi {{count}} lần",
+			"clownify": {
+				"emoji": "🤡",
+				"button": "Hề hóa",
+				"title": "Hề hóa một món",
+				"description": "Tải ảnh lên và AI sẽ bịa ra một món ăn thật buồn cười, rồi đặt tên, mô tả và định giá bằng mọi ngôn ngữ. Đây là món đùa: gọi miễn phí và không bao giờ tính vào hóa đơn.",
+				"working": "Đang làm trò hề…",
+				"created": "{{name}} vừa gia nhập thực đơn",
+				"failed": "Chú hề vấp ngã rồi. Thử lại hoặc chọn ảnh khác.",
+				"retry": "Thử lại"
+			}
 		},
 		"presets": {
 			"title": "Thực đơn cố định",
@@ -921,6 +936,52 @@
 			"price_for": "Giá của {{name}}",
 			"empty": "Chưa có món theo mùa. Đánh dấu món là theo mùa trong mục Món ăn.",
 			"not_set": "Chưa đặt"
+		},
+		"content": {
+			"title": "Kiểm tra nội dung",
+			"subtitle": "Món ăn và danh mục còn thiếu bản dịch, mô tả hoặc ảnh. AI chỉ điền phần còn thiếu và không ghi đè chỉnh sửa của bạn.",
+			"tabs": {
+				"translations": "Bản dịch",
+				"descriptions": "Mô tả",
+				"images": "Hình ảnh",
+				"categories": "Danh mục"
+			},
+			"missing": "Thiếu",
+			"hidden": "Đang ẩn",
+			"untitled": "Chưa đặt tên",
+			"ai_translate": "Dịch bằng AI",
+			"ai_describe": "Viết bằng AI",
+			"fix_all": "Sửa tất cả bằng AI ({{count}})",
+			"fixing": "Đang sửa {{done}}/{{total}}",
+			"all_good": "Không thiếu gì ở đây",
+			"fill_done": "Đã điền",
+			"fill_all_done": "Đã điền xong tất cả",
+			"fill_partial": "{{count}} mục chưa điền được. Hãy thử lại.",
+			"fill_failed": "AI không điền được. Kiểm tra cấu hình AI rồi thử lại.",
+			"image_saved": "Đã lưu ảnh",
+			"batch_running": "Đang có một lượt AI chạy",
+			"review_title": "Xem lại trước khi lưu",
+			"drafting": "Đang viết bản nháp…",
+			"draft_failed": "AI chưa viết được món này. Hãy thử tạo lại.",
+			"nothing_to_fill": "Món này không còn gì cần điền.",
+			"regenerate": "Tạo lại",
+			"current": "Hiện tại: {{value}}",
+			"variant_label": "Lựa chọn: {{label}}"
+		},
+		"glossary": {
+			"title": "Thuật ngữ",
+			"subtitle": "Từ ngữ món ăn địa phương và cách viết ở từng ngôn ngữ. AI luôn dùng các từ này và không tự đoán.",
+			"fields": {
+				"en": "Tiếng Anh",
+				"vi": "Tiếng Việt",
+				"zh": "Tiếng Trung",
+				"th": "Tiếng Thái",
+				"note": "Nghĩa"
+			},
+			"add": "Thêm thuật ngữ",
+			"delete": "Xóa thuật ngữ",
+			"empty": "Chưa có thuật ngữ nào.",
+			"save_failed": "Không lưu được thuật ngữ"
 		}
 	},
 	"faq": {
@@ -958,5 +1019,20 @@
 		"where": "Địa điểm",
 		"event_name": "Furum After Gathering",
 		"event_subtitle": "Buổi tụ họp riêng hậu sự kiện Furum do Yao Yao tổ chức"
+	},
+	"roast": {
+		"toggle": "Cà khịa",
+		"title": "Cà khịa cả bàn",
+		"cta_table": "Cà khịa bàn này",
+		"cta_member": "Cà khịa người này",
+		"roasting": "Đang cà khịa…",
+		"again": "Cà khịa lần nữa",
+		"stale_table": "Bàn đã thay đổi kể từ lần cà khịa này.",
+		"stale_member": "Tên hoặc ảnh đã đổi kể từ lần cà khịa này.",
+		"member": "Cà khịa {{name}}",
+		"member_empty": "{{name}} chưa bị cà khịa.",
+		"left_today": "Còn {{count}} lần hôm nay",
+		"failed": "Cà khịa trượt rồi. Thử lại nhé.",
+		"too_soon": "Đang trong thời gian chờ. Thử lại sau chút nữa."
 	}
 }

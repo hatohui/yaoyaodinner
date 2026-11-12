@@ -17,6 +17,7 @@ export const ADMIN_PASSPHRASE_STORAGE_KEY = 'admin_passphrase'
 export const ADMIN_EVENT_ID_STORAGE_KEY = 'admin_event_id'
 export const ADMIN_EDIT_MODE_STORAGE_KEY = 'admin_edit_mode'
 export const ADMIN_SIDEBAR_COLLAPSED_STORAGE_KEY = 'admin_sidebar_collapsed'
+export const TABLE_ROAST_VISIBLE_STORAGE_KEY = 'table_roast_visible'
 
 export const ADMIN_HEADER = 'x-admin-secret'
 export const TABLE_ACCESS_HEADER = 'x-table-access'

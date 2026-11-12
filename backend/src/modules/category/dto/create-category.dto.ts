@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsIn } from 'class-validator';
+import { SUPPORTED_LOCALES } from '@common/locales';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCategoryDto {
@@ -19,7 +20,7 @@ export class CreateCategoryDto {
     description: 'Locale the name/description are written in',
     default: 'en',
   })
-  @IsString()
+  @IsIn(SUPPORTED_LOCALES)
   @IsOptional()
   lang?: string;
 

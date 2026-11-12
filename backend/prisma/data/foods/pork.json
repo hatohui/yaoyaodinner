@@ -199,7 +199,7 @@
       ],
       "translations": {
         "en": {
-          "name": "Pork Belly with Red Wine Residion Sauce",
+          "name": "Pork Belly with Red Wine Residue Sauce",
           "description": "Pork belly braised with rich red wine residue sauce for a deep aroma."
         },
         "th": {
@@ -373,7 +373,7 @@
           "description": "Ba rọi xào với cá mặn trong nồi đất."
         },
         "zh": {
-          "name": "成鱼花腩煲",
+          "name": "咸鱼花腩煲",
           "description": "咸鱼花腩煲，香气扑鼻，滋味浓郁。"
         }
       }
@@ -730,8 +730,8 @@
           "description": "Lòng heo xào dưa chua"
         },
         "zh": {
-          "name": "成菜大肠",
-          "description": "成菜大肠"
+          "name": "咸菜大肠",
+          "description": "咸菜大肠"
         }
       }
     },
