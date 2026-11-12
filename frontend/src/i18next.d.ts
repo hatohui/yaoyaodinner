@@ -479,6 +479,21 @@ declare module 'react-i18next' {
 				}
 				health: Record<string, string>
 				dev: Record<string, unknown>
+				roast: {
+					toggle: string
+					title: string
+					cta_table: string
+					cta_member: string
+					roasting: string
+					again: string
+					stale_table: string
+					stale_member: string
+					member: string
+					member_empty: string
+					left_today: string
+					failed: string
+					too_soon: string
+				}
 				admin: {
 					food: {
 						clownify: {
@@ -788,6 +803,7 @@ declare module 'react-i18next' {
 						category_auth: string
 						category_event: string
 						category_orders: string
+						category_roast: string
 						category_tables: string
 						category_feedback: string
 						category_features: string

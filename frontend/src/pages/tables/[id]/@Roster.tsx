@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Crown, NotebookText, Pencil, UserCheck } from 'lucide-react'
-import type { PersonDto, TableDto } from '@/api/model'
+import type { MemberRoastDto, PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ImageViewer } from '@/components/common/ImageViewer'
 import { StoredImage } from '@/components/common/StoredImage'
@@ -14,6 +14,7 @@ import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { ROSTER_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useRoster } from './@useRoster'
 import { PersonDialog } from './@PersonDialog'
+import { MemberRoast } from './@MemberRoast'
 
 interface RosterProps {
 	table: TableDto
@@ -21,6 +22,11 @@ interface RosterProps {
 	canJoin: boolean
 	canSetHost: boolean
 	onSetHost: (personId: string | null) => void
+	roast?: {
+		members: Record<string, MemberRoastDto>
+		roastingPersonId: string | undefined
+		onRoast: (personId: string) => void
+	}
 }
 
 export function Roster({
@@ -29,6 +35,7 @@ export function Roster({
 	canJoin,
 	canSetHost,
 	onSetHost,
+	roast,
 }: RosterProps) {
 	const { t } = useTranslation()
 	const { people, isLoading, add, remove, updatePfp, rename } = useRoster(
@@ -50,12 +57,11 @@ export function Roster({
 
 	useEffect(() => {
 		if (!needle || isLoading) return
-		const el = document
-			.querySelectorAll<HTMLElement>('[data-tour="person"]')
-			.values()
-			.find(node =>
-				node.getAttribute('data-name')?.toLowerCase().includes(needle)
-			)
+		const el = Array.from(
+			document.querySelectorAll<HTMLElement>('[data-tour="person"]')
+		).find(node =>
+			node.getAttribute('data-name')?.toLowerCase().includes(needle)
+		)
 		el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 	}, [needle, isLoading, people.length])
 
@@ -156,6 +162,15 @@ export function Roster({
 									setEditingId(person.id)
 								}}
 								onView={() => setViewing(person)}
+								roast={
+									roast && !person.id.startsWith('temp-')
+										? {
+												data: roast.members[person.id],
+												isRoasting: roast.roastingPersonId === person.id,
+												onRoast: () => roast.onRoast(person.id),
+											}
+										: undefined
+								}
 							/>
 						)
 					})}
@@ -236,6 +251,7 @@ function RosterItem({
 	onClaim,
 	onOpen,
 	onView,
+	roast,
 }: {
 	person: PersonDto
 	isMe: boolean
@@ -247,6 +263,11 @@ function RosterItem({
 	onClaim: () => void
 	onOpen: () => void
 	onView: () => void
+	roast?: {
+		data: MemberRoastDto | undefined
+		isRoasting: boolean
+		onRoast: () => void
+	}
 }) {
 	const { t } = useTranslation()
 	const note = person.personalNotes?.[0]?.content
@@ -378,6 +399,15 @@ function RosterItem({
 					{!compact && <UserCheck className='size-3.5' />}
 					{t('roster.this_is_me')}
 				</button>
+			)}
+			{roast && (
+				<MemberRoast
+					name={person.name}
+					roast={roast.data}
+					isRoasting={roast.isRoasting}
+					compact={compact}
+					onRoast={roast.onRoast}
+				/>
 			)}
 			{editable && (
 				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />

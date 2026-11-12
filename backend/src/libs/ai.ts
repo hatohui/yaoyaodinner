@@ -131,10 +131,21 @@ function fixedLabel(label: string, sourceLang: string, lang: string) {
   return lang === "zh" ? `${count[1]}${word}` : `${count[1]} ${word}`;
 }
 
-type CallOptions = { timeoutMs: number; maxTokens: number; temperature: number };
+type CallOptions = {
+  timeoutMs: number;
+  maxTokens: number;
+  temperature: number;
+  model?: string;
+};
 const SINGLE_CALL: CallOptions = { timeoutMs: 20_000, maxTokens: 2_048, temperature: 0 };
 const RETRY_CALL: CallOptions = { ...SINGLE_CALL, temperature: 0.7 };
 const PLAYFUL_CALL: CallOptions = { ...SINGLE_CALL, temperature: 1 };
+const ROAST_CALL: CallOptions = {
+  timeoutMs: 20_000,
+  maxTokens: 1_200,
+  temperature: 1,
+  model: process.env.ROAST_MODEL_ID || MODEL,
+};
 const BATCH_CALL: CallOptions = { timeoutMs: 45_000, maxTokens: 5_000, temperature: 0 };
 
 let _client: BedrockRuntimeClient | null = null;
@@ -158,7 +169,7 @@ async function generateJson<T>(
   try {
     const response = await getClient().send(
       new ConverseCommand({
-        modelId: MODEL,
+        modelId: call.model ?? MODEL,
         system: [{ text: systemInstruction }],
         messages: [
           {
@@ -706,6 +717,50 @@ async function saveFoodContent(
   return updated;
 }
 
+export type TableRoastInput = {
+  tableNo: number;
+  tableName: string | null;
+  capacity: number;
+  members: string[];
+  /** null when the ordering feature is closed; food must not come up at all */
+  orders:
+    | {
+        dish: string;
+        quantity: number;
+        isJoke: boolean;
+        addedDuringDinner: boolean;
+      }[]
+    | null;
+};
+
+export type PersonRoastInput = {
+  name: string;
+  tableNo: number;
+  tableName: string | null;
+  tableMates: string[];
+};
+
+const ROAST_RULES = [
+  "Lean into furry culture, cheeky innuendo and savage roasting like a friend who knows too much; there is no taste limit beyond these lines: nothing explicit or graphic, no slurs or attacks on any group, and no real people or brands.",
+  "Write natively in the requested locale, not as a translation.",
+].join(" ");
+
+const TABLE_ROAST_INSTRUCTION = [
+  "You roast tables of guests at a private, invite-only dinner for the furry community at a Malaysian Chinese restaurant.",
+  `Always answer by calling the ${TOOL_NAME} tool.`,
+  "Roast the table as a group in two or three sentences: the names together, the empty seats, the table number and the table name.",
+  "When orders are given, roast what they ordered, how much, the joke dishes and anything added during dinner; when there are no orders, never mention food, ordering or the menu.",
+  ROAST_RULES,
+].join(" ");
+
+const PERSON_ROAST_INSTRUCTION = [
+  "You roast one guest at a private, invite-only dinner for the furry community at a Malaysian Chinese restaurant.",
+  `Always answer by calling the ${TOOL_NAME} tool.`,
+  "Roast them in one or two savage sentences, using their display or fursona name, the company they keep at their table and, when there is one, their profile picture.",
+  "If the picture is fursona art, an avatar or a meme, roast it freely; if it shows a real person, roast the vibe, the pose, the setting or the editing, never their body or looks.",
+  ROAST_RULES,
+].join(" ");
+
 export type InventedDish = {
   categoryId: string | null;
   price: number;
@@ -940,6 +995,65 @@ export const AiService = {
         : 9.99,
       locales,
     };
+  },
+
+  async roastTable(lang: string, input: TableRoastInput): Promise<string | null> {
+    const { orders, ...rest } = input;
+    const hasOrders = !!orders && orders.length > 0;
+    const note =
+      orders === null ? "" : orders.length === 0 ? " They have not ordered anything." : "";
+    const result = await generateJson<{ roast?: string }>(
+      "table roast",
+      `Roast this table in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${note}\n\n${JSON.stringify(
+        hasOrders ? input : rest,
+      )}`,
+      {
+        type: Type.OBJECT,
+        properties: {
+          roast: {
+            type: Type.STRING,
+            description: `Two or three sentences roasting the table as a group, in ${LOCALE_NAMES[lang] ?? lang}.`,
+          },
+        },
+        required: ["roast"],
+      },
+      TABLE_ROAST_INSTRUCTION,
+      ROAST_CALL,
+    );
+    const roast = result?.roast?.trim();
+    return roast && isInLanguage(roast, lang, true) ? roast : null;
+  },
+
+  async roastPerson(
+    lang: string,
+    input: PersonRoastInput,
+    image: StoredImage | null,
+  ): Promise<string | null> {
+    const result = await generateJson<{ roast?: string }>(
+      "guest roast",
+      [
+        {
+          text: `Roast this guest in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${image ? " Their profile picture follows." : " They have no profile picture."}\n\n${JSON.stringify(input)}`,
+        },
+        ...(image
+          ? [{ image: { format: image.format, source: { bytes: image.bytes } } }]
+          : []),
+      ],
+      {
+        type: Type.OBJECT,
+        properties: {
+          roast: {
+            type: Type.STRING,
+            description: `One or two savage sentences about this guest, in ${LOCALE_NAMES[lang] ?? lang}.`,
+          },
+        },
+        required: ["roast"],
+      },
+      PERSON_ROAST_INSTRUCTION,
+      ROAST_CALL,
+    );
+    const roast = result?.roast?.trim();
+    return roast && isInLanguage(roast, lang, true) ? roast : null;
   },
 
   async translatePresetNote(

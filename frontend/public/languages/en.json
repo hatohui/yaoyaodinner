@@ -796,6 +796,7 @@
 			"category_features": "Features",
 			"category_banner": "Banner",
 			"category_orders": "Orders",
+			"category_roast": "AI roasts",
 			"category_danger": "Danger zone"
 		},
 		"food": {
@@ -1020,5 +1021,20 @@
 		"where": "Where",
 		"event_name": "Furum After Gathering",
 		"event_subtitle": "A private post-Furum gathering hosted by Yao Yao"
+	},
+	"roast": {
+		"toggle": "Roast",
+		"title": "Table roast",
+		"cta_table": "Roast this table",
+		"cta_member": "Roast them",
+		"roasting": "Roasting…",
+		"again": "Roast again",
+		"stale_table": "The table changed since this roast.",
+		"stale_member": "Their name or picture changed since this roast.",
+		"member": "Roast {{name}}",
+		"member_empty": "{{name}} hasn't been roasted yet.",
+		"left_today": "{{count}} left today",
+		"failed": "The roast didn't land. Try again.",
+		"too_soon": "Roasts are on cooldown. Try again in a bit."
 	}
 }

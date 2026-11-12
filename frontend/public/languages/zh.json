@@ -794,6 +794,7 @@
 			"category_features": "功能",
 			"category_banner": "公告",
 			"category_orders": "点餐",
+			"category_roast": "AI 吐槽",
 			"category_danger": "危险操作"
 		},
 		"food": {
@@ -1018,5 +1019,20 @@
 		"where": "地点",
 		"event_name": "Furum After Gathering",
 		"event_subtitle": "由 Yao Yao 主办的 Furum 赛后私人聚会"
+	},
+	"roast": {
+		"toggle": "吐槽",
+		"title": "全桌吐槽",
+		"cta_table": "吐槽这一桌",
+		"cta_member": "吐槽 TA",
+		"roasting": "吐槽中…",
+		"again": "再吐槽一次",
+		"stale_table": "这次吐槽之后，这一桌有变化了。",
+		"stale_member": "这次吐槽之后，TA 的名字或头像变了。",
+		"member": "吐槽 {{name}}",
+		"member_empty": "{{name}} 还没被吐槽过。",
+		"left_today": "今天还剩 {{count}} 次",
+		"failed": "吐槽没成功，再试一次。",
+		"too_soon": "吐槽冷却中，稍后再试。"
 	}
 }

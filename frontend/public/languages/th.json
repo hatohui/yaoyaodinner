@@ -794,6 +794,7 @@
 			"category_features": "ฟีเจอร์",
 			"category_banner": "ประกาศ",
 			"category_orders": "การสั่งอาหาร",
+			"category_roast": "AI แซว",
 			"category_danger": "โซนอันตราย"
 		},
 		"food": {
@@ -1018,5 +1019,20 @@
 		"where": "สถานที่",
 		"event_name": "Furum After Gathering",
 		"event_subtitle": "งานรวมตัวสังสรรค์ส่วนตัวหลังงาน Furum จัดโดย Yao Yao"
+	},
+	"roast": {
+		"toggle": "แซว",
+		"title": "แซวทั้งโต๊ะ",
+		"cta_table": "แซวโต๊ะนี้",
+		"cta_member": "แซวคนนี้",
+		"roasting": "กำลังแซว…",
+		"again": "แซวอีกรอบ",
+		"stale_table": "โต๊ะนี้เปลี่ยนไปแล้วหลังจากแซวครั้งนี้",
+		"stale_member": "ชื่อหรือรูปเปลี่ยนไปแล้วหลังจากแซวครั้งนี้",
+		"member": "แซว {{name}}",
+		"member_empty": "{{name}} ยังไม่โดนแซวเลย",
+		"left_today": "เหลืออีก {{count}} ครั้งวันนี้",
+		"failed": "แซวไม่สำเร็จ ลองอีกครั้ง",
+		"too_soon": "อยู่ในช่วงพัก ลองใหม่อีกสักครู่"
 	}
 }
