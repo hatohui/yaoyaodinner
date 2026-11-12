@@ -943,7 +943,7 @@
 		},
 		"content": {
 			"title": "Content check",
-			"subtitle": "Dishes and categories missing translations, descriptions or photos. AI fills only what's missing and never overwrites your edits.",
+			"subtitle": "Dishes and categories missing translations, descriptions or photos.",
 			"tabs": {
 				"translations": "Translations",
 				"descriptions": "Descriptions",

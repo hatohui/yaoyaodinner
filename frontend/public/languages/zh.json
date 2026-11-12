@@ -941,7 +941,7 @@
 		},
 		"content": {
 			"title": "内容检查",
-			"subtitle": "缺少翻译、描述或图片的菜品和分类。AI 只填补缺失内容，绝不覆盖你的修改。",
+			"subtitle": "缺少翻译、描述或图片的菜品和分类。",
 			"tabs": {
 				"translations": "翻译",
 				"descriptions": "描述",

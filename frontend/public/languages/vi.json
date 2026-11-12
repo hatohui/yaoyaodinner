@@ -941,7 +941,7 @@
 		},
 		"content": {
 			"title": "Kiểm tra nội dung",
-			"subtitle": "Món ăn và danh mục còn thiếu bản dịch, mô tả hoặc ảnh. AI chỉ điền phần còn thiếu và không ghi đè chỉnh sửa của bạn.",
+			"subtitle": "Món ăn và danh mục còn thiếu bản dịch, mô tả hoặc ảnh.",
 			"tabs": {
 				"translations": "Bản dịch",
 				"descriptions": "Mô tả",
