@@ -129,6 +129,7 @@
 	"identity": {
 		"signed_in_as": "当前身份：{{name}}",
 		"my_table": "我的餐桌",
+		"show_roasts": "显示吐槽",
 		"log_out": "退出",
 		"logged_out": "已退出"
 	},

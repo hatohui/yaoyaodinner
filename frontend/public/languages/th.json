@@ -129,6 +129,7 @@
 	"identity": {
 		"signed_in_as": "เข้าใช้เป็น {{name}}",
 		"my_table": "โต๊ะของฉัน",
+		"show_roasts": "แสดงคำแซว",
 		"log_out": "ออกจากระบบ",
 		"logged_out": "ออกจากระบบแล้ว"
 	},

@@ -107,6 +107,7 @@ declare module 'react-i18next' {
 				identity: {
 					signed_in_as: string
 					my_table: string
+					show_roasts: string
 					log_out: string
 					logged_out: string
 				}

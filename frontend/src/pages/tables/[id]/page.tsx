@@ -67,10 +67,13 @@ export default function TableDetailPage() {
 		floorPlan,
 		tableCodes,
 		menu,
-		tableRoast,
-		guestRoast,
+		tableRoast: tableRoastEnabled,
+		guestRoast: guestRoastEnabled,
 		isLoading: isConfigLoading,
 	} = useConfig()
+	const roastHidden = useRoastVisible(s => s.hidden)
+	const tableRoast = tableRoastEnabled && !roastHidden
+	const guestRoast = guestRoastEnabled && !roastHidden
 	const roastVisible = useRoastVisible(s => s.visible)
 	const showRoast = useRoastVisible(s => s.show)
 	const roastButtonRef = useRef<HTMLButtonElement>(null)

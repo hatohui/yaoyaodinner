@@ -129,6 +129,7 @@
 	"identity": {
 		"signed_in_as": "Đang là {{name}}",
 		"my_table": "Bàn của tôi",
+		"show_roasts": "Hiện cà khịa",
 		"log_out": "Đăng xuất",
 		"logged_out": "Bạn đã đăng xuất"
 	},

@@ -129,6 +129,7 @@
 	"identity": {
 		"signed_in_as": "Signed in as {{name}}",
 		"my_table": "My table",
+		"show_roasts": "Show roasts",
 		"log_out": "Log out",
 		"logged_out": "You're logged out"
 	},

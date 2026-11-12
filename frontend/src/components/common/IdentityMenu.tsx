@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { ChevronDown, LogOut } from 'lucide-react'
+import { ChevronDown, Flame, LogOut } from 'lucide-react'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -9,11 +9,14 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Switch } from '@/components/ui/switch'
 import { StoredImage } from '@/components/common/StoredImage'
+import { useConfig } from '@/hooks/useConfig'
 import { useGuest } from '@/hooks/useGuest'
 import { useHeldTableCode } from '@/hooks/useTableCode'
 import { useToast } from '@/hooks/useToast'
 import { useQuickActions } from '@/hooks/useQuickActions'
+import { useRoastVisible } from '@/hooks/useRoastVisible'
 
 export function IdentityMenu() {
 	const { t } = useTranslation()
@@ -23,6 +26,9 @@ export function IdentityMenu() {
 	const held = useHeldTableCode(s => s.held)
 	const release = useHeldTableCode(s => s.release)
 	const quickActions = useQuickActions()
+	const { tableRoast, guestRoast } = useConfig()
+	const roastHidden = useRoastVisible(s => s.hidden)
+	const toggleRoastHidden = useRoastVisible(s => s.toggleHidden)
 
 	if (!me) return null
 
@@ -76,6 +82,24 @@ export function IdentityMenu() {
 							{action.label}
 						</DropdownMenuItem>
 					)
+				)}
+				{(tableRoast || guestRoast) && (
+					<DropdownMenuItem
+						onSelect={e => {
+							e.preventDefault()
+							toggleRoastHidden()
+						}}
+					>
+						<Flame />
+						{t('identity.show_roasts')}
+						<Switch
+							size='sm'
+							checked={!roastHidden}
+							tabIndex={-1}
+							aria-hidden
+							className='pointer-events-none ml-auto'
+						/>
+					</DropdownMenuItem>
 				)}
 				<DropdownMenuSeparator />
 				<DropdownMenuItem variant='destructive' onSelect={logOut}>

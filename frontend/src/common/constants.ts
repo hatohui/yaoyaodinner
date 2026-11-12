@@ -19,6 +19,7 @@ export const ADMIN_EDIT_MODE_STORAGE_KEY = 'admin_edit_mode'
 export const ADMIN_SIDEBAR_COLLAPSED_STORAGE_KEY = 'admin_sidebar_collapsed'
 export const TABLE_ROAST_VISIBLE_STORAGE_KEY = 'table_roast_visible'
 export const TABLE_ROAST_SHOW_ALL_STORAGE_KEY = 'table_roast_show_all'
+export const ROAST_HIDDEN_STORAGE_KEY = 'roast_hidden'
 
 export const ADMIN_HEADER = 'x-admin-secret'
 export const TABLE_ACCESS_HEADER = 'x-table-access'
