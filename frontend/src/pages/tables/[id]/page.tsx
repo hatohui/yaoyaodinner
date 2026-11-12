@@ -69,15 +69,14 @@ export default function TableDetailPage() {
 	const toggleRoast = useRoastVisible(s => s.toggle)
 	const canRoast = tableRoast || guestRoast
 	const showRoasts = canRoast && roastVisible
-	const roasts = useTableRoast(id, showRoasts)
-	const rosterRoast =
-		showRoasts && guestRoast
-			? {
-					members: roasts.members,
-					roastingPersonId: roasts.roastingPersonId,
-					onRoast: roasts.roastPerson,
-				}
-			: undefined
+	const roasts = useTableRoast(id, canRoast)
+	const rosterRoast = guestRoast
+		? {
+				members: roasts.members,
+				roastingPersonId: roasts.roastingPersonId,
+				onRoast: roasts.roastPerson,
+			}
+		: undefined
 	const showOrdering = menu || isAdmin
 	const showFloorPlan = floorPlan || isAdmin
 	const { data: people } = useGetTablePeople<PersonDto[]>(id)

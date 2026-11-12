@@ -38,7 +38,7 @@ export function TableRoastCard({
 				{isRoasting ? (
 					<Spinner className='size-4' />
 				) : (
-					<Flame className='size-4' />
+					<Flame className='size-4 fill-orange-500/30 text-orange-500 motion-safe:animate-flame' />
 				)}
 				{t(isRoasting ? 'roast.roasting' : 'roast.cta_table')}
 			</button>
@@ -46,10 +46,10 @@ export function TableRoastCard({
 	}
 
 	return (
-		<section className='flex flex-col gap-2 rounded-2xl border border-primary/40 bg-card p-4 shadow-sm'>
+		<section className='flex flex-col gap-2 rounded-2xl border border-orange-500/30 bg-card p-4 shadow-sm'>
 			<div className='flex items-center justify-between gap-2'>
-				<h2 className='flex items-center gap-1.5 text-sm font-semibold text-primary'>
-					<Flame className='size-4' />
+				<h2 className='flex items-center gap-1.5 text-sm font-semibold text-orange-400'>
+					<Flame className='size-4 fill-orange-400/30 text-orange-400 motion-safe:animate-flame' />
 					{t('roast.title')}
 				</h2>
 				<Button
