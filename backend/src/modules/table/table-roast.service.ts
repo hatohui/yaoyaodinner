@@ -17,10 +17,10 @@ const ROAST_TTL = 3 * 24 * 60 * 60;
 const DAY_TTL = 2 * 24 * 60 * 60;
 const MAX_EARLIER_ROASTS = 10;
 const MAX_MATES = 8;
-const DIRTY_CHANCE = 0.7;
+const DIRTY_CHANCE = 0.5;
 const CRINGE_CHANCE = 0.2;
 const HORNY_HOOK =
-  /(horny|slut|simp|whore|thot|lewd|kink|yiff|knot|rut|bulge|thicc|daddy|bottom|breed|sexy|nsfw|bdsm|fetish|eat|ate|swallow|ride|nuts?|suck|lick|bone|wood|mount|sausage|meat|cream|noodle|stuff|spit|tail|horn|hard|wet|deep|thick)|发情|骚|色狼|dâm|hứng|เงี่ยน|หื่น/i;
+  /\b(horny|slut|simp|whore|thot|lewd|kink|kinky|yiff|knot(?:ting)?|rut|bulge|thicc|daddy|bottom|breed(?:ing|able)?|sexy|nsfw|bdsm|fetish|eat|ate|swallow|ride|nuts?|suck|lick|bone|wood|mount|sausage|meat|cream|noodle|stuff|spit|tail|horn|hard|wet|deep|thick|cock|dick|pussy)\b|发情|骚|色狼|dâm|hứng|เงี่ยน|หื่น/i;
 
 type Saved = {
   text: string;
