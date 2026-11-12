@@ -149,7 +149,7 @@ export class TableController {
   @Post(':id/roast')
   @RequireFeature(CONFIG_KEYS.featureTableRoast)
   @UseGuards(RateLimitGuard)
-  @RateLimit(5, 60)
+  @RateLimit(20, 60)
   @ApiOperation({ operationId: 'roastTable' })
   @ApiResponse({ status: 201, type: TableRoastStateDto })
   roastTable(@Param('id') id: string, @Body() dto: RoastTableDto) {
@@ -159,7 +159,7 @@ export class TableController {
   @Post(':id/people/:personId/roast')
   @RequireFeature(CONFIG_KEYS.featureGuestRoast)
   @UseGuards(RateLimitGuard)
-  @RateLimit(10, 60)
+  @RateLimit(60, 60)
   @ApiOperation({ operationId: 'roastTablePerson' })
   @ApiResponse({ status: 201, type: TableRoastStateDto })
   roastPerson(

@@ -1040,6 +1040,7 @@
 		"member_empty": "{{name}} 还没被吐槽过。",
 		"left_today": "今天还剩 {{count}} 次",
 		"failed": "吐槽没成功，再试一次。",
-		"too_soon": "吐槽冷却中，稍后再试。"
+		"too_soon": "吐槽冷却中，稍后再试。",
+		"show_all": "显示全部吐槽"
 	}
 }

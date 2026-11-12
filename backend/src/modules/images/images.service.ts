@@ -4,6 +4,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
   ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -72,23 +73,57 @@ export class ImagesService {
   async readImage(key: string): Promise<StoredImage | null> {
     const base = this.config.get<string>('ASSET_URL') ?? DEFAULT_ASSET_URL;
     const origin = new URL(base).origin;
-    const urls = key.startsWith('http')
-      ? [key]
-      : [`${base}/${thumbKeyOf(key)}`, `${base}/${key}`];
+    const external = key.startsWith('http');
+    const path = external
+      ? new URL(key).origin === origin
+        ? decodeURIComponent(new URL(key).pathname.replace(/^\/+/, ''))
+        : null
+      : key;
+    const keys = path ? (external ? [path] : [thumbKeyOf(path), path]) : [];
 
-    for (const url of urls) {
-      if (new URL(url).origin !== origin) continue;
-      const res = await fetch(url, {
-        redirect: 'error',
-        signal: AbortSignal.timeout(5_000),
-      }).catch(() => null);
-      if (!res?.ok) continue;
-      if (Number(res.headers.get('content-length') ?? 0) > MAX_AI_IMAGE_BYTES) continue;
-      const bytes = new Uint8Array(await res.arrayBuffer());
-      const format = bytes.length <= MAX_AI_IMAGE_BYTES ? sniffFormat(bytes) : null;
-      if (format) return { format, bytes };
+    for (const Key of keys) {
+      const image = await this.readFromBucket(Key);
+      if (image) return image;
     }
+    for (const url of external ? [key] : keys.map((k) => `${base}/${k}`)) {
+      if (new URL(url).origin !== origin) continue;
+      const image = await this.readFromUrl(url);
+      if (image) return image;
+    }
+    this.logger.warn(`Couldn't read image ${key} for AI`);
     return null;
+  }
+
+  private async readFromBucket(Key: string): Promise<StoredImage | null> {
+    try {
+      const { client, bucket } = this.client();
+      const object = await client.send(new GetObjectCommand({ Bucket: bucket, Key }), {
+        abortSignal: AbortSignal.timeout(5_000),
+      });
+      if (!object.Body || (object.ContentLength ?? 0) > MAX_AI_IMAGE_BYTES) return null;
+      const bytes = await object.Body.transformToByteArray();
+      const format = sniffFormat(bytes);
+      return format ? { format, bytes } : null;
+    } catch (err) {
+      this.logger.debug(`Bucket read failed for ${Key}: ${String(err)}`);
+      return null;
+    }
+  }
+
+  private async readFromUrl(url: string): Promise<StoredImage | null> {
+    const res = await fetch(url, {
+      redirect: 'error',
+      headers: { 'user-agent': 'YaoYaoDinner/1.0', accept: 'image/*' },
+      signal: AbortSignal.timeout(5_000),
+    }).catch(() => null);
+    if (!res?.ok) {
+      this.logger.debug(`Image fetch failed for ${url}: ${res?.status ?? 'network error'}`);
+      return null;
+    }
+    if (Number(res.headers.get('content-length') ?? 0) > MAX_AI_IMAGE_BYTES) return null;
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const format = bytes.length <= MAX_AI_IMAGE_BYTES ? sniffFormat(bytes) : null;
+    return format ? { format, bytes } : null;
   }
 
   /** Best-effort delete of an image and its thumbnail — swallows errors so a missing object never blocks an update. */

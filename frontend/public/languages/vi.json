@@ -1040,6 +1040,7 @@
 		"member_empty": "{{name}} chưa bị cà khịa.",
 		"left_today": "Còn {{count}} lần hôm nay",
 		"failed": "Cà khịa trượt rồi. Thử lại nhé.",
-		"too_soon": "Đang trong thời gian chờ. Thử lại sau chút nữa."
+		"too_soon": "Đang trong thời gian chờ. Thử lại sau chút nữa.",
+		"show_all": "Hiện tất cả"
 	}
 }

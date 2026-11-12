@@ -1042,6 +1042,7 @@
 		"member_empty": "{{name}} hasn't been roasted yet.",
 		"left_today": "{{count}} left today",
 		"failed": "The roast didn't land. Try again.",
-		"too_soon": "Roasts are on cooldown. Try again in a bit."
+		"too_soon": "Roasts are on cooldown. Try again in a bit.",
+		"show_all": "Show all roasts"
 	}
 }

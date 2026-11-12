@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { ArrowLeft, Flame, Link as LinkIcon, Map } from 'lucide-react'
@@ -19,6 +19,7 @@ import { useToast } from '@/hooks/useToast'
 import { useConfig } from '@/hooks/useConfig'
 import { useRoastVisible } from '@/hooks/useRoastVisible'
 import { cn } from '@/utils/shadcn'
+import { bump, burstFlames, startIdleBumps } from '@/utils/fireFx'
 import { isOnMap } from '@/components/floor-plan/layout'
 import { EditableName } from '@/components/common/EditableName'
 import { Roster } from './@Roster'
@@ -72,6 +73,11 @@ export default function TableDetailPage() {
 	} = useConfig()
 	const roastVisible = useRoastVisible(s => s.visible)
 	const showRoast = useRoastVisible(s => s.show)
+	const roastButtonRef = useRef<HTMLButtonElement>(null)
+	useEffect(
+		() => startIdleBumps(roastButtonRef.current),
+		[tableRoast, table?.id]
+	)
 	const canRoast = tableRoast || guestRoast
 	const roasts = useTableRoast(id, canRoast)
 	const showRoasts = Boolean(
@@ -175,35 +181,42 @@ export default function TableDetailPage() {
 						<Tooltip>
 							<TooltipTrigger asChild>
 								<button
+									ref={roastButtonRef}
 									type='button'
+									onMouseEnter={() => bump(roastButtonRef.current)}
 									onClick={() => {
+										bump(roastButtonRef.current, 1.6)
+										if (roastButtonRef.current)
+											burstFlames(roastButtonRef.current, 8)
 										showRoast()
 										roasts.roastTable()
 									}}
 									disabled={roasts.isRoastingTable}
-									aria-label={t(roasts.tableRoast ? 'roast.again' : 'roast.toggle')}
+									aria-label={t(
+										roasts.tableRoast ? 'roast.again' : 'roast.toggle'
+									)}
 									className={cn(
-										'group relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-transform hover:-rotate-3 hover:scale-105 active:scale-95 disabled:cursor-wait disabled:hover:rotate-0 disabled:hover:scale-100',
+										'group relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait',
 										roasts.isRoastingTable
-											? 'border-orange-500 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white shadow-lg shadow-orange-500/30 ring-2 ring-orange-400/40 motion-safe:animate-pulse'
+											? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-lg shadow-fire/30 ring-2 ring-fire/40 motion-safe:animate-pulse'
 											: roasts.tableRoast
-												? 'border-orange-500 bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-orange-400/30'
-												: 'border-orange-500/30 bg-orange-500/10 text-orange-400 hover:border-orange-500/60 hover:bg-orange-500/20 hover:text-orange-300'
+												? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-md shadow-fire/25 ring-2 ring-fire/30'
+												: 'border-fire/50 bg-card text-fire shadow-sm hover:border-fire hover:bg-fire hover:text-fire-foreground'
 									)}
 								>
 									{roasts.isRoastingTable ? (
 										<>
-											<Flame className='size-4 fill-white text-white motion-safe:animate-bounce' />
+											<Flame className='size-4 fill-fire-foreground text-fire-foreground motion-safe:animate-bounce' />
 											<span>{t('roast.roasting')}</span>
 										</>
 									) : (
 										<>
 											<Flame
 												className={cn(
-													'size-4 transition-transform motion-safe:animate-flame group-hover:animate-bounce',
+													'size-4 motion-safe:animate-flame',
 													roasts.tableRoast
-														? 'fill-white text-white'
-														: 'fill-orange-400/30 text-orange-400'
+														? 'fill-fire-foreground text-fire-foreground'
+														: 'fill-fire/30 text-fire group-hover:fill-fire-foreground/30 group-hover:text-fire-foreground'
 												)}
 											/>
 											<span>
@@ -213,10 +226,7 @@ export default function TableDetailPage() {
 									)}
 								</button>
 							</TooltipTrigger>
-							<TooltipContent
-								side='bottom'
-								className='border border-orange-500/30 bg-popover font-medium text-popover-foreground shadow-lg'
-							>
+							<TooltipContent side='bottom'>
 								{t('roast.tooltip')}
 							</TooltipContent>
 						</Tooltip>

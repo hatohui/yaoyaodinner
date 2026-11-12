@@ -15,6 +15,9 @@ import { ROSTER_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useRoster } from './@useRoster'
 import { PersonDialog } from './@PersonDialog'
 import { MemberRoast } from './@MemberRoast'
+import { RoastText } from './@RoastText'
+import { ShowAllRoastsToggle } from './@ShowAllRoastsToggle'
+import { useRoastVisible } from '@/hooks/useRoastVisible'
 
 interface RosterProps {
 	table: TableDto
@@ -117,7 +120,12 @@ export function Roster({
 				<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 					{t('roster.people_here')}
 				</p>
-				{people.length > 0 && <ViewToggle view={view} onChange={setView} />}
+				{people.length > 0 && (
+					<div className='flex items-center gap-2'>
+						{roast && <ShowAllRoastsToggle />}
+						<ViewToggle view={view} onChange={setView} />
+					</div>
+				)}
 			</div>
 
 			{canJoin && people.length > 0 && !me && (
@@ -281,6 +289,8 @@ function RosterItem({
 			fallback={person.name.charAt(0).toUpperCase()}
 		/>
 	)
+	const showAllRoasts = useRoastVisible(s => s.showAll)
+	const inlineRoast = showAllRoasts ? roast?.data?.text : undefined
 	const avatarClass = cn(
 		'flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-brand-muted font-semibold text-primary ring-1 ring-primary/25 ring-inset',
 		compact ? 'size-8 text-xs' : 'size-11 text-sm sm:size-12'
@@ -292,11 +302,12 @@ function RosterItem({
 			data-name={person.name}
 			className={cn(
 				'group relative flex items-center gap-3 border border-border bg-card shadow-sm transition-all',
+				inlineRoast && 'flex-wrap border-fire/40',
 				compact
 					? 'rounded-xl px-3 py-2'
 					: 'min-h-[4.5rem] rounded-2xl px-4 py-3 sm:gap-4 sm:px-5 sm:py-4',
-				editable &&
-					'hover:-translate-y-0.5 hover:border-primary/50 hover:bg-brand-muted/35 hover:shadow-md',
+				(editable || roast) && 'hover:bg-secondary hover:shadow-md',
+				editable && 'hover:-translate-y-0.5 hover:border-primary/50',
 				isMe &&
 					'border-primary ring-2 ring-primary/30 hover:border-primary hover:ring-primary/50',
 				isMatched && 'border-primary ring-2 ring-primary'
@@ -406,11 +417,20 @@ function RosterItem({
 					roast={roast.data}
 					isRoasting={roast.isRoasting}
 					compact={compact}
+					showsInline={showAllRoasts}
 					onRoast={roast.onRoast}
 				/>
 			)}
 			{editable && (
 				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />
+			)}
+			{inlineRoast && (
+				<div className='relative flex basis-full flex-col gap-1.5 border-t border-fire/30 pt-2'>
+					<RoastText text={inlineRoast} />
+					<p className='text-xs text-muted-foreground'>
+						{t('roast.left_today', { count: roast?.data?.remainingToday ?? 0 })}
+					</p>
+				</div>
 			)}
 		</li>
 	)

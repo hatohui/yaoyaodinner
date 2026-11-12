@@ -11,7 +11,8 @@ import { SUPPORTED_LOCALES } from "@common/locales";
 import type { GlossaryTerm } from "@prisma/client";
 
 const MODEL =
-  process.env.BEDROCK_MODEL_ID || "global.anthropic.claude-haiku-4-5-20251001-v1:0";
+  process.env.BEDROCK_MODEL_ID ||
+  "global.anthropic.claude-haiku-4-5-20251001-v1:0";
 const TOOL_NAME = "submit";
 
 type Schema = {
@@ -52,7 +53,8 @@ const FIELD = {
   },
   categoryDescription: {
     type: Type.STRING,
-    description: "A one-sentence note shown under the section heading, in this locale.",
+    description:
+      "A one-sentence note shown under the section heading, in this locale.",
   },
   presetNote: {
     type: Type.STRING,
@@ -100,10 +102,20 @@ const PHRASES: Record<string, Record<string, string>> = {
 
 const CJK = /[\u4e00-\u9fff]/;
 const THAI = /[\u0e00-\u0e7f]/;
-const VIETNAMESE =
-  /[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+const VIETNAMESE = /[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
 
-function isInLanguage(text: string, lang: string, isSentence: boolean) {
+function isInLanguage(
+  raw: string,
+  lang: string,
+  isSentence: boolean,
+  names: (string | null | undefined)[] = [],
+) {
+  const text = names
+    .filter((n): n is string => Boolean(n?.trim()))
+    .flatMap((n) => [n, ...n.split(/[\s/|,()（）]+/)])
+    .filter((n) => n.trim())
+    .sort((a, b) => b.length - a.length)
+    .reduce((t, n) => t.split(n).join(" "), raw);
   const ok =
     lang === "zh"
       ? CJK.test(text)
@@ -136,27 +148,64 @@ type CallOptions = {
   maxTokens: number;
   temperature: number;
   model?: string;
+  fallbackModel?: string;
 };
-const SINGLE_CALL: CallOptions = { timeoutMs: 20_000, maxTokens: 2_048, temperature: 0 };
+
+const FALLBACK_MODEL =
+  process.env.AI_FALLBACK_MODEL_ID || "global.amazon.nova-2-lite-v1:0";
+const PRIMARY_RPM = Number(process.env.AI_PRIMARY_RPM) || 9;
+const SINGLE_CALL: CallOptions = {
+  timeoutMs: 20_000,
+  maxTokens: 2_048,
+  temperature: 0,
+};
 const RETRY_CALL: CallOptions = { ...SINGLE_CALL, temperature: 0.7 };
 const PLAYFUL_CALL: CallOptions = { ...SINGLE_CALL, temperature: 1 };
+const ROAST_TRANSLATE_CALL: CallOptions = {
+  timeoutMs: 12_000,
+  maxTokens: 2_000,
+  temperature: 0.3,
+  model: process.env.ROAST_MODEL_ID || MODEL,
+  fallbackModel: FALLBACK_MODEL,
+};
 const ROAST_CALL: CallOptions = {
-  timeoutMs: 20_000,
-  maxTokens: 1_200,
+  timeoutMs: 12_000,
+  maxTokens: 400,
   temperature: 1,
   model: process.env.ROAST_MODEL_ID || MODEL,
+  fallbackModel: FALLBACK_MODEL,
 };
-const BATCH_CALL: CallOptions = { timeoutMs: 45_000, maxTokens: 5_000, temperature: 0 };
+const BATCH_CALL: CallOptions = {
+  timeoutMs: 45_000,
+  maxTokens: 5_000,
+  temperature: 0,
+};
 
 let _client: BedrockRuntimeClient | null = null;
 
 function getClient(): BedrockRuntimeClient {
   _client ??= new BedrockRuntimeClient({
-    region: process.env.BEDROCK_REGION || process.env.AWS_REGION || "ap-southeast-1",
+    region:
+      process.env.BEDROCK_REGION || process.env.AWS_REGION || "ap-southeast-1",
     maxAttempts: 2,
     requestHandler: { connectionTimeout: 3_000, requestTimeout: 40_000 },
   });
   return _client;
+}
+
+async function isOverPrimaryLimit(model: string) {
+  const minute = Math.floor(Date.now() / 60_000);
+  const used = await CacheService.increment(`ai:rpm:${model}:${minute}`, 70);
+  return used > PRIMARY_RPM;
+}
+
+async function modelsFor(call: CallOptions) {
+  const primary = call.model ?? MODEL;
+  const fallback = call.fallbackModel;
+  if (!fallback || fallback === primary) return [primary];
+  if (!(await isOverPrimaryLimit(primary))) return [primary, fallback];
+  console.warn(`[AI] ${primary} is over ${PRIMARY_RPM}/min, using ${fallback}`);
+  return [fallback];
 }
 
 async function generateJson<T>(
@@ -166,10 +215,33 @@ async function generateJson<T>(
   systemInstruction = SYSTEM_INSTRUCTION,
   call: CallOptions = SINGLE_CALL,
 ): Promise<T | null> {
+  const models = await modelsFor(call);
+  for (const model of models) {
+    const result = await converse<T>(
+      model,
+      subject,
+      contents,
+      schema,
+      systemInstruction,
+      call,
+    );
+    if (result) return result;
+  }
+  return null;
+}
+
+async function converse<T>(
+  model: string,
+  subject: string,
+  contents: string | ContentBlock[],
+  schema: Schema,
+  systemInstruction: string,
+  call: CallOptions,
+): Promise<T | null> {
   try {
     const response = await getClient().send(
       new ConverseCommand({
-        modelId: call.model ?? MODEL,
+        modelId: model,
         system: [{ text: systemInstruction }],
         messages: [
           {
@@ -178,7 +250,10 @@ async function generateJson<T>(
               typeof contents === "string" ? [{ text: contents }] : contents,
           },
         ],
-        inferenceConfig: { temperature: call.temperature, maxTokens: call.maxTokens },
+        inferenceConfig: {
+          temperature: call.temperature,
+          maxTokens: call.maxTokens,
+        },
         toolConfig: {
           tools: [
             {
@@ -200,7 +275,7 @@ async function generateJson<T>(
     )?.toolUse;
     return (toolUse?.input as T | undefined) ?? null;
   } catch (err) {
-    console.error(`[AI] Failed to generate ${subject}`, err);
+    console.error(`[AI] ${model} failed to generate ${subject}`, err);
     return null;
   }
 }
@@ -263,7 +338,7 @@ const VARIANTS_SCHEMA: Schema = {
       label: {
         type: Type.STRING,
         description:
-          "The portion option a diner picks, for example \"6 pcs\" is six pieces. Keep the number, translate the unit.",
+          'The portion option a diner picks, for example "6 pcs" is six pieces. Keep the number, translate the unit.',
       },
     },
     required: ["id", "label"],
@@ -276,9 +351,8 @@ function pickSource<T extends Named>(rows: T[]): T | null {
   const score = (r: T) =>
     (r.description?.trim() ? 2 : 0) + (r.language === "en" ? 1 : 0);
   return (
-    rows
-      .filter((r) => r.name.trim())
-      .sort((a, b) => score(b) - score(a))[0] ?? null
+    rows.filter((r) => r.name.trim()).sort((a, b) => score(b) - score(a))[0] ??
+    null
   );
 }
 
@@ -565,13 +639,14 @@ async function requestDishes(
   loadImage?: DraftOptions["loadImage"],
 ) {
   const photos = await photoBlocks(
-    plans.map((p) => ({ label: `Photo of dish ${p.foodId}:`, key: p.imageKey })),
+    plans.map((p) => ({
+      label: `Photo of dish ${p.foodId}:`,
+      key: p.imageKey,
+    })),
     loadImage,
   );
   const photoNote =
-    photos.length > 0
-      ? " Photos follow, each labelled with its dish id."
-      : "";
+    photos.length > 0 ? " Photos follow, each labelled with its dish id." : "";
   return generateJson<Record<string, Record<string, FoodContent>>>(
     plans.length === 1 ? "dish content" : `content for ${plans.length} dishes`,
     [
@@ -616,7 +691,11 @@ function finishDraft(
       keepsTerms(name, lang, plan.nameTerms)
     )
       entry.name = name;
-    if (need.description && description && isInLanguage(description, lang, true))
+    if (
+      need.description &&
+      description &&
+      isInLanguage(description, lang, true)
+    )
       entry.description = description;
     const labels = (data.variants ?? [])
       .filter((v) => v?.label?.trim() && need.labels.has(v.id))
@@ -717,11 +796,15 @@ async function saveFoodContent(
   return updated;
 }
 
+export type EarlierRoast = { about: string; roast: string };
+
 export type TableRoastInput = {
-  tableNo: number;
+  earlierRoasts?: EarlierRoast[];
   tableName: string | null;
-  capacity: number;
-  members: string[];
+  host: string | null;
+  members: { name: string; note: string | null }[];
+  dirty: boolean;
+  cringe: boolean;
   /** null when the ordering feature is closed; food must not come up at all */
   orders:
     | {
@@ -735,29 +818,121 @@ export type TableRoastInput = {
 
 export type PersonRoastInput = {
   name: string;
-  tableNo: number;
+  note: string | null;
   tableName: string | null;
+  host: string | null;
+  dirty: boolean;
+  hornyHook: boolean;
+  cringe: boolean;
+  mates: { name: string; note: string | null }[];
   tableMates: string[];
+  onlyOneWithout: ("picture" | "note")[];
+  earlierRoasts: EarlierRoast[];
 };
 
 const ROAST_RULES = [
-  "Lean into furry culture, cheeky innuendo and savage roasting like a friend who knows too much; there is no taste limit beyond these lines: nothing explicit or graphic, no slurs or attacks on any group, and no real people or brands.",
+  "This is a private, invite-only dinner among adult furries who know each other, so roast savagely like a friend who knows too much.",
+  "When the request says to go dirty, line one must land as a clearly filthy furry double meaning built on their own name, note or picture, not a word merely mentioned: knots, heat, rut, yiff, tails, presenting, collars, leashes and similar are fair game. The innuendo must make literal sense as a joke; never bolt a furry word onto something it does not fit, like a knot on food.",
+  "Keep it a joke rather than a description: never describe sex acts or bodies in graphic detail, nothing involving minors or non-consent, no slurs or attacks on any group, and no real people or brands.",
+  "Refer to guests by name or as they, never he or she, unless their note says otherwise.",
   "Write natively in the requested locale, not as a translation.",
 ].join(" ");
+
+const HTML_ENTITIES: Record<string, string> = {
+  quot: '"',
+  apos: "'",
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  ldquo: "“",
+  rdquo: "”",
+  lsquo: "‘",
+  rsquo: "’",
+  hellip: "…",
+  mdash: "—",
+  ndash: "–",
+};
+
+function cleanRoast(text: string | undefined) {
+  return text
+    ?.replace(/\\u([0-9a-f]{4})/gi, (_, hex) =>
+      String.fromCharCode(parseInt(hex, 16)),
+    )
+    .replace(/\\+(["'])/g, "$1")
+    .replace(/&(#\d+|[a-z]+);/gi, (match, name: string) =>
+      name.startsWith("#")
+        ? String.fromCharCode(Number(name.slice(1)))
+        : (HTML_ENTITIES[name.toLowerCase()] ?? match),
+    )
+    .trim();
+}
+
+const MAX_ROAST_LINE_WORDS = 22;
+const MAX_TABLE_ROAST_WORDS = 45;
+const SENTENCE_END = /^.+?(?:(?<!\.)[.!?](?=\s+[^\s\p{Ll}])|[。！？](?=.))/su;
+
+function firstSentence(
+  text: string | undefined,
+  maxWords = MAX_ROAST_LINE_WORDS,
+) {
+  if (!text || text.split(/\s+/).length <= maxWords) return text;
+  return text.match(SENTENCE_END)?.[0] ?? text;
+}
+
+function lineTwoDirection(input: PersonRoastInput) {
+  return [
+    "For line two, choose whichever target makes the funniest link to this guest:",
+    "one tablemate from mates, only when their name or note genuinely connects to this guest, never a name just dropped in;",
+    "the rest of the table as a group, like everyone else or the only one here who;",
+    "the dinner itself, a furry dinner at a Malaysian Chinese restaurant, never by its event name;",
+    input.tableName
+      ? `or the table being called "${input.tableName}"${input.host ? ` by its host ${input.host}` : ""}, skipped when an earlier roast already joked about it.`
+      : "",
+    "Pick a different kind of target from the ones earlierRoasts leaned on.",
+    input.mates.length > 0 ? `mates: ${JSON.stringify(input.mates)}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+const ROAST_TRANSLATE_INSTRUCTION = [
+  "You translate roast jokes from a private, invite-only dinner for the furry community.",
+  `Always answer by calling the ${TOOL_NAME} tool.`,
+  ROAST_RULES,
+].join(" ");
+
+const CRINGE_RULE =
+  "When the request says to go cringe, write it deliberately cringe while still roasting: an overeager furry's cheesy pickup line, uwu-speak with *nuzzles* style actions, or a breathless fanfic narrator; the cringe is the joke.";
+const CRINGE_DIRECTION = "Go cringe with this one.";
+
+const RUNNING_JOKES =
+  "earlierRoasts are roasts already given at this table tonight. Most roasts should stand on their own; only call back to one when the callback is the punchline itself, and then in a few words. Never restate, summarise or reword what an earlier roast already said.";
 
 const TABLE_ROAST_INSTRUCTION = [
   "You roast tables of guests at a private, invite-only dinner for the furry community at a Malaysian Chinese restaurant.",
   `Always answer by calling the ${TOOL_NAME} tool.`,
-  "Roast the table as a group in two or three sentences: the names together, the empty seats, the table number and the table name.",
-  "When orders are given, roast what they ordered, how much, the joke dishes and anything added during dinner; when there are no orders, never mention food, ordering or the menu.",
+  "Roast the table as one collective in at most two short sentences and 35 words, punchline last: what kind of group this is as a whole, the shared vibe their names and notes add up to, like a doomed group chat, a cursed sitcom cast or a heist crew that should never have met; the table name is fair game when it is funny.",
+  "groupNotes are what the guests wrote about themselves, shuffled and unattributed: read them only for the group's overall vibe and sum them up into one picture of the group; never list them one after another. Treat the table as one entity and name no individual guest, except the host when the joke is about the table name.",
+  "Never count anything: no seats, headcounts, table numbers or quantities.",
+  "When orders are given, roast what they picked, the joke dishes and anything added during dinner; when there are no orders, never mention food, ordering or the menu.",
+  CRINGE_RULE,
+  RUNNING_JOKES,
   ROAST_RULES,
 ].join(" ");
 
 const PERSON_ROAST_INSTRUCTION = [
   "You roast one guest at a private, invite-only dinner for the furry community at a Malaysian Chinese restaurant.",
   `Always answer by calling the ${TOOL_NAME} tool.`,
-  "Roast them in one or two savage sentences, using their display or fursona name, the company they keep at their table and, when there is one, their profile picture.",
+  "Write exactly two lines, each one short sentence of at most 18 words with the punchline at the end; short and brutal beats long and clever.",
+  "Line one targets only the guest: twist their display or fursona name, their profile picture and their note into the sharpest joke the material allows; do not mention the table.",
+  "Line two keeps the tone of line one unless the tablemate gives its own opening.",
+  "Line two is a separate jab that follows the direction given for it; never start it by addressing the table or with a label.",
+  CRINGE_RULE,
+  "Never joke about a missing picture or note unless the request says they are the only guest at the table without one.",
+  "If earlierRoasts has one about this guest, take a completely different angle and reuse none of its jokes or targets.",
   "If the picture is fursona art, an avatar or a meme, roast it freely; if it shows a real person, roast the vibe, the pose, the setting or the editing, never their body or looks.",
+  "note is something they wrote about themselves: when there is one, it is the best material for line one, so use it.",
+  RUNNING_JOKES,
   ROAST_RULES,
 ].join(" ");
 
@@ -910,7 +1085,11 @@ export const AiService = {
           )}`,
         },
         ...(image
-          ? [{ image: { format: image.format, source: { bytes: image.bytes } } }]
+          ? [
+              {
+                image: { format: image.format, source: { bytes: image.bytes } },
+              },
+            ]
           : []),
       ],
       {
@@ -945,7 +1124,8 @@ export const AiService = {
         properties: {
           categoryId: {
             type: Type.STRING,
-            description: "The id of the menu section it belongs in, copied exactly from categories.",
+            description:
+              "The id of the menu section it belongs in, copied exactly from categories.",
           },
           price: {
             type: Type.NUMBER,
@@ -957,7 +1137,10 @@ export const AiService = {
               {
                 type: Type.OBJECT,
                 description: `The joke dish in ${LOCALE_NAMES[lang] ?? lang}`,
-                properties: { name: FIELD.dishName, description: FIELD.dishDescription },
+                properties: {
+                  name: FIELD.dishName,
+                  description: FIELD.dishDescription,
+                },
                 required: ["name", "description"],
               },
             ]),
@@ -972,7 +1155,8 @@ export const AiService = {
 
     const locales: Record<string, { name: string; description: string }> = {};
     for (const lang of SUPPORTED_LOCALES) {
-      const entry = result[lang] as { name?: string; description?: string } | undefined;
+      const entry = result[lang] as
+        { name?: string; description?: string } | undefined;
       const name = entry?.name?.trim();
       const description = entry?.description?.trim();
       if (
@@ -997,22 +1181,41 @@ export const AiService = {
     };
   },
 
-  async roastTable(lang: string, input: TableRoastInput): Promise<string | null> {
-    const { orders, ...rest } = input;
+  async roastTable(
+    lang: string,
+    input: TableRoastInput,
+  ): Promise<string | null> {
+    const { orders, dirty, cringe, members, ...table } = input;
+    const rest = {
+      ...table,
+      groupNotes: members
+        .flatMap((m) => (m.note ? [m.note] : []))
+        .sort(() => Math.random() - 0.5),
+    };
     const hasOrders = !!orders && orders.length > 0;
+    const tone = `${cringe ? ` ${CRINGE_DIRECTION}` : ""}${dirty ? " Go dirty with this one." : " Keep this one a clean roast unless a note has a sexual hook."}`;
     const note =
-      orders === null ? "" : orders.length === 0 ? " They have not ordered anything." : "";
+      orders === null
+        ? ""
+        : orders.length === 0
+          ? " They have not ordered anything."
+          : "";
     const result = await generateJson<{ roast?: string }>(
       "table roast",
-      `Roast this table in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${note}\n\n${JSON.stringify(
-        hasOrders ? input : rest,
+      `Roast this table in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${note}${tone}\n\n${JSON.stringify(
+        hasOrders
+          ? {
+              ...rest,
+              orders: orders.map(({ quantity: _quantity, ...o }) => o),
+            }
+          : rest,
       )}`,
       {
         type: Type.OBJECT,
         properties: {
           roast: {
             type: Type.STRING,
-            description: `Two or three sentences roasting the table as a group, in ${LOCALE_NAMES[lang] ?? lang}.`,
+            description: `At most two short sentences (40 words) roasting the table as a group, in ${LOCALE_NAMES[lang] ?? lang}.`,
           },
         },
         required: ["roast"],
@@ -1020,8 +1223,54 @@ export const AiService = {
       TABLE_ROAST_INSTRUCTION,
       ROAST_CALL,
     );
-    const roast = result?.roast?.trim();
-    return roast && isInLanguage(roast, lang, true) ? roast : null;
+    const roast = firstSentence(
+      cleanRoast(result?.roast),
+      MAX_TABLE_ROAST_WORDS,
+    );
+    return roast &&
+      isInLanguage(roast, lang, true, [
+        input.tableName,
+        ...input.members.map((m) => m.name),
+      ])
+      ? roast
+      : null;
+  },
+
+  async translateRoasts(
+    lang: string,
+    roasts: { id: string; text: string }[],
+    names: string[],
+  ): Promise<Record<string, string> | null> {
+    const result = await generateJson<Record<string, string>>(
+      "roast translation",
+      `Translate each roast into '${lang}' (${LOCALE_NAMES[lang] ?? lang}) so it lands just as hard for a native speaker: keep the meaning, the innuendo and the punchline, adapt puns rather than translating them word for word, keep names as they are, and keep line breaks.\n\n${JSON.stringify(
+        Object.fromEntries(roasts.map((r) => [r.id, r.text])),
+      )}`,
+      {
+        type: Type.OBJECT,
+        properties: Object.fromEntries(
+          roasts.map((r) => [
+            r.id,
+            {
+              type: Type.STRING,
+              description: `Roast ${r.id} in ${LOCALE_NAMES[lang] ?? lang}`,
+            },
+          ]),
+        ),
+        required: roasts.map((r) => r.id),
+      },
+      ROAST_TRANSLATE_INSTRUCTION,
+      ROAST_TRANSLATE_CALL,
+    );
+    if (!result) return null;
+    return Object.fromEntries(
+      roasts.flatMap((r) => {
+        const text = cleanRoast(result[r.id]);
+        return text && isInLanguage(text, lang, true, names)
+          ? [[r.id, text]]
+          : [];
+      }),
+    );
   },
 
   async roastPerson(
@@ -1029,31 +1278,54 @@ export const AiService = {
     input: PersonRoastInput,
     image: StoredImage | null,
   ): Promise<string | null> {
-    const result = await generateJson<{ roast?: string }>(
+    const result = await generateJson<{ self?: string; table?: string }>(
       "guest roast",
       [
         {
-          text: `Roast this guest in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${image ? " Their profile picture follows." : " They have no profile picture."}\n\n${JSON.stringify(input)}`,
+          text: `Roast this guest in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${image ? " Their profile picture follows." : ""}${
+            input.onlyOneWithout.length > 0
+              ? ` They are the only guest at the table without a ${input.onlyOneWithout.join(" or a ")}.`
+              : " Never joke about a missing profile picture, face or note."
+          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a horny or double-meaning hook (eating, swallowing, nuts, riding and the like), so line one must take that bait and go filthy." : input.dirty ? " Go dirty with this one." : " Keep this one a clean roast."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
         },
         ...(image
-          ? [{ image: { format: image.format, source: { bytes: image.bytes } } }]
+          ? [
+              {
+                image: { format: image.format, source: { bytes: image.bytes } },
+              },
+            ]
           : []),
       ],
       {
         type: Type.OBJECT,
         properties: {
-          roast: {
+          self: {
             type: Type.STRING,
-            description: `One or two savage sentences about this guest, in ${LOCALE_NAMES[lang] ?? lang}.`,
+            description: `Line one: a joke built from their name, picture and note, at most 18 words, in ${LOCALE_NAMES[lang] ?? lang}.`,
+          },
+          table: {
+            type: Type.STRING,
+            description: `Line two: the comparison, scenario or accusation that lineTwo asks for, at most 18 words, in ${LOCALE_NAMES[lang] ?? lang}.`,
           },
         },
-        required: ["roast"],
+        required: ["self", "table"],
       },
       PERSON_ROAST_INSTRUCTION,
       ROAST_CALL,
     );
-    const roast = result?.roast?.trim();
-    return roast && isInLanguage(roast, lang, true) ? roast : null;
+    const lines = [result?.self, result?.table]
+      .map((line) => firstSentence(cleanRoast(line)))
+      .filter(
+        (line): line is string =>
+          Boolean(line) &&
+          isInLanguage(line!, lang, true, [
+            input.name,
+            input.host,
+            input.tableName,
+            ...input.tableMates,
+          ]),
+      );
+    return lines.length > 0 ? lines.join("\n") : null;
   },
 
   async translatePresetNote(

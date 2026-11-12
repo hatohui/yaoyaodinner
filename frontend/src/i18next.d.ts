@@ -480,6 +480,7 @@ declare module 'react-i18next' {
 				health: Record<string, string>
 				dev: Record<string, unknown>
 				roast: {
+					show_all: string
 					tooltip: string
 					toggle: string
 					title: string
