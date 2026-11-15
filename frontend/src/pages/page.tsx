@@ -3,7 +3,6 @@ import { ASSET_URL } from '@/common/app'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import VideoPlayer from '@/components/common/VideoPlayer'
-import { AppLogo } from '@/components/common/AppLogo'
 import QuoteSection from '@/config/quotes'
 import { useConfig } from '@/hooks/useConfig'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
@@ -44,10 +43,6 @@ const LandingPage = (): React.JSX.Element => {
 
 			<div className='relative z-10 flex h-full flex-col justify-end overflow-y-auto overscroll-contain px-6 pb-16 pt-6 sm:px-12 sm:pb-20 lg:px-20'>
 				<div className='flex max-w-xl flex-col gap-4 sm:gap-5'>
-					<AppLogo
-						className='h-12 w-auto self-start drop-shadow-lg sm:h-20'
-						alwaysInvert
-					/>
 					<div className='flex flex-col gap-1.5'>
 						<span className='text-xs font-bold uppercase tracking-widest text-white/75 sm:text-sm'>
 							{t('menu.restaurant_name')} · {t('menu.restaurant_en')}
