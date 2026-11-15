@@ -28,10 +28,7 @@ export function useTableDetail() {
 				if (prev) qc.setQueryData<TableDto>(tableKey, { ...prev, ...patch })
 				return { prev }
 			},
-			onError: (_e, _v, ctx) => {
-				qc.setQueryData(tableKey, ctx?.prev)
-				toast.error(t('roster.update_failed'))
-			},
+			onError: (_e, _v, ctx) => qc.setQueryData(tableKey, ctx?.prev),
 			onSettled: () => {
 				qc.invalidateQueries({ queryKey: tableKey })
 				qc.invalidateQueries({ queryKey: getGetTablesQueryKey() })
