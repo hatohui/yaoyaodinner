@@ -6,6 +6,7 @@ import { FloorPlanTable } from '@/components/floor-plan/FloorPlanTable'
 import { useCanHover } from '@/hooks/useCanHover'
 import { useGuest } from '@/hooks/useGuest'
 import { cn } from '@/utils/shadcn'
+import { smoothScrollIntoView } from '@/utils/smoothScroll'
 import { TableHoverDetails } from './@TableHoverDetails'
 
 interface FloorPlanCanvasProps {
@@ -20,9 +21,10 @@ export function FloorPlanCanvas({ tables, highlightId }: FloorPlanCanvasProps) {
 
 	useEffect(() => {
 		if (!highlightId) return
-		document
-			.querySelector(`[data-table-id="${highlightId}"]`)
-			?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+		smoothScrollIntoView(
+			document.querySelector(`[data-table-id="${highlightId}"]`),
+			'center'
+		)
 	}, [highlightId, tables])
 
 	return (

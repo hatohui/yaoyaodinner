@@ -1,4 +1,4 @@
-import { type ComponentProps, useLayoutEffect, useRef, useState } from 'react'
+import { type ComponentProps, useRef, useState } from 'react'
 import {
 	Tooltip,
 	TooltipContent,
@@ -14,31 +14,44 @@ interface TruncatedTextProps extends ComponentProps<'span'> {
 export function TruncatedText({
 	text,
 	className,
+	onPointerEnter,
+	onFocus,
 	...props
 }: TruncatedTextProps) {
 	const ref = useRef<HTMLSpanElement>(null)
 	const [cut, setCut] = useState(false)
 
-	useLayoutEffect(() => {
+	const check = () => {
 		const el = ref.current
 		if (!el) return
-		const check = () => setCut(el.scrollWidth > el.clientWidth)
-		check()
-		const observer = new ResizeObserver(check)
-		observer.observe(el)
-		return () => observer.disconnect()
-	}, [text])
+		const next = el.scrollWidth > el.clientWidth
+		if (next !== cut) setCut(next)
+	}
 
 	return (
 		<Tooltip open={cut ? undefined : false}>
 			<TooltipTrigger asChild>
-				<span ref={ref} className={cn('truncate', className)} {...props}>
+				<span
+					ref={ref}
+					onPointerEnter={e => {
+						check()
+						onPointerEnter?.(e)
+					}}
+					onFocus={e => {
+						check()
+						onFocus?.(e)
+					}}
+					className={cn('truncate', className)}
+					{...props}
+				>
 					{text}
 				</span>
 			</TooltipTrigger>
-			<TooltipContent className='max-w-xs break-words whitespace-pre-wrap'>
-				{text}
-			</TooltipContent>
+			{cut && (
+				<TooltipContent className='max-w-xs break-words whitespace-pre-wrap'>
+					{text}
+				</TooltipContent>
+			)}
 		</Tooltip>
 	)
 }

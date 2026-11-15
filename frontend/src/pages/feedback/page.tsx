@@ -9,6 +9,7 @@ import { useFeedback } from './@useFeedback'
 import { useDeleteFeedback } from '@/hooks/useDeleteFeedback'
 import { useEditMode } from '@/hooks/useEditMode'
 import { cn } from '@/utils/shadcn'
+import { smoothScrollIntoView } from '@/utils/smoothScroll'
 
 export default function FeedbackPage() {
 	const { t } = useTranslation()
@@ -50,7 +51,7 @@ export default function FeedbackPage() {
 		const el = document.getElementById(`feedback-${targetId}`)
 		if (el) {
 			hasScrolledRef.current = true
-			el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			smoothScrollIntoView(el, 'center')
 		}
 	}, [targetId, isLoading, feedback])
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAsRef } from '@/hooks/use-as-ref'
+import { smoothScrollIntoView } from '@/utils/smoothScroll'
 
 export interface TourStep {
 	key: string
@@ -56,7 +57,7 @@ export function useTourFrame(resolve: (() => TourStep | null) | null) {
 
 			if (step && step.key !== scrolledFor && step.targets[0]) {
 				scrolledFor = step.key
-				step.targets[0].scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+				smoothScrollIntoView(step.targets[0], 'nearest')
 			}
 			if (!sameFrame(last, next)) {
 				last = next

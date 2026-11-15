@@ -100,10 +100,10 @@
 	@keyframes ember-glow {
 		0%,
 		100% {
-			box-shadow: 0 0 0 0 color-mix(in oklch, var(--fire) 0%, transparent);
+			filter: brightness(1);
 		}
 		50% {
-			box-shadow: 0 0 14px 2px color-mix(in oklch, var(--fire) 55%, transparent);
+			filter: brightness(1.12);
 		}
 	}
 
@@ -450,6 +450,7 @@
 		inset: 0;
 		z-index: -1;
 		pointer-events: none;
+		contain: strict;
 		background-color: var(--primary);
 		opacity: var(--bg-paw-opacity);
 		mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M84 76a20 20 0 1 1-20-20 20 20 0 0 1 20 20Zm44-44a20 20 0 1 0 20 20 20 20 0 0 0-20-20Zm44 24a20 20 0 1 0 20 20 20 20 0 0 0-20-20Zm30.8 111.92a40.09 40.09 0 0 0-31.5-27.13 52 52 0 0 0-85.8 0 40.11 40.11 0 0 0-31.5 27.13c-5.83 18.23-2.58 37.16 9.15 53.37 12 16.59 34 26.71 58.62 26.71h12.46c24.62 0 46.66-10.12 58.62-26.71 11.73-16.21 15-35.14 9.15-53.37Z'/%3E%3C/svg%3E");

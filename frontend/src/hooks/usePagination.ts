@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
+import { smoothScrollTo } from '@/utils/smoothScroll'
 
 interface UsePaginationOptions {
 	initialPage?: number
@@ -92,7 +93,7 @@ export function usePagination(options: UsePaginationOptions = {}) {
 		(newPage: number) => {
 			if (newPage >= 1 && newPage <= totalPages) {
 				setPage(newPage)
-				window.scrollTo({ top: 0, behavior: 'smooth' })
+				smoothScrollTo(0)
 			}
 		},
 		[totalPages, setPage]

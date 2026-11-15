@@ -15,28 +15,12 @@ interface BlobSpec {
 		right?: string
 	}
 	gradient: string
-	border: string
-	shapes: string[]
+	shape: string
 	durationRotate: number
 	rotateDirection: 'cw' | 'ccw'
 	bounds: { minX: number; maxX: number; minY: number; maxY: number }
 	parallaxOffset: { x: number; y: number }
 }
-
-const SHAPES_POOL = [
-	'60% 40% 30% 70% / 60% 30% 70% 40%',
-	'30% 60% 70% 40% / 50% 60% 30% 60%',
-	'55% 45% 40% 60% / 65% 35% 55% 45%',
-	'40% 60% 60% 40% / 40% 50% 60% 50%',
-	'70% 30% 50% 50% / 30% 70% 50% 50%',
-	'35% 65% 60% 40% / 65% 35% 40% 60%',
-	'50% 50% 20% 80% / 25% 80% 20% 75%',
-	'67% 33% 47% 53% / 37% 20% 80% 63%',
-	'39% 61% 60% 40% / 52% 48% 52% 48%',
-	'58% 42% 33% 67% / 45% 55% 45% 55%',
-	'45% 55% 65% 35% / 55% 45% 35% 65%',
-	'55% 45% 55% 45% / 45% 55% 45% 55%',
-]
 
 const BLOBS: BlobSpec[] = [
 	{
@@ -44,9 +28,8 @@ const BLOBS: BlobSpec[] = [
 		sizeStyle: { width: 'min(640px, 52vw)', height: 'min(580px, 48vw)' },
 		positionStyle: { top: '-6%', left: '-6%' },
 		gradient:
-			'radial-gradient(circle at 40% 40%, color-mix(in oklch, var(--primary) 50%, transparent) 0%, color-mix(in oklch, var(--primary) 34%, transparent) 55%, color-mix(in oklch, var(--primary) 15%, transparent) 82%, transparent 100%)',
-		border: '1.5px solid color-mix(in oklch, var(--primary) 28%, transparent)',
-		shapes: SHAPES_POOL.slice(0, 4),
+			'radial-gradient(closest-side at 42% 42%, color-mix(in oklch, var(--primary) 46%, transparent) 0%, color-mix(in oklch, var(--primary) 26%, transparent) 52%, color-mix(in oklch, var(--primary) 8%, transparent) 78%, transparent 100%)',
+		shape: '60% 40% 30% 70% / 60% 30% 70% 40%',
 		durationRotate: 42,
 		rotateDirection: 'cw',
 		bounds: { minX: -50, maxX: 260, minY: -40, maxY: 220 },
@@ -57,9 +40,8 @@ const BLOBS: BlobSpec[] = [
 		sizeStyle: { width: 'min(600px, 48vw)', height: 'min(540px, 44vw)' },
 		positionStyle: { top: '6%', right: '-6%' },
 		gradient:
-			'radial-gradient(circle at 45% 45%, color-mix(in oklch, var(--chart-2) 46%, transparent) 0%, color-mix(in oklch, var(--chart-2) 30%, transparent) 55%, color-mix(in oklch, var(--chart-2) 14%, transparent) 82%, transparent 100%)',
-		border: '1.5px solid color-mix(in oklch, var(--chart-2) 26%, transparent)',
-		shapes: SHAPES_POOL.slice(2, 6),
+			'radial-gradient(closest-side at 45% 45%, color-mix(in oklch, var(--chart-2) 42%, transparent) 0%, color-mix(in oklch, var(--chart-2) 24%, transparent) 52%, color-mix(in oklch, var(--chart-2) 7%, transparent) 78%, transparent 100%)',
+		shape: '55% 45% 40% 60% / 65% 35% 55% 45%',
 		durationRotate: 48,
 		rotateDirection: 'ccw',
 		bounds: { minX: -260, maxX: 50, minY: -30, maxY: 240 },
@@ -70,9 +52,8 @@ const BLOBS: BlobSpec[] = [
 		sizeStyle: { width: 'min(560px, 46vw)', height: 'min(520px, 42vw)' },
 		positionStyle: { bottom: '4%', left: '-4%' },
 		gradient:
-			'radial-gradient(circle at 45% 45%, color-mix(in oklch, var(--chart-3) 48%, transparent) 0%, color-mix(in oklch, var(--chart-3) 32%, transparent) 55%, color-mix(in oklch, var(--chart-3) 14%, transparent) 82%, transparent 100%)',
-		border: '1.5px solid color-mix(in oklch, var(--chart-3) 26%, transparent)',
-		shapes: SHAPES_POOL.slice(4, 8),
+			'radial-gradient(closest-side at 45% 45%, color-mix(in oklch, var(--chart-3) 44%, transparent) 0%, color-mix(in oklch, var(--chart-3) 25%, transparent) 52%, color-mix(in oklch, var(--chart-3) 8%, transparent) 78%, transparent 100%)',
+		shape: '70% 30% 50% 50% / 30% 70% 50% 50%',
 		durationRotate: 38,
 		rotateDirection: 'cw',
 		bounds: { minX: -40, maxX: 260, minY: -240, maxY: 40 },
@@ -83,9 +64,8 @@ const BLOBS: BlobSpec[] = [
 		sizeStyle: { width: 'min(620px, 50vw)', height: 'min(560px, 46vw)' },
 		positionStyle: { bottom: '-6%', right: '-4%' },
 		gradient:
-			'radial-gradient(circle at 50% 40%, color-mix(in oklch, var(--primary) 46%, transparent) 0%, color-mix(in oklch, var(--primary) 30%, transparent) 55%, color-mix(in oklch, var(--primary) 14%, transparent) 82%, transparent 100%)',
-		border: '1.5px solid color-mix(in oklch, var(--primary) 26%, transparent)',
-		shapes: SHAPES_POOL.slice(6, 10),
+			'radial-gradient(closest-side at 50% 42%, color-mix(in oklch, var(--primary) 42%, transparent) 0%, color-mix(in oklch, var(--primary) 24%, transparent) 52%, color-mix(in oklch, var(--primary) 7%, transparent) 78%, transparent 100%)',
+		shape: '50% 50% 30% 70% / 35% 70% 30% 65%',
 		durationRotate: 44,
 		rotateDirection: 'ccw',
 		bounds: { minX: -260, maxX: 40, minY: -240, maxY: 40 },
@@ -96,9 +76,8 @@ const BLOBS: BlobSpec[] = [
 		sizeStyle: { width: 'min(480px, 40vw)', height: 'min(440px, 36vw)' },
 		positionStyle: { top: '28%', left: '26%' },
 		gradient:
-			'radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--chart-2) 42%, transparent) 0%, color-mix(in oklch, var(--primary) 26%, transparent) 55%, color-mix(in oklch, var(--chart-2) 12%, transparent) 80%, transparent 100%)',
-		border: '1.5px solid color-mix(in oklch, var(--chart-2) 24%, transparent)',
-		shapes: SHAPES_POOL.slice(8, 12),
+			'radial-gradient(closest-side at 50% 50%, color-mix(in oklch, var(--chart-2) 38%, transparent) 0%, color-mix(in oklch, var(--primary) 20%, transparent) 52%, color-mix(in oklch, var(--chart-2) 6%, transparent) 76%, transparent 100%)',
+		shape: '39% 61% 60% 40% / 52% 48% 52% 48%',
 		durationRotate: 34,
 		rotateDirection: 'cw',
 		bounds: { minX: -200, maxX: 220, minY: -180, maxY: 180 },
@@ -109,9 +88,8 @@ const BLOBS: BlobSpec[] = [
 		sizeStyle: { width: 'min(460px, 38vw)', height: 'min(420px, 34vw)' },
 		positionStyle: { top: '48%', right: '22%' },
 		gradient:
-			'radial-gradient(circle at 45% 45%, color-mix(in oklch, var(--primary) 44%, transparent) 0%, color-mix(in oklch, var(--chart-3) 24%, transparent) 55%, color-mix(in oklch, var(--primary) 10%, transparent) 80%, transparent 100%)',
-		border: '1.5px solid color-mix(in oklch, var(--primary) 24%, transparent)',
-		shapes: [SHAPES_POOL[1], SHAPES_POOL[5], SHAPES_POOL[9], SHAPES_POOL[11]],
+			'radial-gradient(closest-side at 45% 45%, color-mix(in oklch, var(--primary) 40%, transparent) 0%, color-mix(in oklch, var(--chart-3) 20%, transparent) 52%, color-mix(in oklch, var(--primary) 6%, transparent) 76%, transparent 100%)',
+		shape: '35% 65% 60% 40% / 65% 35% 40% 60%',
 		durationRotate: 36,
 		rotateDirection: 'ccw',
 		bounds: { minX: -220, maxX: 200, minY: -180, maxY: 180 },
@@ -130,6 +108,8 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 			).matches
 			if (reduce) return
 
+			const tweens: gsap.core.Tween[] = []
+
 			BLOBS.forEach(blob => {
 				const driftEl = containerRef.current?.querySelector<HTMLElement>(
 					`[data-drift="${blob.id}"]`
@@ -139,62 +119,67 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 				)
 				if (!driftEl || !morphEl) return
 
-				// Continuous random wandering across 2D plane
+				// Transform-only wandering and scale/rotation so the GPU caches each
+				// blob texture once and composites without per-frame paint/blur work.
 				const moveRandomly = () => {
 					const nextX = gsap.utils.random(blob.bounds.minX, blob.bounds.maxX, 1)
 					const nextY = gsap.utils.random(blob.bounds.minY, blob.bounds.maxY, 1)
-					const duration = gsap.utils.random(8, 16)
+					const duration = gsap.utils.random(10, 18)
 
-					gsap.to(driftEl, {
-						x: nextX,
-						y: nextY,
-						duration,
-						ease: 'sine.inOut',
-						onComplete: moveRandomly,
-					})
+					tweens.push(
+						gsap.to(driftEl, {
+							x: nextX,
+							y: nextY,
+							duration,
+							ease: 'sine.inOut',
+							force3D: true,
+							overwrite: 'auto',
+							onComplete: moveRandomly,
+						})
+					)
 				}
 				moveRandomly()
 
-				// Continuous random breathing scale
 				const pulseRandomly = () => {
-					const nextScaleX = gsap.utils.random(0.92, 1.14)
-					const nextScaleY = gsap.utils.random(0.9, 1.12)
-					const duration = gsap.utils.random(5, 9)
+					const nextScaleX = gsap.utils.random(0.88, 1.16)
+					const nextScaleY = gsap.utils.random(0.86, 1.14)
+					const duration = gsap.utils.random(6, 11)
 
-					gsap.to(morphEl, {
-						scaleX: nextScaleX,
-						scaleY: nextScaleY,
-						duration,
-						ease: 'sine.inOut',
-						onComplete: pulseRandomly,
-					})
+					tweens.push(
+						gsap.to(morphEl, {
+							scaleX: nextScaleX,
+							scaleY: nextScaleY,
+							duration,
+							ease: 'sine.inOut',
+							force3D: true,
+							overwrite: 'auto',
+							onComplete: pulseRandomly,
+						})
+					)
 				}
 				pulseRandomly()
 
-				// Continuous random organic shape morphing
-				let currentShapeIdx = 0
-				const morphRandomly = () => {
-					currentShapeIdx = (currentShapeIdx + 1) % blob.shapes.length
-					const nextShape = blob.shapes[currentShapeIdx]
-					const duration = gsap.utils.random(5, 9)
-
+				tweens.push(
 					gsap.to(morphEl, {
-						borderRadius: nextShape,
-						duration,
-						ease: 'sine.inOut',
-						onComplete: morphRandomly,
+						rotation: blob.rotateDirection === 'ccw' ? -360 : 360,
+						duration: blob.durationRotate,
+						repeat: -1,
+						ease: 'none',
+						force3D: true,
 					})
-				}
-				morphRandomly()
-
-				// Continuous slow rotation
-				gsap.to(morphEl, {
-					rotation: blob.rotateDirection === 'ccw' ? -360 : 360,
-					duration: blob.durationRotate,
-					repeat: -1,
-					ease: 'none',
-				})
+				)
 			})
+
+			const onVisibilityChange = () => {
+				const paused = document.visibilityState === 'hidden'
+				for (const t of tweens) {
+					if (t.isActive()) t.paused(paused)
+				}
+			}
+			document.addEventListener('visibilitychange', onVisibilityChange)
+			return () => {
+				document.removeEventListener('visibilitychange', onVisibilityChange)
+			}
 		},
 		{ scope: containerRef }
 	)
@@ -215,9 +200,14 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 			}
 		})
 
-		const handlePointerMove = (e: PointerEvent) => {
-			const nx = (e.clientX / window.innerWidth - 0.5) * 2
-			const ny = (e.clientY / window.innerHeight - 0.5) * 2
+		let rafId = 0
+		let lastX = 0
+		let lastY = 0
+
+		const flushPointer = () => {
+			rafId = 0
+			const nx = (lastX / window.innerWidth - 0.5) * 2
+			const ny = (lastY / window.innerHeight - 0.5) * 2
 
 			BLOBS.forEach((blob, i) => {
 				const setter = quickSetters[i]
@@ -228,7 +218,19 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 			})
 		}
 
+		const handlePointerMove = (e: PointerEvent) => {
+			lastX = e.clientX
+			lastY = e.clientY
+			if (!rafId) {
+				rafId = requestAnimationFrame(flushPointer)
+			}
+		}
+
 		const handlePointerLeave = () => {
+			if (rafId) {
+				cancelAnimationFrame(rafId)
+				rafId = 0
+			}
 			quickSetters.forEach(setter => {
 				if (setter) {
 					setter.x(0)
@@ -241,6 +243,7 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 		document.addEventListener('pointerleave', handlePointerLeave)
 
 		return () => {
+			if (rafId) cancelAnimationFrame(rafId)
 			window.removeEventListener('pointermove', handlePointerMove)
 			document.removeEventListener('pointerleave', handlePointerLeave)
 		}
@@ -251,7 +254,7 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 			ref={containerRef}
 			aria-hidden='true'
 			className={cn(
-				'fixed inset-0 pointer-events-none select-none overflow-hidden -z-20 opacity-70 dark:opacity-55',
+				'fixed inset-0 pointer-events-none select-none overflow-hidden contain-strict -z-20 opacity-70 dark:opacity-55',
 				className
 			)}
 		>
@@ -269,10 +272,8 @@ export default function AnimatedBlobs({ className }: { className?: string }) {
 							data-morph={blob.id}
 							style={{
 								...blob.sizeStyle,
-								borderRadius: blob.shapes[0],
+								borderRadius: blob.shape,
 								background: blob.gradient,
-								border: blob.border,
-								filter: 'blur(16px)',
 							}}
 							className='will-change-transform'
 						/>

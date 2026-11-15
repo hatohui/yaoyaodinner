@@ -8,6 +8,7 @@ import { StoredImage } from '@/components/common/StoredImage'
 import { TruncatedText } from '@/components/common/TruncatedText'
 import { RosterSkeleton } from './@Skeletons'
 import { cn } from '@/utils/shadcn'
+import { smoothScrollIntoView } from '@/utils/smoothScroll'
 import { useGuest } from '@/hooks/useGuest'
 import { useIdentityTour } from '@/hooks/useIdentityTour'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
@@ -65,7 +66,7 @@ export function Roster({
 		).find(node =>
 			node.getAttribute('data-name')?.toLowerCase().includes(needle)
 		)
-		el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+		smoothScrollIntoView(el, 'center')
 	}, [needle, isLoading, people.length])
 
 	useEffect(() => {
