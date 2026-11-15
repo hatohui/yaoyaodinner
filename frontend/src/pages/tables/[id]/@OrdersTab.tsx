@@ -19,7 +19,6 @@ import { PriceDialog } from './@PriceDialog'
 import { OrderListSkeleton } from './@Skeletons'
 import { OrderRoundSection } from './@OrderRoundSection'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
-import { OrderingStageNotice } from '@/components/common/OrderingStageNotice'
 import {
 	dishKey,
 	groupOrders,
@@ -128,9 +127,6 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 
 	return (
 		<div className='flex flex-col gap-3'>
-			{preset?.note && <IncludedNoteStrip note={preset.note} />}
-			<OrderingStageNotice />
-			{preset && <PresetMenuSection preset={preset} />}
 			{canUseAi && (
 				<TablePlanCard
 					tableId={table.id}
@@ -140,6 +136,8 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 					onModifyingChange={setModifying}
 				/>
 			)}
+			{preset?.note && <IncludedNoteStrip note={preset.note} />}
+			{preset && <PresetMenuSection preset={preset} />}
 
 			{people.length === 0 ? (
 				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
