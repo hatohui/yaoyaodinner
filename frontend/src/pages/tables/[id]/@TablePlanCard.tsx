@@ -24,6 +24,7 @@ import { PlanDishRow } from './@PlanDishRow'
 import { PlanRestrictions } from './@PlanRestrictions'
 import { PlanRefineBox } from './@PlanRefineBox'
 import { PlanModifyDialog } from './@PlanModifyDialog'
+import { TablePlanBannerSkeleton } from './@Skeletons'
 import { planChanges } from './@planChanges'
 import { useTablePlan, type PlanRequest } from './@useTablePlan'
 
@@ -121,7 +122,9 @@ export function TablePlanCard({
 		</>
 	)
 
-	if (isLoading) return null
+	if (isLoading) {
+		return orders.length === 0 ? <TablePlanBannerSkeleton /> : null
+	}
 
 	if (!plan && !isPlanning) {
 		// once the table has ordered, editing lives in the orders toolbar instead

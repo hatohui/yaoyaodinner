@@ -73,12 +73,8 @@ export function AddPresetItemDialog({
 		if (data?.total !== undefined) setTotal(data.total)
 	}, [data?.total])
 
-	const existingFoodIds = new Set(existingItems.map(i => i.foodId))
-
-	const foods = (data?.foods ?? []).flatMap(food => {
-		const variantId = food.variants[0]?.id
-		return variantId ? [{ ...food, variantId }] : []
-	})
+	const existingVariantIds = new Set(existingItems.map(i => i.variantId))
+	const foods = (data?.foods ?? []).filter(food => food.variants.length > 0)
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -131,40 +127,113 @@ export function AddPresetItemDialog({
 				) : (
 					<div className='scrollbar-thin flex flex-col gap-0.5 overflow-y-auto pr-1'>
 						{foods.map(food => {
-							const already = existingFoodIds.has(food.id)
+							const single = food.variants.length === 1
+							const singleVariant = food.variants[0]
+							const allAdded = food.variants.every(v =>
+								existingVariantIds.has(v.id)
+							)
+
+							const thumb = (
+								<StoredImage
+									imageKey={food.imageUrl}
+									alt={food.name}
+									className='size-12 shrink-0 rounded-lg object-cover'
+									fallback={
+										<div className='flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
+											<UtensilsCrossed className='size-5' />
+										</div>
+									}
+								/>
+							)
+
+							if (single && singleVariant) {
+								const already = existingVariantIds.has(singleVariant.id)
+								return (
+									<button
+										key={food.id}
+										type='button'
+										disabled={already}
+										onClick={() => {
+											onAdd(singleVariant.id)
+											setOpen(false)
+										}}
+										className={cn(
+											'flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors',
+											already
+												? 'cursor-default opacity-40'
+												: 'hover:bg-accent'
+										)}
+									>
+										{thumb}
+										<p className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
+											{food.name}
+											{singleVariant.label && (
+												<span className='font-normal text-muted-foreground'>
+													{' - '}
+													{singleVariant.label}
+												</span>
+											)}
+										</p>
+										{already && (
+											<span className='shrink-0 text-xs text-muted-foreground'>
+												{t('admin.presets.already_added')}
+											</span>
+										)}
+									</button>
+								)
+							}
+
 							return (
-								<button
+								<div
 									key={food.id}
-									type='button'
-									disabled={already}
-									onClick={() => {
-										onAdd(food.variantId)
-										setOpen(false)
-									}}
 									className={cn(
-										'flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors',
-										already ? 'cursor-default opacity-40' : 'hover:bg-accent'
+										'flex items-start gap-3 rounded-xl px-3 py-2.5',
+										allAdded && 'opacity-50'
 									)}
 								>
-									<StoredImage
-										imageKey={food.imageUrl}
-										alt={food.name}
-										className='size-12 shrink-0 rounded-lg object-cover'
-										fallback={
-											<div className='flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
-												<UtensilsCrossed className='size-5' />
-											</div>
-										}
-									/>
-									<p className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
-										{food.name}
-									</p>
-									{already && (
-										<span className='shrink-0 text-xs text-muted-foreground'>
-											{t('admin.presets.already_added')}
-										</span>
-									)}
-								</button>
+									{thumb}
+									<div className='flex min-w-0 flex-1 flex-col gap-1.5'>
+										<div className='flex items-center gap-2'>
+											<p className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
+												{food.name}
+											</p>
+											{allAdded && (
+												<span className='shrink-0 text-xs text-muted-foreground'>
+													{t('admin.presets.already_added')}
+												</span>
+											)}
+										</div>
+										<div className='flex flex-wrap gap-1.5'>
+											{food.variants.map(v => {
+												const added = existingVariantIds.has(v.id)
+												return (
+													<button
+														key={v.id}
+														type='button'
+														disabled={added}
+														onClick={() => {
+															onAdd(v.id)
+															setOpen(false)
+														}}
+														className={cn(
+															'rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+															added
+																? 'cursor-default border-border/50 bg-muted text-muted-foreground opacity-55'
+																: 'border-border bg-card text-foreground hover:border-primary/50 hover:bg-primary/10 hover:text-primary'
+														)}
+													>
+														{v.label || t('admin.food.default_variant_label')}
+														{v.price != null && (
+															<span className='ml-1 text-muted-foreground'>
+																{v.currency} {v.price}
+															</span>
+														)}
+													</button>
+												)
+											})}
+										</div>
+									</div>
+								</div>
 							)
 						})}
 					</div>

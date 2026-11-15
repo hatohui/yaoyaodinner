@@ -16,7 +16,7 @@ import { PresetMenuSection } from './@PresetMenuSection'
 import { TablePlanCard } from './@TablePlanCard'
 import { useConfig } from '@/hooks/useConfig'
 import { PriceDialog } from './@PriceDialog'
-import { OrderListSkeleton } from './@Skeletons'
+import { OrderListSkeleton, TablePlanBannerSkeleton } from './@Skeletons'
 import { OrderRoundSection } from './@OrderRoundSection'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import {
@@ -84,6 +84,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	if (isLoading) {
 		return (
 			<div className='flex flex-col gap-3'>
+				{canUseAi && <TablePlanBannerSkeleton />}
 				<div className='flex items-center justify-between'>
 					<Skeleton className='h-9 w-32 rounded-full bg-primary/15' />
 					<Skeleton className='h-8 w-16 rounded-full' />

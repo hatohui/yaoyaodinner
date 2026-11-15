@@ -87,6 +87,12 @@ export function PresetItemsList({
 							/>
 							<p className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
 								{item.foodName}
+								{item.variantLabel && (
+									<span className='font-normal text-muted-foreground'>
+										{' - '}
+										{item.variantLabel}
+									</span>
+								)}
 							</p>
 							<div className='flex items-center gap-1.5'>
 								<Button

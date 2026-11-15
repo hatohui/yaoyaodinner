@@ -21,6 +21,19 @@ export function RosterSkeleton({ rows = 4 }: { rows?: number }) {
 	)
 }
 
+export function TablePlanBannerSkeleton() {
+	return (
+		<div className='flex flex-wrap items-center gap-3 rounded-2xl border border-banner-border bg-banner px-4 py-3 shadow-sm'>
+			<Skeleton className='size-9 shrink-0 rounded-full bg-banner-icon/25' />
+			<div className='flex min-w-0 flex-1 basis-40 flex-col gap-1.5'>
+				<Skeleton className='h-4 w-28 rounded-full' />
+				<Skeleton className='h-3 w-56 max-w-full rounded-full' />
+			</div>
+			<Skeleton className='ml-auto h-9 w-28 rounded-xl bg-primary/15' />
+		</div>
+	)
+}
+
 export function OrderListSkeleton({ rows = 4 }: { rows?: number }) {
 	return (
 		<ul className='flex flex-col gap-2'>
