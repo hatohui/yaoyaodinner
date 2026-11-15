@@ -7,7 +7,7 @@ import {
 import { useLanguage } from '@/config/i18n'
 import { Globe } from 'lucide-react'
 
-const languages = [
+export const LANGUAGES = [
 	{ code: 'en', name: 'English' },
 	{ code: 'vi', name: 'Tiếng Việt' },
 	{ code: 'th', name: 'ไทย' },
@@ -24,7 +24,7 @@ export const LanguageSelector = () => {
 				<span className='text-xs font-semibold uppercase'>{lang}</span>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end' className='w-36 rounded-xl'>
-				{languages.map(l => (
+				{LANGUAGES.map(l => (
 					<DropdownMenuItem
 						key={l.code}
 						onClick={() => setLanguage(l.code)}

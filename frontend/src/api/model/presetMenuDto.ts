@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 import type { PresetMenuItemDto } from './presetMenuItemDto';
+import type { PresetNoteTranslationDto } from './presetNoteTranslationDto';
 
 export interface PresetMenuDto {
   id: string;
@@ -16,5 +17,7 @@ export interface PresetMenuDto {
      * @nullable
      */
   note: string | null;
+  /** The note in every language it has been written or translated into. */
+  noteTranslations: PresetNoteTranslationDto[];
   items: PresetMenuItemDto[];
 }

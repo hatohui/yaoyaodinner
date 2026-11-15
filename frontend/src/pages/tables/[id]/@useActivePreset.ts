@@ -2,21 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { getGetPresetMenusQueryOptions } from '@/api/preset-menus/preset-menus'
 import type { PresetMenuDto } from '@/api/model'
-import { IncludedNoteStrip } from '@/components/common/IncludedNoteStrip'
 
-interface IncludedNoteProps {
-	eventId?: string | null
-}
-
-export function IncludedNote({ eventId }: IncludedNoteProps) {
+export function useActivePreset(eventId?: string | null) {
 	const { i18n } = useTranslation()
-	const { data: presets = [] } = useQuery(
+	const { data: presets = [], isLoading } = useQuery(
 		getGetPresetMenusQueryOptions<PresetMenuDto[]>({
 			lang: i18n.language,
 			eventId: eventId ?? undefined,
 		})
 	)
-	const note = presets.find(p => p.isActive)?.note
-
-	return note ? <IncludedNoteStrip note={note} /> : null
+	return { preset: presets.find(p => p.isActive), isLoading }
 }

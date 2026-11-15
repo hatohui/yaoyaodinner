@@ -426,6 +426,9 @@ declare module 'react-i18next' {
 					free: string
 					free_limited: string
 					included: string
+					set_menu: string
+					set_menu_included: string
+					set_menu_shared: string
 					view_cart: string
 					needs_people_title: string
 					needs_people_body: string

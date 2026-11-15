@@ -123,6 +123,7 @@ export * from './popularItemDto';
 export * from './presetFoodDto';
 export * from './presetMenuDto';
 export * from './presetMenuItemDto';
+export * from './presetNoteTranslationDto';
 export * from './publishEventDto';
 export * from './reactDto';
 export * from './reassignTablesDto';

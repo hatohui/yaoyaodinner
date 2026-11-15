@@ -14,6 +14,7 @@ export default function AdminPresetsPage() {
 	const {
 		presets,
 		isLoading,
+		translatingNoteIds,
 		creating,
 		selectedPreset,
 		setActiveId,
@@ -124,6 +125,8 @@ export default function AdminPresetsPage() {
 
 							<PresetNoteField
 								note={preset.note}
+								translations={preset.noteTranslations}
+								translating={translatingNoteIds.has(preset.id)}
 								onCommit={note => updatePreset(preset.id, { note })}
 							/>
 

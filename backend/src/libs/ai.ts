@@ -812,6 +812,7 @@ async function saveFoodContent(
   }
 
   await CacheService.deleteByPrefix("foods:");
+  await CacheService.deleteByPrefix("preset-menus:");
   return updated;
 }
 
@@ -1746,6 +1747,7 @@ export const AiService = {
         update: { note: data.note },
       });
     }
+    await CacheService.deleteByPrefix("preset-menus:");
     return true;
   },
 };

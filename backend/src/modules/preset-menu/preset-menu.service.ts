@@ -7,10 +7,11 @@ import { v4 as uuidv4 } from "uuid";
 import { CacheService } from "@libs/redis";
 import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 
-const PRESET_CACHE_PREFIX = "preset-menus:";
+export const PRESET_CACHE_PREFIX = "preset-menus:";
+const PRESET_CACHE_TTL = 60 * 60;
 
 const presetInclude = (lang: string) => ({
-  translations: { where: { language: lang } },
+  translations: { orderBy: { language: "asc" as const } },
   foods: {
     include: {
       variant: {
@@ -31,12 +32,13 @@ type PresetWithInclude = Awaited<
 export class PresetMenuService {
   constructor(private aiJobs: AiJobsService) {}
 
-  private toResponseDto(preset: PresetWithInclude, isActive = preset.isActive) {
+  private toResponseDto(preset: PresetWithInclude, lang: string, isActive = preset.isActive) {
     return {
       id: preset.id,
       price: Number(preset.price),
       isActive,
-      note: preset.translations[0]?.note ?? null,
+      note: preset.translations.find((tr) => tr.language === lang)?.note ?? null,
+      noteTranslations: preset.translations.map(({ language, note }) => ({ language, note })),
       items: preset.foods.map((f) => ({
         variantId: f.variantId,
         foodId: f.variant.foodId,
@@ -50,9 +52,19 @@ export class PresetMenuService {
     };
   }
 
+  private async listCached(lang: string) {
+    const key = `${PRESET_CACHE_PREFIX}list:${lang}`;
+    const cached = await CacheService.get<ReturnType<PresetMenuService["toResponseDto"]>[]>(key);
+    if (cached) return cached;
+    const presets = await prisma.presetMenu.findMany({ include: presetInclude(lang) });
+    const dtos = presets.map((p) => this.toResponseDto(p, lang));
+    await CacheService.set(key, dtos, PRESET_CACHE_TTL);
+    return dtos;
+  }
+
   async findAll(lang = "en", eventId?: string) {
     const [presets, event] = await Promise.all([
-      prisma.presetMenu.findMany({ include: presetInclude(lang) }),
+      this.listCached(lang),
       eventId
         ? prisma.event.findUnique({
             where: { id: eventId },
@@ -66,7 +78,7 @@ export class PresetMenuService {
           ? p.id === event.presetMenuId
           : event.isActive && p.isActive
         : p.isActive;
-      return this.toResponseDto(p, active);
+      return { ...p, isActive: active };
     });
   }
 
@@ -76,7 +88,7 @@ export class PresetMenuService {
       include: presetInclude(lang),
     });
     if (!preset) throw new NotFoundException("Preset menu not found");
-    return this.toResponseDto(preset);
+    return this.toResponseDto(preset, lang);
   }
 
   async create(dto: CreatePresetDto, lang = "en") {

@@ -17,6 +17,7 @@ import { AiService } from "@libs/ai";
 import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 import { ImagesService } from "@modules/images/images.service";
 import { EventService } from "@modules/event/event.service";
+import { PRESET_CACHE_PREFIX } from "@modules/preset-menu/preset-menu.service";
 
 const FOOD_CACHE_PREFIX = "foods:";
 
@@ -425,6 +426,7 @@ export class FoodService {
       include: this.foodDetailInclude("en"),
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     await this.aiJobs.enqueue({ kind: "food", id: foodId });
 
     return this.toDetailDto(food);
@@ -467,6 +469,7 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     await this.aiJobs.enqueue({ kind: "food", id: foodId });
 
     return this.toDetailDto(food);
@@ -510,6 +513,7 @@ export class FoodService {
       include: this.foodDetailInclude(lang),
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
 
     if (dto.name?.trim() || dto.description?.trim()) {
       await this.aiJobs.enqueue({
@@ -543,6 +547,7 @@ export class FoodService {
 
     await prisma.food.delete({ where: { id } });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     if (existing.imageUrl) await this.images.deleteKey(existing.imageUrl);
     return { id };
   }
@@ -553,6 +558,7 @@ export class FoodService {
       data: { isAvailable },
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     return { count: ids.length };
   }
 
@@ -571,6 +577,7 @@ export class FoodService {
     });
     await prisma.food.deleteMany({ where: { id: { in: deletableIds } } });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     await Promise.all(
       existing
         .map((f) => f.imageUrl)
@@ -598,6 +605,7 @@ export class FoodService {
       include: { translations: { where: { language: lang } } },
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     await this.aiJobs.enqueue({ kind: "food", id: foodId });
 
     return this.toVariantDto(variant);
@@ -634,6 +642,7 @@ export class FoodService {
       include: { translations: { where: { language: lang } } },
     });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     if (dto.label?.trim()) {
       await this.aiJobs.enqueue({
         kind: "food",
@@ -659,6 +668,7 @@ export class FoodService {
 
     await prisma.foodVariant.delete({ where: { id: variantId } });
     await CacheService.deleteByPrefix(FOOD_CACHE_PREFIX);
+    await CacheService.deleteByPrefix(PRESET_CACHE_PREFIX);
     return { id: variantId };
   }
 }

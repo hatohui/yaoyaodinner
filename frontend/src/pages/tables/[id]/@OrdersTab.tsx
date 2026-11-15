@@ -10,7 +10,9 @@ import { useOrders } from './@useOrders'
 import { SplitPickerModal } from './@SplitPickerModal'
 import { OrderListItem } from './@OrderListItem'
 import { TabEmptyState } from './@TabEmptyState'
-import { IncludedNote } from './@IncludedNote'
+import { IncludedNoteStrip } from '@/components/common/IncludedNoteStrip'
+import { useActivePreset } from './@useActivePreset'
+import { PresetMenuSection } from './@PresetMenuSection'
 import { TablePlanCard } from './@TablePlanCard'
 import { useConfig } from '@/hooks/useConfig'
 import { PriceDialog } from './@PriceDialog'
@@ -61,6 +63,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { stage, canAdd, canSplit, canChangeItems, canEditPrice } =
 		useOrderingStage()
 	const canOrder = canEdit && canAdd
+	const { preset } = useActivePreset(table.eventId)
 	const { tablePlan } = useConfig()
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
@@ -125,8 +128,9 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 
 	return (
 		<div className='flex flex-col gap-3'>
-			<IncludedNote eventId={table.eventId} />
+			{preset?.note && <IncludedNoteStrip note={preset.note} />}
 			<OrderingStageNotice />
+			{preset && <PresetMenuSection preset={preset} />}
 			{canUseAi && (
 				<TablePlanCard
 					tableId={table.id}

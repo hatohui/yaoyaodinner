@@ -19,6 +19,7 @@ import type {
 	UpdatePresetDto,
 } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
+import { useAiJobs } from '@/hooks/useAiJobs'
 
 export function usePresetMenu() {
 	const { t, i18n } = useTranslation()
@@ -72,8 +73,13 @@ export function usePresetMenu() {
 	const { mutate: createMutate, isPending: creating } = useCreatePresetMenu({
 		mutation: { onSuccess: invalidate, onError },
 	})
+	const noteJobs = useAiJobs({ onSettled: invalidate })
+
 	const { mutate: updateMutate } = useUpdatePresetMenu({
 		mutation: {
+			onSuccess: (_preset, { id, data: { note } }) => {
+				if (note?.trim()) noteJobs.watch(id)
+			},
 			onMutate: ({ id, data: { price, isActive, note } }) =>
 				patchPresets(list =>
 					list.map(p =>
@@ -169,6 +175,7 @@ export function usePresetMenu() {
 		createFood,
 		presets,
 		isLoading,
+		translatingNoteIds: noteJobs.pendingIds,
 		creating,
 		selectedPreset,
 		setActiveId,

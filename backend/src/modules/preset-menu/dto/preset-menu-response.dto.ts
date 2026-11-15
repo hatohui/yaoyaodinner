@@ -11,6 +11,11 @@ export class PresetMenuItemDto {
   @ApiProperty() quantity: number;
 }
 
+export class PresetNoteTranslationDto {
+  @ApiProperty({ example: 'vi' }) language: string;
+  @ApiProperty() note: string;
+}
+
 export class PresetMenuDto {
   @ApiProperty() id: string;
   @ApiProperty() price: number;
@@ -21,5 +26,10 @@ export class PresetMenuDto {
     description: 'Free, limited extra the preset includes (e.g. "5 buckets of soft drinks"), in the requested language.',
   })
   note: string | null;
+  @ApiProperty({
+    type: [PresetNoteTranslationDto],
+    description: 'The note in every language it has been written or translated into.',
+  })
+  noteTranslations: PresetNoteTranslationDto[];
   @ApiProperty({ type: [PresetMenuItemDto] }) items: PresetMenuItemDto[];
 }
