@@ -170,14 +170,14 @@ export default function TableDetailPage() {
 					>
 						{table.no}
 					</span>
-					<h1 className='min-w-0 truncate text-xl font-bold text-foreground sm:text-2xl'>
+					<h1 className='flex min-w-0 text-xl font-bold text-foreground sm:text-2xl'>
 						{canEdit ? (
 							<EditableName
 								value={table.name}
 								onSave={name => updateTable({ name })}
 							/>
 						) : (
-							table.name
+							<span className='truncate'>{table.name}</span>
 						)}
 					</h1>
 					<SeatCountChip table={table} />

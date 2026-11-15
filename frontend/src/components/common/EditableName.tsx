@@ -55,7 +55,7 @@ export function EditableName({
 					}
 				}}
 				className={cn(
-					'-mx-1.5 h-auto w-auto max-w-full rounded-lg px-1.5 py-0 font-[inherit] leading-[inherit] text-[length:inherit] field-sizing-content md:text-[length:inherit]',
+					'-mx-1.5 h-auto w-auto rounded-lg px-1.5 py-0 font-[inherit] leading-[inherit] text-[length:inherit] field-sizing-content md:text-[length:inherit]',
 					className,
 					inputClassName
 				)}
