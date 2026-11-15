@@ -28,6 +28,7 @@ declare module 'react-i18next' {
 					edit: string
 					done: string
 					back: string
+					back_to_top: string
 					confirm: string
 					cancel: string
 					save: string

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -19,6 +19,10 @@ export function FeedbackForm({ onPost, isPosting }: FeedbackFormProps) {
 	const [by, setBy] = useState(guestName ?? '')
 	const [content, setContent] = useState('')
 	const [imageUrl, setImageUrl] = useState<string | null>(null)
+
+	useEffect(() => {
+		if (!by && guestName) setBy(guestName)
+	}, [guestName, by])
 
 	const canPost = Boolean(content.trim() || imageUrl)
 

@@ -158,7 +158,10 @@ export class FeedbackService {
       },
       include: { reactions: true },
     });
-    return { ...feedback, reactionTotal: 0 };
+    const [withAuthor] = await this.withAuthors(eventId, [
+      { ...feedback, reactionTotal: 0 },
+    ]);
+    return withAuthor;
   }
 
   async react(feedbackId: string, emoji: string, count = 1) {

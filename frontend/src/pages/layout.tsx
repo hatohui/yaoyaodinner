@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import { Navbar } from '@/components/common/Navbar'
+import { BackToTop } from '@/components/common/BackToTop'
 import { IdentityTour } from '@/components/onboarding/IdentityTour'
 import { useGuestSession } from '@/hooks/useGuestSession'
 import { useSmoothScroll } from '@/hooks/useSmoothScroll'
@@ -35,6 +36,7 @@ const MainLayout = ({
 				<AnnouncementBanner />
 				{children}
 			</main>
+			<BackToTop />
 			<IdentityTour />
 		</div>
 	)

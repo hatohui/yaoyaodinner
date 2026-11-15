@@ -5,7 +5,10 @@ import { UserRound } from 'lucide-react'
 import { useGetTables } from '@/api/tables/tables'
 import type { TableListDto } from '@/api/model'
 import { Input } from '@/components/ui/input'
+import { StoredImage } from '@/components/common/StoredImage'
 import { useDebounce } from '@/hooks/useDebounce'
+import { useGuest } from '@/hooks/useGuest'
+import { cn } from '@/utils/shadcn'
 import {
 	MAX_FEEDBACK_NAME_LENGTH,
 	TABLE_FETCH_ALL_COUNT,
@@ -20,8 +23,13 @@ interface FeedbackNameFieldProps {
 
 export function FeedbackNameField({ value, onChange }: FeedbackNameFieldProps) {
 	const { t } = useTranslation()
+	const me = useGuest(s => s.me)
 	const [focused, setFocused] = useState(false)
 	const query = useDebounce(value.trim(), 250)
+
+	const isMe = Boolean(
+		me && value.trim().toLowerCase() === me.name.trim().toLowerCase()
+	)
 
 	// the table search already matches people's names, and guests can read it
 	const { data } = useGetTables<TableListDto>(
@@ -50,7 +58,16 @@ export function FeedbackNameField({ value, onChange }: FeedbackNameFieldProps) {
 	}, [data?.tables, value])
 
 	return (
-		<div className='relative'>
+		<div className='relative flex items-center'>
+			{isMe && me && (
+				<span className='pointer-events-none absolute left-1.5 z-10 flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground'>
+					<StoredImage
+						imageKey={me.pfpUrl}
+						className='size-full object-cover'
+						fallback={me.name.charAt(0).toUpperCase()}
+					/>
+				</span>
+			)}
 			<Input
 				value={value}
 				onChange={e => onChange(e.target.value)}
@@ -59,7 +76,7 @@ export function FeedbackNameField({ value, onChange }: FeedbackNameFieldProps) {
 				placeholder={t('feedback.name_placeholder')}
 				autoComplete='off'
 				maxLength={MAX_FEEDBACK_NAME_LENGTH}
-				className='rounded-full'
+				className={cn('rounded-full', isMe && 'pl-9')}
 			/>
 			{focused && query.length > 0 && suggestions.length > 0 && (
 				<ul className='absolute inset-x-0 top-full z-20 mt-1 overflow-hidden rounded-2xl border border-border bg-popover p-1 shadow-lg'>

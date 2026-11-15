@@ -9,6 +9,7 @@ import {
 } from '@/api/feedback/feedback'
 import { usePagination } from '@/hooks/usePagination'
 import { useToast } from '@/hooks/useToast'
+import { useGuest } from '@/hooks/useGuest'
 import type {
 	FeedbackItemDto,
 	GetFeedbackResponseDto,
@@ -42,6 +43,10 @@ export function useFeedback(targetId?: string | null) {
 			onMutate: async ({ data: body }) => {
 				await qc.cancelQueries({ queryKey: feedbackKey })
 				const prev = qc.getQueryData<GetFeedbackResponseDto>(feedbackKey)
+				const me = useGuest.getState().me
+				const isMe = Boolean(
+					me && me.name.trim().toLowerCase() === (body.by ?? '').trim().toLowerCase()
+				)
 				const optimistic: FeedbackItemDto = {
 					id: `temp-${Date.now()}`,
 					by: body.by ?? null,
@@ -50,6 +55,15 @@ export function useFeedback(targetId?: string | null) {
 					eventId: null,
 					reactions: [],
 					reactionTotal: 0,
+					author: isMe && me ? {
+						personId: me.id,
+						name: me.name,
+						pfpUrl: me.pfpUrl,
+						note: null,
+						tableId: me.tableId,
+						tableNo: null,
+						tableName: null,
+					} : null,
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString(),
 				}

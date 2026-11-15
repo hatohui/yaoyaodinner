@@ -9,6 +9,7 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover'
 import { StoredImage } from '@/components/common/StoredImage'
+import { useGuest } from '@/hooks/useGuest'
 import { cn } from '@/utils/shadcn'
 
 const CLOSE_DELAY_MS = 150
@@ -20,10 +21,29 @@ interface FeedbackAuthorProps {
 
 export function FeedbackAuthor({ by, author }: FeedbackAuthorProps) {
 	const { t } = useTranslation()
+	const me = useGuest(s => s.me)
 	const [open, setOpen] = useState(false)
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-	if (!author) {
+	const isCurrentMe = Boolean(
+		me && by && me.name.trim().toLowerCase() === by.trim().toLowerCase()
+	)
+
+	const resolvedAuthor: FeedbackAuthorDto | null =
+		author ??
+		(isCurrentMe && me
+			? {
+					personId: me.id,
+					name: me.name,
+					pfpUrl: me.pfpUrl,
+					note: null,
+					tableId: me.tableId,
+					tableNo: null,
+					tableName: null,
+			  }
+			: null)
+
+	if (!resolvedAuthor) {
 		return (
 			<span className='text-sm font-semibold text-foreground'>
 				{by || t('feedback.anonymous')}
@@ -52,9 +72,9 @@ export function FeedbackAuthor({ by, author }: FeedbackAuthorProps) {
 			)}
 		>
 			<StoredImage
-				imageKey={author.pfpUrl}
+				imageKey={resolvedAuthor.pfpUrl}
 				className='size-full object-cover'
-				fallback={author.name.charAt(0).toUpperCase()}
+				fallback={resolvedAuthor.name.charAt(0).toUpperCase()}
 			/>
 		</span>
 	)
@@ -68,7 +88,7 @@ export function FeedbackAuthor({ by, author }: FeedbackAuthorProps) {
 					className='flex min-w-0 items-center gap-2 rounded-full text-sm font-semibold text-foreground transition-colors hover:text-primary'
 				>
 					{avatar('size-6 text-[10px]')}
-					<span className='truncate'>{author.name}</span>
+					<span className='truncate'>{resolvedAuthor.name}</span>
 				</button>
 			</PopoverTrigger>
 			<PopoverContent
@@ -80,15 +100,15 @@ export function FeedbackAuthor({ by, author }: FeedbackAuthorProps) {
 					{avatar('size-12 text-base')}
 					<div className='min-w-0'>
 						<p className='truncate font-semibold text-foreground'>
-							{author.name}
+							{resolvedAuthor.name}
 						</p>
-						{author.tableName && (
+						{resolvedAuthor.tableName && (
 							<p className='flex items-center gap-1.5 text-xs text-muted-foreground'>
 								<Armchair className='size-3.5 shrink-0 text-primary' />
 								<span className='truncate'>
 									{t('feedback.author_table', {
-										no: author.tableNo,
-										name: author.tableName,
+										no: resolvedAuthor.tableNo,
+										name: resolvedAuthor.tableName,
 									})}
 								</span>
 							</p>
@@ -96,16 +116,16 @@ export function FeedbackAuthor({ by, author }: FeedbackAuthorProps) {
 					</div>
 				</div>
 
-				{author.note && (
+				{resolvedAuthor.note && (
 					<p className='flex items-start gap-2 rounded-xl bg-primary/10 px-3 py-2 text-sm text-foreground/85'>
 						<NotebookText className='mt-0.5 size-3.5 shrink-0 text-primary' />
-						{author.note}
+						{resolvedAuthor.note}
 					</p>
 				)}
 
-				{author.tableId && (
+				{resolvedAuthor.tableId && (
 					<Link
-						to={`/tables/${author.tableId}`}
+						to={`/tables/${resolvedAuthor.tableId}`}
 						className='flex items-center justify-center gap-1.5 rounded-full border border-border bg-control px-3 py-1.5 text-sm font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 					>
 						<Armchair className='size-4' />
