@@ -1,8 +1,24 @@
+import { keepPreviousData } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Minus, Plus, Trash2, UtensilsCrossed } from 'lucide-react'
-import type { CategoryItemDto, PresetMenuItemDto } from '@/api/model'
+import { useGetFoodsForAdmin } from '@/api/foods/foods'
+import type {
+	CategoryItemDto,
+	FoodVariantDto,
+	GetFoodsForAdminResponseDto,
+	PresetMenuItemDto,
+} from '@/api/model'
+import { MENU_PAGE_SIZE_ALL } from '@/common/constants'
 import { StoredImage } from '@/components/common/StoredImage'
 import { Button } from '@/components/ui/button'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { AddPresetItemDialog } from './@AddPresetItemDialog'
 
@@ -11,6 +27,11 @@ interface PresetItemsListProps {
 	isLoading: boolean
 	lang: string
 	onQuantityChange: (variantId: string, quantity: number) => void
+	onVariantChange: (
+		oldVariantId: string,
+		nextVariant: FoodVariantDto,
+		quantity: number
+	) => void
 	onRemoveItem: (variantId: string) => void
 	onAddItem: (variantId: string) => void
 	categories: CategoryItemDto[]
@@ -29,6 +50,7 @@ export function PresetItemsList({
 	isLoading,
 	lang,
 	onQuantityChange,
+	onVariantChange,
 	onRemoveItem,
 	onAddItem,
 	categories,
@@ -36,6 +58,24 @@ export function PresetItemsList({
 	onCreateFood,
 }: PresetItemsListProps) {
 	const { t } = useTranslation()
+
+	const { data: foodsData } = useGetFoodsForAdmin<GetFoodsForAdminResponseDto>(
+		{ lang, count: MENU_PAGE_SIZE_ALL },
+		{ query: { placeholderData: keepPreviousData } }
+	)
+
+	const variantsByFoodId = useMemo(() => {
+		const map = new Map<string, FoodVariantDto[]>()
+		for (const food of foodsData?.foods ?? []) {
+			if (food.variants.length > 0) map.set(food.id, food.variants)
+		}
+		return map
+	}, [foodsData?.foods])
+
+	const existingVariantIds = useMemo(
+		() => new Set(items.map(i => i.variantId)),
+		[items]
+	)
 
 	if (isLoading) {
 		return (
@@ -70,30 +110,69 @@ export function PresetItemsList({
 				</p>
 			) : (
 				<ul className='flex flex-col gap-2'>
-					{items.map(item => (
-						<li
-							key={item.variantId}
-							className='flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-2.5'
-						>
-							<StoredImage
-								imageKey={item.imageUrl}
-								alt={item.foodName}
-								className='size-12 shrink-0 rounded-lg object-cover'
-								fallback={
-									<div className='flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
-										<UtensilsCrossed className='size-5' />
-									</div>
-								}
-							/>
-							<p className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
-								{item.foodName}
-								{item.variantLabel && (
-									<span className='font-normal text-muted-foreground'>
-										{' - '}
-										{item.variantLabel}
-									</span>
-								)}
-							</p>
+					{items.map(item => {
+						const variants = variantsByFoodId.get(item.foodId) ?? []
+						const hasMultipleVariants = variants.length > 1
+
+						return (
+							<li
+								key={item.variantId}
+								className='flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-2.5'
+							>
+								<StoredImage
+									imageKey={item.imageUrl}
+									alt={item.foodName}
+									className='size-12 shrink-0 rounded-lg object-cover'
+									fallback={
+										<div className='flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground'>
+											<UtensilsCrossed className='size-5' />
+										</div>
+									}
+								/>
+								<div className='flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1'>
+									<p className='truncate text-sm font-medium text-foreground'>
+										{item.foodName}
+										{!hasMultipleVariants && item.variantLabel && (
+											<span className='font-normal text-muted-foreground'>
+												{' - '}
+												{item.variantLabel}
+											</span>
+										)}
+									</p>
+									{hasMultipleVariants && (
+										<Select
+											value={item.variantId}
+											onValueChange={nextId => {
+												const next = variants.find(v => v.id === nextId)
+												if (next)
+													onVariantChange(item.variantId, next, item.quantity)
+											}}
+										>
+											<SelectTrigger
+												size='sm'
+												className='h-7 w-auto gap-1 rounded-full border-border/80 bg-muted/50 px-2.5 text-xs font-medium shadow-none hover:border-primary/40 hover:bg-primary/10'
+											>
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												{variants.map(v => {
+													const taken =
+														v.id !== item.variantId &&
+														existingVariantIds.has(v.id)
+													return (
+														<SelectItem
+															key={v.id}
+															value={v.id}
+															disabled={taken}
+														>
+															{v.label || t('admin.food.default_variant_label')}
+														</SelectItem>
+													)
+												})}
+											</SelectContent>
+										</Select>
+									)}
+								</div>
 							<div className='flex items-center gap-1.5'>
 								<Button
 									size='icon-xs'
@@ -129,7 +208,8 @@ export function PresetItemsList({
 								<Trash2 />
 							</Button>
 						</li>
-					))}
+						)
+					})}
 				</ul>
 			)}
 		</div>

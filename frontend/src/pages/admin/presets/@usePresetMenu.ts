@@ -9,12 +9,15 @@ import {
 	useAddPresetMenuItem,
 	useUpdatePresetMenuItem,
 	useRemovePresetMenuItem,
+	addPresetMenuItem,
+	removePresetMenuItem,
 	getGetPresetMenusQueryKey,
 } from '@/api/preset-menus/preset-menus'
 import { useCreateFood } from '@/api/foods/foods'
 import { useGetCategories } from '@/api/categories/categories'
 import type {
 	CategoryItemDto,
+	FoodVariantDto,
 	PresetMenuDto,
 	UpdatePresetDto,
 } from '@/api/model'
@@ -141,6 +144,41 @@ export function usePresetMenu() {
 	const setQuantity = (presetId: string, variantId: string, quantity: number) =>
 		updateItemMutate({ id: presetId, variantId, data: { quantity } })
 
+	const changeVariant = async (
+		presetId: string,
+		oldVariantId: string,
+		nextVariant: FoodVariantDto,
+		quantity: number
+	) => {
+		if (oldVariantId === nextVariant.id) return
+		const prev = qc.getQueryData<PresetMenuDto[]>(presetsKey)
+		patchPreset(presetId, p => ({
+			...p,
+			items: p.items.map(item =>
+				item.variantId === oldVariantId
+					? {
+							...item,
+							variantId: nextVariant.id,
+							variantLabel: nextVariant.label,
+							price: nextVariant.price,
+							currency: nextVariant.currency,
+						}
+					: item
+			),
+		}))
+		try {
+			await removePresetMenuItem(presetId, oldVariantId)
+			await addPresetMenuItem(presetId, {
+				variantId: nextVariant.id,
+				quantity,
+			})
+			invalidate()
+		} catch {
+			if (prev) qc.setQueryData(presetsKey, prev)
+			onError()
+		}
+	}
+
 	const createFood = (
 		presetId: string,
 		name: string,
@@ -189,5 +227,6 @@ export function usePresetMenu() {
 		removeItem: (presetId: string, variantId: string) =>
 			removeItemMutate({ id: presetId, variantId }),
 		setQuantity,
+		changeVariant,
 	}
 }

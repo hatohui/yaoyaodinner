@@ -24,6 +24,7 @@ export default function AdminPresetsPage() {
 		addItem,
 		removeItem,
 		setQuantity,
+		changeVariant,
 		categories,
 		creatingFood,
 		createFood,
@@ -136,6 +137,9 @@ export default function AdminPresetsPage() {
 								lang={i18n.language}
 								onQuantityChange={(variantId, quantity) =>
 									setQuantity(preset.id, variantId, quantity)
+								}
+								onVariantChange={(oldVariantId, nextVariant, quantity) =>
+									changeVariant(preset.id, oldVariantId, nextVariant, quantity)
 								}
 								onRemoveItem={variantId => removeItem(preset.id, variantId)}
 								onAddItem={variantId => addItem(preset.id, variantId)}
