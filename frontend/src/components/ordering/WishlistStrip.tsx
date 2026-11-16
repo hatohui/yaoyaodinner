@@ -7,9 +7,12 @@ import {
 	Plus,
 	ShoppingCart,
 	Star,
+	Zap,
 } from 'lucide-react'
 import type { TableWishDto } from '@/api/model'
 import type { WishStatus } from '@/hooks/useTableWishes'
+import { useToast } from '@/hooks/useToast'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/shadcn'
 
 interface WishlistStripProps {
@@ -26,11 +29,18 @@ export function WishlistStrip({
 	onAdd,
 }: WishlistStripProps) {
 	const { t } = useTranslation()
+	const toast = useToast()
 
 	const sorted = [...wishes].sort(
 		(a, b) => Number(b.kind === 'must') - Number(a.kind === 'must')
 	)
 	const left = sorted.filter(w => statusOf(w) === 'open').length
+	const pending = sorted.filter(w => statusOf(w) === 'open' && w.foodId)
+
+	const applyPlan = () => {
+		pending.forEach(onAdd)
+		toast.success(t('plan_board.applied', { count: pending.length }))
+	}
 
 	return (
 		<section className='flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3'>
@@ -46,6 +56,16 @@ export function WishlistStrip({
 							? t('plan_board.strip_left', { count: left })
 							: t('plan_board.strip_done')}
 				</span>
+				{pending.length > 0 && (
+					<Button
+						size='sm'
+						onClick={applyPlan}
+						className='h-7 shrink-0 gap-1 rounded-full px-2.5 text-xs'
+					>
+						<Zap className='size-3.5' />
+						{t('plan_board.apply_plan', { count: pending.length })}
+					</Button>
+				)}
 				<Link
 					to={`/tables/${tableId}?tab=plan`}
 					className='flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'

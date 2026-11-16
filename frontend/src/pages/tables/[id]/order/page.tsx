@@ -284,6 +284,7 @@ export default function TableOrderPage() {
 											wishMenu={
 												food.defaultVariantId && (
 													<WishMenu
+														name={food.name}
 														wish={plan.wishOf(food.id)}
 														onPick={kind => plan.pick(food, kind)}
 														onRemove={() => plan.removeFood(food.id)}

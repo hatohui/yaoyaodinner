@@ -550,6 +550,11 @@ declare module 'react-i18next' {
 					allergies_for: string
 					other_placeholder: string
 					strip_title: string
+					apply_plan_one: string
+					apply_plan_other: string
+					applied_one: string
+					applied_other: string
+					quick_added: string
 					strip_left_one: string
 					strip_left_other: string
 					strip_done: string

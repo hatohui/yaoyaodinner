@@ -16,7 +16,6 @@ interface WishSectionProps {
 	statusOf: (wish: TableWishDto) => WishStatus
 	canEdit: boolean
 	canAddToCart: boolean
-	isAdding: boolean
 	onAdd: (wish: NewWish) => void
 	onAddToCart: (wish: TableWishDto) => void
 	onSetKind: (id: string, kind: WishKind) => void
@@ -32,7 +31,6 @@ export function WishSection({
 	statusOf,
 	canEdit,
 	canAddToCart,
-	isAdding,
 	onAdd,
 	onAddToCart,
 	onSetKind,
@@ -95,7 +93,6 @@ export function WishSection({
 			{canEdit && (
 				<WishAddForm
 					placeholder={t('plan_board.add_placeholder')}
-					disabled={isAdding}
 					onAdd={wish => onAdd({ kind, ...wish } as NewWish)}
 				/>
 			)}

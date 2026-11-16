@@ -272,6 +272,7 @@ export default function MenuPage() {
 											wishMenu={
 												planTableId && food.defaultVariantId ? (
 													<WishMenu
+														name={food.name}
 														wish={plan.wishOf(food.id)}
 														onPick={kind => plan.pick(food, kind)}
 														onRemove={() => plan.removeFood(food.id)}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Ban, ClipboardCopy, Sparkles, Star, Wand2 } from 'lucide-react'
+import { Ban, ClipboardCopy, Sparkles, Star, Wand2, Zap } from 'lucide-react'
 import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -47,7 +47,6 @@ export function PlanTab({
 		statusOf: board.statusOf,
 		canEdit,
 		canAddToCart: board.canAddToCart,
-		isAdding: board.isAdding,
 		onAdd: board.add,
 		onAddToCart: board.addToCart,
 		onSetKind: board.setKind,
@@ -71,7 +70,7 @@ export function PlanTab({
 				/>
 			)}
 
-			<div className='flex items-center justify-between gap-3'>
+			<div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-2'>
 				<p className='text-xs text-muted-foreground'>
 					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
 				</p>
@@ -84,6 +83,16 @@ export function PlanTab({
 					>
 						<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
 						{t('table_plan.modify_cta')}
+					</Button>
+				)}
+				{board.canAddToCart && board.pendingCount > 0 && (
+					<Button
+						size='sm'
+						onClick={board.applyPlan}
+						className='shrink-0 gap-1.5 rounded-full'
+					>
+						<Zap className='size-4' />
+						{t('plan_board.apply_plan', { count: board.pendingCount })}
 					</Button>
 				)}
 				<Button

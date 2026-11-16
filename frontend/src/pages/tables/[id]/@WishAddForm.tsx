@@ -15,15 +15,10 @@ const MAX_LABEL = 120
 
 interface WishAddFormProps {
 	placeholder: string
-	disabled: boolean
 	onAdd: (wish: Omit<NewWish, 'kind'>) => void
 }
 
-export function WishAddForm({
-	placeholder,
-	disabled,
-	onAdd,
-}: WishAddFormProps) {
+export function WishAddForm({ placeholder, onAdd }: WishAddFormProps) {
 	const { t, i18n } = useTranslation()
 	const [query, setQuery] = useState('')
 	const search = useDebounce(query.trim(), 250)
@@ -54,7 +49,6 @@ export function WishAddForm({
 			<Input
 				value={query}
 				maxLength={MAX_LABEL}
-				disabled={disabled}
 				placeholder={placeholder}
 				onChange={e => setQuery(e.target.value)}
 				onKeyDown={e => {
@@ -63,7 +57,7 @@ export function WishAddForm({
 					const first = results[0]
 					pick(
 						first?.defaultVariantId
-							? { variantId: first.defaultVariantId }
+							? { variantId: first.defaultVariantId, food: first }
 							: { label: typed }
 					)
 				}}
@@ -75,7 +69,9 @@ export function WishAddForm({
 						<li key={food.id}>
 							<button
 								type='button'
-								onClick={() => pick({ variantId: food.defaultVariantId! })}
+								onClick={() =>
+									pick({ variantId: food.defaultVariantId!, food })
+								}
 								className='flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-primary/10'
 							>
 								<OrderThumb
