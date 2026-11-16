@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Flame, Languages, Sparkles } from 'lucide-react'
 import { cn } from '@/utils/shadcn'
+import { useConfig } from '@/hooks/useConfig'
 
 interface FoodTagsProps {
 	isPopular?: boolean
@@ -16,8 +17,10 @@ export function FoodTags({
 	className,
 }: FoodTagsProps) {
 	const { t } = useTranslation()
+	const { recommended } = useConfig()
+	const showRecommended = isRecommended && recommended
 
-	if (!isPopular && !isRecommended && !isAiTranslated) return null
+	if (!isPopular && !showRecommended && !isAiTranslated) return null
 
 	const base =
 		'flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-md'
@@ -35,7 +38,7 @@ export function FoodTags({
 					{t('menu.popular')}
 				</span>
 			)}
-			{isRecommended && (
+			{showRecommended && (
 				<span className={cn(base, 'border-primary/40 bg-card text-primary')}>
 					<Sparkles className='size-3.5' />
 					{t('menu.recommended')}

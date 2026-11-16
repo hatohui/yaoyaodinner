@@ -13,6 +13,7 @@ import type { CategoryItemDto, FoodSuggestionDto } from '@/api/model'
 import { SearchSuggest } from './@SearchSuggest'
 import { ViewToggle, type ListView } from '@/components/common/ViewToggle'
 import type { MenuSort } from '@/utils/searchParams'
+import { useConfig } from '@/hooks/useConfig'
 
 interface MenuFilter {
 	category: string
@@ -65,6 +66,7 @@ export function FilterBar({
 	onViewChange,
 }: FilterBarProps) {
 	const { t } = useTranslation()
+	const { recommended: recommendedEnabled } = useConfig()
 
 	return (
 		<div className='sticky top-14 z-20 w-full border-b border-border bg-card shadow-xs'>
@@ -134,18 +136,20 @@ export function FilterBar({
 											})
 										}
 									/>
-									<CategoryPill
-										label={t('menu.recommended')}
-										icon={Sparkles}
-										active={recommended}
-										onClick={() =>
-											onFilterChange({
-												category: 'all',
-												popular: false,
-												recommended: true,
-											})
-										}
-									/>
+									{recommendedEnabled && (
+										<CategoryPill
+											label={t('menu.recommended')}
+											icon={Sparkles}
+											active={recommended}
+											onClick={() =>
+												onFilterChange({
+													category: 'all',
+													popular: false,
+													recommended: true,
+												})
+											}
+										/>
+									)}
 								</>
 							)}
 							<CategoryPill
@@ -245,12 +249,14 @@ export function FilterBar({
 											{t('menu.popular')}
 										</span>
 									</SelectItem>
-									<SelectItem value='recommended'>
-										<span className='flex items-center gap-1.5'>
-											<Sparkles className='size-3.5 text-primary' />
-											{t('menu.recommended')}
-										</span>
-									</SelectItem>
+									{recommendedEnabled && (
+										<SelectItem value='recommended'>
+											<span className='flex items-center gap-1.5'>
+												<Sparkles className='size-3.5 text-primary' />
+												{t('menu.recommended')}
+											</span>
+										</SelectItem>
+									)}
 								</>
 							)}
 							<SelectItem value='all'>{t('menu.all_categories')}</SelectItem>

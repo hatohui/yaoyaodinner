@@ -18,6 +18,7 @@ import {
 	Settings,
 	ShieldCheck,
 	ShoppingCart,
+	Sparkles,
 	Trash2,
 	UtensilsCrossed,
 } from 'lucide-react'
@@ -67,6 +68,7 @@ export function AdminMenu() {
 		menu,
 		floorPlan,
 		feedbackWall,
+		recommended,
 		tableRoast,
 		guestRoast,
 	} = useConfig()
@@ -355,6 +357,22 @@ export function AdminMenu() {
 						</span>
 						<Switch
 							checked={feedbackWall}
+							size='sm'
+							className='pointer-events-none'
+						/>
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
+						onSelect={e => {
+							e.preventDefault()
+							toggleConfig('feature.recommended', recommended)
+						}}
+						className='cursor-pointer'
+					>
+						<Sparkles className='size-4' />
+						<span className='flex-1'>{t('menu.recommended')}</span>
+						<Switch
+							checked={recommended}
 							size='sm'
 							className='pointer-events-none'
 						/>

@@ -21,6 +21,7 @@ import { EmptyView } from './@EmptyView'
 import { MENU_VIEW_STORAGE_KEY, STALE_TIME_STATIC } from '@/common/constants'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useConfig } from '@/hooks/useConfig'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EditModeBanner } from './@EditModeBanner'
@@ -59,13 +60,15 @@ export default function MenuPage() {
 		category,
 		sort,
 		popular,
-		recommended,
+		recommended: recommendedParam,
 		setPage: setUrlPage,
 		setCount: setUrlCount,
 		setSort,
 		setFilter,
 		resetParams,
 	} = useMenuSearchParams()
+	const { recommended: recommendedEnabled } = useConfig()
+	const recommended = recommendedEnabled && recommendedParam
 
 	const pagination = usePagination({
 		initialPage: urlPage,

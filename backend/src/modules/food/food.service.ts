@@ -18,6 +18,8 @@ import { AiJobsService } from "@modules/ai-jobs/ai-jobs.service";
 import { ImagesService } from "@modules/images/images.service";
 import { EventService } from "@modules/event/event.service";
 import { PRESET_CACHE_PREFIX } from "@modules/preset-menu/preset-menu.service";
+import { ConfigService } from "@modules/config/config.service";
+import { CONFIG_KEYS } from "@common/config/registry";
 
 const FOOD_CACHE_PREFIX = "foods:";
 
@@ -27,6 +29,7 @@ export class FoodService {
     private images: ImagesService,
     private events: EventService,
     private aiJobs: AiJobsService,
+    private config: ConfigService,
   ) {}
 
   private async getPopularityMap(): Promise<Map<string, number>> {
@@ -62,7 +65,11 @@ export class FoodService {
   }
 
   /** Only the most-ordered foods are popular, not everything ever ordered. */
-  private async getPopularFoodIds(limit = 8): Promise<Set<string>> {
+  private async getPopularFoodIds(): Promise<Set<string>> {
+    const limit = Math.max(
+      0,
+      Math.floor(await this.config.get<number>(CONFIG_KEYS.popularCount)),
+    );
     const perFood = await this.getPopularityMap();
     const available = await prisma.food.findMany({
       where: { id: { in: [...perFood.keys()] }, isAvailable: true },

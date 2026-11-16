@@ -15,6 +15,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 	auth: 'admin.settings.category_auth',
 	event: 'admin.settings.category_event',
 	orders: 'admin.settings.category_orders',
+	menu: 'admin.settings.category_menu',
 	tables: 'admin.settings.category_tables',
 	feedback: 'admin.settings.category_feedback',
 	features: 'admin.settings.category_features',

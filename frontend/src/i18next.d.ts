@@ -919,6 +919,7 @@ declare module 'react-i18next' {
 						category_auth: string
 						category_event: string
 						category_orders: string
+						category_menu: string
 						category_roast: string
 						category_tables: string
 						category_feedback: string

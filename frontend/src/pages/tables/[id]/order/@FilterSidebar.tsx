@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/utils/shadcn'
 import type { CategoriesState } from '@/pages/menu/@FilterBar'
 import { SearchSuggest } from '@/pages/menu/@SearchSuggest'
+import { useConfig } from '@/hooks/useConfig'
 
 interface FilterSidebarProps {
 	search: string
@@ -52,6 +53,7 @@ export function FilterSidebar({
 	onFilterChange,
 }: FilterSidebarProps) {
 	const { t } = useTranslation()
+	const { recommended: recommendedEnabled } = useConfig()
 	const plain = !popular && !recommended
 	const pick = (
 		category: string,
@@ -110,20 +112,22 @@ export function FilterSidebar({
 									<Flame className='size-4 shrink-0' />
 									{t('menu.popular')}
 								</button>
-								<button
-									type='button'
-									aria-pressed={recommended}
-									onClick={() =>
-										pick('all', { popular: false, recommended: true })
-									}
-									className={cn(
-										itemClass,
-										recommended ? activeClass : idleClass
-									)}
-								>
-									<Sparkles className='size-4 shrink-0' />
-									{t('menu.recommended')}
-								</button>
+								{recommendedEnabled && (
+									<button
+										type='button'
+										aria-pressed={recommended}
+										onClick={() =>
+											pick('all', { popular: false, recommended: true })
+										}
+										className={cn(
+											itemClass,
+											recommended ? activeClass : idleClass
+										)}
+									>
+										<Sparkles className='size-4 shrink-0' />
+										{t('menu.recommended')}
+									</button>
+								)}
 								<div className='my-1 border-t border-border/60' />
 							</>
 						)}

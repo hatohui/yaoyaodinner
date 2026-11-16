@@ -109,6 +109,9 @@ export class ConfigService {
     });
 
     await CacheService.delete(CacheSettings.config.all.key);
+    // cached food lists bake in isPopular, so a new cutoff must drop them
+    if (key === CONFIG_KEYS.popularCount)
+      await CacheService.deleteByPrefix("foods:");
     return row;
   }
 }
