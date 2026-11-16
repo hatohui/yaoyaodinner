@@ -72,15 +72,14 @@ export function wishStatus(
 	return cartQuantityOf(wish.foodId) > 0 ? 'in_cart' : 'open'
 }
 
-/** Must and want dishes still waiting to be ordered, ready to drop into the cart. */
-export const openPlanDishes = (
+/** Must and want menu dishes not yet ordered or in the cart. */
+export const openPlanWishes = (
 	wishes: TableWishDto[],
 	statusOf: (wish: TableWishDto) => WishStatus
-): CartDish[] =>
-	wishes
-		.filter(w => w.kind !== 'avoid' && statusOf(w) === 'open')
-		.map(wishToCartDish)
-		.filter((dish): dish is CartDish => dish !== null)
+) =>
+	wishes.filter(
+		w => w.kind !== 'avoid' && w.foodId && w.variantId && statusOf(w) === 'open'
+	)
 
 export function useTableWishes(tableId: string) {
 	const { t, i18n } = useTranslation()

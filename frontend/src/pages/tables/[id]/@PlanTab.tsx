@@ -4,6 +4,7 @@ import { Ban, ClipboardCopy, Sparkles, Star, Wand2, Zap } from 'lucide-react'
 import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ApplyPlanDialog } from '@/components/ordering/ApplyPlanDialog'
 import { AllergyDialog } from './@AllergyDialog'
 import { AllergySection } from './@AllergySection'
 import { PersonalOrdersSection } from './@PersonalOrdersSection'
@@ -33,6 +34,7 @@ export function PlanTab({
 	const { t } = useTranslation()
 	const board = usePlanBoard(table.id, people, orders, canEdit)
 	const [modifying, setModifying] = useState(false)
+	const [previewing, setPreviewing] = useState(false)
 
 	if (board.isLoading) {
 		return (
@@ -88,7 +90,7 @@ export function PlanTab({
 				{board.canAddToCart && board.pendingCount > 0 && (
 					<Button
 						size='sm'
-						onClick={board.applyPlan}
+						onClick={() => setPreviewing(true)}
 						className='shrink-0 gap-1.5 rounded-full'
 					>
 						<Zap className='size-4' />
@@ -146,6 +148,13 @@ export function PlanTab({
 				onEditPerson={board.setEditing}
 			/>
 
+			<ApplyPlanDialog
+				open={previewing}
+				onOpenChange={setPreviewing}
+				wishes={board.wishes}
+				statusOf={board.statusOf}
+				onConfirm={board.applyPlan}
+			/>
 			<AllergyDialog
 				person={board.editing}
 				isSaving={board.isSavingAllergies}

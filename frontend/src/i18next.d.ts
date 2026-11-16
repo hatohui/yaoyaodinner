@@ -555,6 +555,15 @@ declare module 'react-i18next' {
 					applied_one: string
 					applied_other: string
 					quick_added: string
+					apply_title: string
+					apply_body: string
+					apply_skipped: string
+					skip_ordered: string
+					skip_in_cart: string
+					skip_unlisted: string
+					apply_total: string
+					apply_confirm_one: string
+					apply_confirm_other: string
 					strip_left_one: string
 					strip_left_other: string
 					strip_done: string

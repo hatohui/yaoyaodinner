@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import {
@@ -10,10 +11,11 @@ import {
 	Zap,
 } from 'lucide-react'
 import type { TableWishDto } from '@/api/model'
-import type { WishStatus } from '@/hooks/useTableWishes'
+import { openPlanWishes, type WishStatus } from '@/hooks/useTableWishes'
 import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/shadcn'
+import { ApplyPlanDialog } from './ApplyPlanDialog'
 
 interface WishlistStripProps {
 	tableId: string
@@ -35,11 +37,12 @@ export function WishlistStrip({
 		(a, b) => Number(b.kind === 'must') - Number(a.kind === 'must')
 	)
 	const left = sorted.filter(w => statusOf(w) === 'open').length
-	const pending = sorted.filter(w => statusOf(w) === 'open' && w.foodId)
+	const pending = openPlanWishes(wishes, statusOf)
+	const [previewing, setPreviewing] = useState(false)
 
-	const applyPlan = () => {
-		pending.forEach(onAdd)
-		toast.success(t('plan_board.applied', { count: pending.length }))
+	const applyPlan = (chosen: TableWishDto[]) => {
+		chosen.forEach(onAdd)
+		toast.success(t('plan_board.applied', { count: chosen.length }))
 	}
 
 	return (
@@ -59,7 +62,7 @@ export function WishlistStrip({
 				{pending.length > 0 && (
 					<Button
 						size='sm'
-						onClick={applyPlan}
+						onClick={() => setPreviewing(true)}
 						className='h-7 shrink-0 gap-1 rounded-full px-2.5 text-xs'
 					>
 						<Zap className='size-3.5' />
@@ -112,6 +115,13 @@ export function WishlistStrip({
 					})}
 				</ul>
 			)}
+			<ApplyPlanDialog
+				open={previewing}
+				onOpenChange={setPreviewing}
+				wishes={wishes}
+				statusOf={statusOf}
+				onConfirm={applyPlan}
+			/>
 		</section>
 	)
 }

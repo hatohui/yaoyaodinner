@@ -17,7 +17,7 @@ import { useConfig } from '@/hooks/useConfig'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useToast } from '@/hooks/useToast'
 import {
-	openPlanDishes,
+	openPlanWishes,
 	useTableWishes,
 	wishStatus,
 	wishToCartDish,
@@ -74,7 +74,7 @@ export function usePlanBoard(
 			? group.label
 			: t(`plan_board.allergen.${group.allergen}`)
 
-	const pendingDishes = openPlanDishes(board.wishes, statusOf)
+	const pendingCount = openPlanWishes(board.wishes, statusOf).length
 	const viewCart = {
 		label: t('plan_board.view_cart'),
 		onClick: () => navigate(`/tables/${tableId}/order`),
@@ -89,9 +89,12 @@ export function usePlanBoard(
 		})
 	}
 
-	const applyPlan = () => {
-		pendingDishes.forEach(cart.addDish)
-		toast.success(t('plan_board.applied', { count: pendingDishes.length }), {
+	const applyPlan = (chosen: TableWishDto[]) => {
+		chosen.forEach(wish => {
+			const dish = wishToCartDish(wish)
+			if (dish) cart.addDish(dish)
+		})
+		toast.success(t('plan_board.applied', { count: chosen.length }), {
 			action: viewCart,
 		})
 	}
@@ -147,7 +150,7 @@ export function usePlanBoard(
 		access,
 		canUseAi: Boolean(tablePlan && canEdit && personId && stage === 'open'),
 		addToCart,
-		pendingCount: pendingDishes.length,
+		pendingCount,
 		applyPlan,
 		copy,
 		editing,
