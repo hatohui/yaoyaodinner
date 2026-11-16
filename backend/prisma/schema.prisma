@@ -85,6 +85,7 @@ model FoodVariant {
 
   food         Food                     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   orders       Order[]
+  wishes       TableWish[]
   presetFoods  PresetMenuFood[]
   translations FoodVariantTranslation[]
   eventPrices  EventSeasonalPrice[]
@@ -178,6 +179,7 @@ model Table {
   event  Event?     @relation(fields: [eventId], references: [id], onDelete: Cascade)
   people People[]
   orders Order[]
+  wishes TableWish[]
 
   @@unique([slotId, eventId])
   @@index([eventId])
@@ -197,6 +199,7 @@ model People {
   event         Event?         @relation(fields: [eventId], references: [id], onDelete: Cascade)
   personalNotes PersonalNote[]
   orderSplits   OrderSplit[]
+  allergies     PersonAllergy[]
 
   @@index([tableId])
   @@index([eventId])
@@ -212,6 +215,42 @@ model PersonalNote {
 
   @@index([personId])
   @@map("personal_note")
+}
+
+/// A dish a table has to have, would like to try, or wants kept off the table.
+enum WishKind {
+  must
+  want
+  avoid
+}
+
+/// Either a menu dish (variantId) or a free-text name for one not on the menu.
+model TableWish {
+  id        String   @id @db.VarChar(255)
+  tableId   String   @map("table_id") @db.VarChar(255)
+  variantId String?  @map("variant_id") @db.VarChar(255)
+  label     String?  @db.VarChar(255)
+  kind      WishKind @default(want)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  table   Table        @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  variant FoodVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([tableId])
+  @@map("table_wish")
+}
+
+/// `allergen` is a fixed key (shellfish, peanut, ...) or "other" with a free-text label.
+model PersonAllergy {
+  id       String  @id @db.VarChar(255)
+  personId String  @map("person_id") @db.VarChar(255)
+  allergen String  @db.VarChar(32)
+  label    String? @db.VarChar(100)
+
+  person People @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@index([personId])
+  @@map("person_allergy")
 }
 
 model Order {

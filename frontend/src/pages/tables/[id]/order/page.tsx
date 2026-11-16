@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useParams, useSearchParams } from 'react-router'
 import { ArrowLeft, ReceiptText, ShoppingCart, UserPlus } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -19,6 +19,7 @@ import type {
 	FoodItemDto,
 	FoodSuggestionDto,
 	OrderResponseDto,
+	TableWishDto,
 } from '@/api/model'
 import { ProductCard } from './@ProductCard'
 import { CartPanel } from '@/components/ordering/CartPanel'
@@ -31,6 +32,15 @@ import {
 import { AddToCartModal } from '@/components/ordering/AddToCartModal'
 import { useTableOrdering } from './@useTableOrdering'
 import { useOrderCart } from '@/hooks/useOrderCart'
+import { useExcludeFilter } from '@/hooks/useExcludeFilter'
+import { ExcludeFilter } from '@/components/ordering/ExcludeFilter'
+import {
+	useFoodWishes,
+	wishStatus,
+	wishToCartDish,
+} from '@/hooks/useTableWishes'
+import { WishlistStrip } from '@/components/ordering/WishlistStrip'
+import { WishMenu } from '@/components/ordering/WishMenu'
 import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
@@ -40,6 +50,8 @@ import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 export default function TableOrderPage() {
 	const { t } = useTranslation()
+	const { id: routeTableId = '' } = useParams()
+	const exclude = useExcludeFilter(routeTableId)
 	const {
 		tableId,
 		table,
@@ -59,7 +71,7 @@ export default function TableOrderPage() {
 		isRefreshing,
 		isError,
 		pagination,
-	} = useTableOrdering()
+	} = useTableOrdering(exclude.query)
 	const cart = useOrderCart(tableId)
 	const { canEdit } = useTableAccess(tableId)
 	const { canAdd } = useOrderingStage()
@@ -72,12 +84,21 @@ export default function TableOrderPage() {
 
 	const orderedLines = useMemo(() => groupOrders(orders), [orders])
 
+	const plan = useFoodWishes(tableId)
+	// the plan tab's "add individual order" lands here with personal splits preselected
+	const individual = useSearchParams()[0].get('split') === 'individual'
+
 	const orderedByFood = useMemo(() => {
 		const counts = new Map<string, number>()
 		for (const o of orders)
 			counts.set(o.foodId, (counts.get(o.foodId) ?? 0) + o.quantity)
 		return counts
 	}, [orders])
+
+	const addWish = (wish: TableWishDto) => {
+		const dish = wishToCartDish(wish)
+		if (dish) cart.addDish(dish)
+	}
 
 	const [activeFood, setActiveFood] = useState<FoodItemDto | null>(null)
 	const [panelTab, setPanelTab] = useState<SidePanelTab>('cart')
@@ -195,6 +216,13 @@ export default function TableOrderPage() {
 								popular={popular}
 								recommended={recommended}
 								onFilterChange={setFilter}
+								exclude={
+									<ExcludeFilter
+										filter={exclude}
+										align='start'
+										className='w-full'
+									/>
+								}
 							/>
 						</div>
 					</aside>
@@ -213,8 +241,18 @@ export default function TableOrderPage() {
 								popular={popular}
 								recommended={recommended}
 								onFilterChange={setFilter}
+								exclude={<ExcludeFilter filter={exclude} />}
 							/>
 						</div>
+
+						<WishlistStrip
+							tableId={tableId}
+							wishes={plan.wishes.filter(w => w.kind !== 'avoid')}
+							statusOf={wish =>
+								wishStatus(wish, id => orderedByFood.has(id), cart.quantityOf)
+							}
+							onAdd={addWish}
+						/>
 
 						{isLoading ? (
 							<ProductGridSkeleton count={pagination.count} />
@@ -243,6 +281,15 @@ export default function TableOrderPage() {
 											orderedQuantity={orderedByFood.get(food.id) ?? 0}
 											onAdd={() => setActiveFood(food)}
 											onQuantityChange={q => cart.setQuantity(food.id, q)}
+											wishMenu={
+												food.defaultVariantId && (
+													<WishMenu
+														wish={plan.wishOf(food.id)}
+														onPick={kind => plan.pick(food, kind)}
+														onRemove={() => plan.removeFood(food.id)}
+													/>
+												)
+											}
 										/>
 									))}
 								</div>
@@ -301,6 +348,7 @@ export default function TableOrderPage() {
 				food={activeFood}
 				tableId={tableId}
 				onAdd={cart.addConfigured}
+				defaultMode={individual ? 'me' : 'table'}
 			/>
 		</div>
 	)

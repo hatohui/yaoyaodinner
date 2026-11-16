@@ -28,7 +28,9 @@ import type {
   CreatePersonDto,
   IdsDto,
   MovePeopleDto,
+  PersonAllergyDto,
   PersonDto,
+  SetAllergiesDto,
   UpdatePersonDto,
   UpdatePersonPfpDto
 } from '../model';
@@ -465,4 +467,62 @@ const {mutation: mutationOptions} = options ?
         TContext
       > => {
       return useMutation(getUpdatePersonPfpMutationOptions(options), queryClient);
+    }
+    export const setPersonAllergies = (
+    id: string,
+    setAllergiesDto: SetAllergiesDto,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<PersonAllergyDto[]>(
+      {url: `/api/people/${id}/allergies`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: setAllergiesDto, signal
+    },
+      );
+    }
+
+
+
+export const getSetPersonAllergiesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPersonAllergies>>, TError,{id: string;data: SetAllergiesDto}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof setPersonAllergies>>, TError,{id: string;data: SetAllergiesDto}, TContext> => {
+
+const mutationKey = ['setPersonAllergies'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setPersonAllergies>>, {id: string;data: SetAllergiesDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  setPersonAllergies(id,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetPersonAllergiesMutationResult = NonNullable<Awaited<ReturnType<typeof setPersonAllergies>>>
+    export type SetPersonAllergiesMutationBody = SetAllergiesDto
+    export type SetPersonAllergiesMutationError = unknown
+
+    export const useSetPersonAllergies = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setPersonAllergies>>, TError,{id: string;data: SetAllergiesDto}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof setPersonAllergies>>,
+        TError,
+        {id: string;data: SetAllergiesDto},
+        TContext
+      > => {
+      return useMutation(getSetPersonAllergiesMutationOptions(options), queryClient);
     }

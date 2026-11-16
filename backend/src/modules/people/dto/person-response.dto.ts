@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { NoteResponseDto } from '../../personal-note/dto/note-response.dto';
+import { PersonAllergyDto } from './person-allergy.dto';
 
 export class PersonDto {
   @ApiProperty() id: string;
@@ -12,4 +13,6 @@ export class PersonDto {
   pfpUrl: string | null;
   @ApiPropertyOptional({ type: [NoteResponseDto] })
   personalNotes?: NoteResponseDto[];
+  @ApiPropertyOptional({ type: [PersonAllergyDto] })
+  allergies?: PersonAllergyDto[];
 }

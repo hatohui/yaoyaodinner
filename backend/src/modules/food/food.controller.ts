@@ -30,6 +30,14 @@ import { CONFIG_KEYS } from '@common/config/registry';
 import { BulkToggleDto } from '@common/dto/bulk-toggle.dto';
 import { IdsDto } from '@common/dto/ids.dto';
 
+const MAX_EXCLUDED = 100;
+
+const idList = (raw?: string) =>
+  [...new Set((raw ?? '').split(',').map((id) => id.trim()).filter(Boolean))].slice(
+    0,
+    MAX_EXCLUDED,
+  );
+
 @ApiTags('foods')
 @Controller('foods')
 @UseGuards(FeatureGuard)
@@ -58,6 +66,18 @@ export class FoodController {
   @ApiQuery({ name: 'popular', required: false, type: Boolean })
   @ApiQuery({ name: 'recommended', required: false, type: Boolean })
   @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({
+    name: 'excludeCategories',
+    required: false,
+    type: String,
+    description: 'Comma-separated category ids to leave out',
+  })
+  @ApiQuery({
+    name: 'excludeFoods',
+    required: false,
+    type: String,
+    description: 'Comma-separated food ids to leave out',
+  })
   @ApiResponse({ status: 200, type: GetFoodsResponseDto })
   findAll(
     @Query('lang') lang = 'en',
@@ -69,6 +89,8 @@ export class FoodController {
     @Query('popular') popular?: string,
     @Query('recommended') recommended?: string,
     @Query('search') search?: string,
+    @Query('excludeCategories') excludeCategories?: string,
+    @Query('excludeFoods') excludeFoods?: string,
   ) {
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const countNum = Math.min(500, Math.max(1, parseInt(count, 10) || 20));
@@ -83,6 +105,10 @@ export class FoodController {
       popular === 'true',
       recommended === 'true',
       search ?? '',
+      {
+        categories: idList(excludeCategories),
+        foods: idList(excludeFoods),
+      },
     );
   }
 

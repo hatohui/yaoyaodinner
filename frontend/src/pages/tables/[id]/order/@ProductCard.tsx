@@ -4,6 +4,7 @@ import type { FoodItemDto } from '@/api/model'
 import { StoredImage } from '@/components/common/StoredImage'
 import { Button } from '@/components/ui/button'
 import { FoodTags } from '@/components/common/FoodTags'
+import type { ReactNode } from 'react'
 import { cn } from '@/utils/shadcn'
 
 interface ProductCardProps {
@@ -12,6 +13,7 @@ interface ProductCardProps {
 	orderedQuantity: number
 	onAdd: () => void
 	onQuantityChange: (quantity: number) => void
+	wishMenu?: ReactNode
 }
 
 export function ProductCard({
@@ -20,6 +22,7 @@ export function ProductCard({
 	orderedQuantity,
 	onAdd,
 	onQuantityChange,
+	wishMenu,
 }: ProductCardProps) {
 	const { t } = useTranslation()
 
@@ -46,8 +49,9 @@ export function ProductCard({
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
 					isAiTranslated={food.isAiTranslated}
-					className='absolute left-2 top-2 max-w-[calc(100%-1rem)]'
+					className='absolute left-2 top-2 max-w-[calc(100%-3rem)]'
 				/>
+				{wishMenu && <div className='absolute right-2 top-2'>{wishMenu}</div>}
 
 				<div className='absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5'>
 					{orderedQuantity > 0 && (

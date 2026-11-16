@@ -1,0 +1,166 @@
+import { useTranslation } from 'react-i18next'
+import {
+	ArrowDown,
+	ArrowUp,
+	Check,
+	ShoppingCart,
+	TriangleAlert,
+	X,
+} from 'lucide-react'
+import type { TableWishDto, WishKind } from '@/api/model'
+import { OrderThumb } from '@/components/ordering/OrderThumb'
+import type { WishStatus } from '@/hooks/useTableWishes'
+import { cn } from '@/utils/shadcn'
+import { WishDragHandle, useWishDrag } from './@WishDnd'
+
+const KIND_ORDER: WishKind[] = ['must', 'want', 'avoid']
+
+const iconButton =
+	'flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+
+interface WishRowProps {
+	wish: TableWishDto
+	status: WishStatus
+	avoid: boolean
+	canEdit: boolean
+	canAddToCart: boolean
+	onAddToCart: () => void
+	onMove: (kind: WishKind) => void
+	onRemove: () => void
+}
+
+export function WishRow({
+	wish,
+	status,
+	avoid,
+	canEdit,
+	canAddToCart,
+	onAddToCart,
+	onMove,
+	onRemove,
+}: WishRowProps) {
+	const { t } = useTranslation()
+	const drag = useWishDrag(wish.id)
+	const index = KIND_ORDER.indexOf(wish.kind)
+	// phones get arrows too: dragging inside a scrolling page is fiddly there
+	const moves = [
+		{ kind: KIND_ORDER[index - 1], icon: ArrowUp },
+		{ kind: KIND_ORDER[index + 1], icon: ArrowDown },
+	].filter((m): m is { kind: WishKind; icon: typeof ArrowUp } =>
+		Boolean(m.kind)
+	)
+
+	return (
+		<li
+			ref={drag.ref}
+			className={cn(
+				'flex items-center gap-2 py-2',
+				drag.isDragging && 'opacity-40'
+			)}
+		>
+			{canEdit && (
+				<WishDragHandle label={t('plan_board.drag')} handle={drag.handle} />
+			)}
+			<OrderThumb
+				imageKey={wish.foodImageUrl}
+				alt={wish.name}
+				className='size-9 rounded-lg'
+			/>
+			<div className='flex min-w-0 flex-1 flex-col'>
+				<span
+					className={cn(
+						'truncate text-sm text-foreground',
+						status === 'ordered' &&
+							!avoid &&
+							'text-muted-foreground line-through'
+					)}
+				>
+					{wish.name}
+					{wish.variantLabel && (
+						<span className='text-muted-foreground'>
+							{' - '}
+							{wish.variantLabel}
+						</span>
+					)}
+				</span>
+				{!wish.foodId && (
+					<span className='text-[11px] text-muted-foreground'>
+						{t('plan_board.off_menu')}
+					</span>
+				)}
+			</div>
+
+			{avoid && status === 'ordered' && (
+				<span
+					title={t('plan_board.ordered_anyway')}
+					className='flex shrink-0 items-center gap-1 rounded-full border border-destructive/50 px-1.5 py-0.5 text-[11px] font-semibold text-destructive sm:px-2'
+				>
+					<TriangleAlert className='size-3' />
+					<span className='sr-only sm:not-sr-only'>
+						{t('plan_board.ordered_anyway')}
+					</span>
+				</span>
+			)}
+			{!avoid && status === 'ordered' && (
+				<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 sm:px-2 text-[11px] font-semibold text-primary-foreground'>
+					<Check className='size-3' />
+					<span className='sr-only sm:not-sr-only'>
+						{t('plan_board.status_ordered')}
+					</span>
+				</span>
+			)}
+			{!avoid && status === 'in_cart' && (
+				<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-1.5 py-0.5 sm:px-2 text-[11px] font-semibold text-primary'>
+					<ShoppingCart className='size-3' />
+					<span className='sr-only sm:not-sr-only'>
+						{t('plan_board.status_in_cart')}
+					</span>
+				</span>
+			)}
+			{!avoid && status === 'open' && canAddToCart && wish.foodId && (
+				<button
+					type='button'
+					aria-label={t('plan_board.add_to_cart')}
+					title={t('plan_board.add_to_cart')}
+					onClick={onAddToCart}
+					className={iconButton}
+				>
+					<ShoppingCart className='size-4' />
+				</button>
+			)}
+
+			{canEdit &&
+				moves.map(({ kind, icon: Icon }) => {
+					const label = t('plan_board.move_to', {
+						list: t(`plan_board.${kind}`),
+					})
+					return (
+						<button
+							key={kind}
+							type='button'
+							aria-label={label}
+							title={label}
+							onClick={() => onMove(kind)}
+							className={cn(iconButton, 'sm:hidden')}
+						>
+							<Icon className='size-4' />
+						</button>
+					)
+				})}
+			{canEdit && (
+				<button
+					type='button'
+					aria-label={t('plan_board.remove')}
+					title={t('plan_board.remove')}
+					onClick={onRemove}
+					className={cn(
+						iconButton,
+						'hover:bg-destructive/10 hover:text-destructive'
+					)}
+				>
+					<X className='size-4' />
+				</button>
+			)}
+		</li>
+	)
+}

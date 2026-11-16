@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowUpDown, Flame, Sparkles } from 'lucide-react'
 import type { CategoryItemDto, FoodSuggestionDto } from '@/api/model'
@@ -31,6 +32,7 @@ interface FilterSidebarProps {
 		popular: boolean
 		recommended: boolean
 	}) => void
+	exclude?: ReactNode
 }
 
 const itemClass =
@@ -51,6 +53,7 @@ export function FilterSidebar({
 	popular,
 	recommended,
 	onFilterChange,
+	exclude,
 }: FilterSidebarProps) {
 	const { t } = useTranslation()
 	const { recommended: recommendedEnabled } = useConfig()
@@ -85,6 +88,8 @@ export function FilterSidebar({
 					<SelectItem value='popular'>{t('menu.sort_popular')}</SelectItem>
 				</SelectContent>
 			</Select>
+
+			{exclude}
 
 			<nav
 				aria-label={t('menu.categories')}

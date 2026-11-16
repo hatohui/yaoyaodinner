@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { UpdatePersonPfpDto } from './dto/update-person-pfp.dto';
+import { SetAllergiesDto } from './dto/person-allergy.dto';
 import { ImagesService } from '@modules/images/images.service';
 
 @Injectable()
@@ -22,9 +23,38 @@ export class PeopleService {
   findByTableId(tableId: string) {
     return prisma.people.findMany({
       where: { tableId },
-      include: { personalNotes: true },
+      include: { personalNotes: true, allergies: { orderBy: { allergen: 'asc' } } },
       orderBy: { name: 'asc' },
     });
+  }
+
+  /** Saving replaces the whole list, so the dialog never has to diff it. */
+  async setAllergies(id: string, dto: SetAllergiesDto) {
+    const seen = new Set<string>();
+    const rows = dto.allergies
+      .map((a) => ({
+        allergen: a.allergen,
+        label: a.allergen === 'other' ? a.label?.trim() || null : null,
+      }))
+      .filter((a) => a.allergen !== 'other' || a.label)
+      .filter((a) => {
+        const key = `${a.allergen}:${a.label?.toLowerCase() ?? ''}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+    const [, , allergies] = await prisma.$transaction([
+      prisma.personAllergy.deleteMany({ where: { personId: id } }),
+      prisma.personAllergy.createMany({
+        data: rows.map((a) => ({ id: uuidv4(), personId: id, ...a })),
+      }),
+      prisma.personAllergy.findMany({
+        where: { personId: id },
+        orderBy: { allergen: 'asc' },
+      }),
+    ]);
+    return allergies;
   }
 
   private async assertCapacity(tableId: string) {

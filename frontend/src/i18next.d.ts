@@ -101,6 +101,7 @@ declare module 'react-i18next' {
 					enter_pin: string
 					subtitle: string
 					unlock: string
+					other_table: string
 					unlocking: string
 					invalid_pin: string
 					saved_note: string
@@ -388,7 +389,7 @@ declare module 'react-i18next' {
 					not_found: string
 					description_placeholder: string
 				}
-				tabs: { people: string; orders: string; splits: string }
+				tabs: { people: string; plan: string; orders: string; splits: string }
 				ordering: {
 					closed_title: string
 					closed_body: string
@@ -508,6 +509,86 @@ declare module 'react-i18next' {
 				}
 				health: Record<string, string>
 				dev: Record<string, unknown>
+				exclude: {
+					button: string
+					title: string
+					clear: string
+					table_allergies: string
+					avoid_allergies: string
+					allergies_applied: string
+					unmatched: string
+					hide_avoided_one: string
+					hide_avoided_other: string
+				}
+				plan_board: {
+					intro: string
+					must: string
+					want: string
+					individual: string
+					allergies: string
+					must_empty: string
+					want_empty: string
+					individual_empty: string
+					allergies_empty: string
+					add_placeholder: string
+					add_custom: string
+					add_failed: string
+					duplicate: string
+					save_failed: string
+					remove: string
+					add_to_cart: string
+					added_to_cart: string
+					view_cart: string
+					status_ordered: string
+					status_in_cart: string
+					off_menu: string
+					progress: string
+					copy: string
+					copied: string
+					copy_failed: string
+					edit_allergies: string
+					allergies_for: string
+					other_placeholder: string
+					strip_title: string
+					strip_left_one: string
+					strip_left_other: string
+					strip_done: string
+					strip_empty: string
+					open_plan: string
+					avoid: string
+					avoid_empty: string
+					ordered_anyway: string
+					intro_drag: string
+					drag: string
+					drop_here: string
+					move_to: string
+					add_to_plan: string
+					remove_from_plan: string
+					add_individual: string
+					individual_hint: string
+					locked: string
+					unlock: string
+					pick_identity: string
+					go_people: string
+					ai_closed: string
+					allergen: Record<
+						| 'shellfish'
+						| 'fish'
+						| 'peanut'
+						| 'tree_nut'
+						| 'dairy'
+						| 'egg'
+						| 'gluten'
+						| 'soy'
+						| 'sesame'
+						| 'pork'
+						| 'beef'
+						| 'alcohol'
+						| 'vegetarian'
+						| 'other',
+						string
+					>
+				}
 				table_plan: {
 					title: string
 					cta: string

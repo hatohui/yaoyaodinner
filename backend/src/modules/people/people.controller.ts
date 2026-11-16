@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Put,
   Delete,
   Body,
   Param,
@@ -16,6 +17,7 @@ import { UpdatePersonDto } from './dto/update-person.dto';
 import { UpdatePersonPfpDto } from './dto/update-person-pfp.dto';
 import { MovePeopleDto } from './dto/move-people.dto';
 import { PersonDto } from './dto/person-response.dto';
+import { PersonAllergyDto, SetAllergiesDto } from './dto/person-allergy.dto';
 import { IdsDto } from '@common/dto/ids.dto';
 import { AdminGuard } from '@common/guards/admin.guard';
 import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
@@ -86,6 +88,18 @@ export class PeopleController {
   ) {
     await this.access.forPerson(id, headers);
     return this.people.updatePfp(id, dto);
+  }
+
+  @Put(':id/allergies')
+  @ApiOperation({ operationId: 'setPersonAllergies' })
+  @ApiResponse({ status: 200, type: [PersonAllergyDto] })
+  async setAllergies(
+    @Param('id') id: string,
+    @Body() dto: SetAllergiesDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    await this.access.forPerson(id, headers);
+    return this.people.setAllergies(id, dto);
   }
 
   @Delete(':id')

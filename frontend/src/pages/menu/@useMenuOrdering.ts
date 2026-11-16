@@ -98,6 +98,7 @@ export function useMenuOrdering() {
 
 	return {
 		tableId,
+		canEdit,
 		table,
 		cart,
 		orderedLines,

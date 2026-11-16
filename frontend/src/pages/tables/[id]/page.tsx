@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useSearchParams } from 'react-router'
 import { ArrowLeft, Flame, Link as LinkIcon, Map } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -25,6 +25,7 @@ import { isOnMap } from '@/components/floor-plan/layout'
 import { EditableName } from '@/components/common/EditableName'
 import { Roster } from './@Roster'
 import { OrdersTab } from './@OrdersTab'
+import { PlanTab } from './@PlanTab'
 import { SplitsTab } from './@SplitsTab'
 import { TableBanner } from './@TableBanner'
 import { SeatCountChip } from './@SeatCountChip'
@@ -52,6 +53,13 @@ export default function TableDetailPage() {
 	useEffect(() => {
 		if (tourQuery) setTab('people')
 	}, [tourQuery, setTab])
+
+	// links such as the order page's "open plan" pick the tab to land on
+	const [searchParams] = useSearchParams()
+	const tabParam = searchParams.get('tab')
+	useEffect(() => {
+		if (tabParam) setTab(tabParam)
+	}, [tabParam, setTab])
 
 	useEffect(() => {
 		if (!table) return
@@ -280,6 +288,9 @@ export default function TableDetailPage() {
 						>
 							{t('tabs.people')}
 						</TabsTrigger>
+						<TabsTrigger value='plan' className={tabTrigger}>
+							{t('tabs.plan')}
+						</TabsTrigger>
 						<TabsTrigger value='orders' className={tabTrigger}>
 							{t('tabs.orders')}
 							<TabCount count={orderCount} />
@@ -299,6 +310,16 @@ export default function TableDetailPage() {
 							canSetHost={isAdmin}
 							onSetHost={personId => updateTable({ tableLeaderId: personId })}
 							roast={rosterRoast}
+						/>
+					</TabsContent>
+					<TabsContent value='plan'>
+						<PlanTab
+							table={table}
+							people={people ?? []}
+							orders={orders ?? []}
+							canEdit={canEdit}
+							onJoin={join}
+							onShowPeople={() => setTab('people')}
 						/>
 					</TabsContent>
 					<TabsContent value='orders'>

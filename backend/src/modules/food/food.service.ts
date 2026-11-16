@@ -95,9 +95,14 @@ export class FoodService {
     popularOnly = false,
     recommendedOnly = false,
     search = "",
+    exclude: { categories: string[]; foods: string[] } = { categories: [], foods: [] },
   ) {
     const offset = (page - 1) * count;
     const query = search.trim().toLowerCase();
+    const excludeKey = [
+      [...exclude.categories].sort().join(","),
+      [...exclude.foods].sort().join(","),
+    ].join("|");
 
     const cacheKey = CacheSettings.food.all.key(
       lang,
@@ -109,6 +114,7 @@ export class FoodService {
       popularOnly ? "1" : "0",
       recommendedOnly ? "1" : "0",
       query,
+      excludeKey,
     );
 
     const cachedFoods = await CacheService.get(cacheKey);
@@ -120,8 +126,14 @@ export class FoodService {
     const where = {
       isAvailable: true,
       ...(categoryId !== "all" && categoryId !== "" ? { categoryId } : {}),
-      ...(popularOnly ? { id: { in: [...popularIds] } } : {}),
       ...(recommendedOnly ? { isRecommended: true } : {}),
+      AND: [
+        ...(popularOnly ? [{ id: { in: [...popularIds] } }] : []),
+        ...(exclude.categories.length
+          ? [{ categoryId: { notIn: exclude.categories } }]
+          : []),
+        ...(exclude.foods.length ? [{ id: { notIn: exclude.foods } }] : []),
+      ],
     };
 
     const rawFoods = await prisma.food.findMany({

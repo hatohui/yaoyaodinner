@@ -22,6 +22,7 @@ import { ContentHealthModule } from "./modules/content-health/content-health.mod
 import { AiJobsModule } from "./modules/ai-jobs/ai-jobs.module";
 import { WorkerModule } from "./modules/worker/worker.module";
 import { GlossaryModule } from "./modules/glossary/glossary.module";
+import { TableWishModule } from "./modules/table-wish/table-wish.module";
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { GlossaryModule } from "./modules/glossary/glossary.module";
     WorkerModule,
     ContentHealthModule,
     GlossaryModule,
+    TableWishModule,
   ],
 })
 export class AppModule {}

@@ -11,8 +11,9 @@ export const CacheSettings = {
         popular: string,
         recommended: string,
         search: string,
+        exclude: string,
       ) =>
-        `foods:${lang}:${page}:${count}:${categoryId}:${sortBy}:${sortOrder}:${popular}:${recommended}:${encodeURIComponent(search)}`,
+        `foods:${lang}:${page}:${count}:${categoryId}:${sortBy}:${sortOrder}:${popular}:${recommended}:${encodeURIComponent(search)}:${exclude}`,
       ttl: 1800,
     },
     popular: {

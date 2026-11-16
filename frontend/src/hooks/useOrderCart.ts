@@ -24,6 +24,8 @@ export interface CartLine {
 	chosen: Set<string>
 }
 
+export type CartDish = Omit<CartLine, 'quantity' | 'mode' | 'chosen'>
+
 type StoredLine = Omit<CartLine, 'chosen'> & { chosen: string[] }
 type StoredCarts = Record<string, StoredLine[]>
 
@@ -92,28 +94,33 @@ export function useOrderCart(tableId: string) {
 			return next
 		})
 
-	const add = (food: FoodItemDto) => {
-		if (!food.defaultVariantId) return
+	const addDish = (dish: CartDish) =>
 		setLines(prev => {
 			const next = new Map(prev)
-			const existing = next.get(food.id)
+			const existing = next.get(dish.foodId)
 			if (existing) {
-				next.set(food.id, { ...existing, quantity: existing.quantity + 1 })
+				next.set(dish.foodId, { ...existing, quantity: existing.quantity + 1 })
 				return next
 			}
-			next.set(food.id, {
-				foodId: food.id,
-				variantId: food.defaultVariantId!,
-				name: food.name,
-				imageUrl: food.imageUrl,
-				price: food.price ?? 0,
-				currency: food.currency ?? '',
-				shouldCalculate: food.shouldCalculate,
+			next.set(dish.foodId, {
+				...dish,
 				quantity: 1,
 				mode: 'table',
 				chosen: new Set<string>(),
 			})
 			return next
+		})
+
+	const add = (food: FoodItemDto) => {
+		if (!food.defaultVariantId) return
+		addDish({
+			foodId: food.id,
+			variantId: food.defaultVariantId,
+			name: food.name,
+			imageUrl: food.imageUrl,
+			price: food.price ?? 0,
+			currency: food.currency ?? '',
+			shouldCalculate: food.shouldCalculate,
 		})
 	}
 
@@ -244,6 +251,7 @@ export function useOrderCart(tableId: string) {
 		lines: items,
 		quantityOf: (foodId: string) => lines.get(foodId)?.quantity ?? 0,
 		add,
+		addDish,
 		addConfigured,
 		setQuantity,
 		setMode,

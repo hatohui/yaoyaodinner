@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowUpDown, Flame, Sparkles } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -48,6 +49,7 @@ interface FilterBarProps {
 	onFilterChange: (filter: MenuFilter) => void
 	view?: ListView
 	onViewChange?: (view: ListView) => void
+	exclude?: ReactNode
 }
 
 export function FilterBar({
@@ -64,6 +66,7 @@ export function FilterBar({
 	onFilterChange,
 	view,
 	onViewChange,
+	exclude,
 }: FilterBarProps) {
 	const { t } = useTranslation()
 	const { recommended: recommendedEnabled } = useConfig()
@@ -78,6 +81,7 @@ export function FilterBar({
 						onChange={onSearchChange}
 						onSelect={onSuggestionSelect}
 					/>
+					{exclude}
 
 					{/* Desktop-only Sort dropdown in Row 1 */}
 					<div className='hidden shrink-0 sm:flex'>

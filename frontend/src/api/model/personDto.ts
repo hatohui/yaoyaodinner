@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 import type { NoteResponseDto } from './noteResponseDto';
+import type { PersonAllergyDto } from './personAllergyDto';
 
 export interface PersonDto {
   id: string;
@@ -17,4 +18,5 @@ export interface PersonDto {
   /** @nullable */
   pfpUrl?: string | null;
   personalNotes?: NoteResponseDto[];
+  allergies?: PersonAllergyDto[];
 }

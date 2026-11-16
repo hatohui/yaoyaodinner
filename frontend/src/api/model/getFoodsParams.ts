@@ -14,6 +14,14 @@ sortOrder?: GetFoodsSortOrder;
 popular?: boolean;
 recommended?: boolean;
 search?: string;
+/**
+ * Comma-separated category ids to leave out
+ */
+excludeCategories?: string;
+/**
+ * Comma-separated food ids to leave out
+ */
+excludeFoods?: string;
 category?: string;
 count?: number;
 page?: number;

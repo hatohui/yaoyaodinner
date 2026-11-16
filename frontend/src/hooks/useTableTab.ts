@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react'
 import { localStorage } from '@/utils/localstorage'
 import { TABLE_TAB_STORAGE_KEY } from '@/common/constants'
 
-export type TableTab = 'people' | 'orders' | 'split'
+export type TableTab = 'people' | 'plan' | 'orders' | 'split'
 
 const DEFAULT_TAB: TableTab = 'people'
-const TABS: TableTab[] = ['people', 'orders', 'split']
+const TABS: TableTab[] = ['people', 'plan', 'orders', 'split']
 
 type TabMap = Record<string, TableTab>
 

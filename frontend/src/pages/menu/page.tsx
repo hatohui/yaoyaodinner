@@ -14,6 +14,15 @@ import { useListView } from '@/components/common/ViewToggle'
 import { FoodDetailModal } from './[id]/@FoodDetailModal'
 import { MenuOrderingOverlays } from './@MenuOrderingOverlays'
 import { useMenuOrdering } from './@useMenuOrdering'
+import { useExcludeFilter } from '@/hooks/useExcludeFilter'
+import { ExcludeFilter } from '@/components/ordering/ExcludeFilter'
+import { WishMenu } from '@/components/ordering/WishMenu'
+import { WishlistStrip } from '@/components/ordering/WishlistStrip'
+import {
+	useFoodWishes,
+	wishStatus,
+	wishToCartDish,
+} from '@/hooks/useTableWishes'
 import { LoadingView } from './@LoadingView'
 import { cn } from '@/utils/shadcn'
 import { ErrorView } from './@ErrorView'
@@ -80,6 +89,17 @@ export default function MenuPage() {
 
 	const { page, count } = pagination
 
+	const ordering = useMenuOrdering()
+	const exclude = useExcludeFilter(ordering.tableId)
+	const planTableId =
+		canOrder && ordering.canEdit && !editing ? ordering.tableId : ''
+	const plan = useFoodWishes(planTableId)
+
+	useEffect(() => {
+		pagination.setPage(1)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [exclude.query.excludeCategories, exclude.query.excludeFoods])
+
 	const { data, isLoading, isError, error, refetch, isPlaceholderData } =
 		useGetFoods<GetFoodsResponseDto>(
 			{
@@ -91,6 +111,7 @@ export default function MenuPage() {
 				popular: popular || undefined,
 				recommended: recommended || undefined,
 				search: debouncedSearch.trim() || undefined,
+				...exclude.query,
 			},
 			{
 				query: {
@@ -133,14 +154,18 @@ export default function MenuPage() {
 	const filteredFoods = data?.foods ?? []
 
 	const hasFilters =
-		category !== 'all' || search.trim() !== '' || popular || recommended
+		category !== 'all' ||
+		search.trim() !== '' ||
+		popular ||
+		recommended ||
+		exclude.activeCount > 0
 
 	const handleReset = () => {
 		resetParams()
+		exclude.clear()
 		setSearch('')
 	}
 
-	const ordering = useMenuOrdering()
 	const { view, setView } = useListView(MENU_VIEW_STORAGE_KEY)
 	// edit mode needs the photo for image and visibility controls
 	const compact = view === 'compact' && !editing
@@ -167,10 +192,30 @@ export default function MenuPage() {
 				onFilterChange={setFilter}
 				view={view}
 				onViewChange={setView}
+				exclude={<ExcludeFilter filter={exclude} />}
 			/>
 
 			<div className='mx-auto max-w-[1400px] px-4'>
 				{editing && <EditModeBanner onExit={exitEditMode} />}
+				{planTableId && (
+					<div className='pt-6'>
+						<WishlistStrip
+							tableId={planTableId}
+							wishes={plan.wishes.filter(w => w.kind !== 'avoid')}
+							statusOf={wish =>
+								wishStatus(
+									wish,
+									id => ordering.orderedQuantityOf(id) > 0,
+									ordering.cart.quantityOf
+								)
+							}
+							onAdd={wish => {
+								const dish = wishToCartDish(wish)
+								if (dish) ordering.cart.addDish(dish)
+							}}
+						/>
+					</div>
+				)}
 
 				<div className='py-8'>
 					{isLoading && !data ? (
@@ -223,6 +268,15 @@ export default function MenuPage() {
 											}
 											onImageChange={
 												editing ? key => setImage(food.id, key) : undefined
+											}
+											wishMenu={
+												planTableId && food.defaultVariantId ? (
+													<WishMenu
+														wish={plan.wishOf(food.id)}
+														onPick={kind => plan.pick(food, kind)}
+														onRemove={() => plan.removeFood(food.id)}
+													/>
+												) : undefined
 											}
 											footer={
 												editing && seasonalByFood.has(food.id) ? (

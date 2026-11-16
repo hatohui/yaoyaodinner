@@ -16,7 +16,10 @@ import { useDebounce } from '@/hooks/useDebounce'
 import { STALE_TIME_STATIC } from '@/common/constants'
 import { toFoodSortQuery, type MenuSort } from '@/utils/searchParams'
 
-export function useTableOrdering() {
+export function useTableOrdering(exclude: {
+	excludeCategories?: string
+	excludeFoods?: string
+}) {
 	const { id = '' } = useParams()
 	const { i18n } = useTranslation()
 
@@ -33,7 +36,16 @@ export function useTableOrdering() {
 
 	useEffect(() => {
 		setPage(1)
-	}, [debouncedSearch, category, sort, popular, recommended, setPage])
+	}, [
+		debouncedSearch,
+		category,
+		sort,
+		popular,
+		recommended,
+		exclude.excludeCategories,
+		exclude.excludeFoods,
+		setPage,
+	])
 
 	const { data: table, isLoading: tableLoading } = useGetTableById<TableDto>(id)
 
@@ -68,6 +80,7 @@ export function useTableOrdering() {
 				popular: popular || undefined,
 				recommended: recommended || undefined,
 				search: debouncedSearch.trim() || undefined,
+				...exclude,
 			},
 			{
 				query: {

@@ -200,8 +200,28 @@ export class TablePlanService {
           select: {
             name: true,
             personalNotes: { select: { content: true }, take: 1 },
+            allergies: { select: { allergen: true, label: true } },
           },
           orderBy: { name: 'asc' },
+        },
+        wishes: {
+          select: {
+            kind: true,
+            label: true,
+            variant: {
+              select: {
+                food: {
+                  select: {
+                    translations: {
+                      where: { language: { in: [lang, 'en'] } },
+                      select: { language: true, name: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
         },
         orders: {
           select: {
@@ -225,15 +245,43 @@ export class TablePlanService {
     });
     if (!table) throw new NotFoundException('Table not found');
 
-    const guests = table.people.map((p) => ({
-      name: p.name,
-      note: p.personalNotes[0]?.content?.trim() || null,
-    }));
+    // structured allergies ride along in the note, where restrictions are already read
+    const guests = table.people.map((p) => {
+      const note = p.personalNotes[0]?.content?.trim() || null;
+      const allergies = p.allergies.map((a) =>
+        a.allergen === 'other' && a.label ? a.label : a.allergen.replace('_', ' '),
+      );
+      return {
+        name: p.name,
+        note:
+          [note, allergies.length ? `Allergic to / avoids: ${allergies.join(', ')}` : null]
+            .filter(Boolean)
+            .join('\n') || null,
+      };
+    });
+    const wishNames = (kind: string) =>
+      table.wishes
+        .filter((w) => w.kind === kind)
+        .map((w) => (w.variant ? nameIn(w.variant.food.translations, lang) : w.label))
+        .filter(Boolean);
+    const wishNote =
+      (
+        [
+          ['Must have', wishNames('must')],
+          ['Would like to try', wishNames('want')],
+          ['Keep off the table', wishNames('avoid')],
+        ] as const
+      )
+        .filter(([, names]) => names.length)
+        .map(([title, names]) => `${title}: ${names.join(', ')}`)
+        .join('\n') || null;
     return {
       table,
       guests,
+      wishNote,
       fingerprint: fingerprintOf({
         guests,
+        wishNote,
         orders: table.orders.map((o) => [o.variantId, o.quantity]).sort(),
       }),
     };
@@ -411,7 +459,7 @@ export class TablePlanService {
     options: PlanOptions,
     rework: (PlanRework & { restrictions: StoredRestriction[]; reasons: Map<string, string> }) | null,
   ) {
-    const { table, guests, fingerprint } = await this.loadTable(tableId, lang);
+    const { table, guests, wishNote, fingerprint } = await this.loadTable(tableId, lang);
     const [foods, popularity, preset] = await Promise.all([
       prisma.food.findMany({
         where: { isAvailable: true },
@@ -529,7 +577,7 @@ export class TablePlanService {
     const result = await AiService.planTable(lang, {
       partySize,
       budgetPerPerson: options.budgetPerPerson,
-      preference: options.preference,
+      preference: [options.preference, wishNote].filter(Boolean).join('\n') || null,
       noAlcohol: !options.alcohol,
       guests,
       alreadyOrdered: modifying

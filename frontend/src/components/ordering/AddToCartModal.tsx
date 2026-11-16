@@ -35,6 +35,7 @@ interface AddToCartModalProps {
 		mode: SplitMode,
 		chosen: Set<string>
 	) => void
+	defaultMode?: SplitMode
 }
 
 export function AddToCartModal({
@@ -43,6 +44,7 @@ export function AddToCartModal({
 	food,
 	tableId,
 	onAdd,
+	defaultMode = 'table',
 }: AddToCartModalProps) {
 	const { t, i18n } = useTranslation()
 
@@ -76,10 +78,10 @@ export function AddToCartModal({
 		if (open) {
 			setPickedVariantId(null)
 			setQuantity(1)
-			setMode('table')
+			setMode(defaultMode === 'me' && !myPersonId ? 'choose' : defaultMode)
 			setChosen(new Set())
 		}
-	}, [open, food])
+	}, [open, food, defaultMode, myPersonId])
 
 	const toggleChosen = (personId: string) => {
 		setChosen(prev => {

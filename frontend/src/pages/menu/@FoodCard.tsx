@@ -24,6 +24,7 @@ interface FoodCardProps {
 	onDelete?: () => void
 	onImageChange?: (key: string) => void
 	footer?: ReactNode
+	wishMenu?: ReactNode
 }
 
 export function FoodCard({
@@ -38,6 +39,7 @@ export function FoodCard({
 	onDelete,
 	onImageChange,
 	footer,
+	wishMenu,
 }: FoodCardProps) {
 	const { t } = useTranslation()
 	const prefetchFood = usePrefetchFood()
@@ -117,6 +119,10 @@ export function FoodCard({
 					</span>
 				)}
 			</Link>
+
+			{wishMenu && !isEditing && (
+				<div className='absolute right-2 top-2 z-10'>{wishMenu}</div>
+			)}
 
 			{isEditing && (
 				<div className='pointer-events-none absolute inset-x-0 top-0 z-10 aspect-[4/3]'>
