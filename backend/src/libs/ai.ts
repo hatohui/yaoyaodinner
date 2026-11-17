@@ -852,9 +852,9 @@ export type PersonRoastInput = {
 
 const ROAST_RULES = [
   "This is a private, invite-only dinner among adult furries who know each other, so roast savagely like a friend who knows too much.",
-  "When the request says to go dirty, line one must land as a clearly filthy furry double meaning built on their own name, note or picture, not a word merely mentioned: knots, heat, rut, yiff, tails, presenting, collars, leashes and similar are fair game. The innuendo must make literal sense as a joke; never bolt a furry word onto something it does not fit, like a knot on food. When the request says to keep it clean, keep the punchline focused on their humor, quirks, or habits without forcing explicit innuendo, but cheeky banter, saucy teasing, and furry culture jokes are still fair game.",
+  "When the request says to go dirty, build an organic, spicy furry double meaning from their actual name, note, or picture. Never shoehorn generic furry buzzwords (knots, heat, rut, yiff, presenting, tails, collars) where they do not naturally fit the joke, and never reuse a furry trope or buzzword already used in earlierRoasts. When the request says to keep it clean, keep the punchline focused on their humor, quirks, or habits without forcing explicit innuendo, while cheeky banter and furry culture jokes are still fair game.",
   "Keep it a joke rather than a description: never describe sex acts or bodies in graphic detail, nothing involving minors or non-consent, no slurs or attacks on any group, and no real people or brands.",
-  "Refer to guests by name or as they, never he or she, unless their note says otherwise.",
+  "Refer to guests directly as you, never he, she, or talking about them in third person to the table, unless their note says otherwise.",
   "Write natively in the requested locale, not as a translation.",
 ].join(" ");
 
@@ -920,16 +920,20 @@ function firstSentence(
 }
 
 function lineTwoDirection(input: PersonRoastInput) {
+  const tableNameHint = input.tableName
+    ? input.host === input.name
+      ? `or this guest naming the table "${input.tableName}", skipped when an earlier roast already joked about it.`
+      : `or the table being called "${input.tableName}"${input.host ? ` by its host ${input.host}` : ""}, skipped when an earlier roast already joked about it.`
+    : "";
   return [
     "For line two, choose whichever target makes the funniest link to this guest:",
-    "one tablemate from mates, only when their name or note genuinely connects to this guest, never a name just dropped in;",
-    "the rest of the table as a group, like everyone else or the only one here who;",
-    "the dinner itself, a furry dinner at a Malaysian Chinese restaurant, never by its event name;",
-    input.tableName
-      ? `or the table being called "${input.tableName}"${input.host ? ` by its host ${input.host}` : ""}, skipped when an earlier roast already joked about it.`
+    "the rest of the table as a group (everyone else here, or the contrast between this guest and the table);",
+    "the dinner itself (a furry dinner at a Malaysian Chinese restaurant, never by its event name);",
+    tableNameHint,
+    input.mates.length > 0
+      ? `or one tablemate from mates (${JSON.stringify(input.mates)}), ONLY if their name or note genuinely plays off this guest's own name, note, or vibe—never force a tablemate in just because they have a funny note, and never name anyone already mentioned in another guest's earlierRoasts.`
       : "",
-    "Pick a different kind of target from the ones earlierRoasts leaned on.",
-    input.mates.length > 0 ? `mates: ${JSON.stringify(input.mates)}` : "",
+    "Pick a different angle from the ones earlierRoasts leaned on.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -964,11 +968,12 @@ const PERSON_ROAST_INSTRUCTION = [
   "You roast one guest at a private, invite-only dinner for the furry community at a Malaysian Chinese restaurant.",
   `Always answer by calling the ${TOOL_NAME} tool.`,
   "Write exactly two lines, each one short sentence of at most 18 words with the punchline at the end; short and brutal beats long and clever.",
-  "Line one targets only the guest: twist their display or fursona name, their profile picture and their note into the sharpest joke the material allows; do not mention the table.",
-  "Line two keeps the tone of line one (matching its spicy innuendo or playful banter) and escalates the roast unless the tablemate gives a distinct opening.",
+  "Line one targets only the guest: twist their display or fursona name, their profile picture and their note into the sharpest joke the material allows; do not mention the table or other guests.",
+  "Avoid lazy literal puns on their name (like food or serving puns) unless the twist is genuinely clever; when a guest has no note, roast the vibe of their name, their profile picture, or the kind of person who picks that name.",
+  "Line two keeps the tone of line one and escalates the roast; every sentence must make natural, punchy sense—never mash unrelated furry slang together.",
   "Line two is a separate jab that follows the direction given for it; never start it by addressing the table or with a label.",
   CRINGE_RULE,
-  "Never joke about a missing picture or note unless the request says they are the only guest at the table without one.",
+  "Roast only what is present (name, note, picture, table context); never complain about or mention a blank/missing note or picture unless the request explicitly says they are the only guest at the table without one.",
   "If earlierRoasts has one about this guest, take a completely different angle and reuse none of its jokes or targets.",
   "If the picture is fursona art, an avatar or a meme, roast it freely; if it shows a real person, roast the vibe, the pose, the setting or the editing, never their body or looks.",
   "note is something they wrote about themselves: when there is one, it is the best material for line one, so use it.",
@@ -1683,8 +1688,8 @@ export const AiService = {
           text: `Roast this guest in '${lang}' (${LOCALE_NAMES[lang] ?? lang}).${image ? " Their profile picture follows." : ""}${
             input.onlyOneWithout.length > 0
               ? ` They are the only guest at the table without a ${input.onlyOneWithout.join(" or a ")}.`
-              : " Never joke about a missing profile picture, face or note."
-          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a horny or double-meaning hook (eating, swallowing, nuts, riding and the like), so line one must take that bait and deliver an unapologetic, filthy roast." : input.dirty ? " Go dirty with this one: deliver sharp, unapologetic furry innuendo and spicy double meanings across both lines." : " Keep this one a clean roast without forcing innuendo."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
+              : ""
+          }${input.cringe ? ` ${CRINGE_DIRECTION}` : ""}${input.hornyHook ? " Their note or name already has a horny or double-meaning hook, so line one must take that bait and deliver an unapologetic, filthy roast." : input.dirty ? " Go dirty if their name, note, or picture gives a natural opening for spicy furry innuendo; if not, keep it a sharp, savage friend roast instead of forcing awkward double meanings." : " Keep this one a clean roast without forcing innuendo."} ${lineTwoDirection(input)}\n\n${JSON.stringify({ name: input.name, note: input.note, earlierRoasts: input.earlierRoasts })}`,
         },
         ...(image
           ? [

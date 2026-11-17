@@ -314,6 +314,14 @@ export class TableRoastService {
     const others = people.filter((p) => p.id !== personId);
     const hasNote = (p: (typeof people)[number]) => Boolean(p.personalNotes[0]?.content?.trim());
     const note = person.personalNotes[0]?.content?.trim() || null;
+    const earlierRoasts = await this.earlierRoasts(tableId, people, true);
+    const mentionedInOtherRoasts = (name: string) => {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const pattern = new RegExp(`(^|\\W)${escaped}($|\\W)`, 'i');
+      return earlierRoasts.some(
+        (r) => r.about !== name && r.about !== 'the table' && pattern.test(r.roast),
+      );
+    };
     const text = await AiService.roastPerson(
       lang,
       {
@@ -325,7 +333,9 @@ export class TableRoastService {
         cringe: Math.random() < CRINGE_CHANCE,
         hornyHook: HORNY_HOOK.test(`${person.name} ${note ?? ''}`),
         mates: others
-          .filter((p) => others.length < 3 || p.name !== host)
+          .filter(
+            (p) => (others.length < 3 || p.name !== host) && !mentionedInOtherRoasts(p.name),
+          )
           .map((p) => ({ name: p.name, note: p.personalNotes[0]?.content?.trim() || null }))
           .sort(() => Math.random() - 0.5)
           .slice(0, MAX_MATES),
@@ -337,7 +347,7 @@ export class TableRoastService {
                 ...(!person.pfpUrl && others.every((p) => p.pfpUrl) ? ['picture' as const] : []),
                 ...(!hasNote(person) && others.every(hasNote) ? ['note' as const] : []),
               ],
-        earlierRoasts: await this.earlierRoasts(tableId, people, true),
+        earlierRoasts,
       },
       image,
     );
