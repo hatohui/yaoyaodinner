@@ -85,9 +85,10 @@ export function WishSection({
 				</p>
 			) : (
 				<ul className='flex flex-col divide-y divide-border/60'>
-					{wishes.map(wish => (
+					{wishes.map((wish, index) => (
 						<WishRow
 							key={wish.id}
+							rank={index + 1}
 							wish={wish}
 							people={people}
 							status={statusOf(wish)}

@@ -26,6 +26,7 @@ const iconButton =
 	'flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
 
 interface WishRowProps {
+	rank: number
 	wish: TableWishDto
 	people: PersonDto[]
 	status: WishStatus
@@ -40,6 +41,7 @@ interface WishRowProps {
 }
 
 export function WishRow({
+	rank,
 	wish,
 	people,
 	status,
@@ -75,6 +77,9 @@ export function WishRow({
 			{canEdit && (
 				<WishDragHandle label={t('plan_board.drag')} handle={drag.handle} />
 			)}
+			<span className='w-5 shrink-0 text-right text-xs font-semibold tabular-nums text-muted-foreground'>
+				{rank}.
+			</span>
 			<OrderThumb
 				imageKey={wish.foodImageUrl}
 				alt={wish.name}
