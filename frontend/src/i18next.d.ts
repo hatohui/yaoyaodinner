@@ -541,6 +541,10 @@ declare module 'react-i18next' {
 					view_cart: string
 					status_ordered: string
 					status_in_cart: string
+					change_option: string
+					who_for: string
+					who_hint: string
+					whole_table: string
 					off_menu: string
 					progress: string
 					copy: string

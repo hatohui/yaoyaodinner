@@ -25,5 +25,7 @@ export interface TableWishDto {
   price?: number | null;
   currency: string;
   shouldCalculate: boolean;
+  /** Who the dish is for; empty means the whole table */
+  personIds: string[];
   createdAt: string;
 }

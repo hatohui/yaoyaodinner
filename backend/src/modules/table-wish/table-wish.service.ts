@@ -21,6 +21,7 @@ const includeWithLang = (lang: string) => ({
       translations: { where: { language: lang } },
     },
   },
+  people: { select: { personId: true } },
 });
 
 const findWishes = (tableId: string, lang: string) =>
@@ -44,6 +45,7 @@ const toDto = (w: WishRow): TableWishDto => ({
   price: w.variant?.price != null ? Number(w.variant.price) : null,
   currency: w.variant?.currency ?? '',
   shouldCalculate: w.variant?.food.shouldCalculate ?? true,
+  personIds: w.people.map((p) => p.personId),
   createdAt: w.createdAt,
 });
 
@@ -95,12 +97,59 @@ export class TableWishService {
   }
 
   async update(id: string, dto: UpdateTableWishDto, lang: string) {
+    if (dto.variantId) await this.assertSwappable(id, dto.variantId);
+    const personIds = dto.personIds && [...new Set(dto.personIds)];
+    if (personIds?.length) await this.assertSeated(id, personIds);
     const wish = await prisma.tableWish.update({
       where: { id },
-      data: { kind: dto.kind },
+      data: {
+        kind: dto.kind,
+        variantId: dto.variantId,
+        people: personIds && {
+          deleteMany: {},
+          create: personIds.map((personId) => ({ personId })),
+        },
+      },
       include: includeWithLang(lang),
     });
     return toDto(wish);
+  }
+
+  private async assertSeated(id: string, personIds: string[]) {
+    const wish = await prisma.tableWish.findUnique({
+      where: { id },
+      select: { tableId: true },
+    });
+    if (!wish) throw new NotFoundException('Wish not found');
+    const seated = await prisma.people.count({
+      where: { id: { in: personIds }, tableId: wish.tableId },
+    });
+    if (seated !== personIds.length) {
+      throw new BadRequestException('Pick people sitting at this table');
+    }
+  }
+
+  /** A wish can only switch to another option of its own dish. */
+  private async assertSwappable(id: string, variantId: string) {
+    const [wish, variant] = await Promise.all([
+      prisma.tableWish.findUnique({
+        where: { id },
+        select: { tableId: true, variant: { select: { foodId: true } } },
+      }),
+      prisma.foodVariant.findUnique({
+        where: { id: variantId },
+        select: { foodId: true },
+      }),
+    ]);
+    if (!wish || !variant) throw new NotFoundException('Dish not found');
+    if (wish.variant?.foodId !== variant.foodId) {
+      throw new BadRequestException('Pick an option of the same dish');
+    }
+    const taken = await prisma.tableWish.findFirst({
+      where: { tableId: wish.tableId, variantId, id: { not: id } },
+      select: { id: true },
+    });
+    if (taken) throw new ConflictException('Already on the list');
   }
 
   async remove(id: string) {

@@ -46,12 +46,15 @@ export function PlanTab({
 	}
 
 	const wishProps = {
+		people,
 		statusOf: board.statusOf,
 		canEdit,
 		canAddToCart: board.canAddToCart,
 		onAdd: board.add,
 		onAddToCart: board.addToCart,
 		onSetKind: board.setKind,
+		onSetVariant: board.setVariant,
+		onSetPeople: board.setPeople,
 		onRemove: board.remove,
 	}
 
@@ -76,37 +79,39 @@ export function PlanTab({
 				<p className='text-xs text-muted-foreground'>
 					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
 				</p>
-				{board.canUseAi && orders.length > 0 && (
+				<div className='ml-auto flex flex-wrap items-center justify-end gap-2'>
+					{board.canUseAi && orders.length > 0 && (
+						<Button
+							variant='outline'
+							size='sm'
+							onClick={() => setModifying(true)}
+							className='relative shrink-0 gap-1.5 overflow-hidden rounded-full border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai'
+						>
+							<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
+							{t('table_plan.modify_cta')}
+						</Button>
+					)}
+					{board.canAddToCart && board.pendingCount > 0 && (
+						<Button
+							size='sm'
+							onClick={() => setPreviewing(true)}
+							className='shrink-0 gap-1.5 rounded-full'
+						>
+							<Zap className='size-4' />
+							{t('plan_board.apply_plan', { count: board.pendingCount })}
+						</Button>
+					)}
 					<Button
 						variant='outline'
 						size='sm'
-						onClick={() => setModifying(true)}
-						className='relative ml-auto shrink-0 gap-1.5 overflow-hidden rounded-full border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai'
-					>
-						<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
-						{t('table_plan.modify_cta')}
-					</Button>
-				)}
-				{board.canAddToCart && board.pendingCount > 0 && (
-					<Button
-						size='sm'
-						onClick={() => setPreviewing(true)}
+						disabled={board.isEmpty}
+						onClick={board.copy}
 						className='shrink-0 gap-1.5 rounded-full'
 					>
-						<Zap className='size-4' />
-						{t('plan_board.apply_plan', { count: board.pendingCount })}
+						<ClipboardCopy className='size-4' />
+						{t('plan_board.copy')}
 					</Button>
-				)}
-				<Button
-					variant='outline'
-					size='sm'
-					disabled={board.isEmpty}
-					onClick={board.copy}
-					className='shrink-0 gap-1.5 rounded-full'
-				>
-					<ClipboardCopy className='size-4' />
-					{t('plan_board.copy')}
-				</Button>
+				</div>
 			</div>
 
 			<WishDnd wishes={board.wishes} onMove={board.setKind}>
@@ -152,6 +157,7 @@ export function PlanTab({
 				open={previewing}
 				onOpenChange={setPreviewing}
 				wishes={board.wishes}
+				people={people}
 				statusOf={board.statusOf}
 				onConfirm={board.applyPlan}
 			/>

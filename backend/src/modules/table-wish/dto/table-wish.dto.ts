@@ -1,5 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  ArrayMaxSize,
+  IsArray,
   IsIn,
   IsNotEmpty,
   IsOptional,
@@ -26,6 +28,11 @@ export class TableWishDto {
   price: number | null;
   @ApiProperty() currency: string;
   @ApiProperty() shouldCalculate: boolean;
+  @ApiProperty({
+    type: [String],
+    description: 'Who the dish is for; empty means the whole table',
+  })
+  personIds: string[];
   @ApiProperty() createdAt: Date;
 }
 
@@ -52,7 +59,23 @@ export class CreateTableWishDto {
 }
 
 export class UpdateTableWishDto {
-  @ApiProperty({ enum: WISH_KINDS, enumName: 'WishKind' })
+  @ApiPropertyOptional({ enum: WISH_KINDS, enumName: 'WishKind' })
+  @IsOptional()
   @IsIn(WISH_KINDS)
-  kind: WishKind;
+  kind?: WishKind;
+
+  @ApiPropertyOptional({ description: 'Another option of the same dish' })
+  @IsOptional()
+  @IsString()
+  variantId?: string;
+
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'Who the dish is for; empty means the whole table',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(50)
+  @IsString({ each: true })
+  personIds?: string[];
 }

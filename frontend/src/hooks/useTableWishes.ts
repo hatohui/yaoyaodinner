@@ -9,7 +9,12 @@ import {
 	useGetTableWishes,
 	useUpdateTableWish,
 } from '@/api/wishes/wishes'
-import type { FoodItemDto, TableWishDto, WishKind } from '@/api/model'
+import type {
+	FoodItemDto,
+	FoodVariantDto,
+	TableWishDto,
+	WishKind,
+} from '@/api/model'
 import type { CartDish } from '@/hooks/useOrderCart'
 import { useToast } from '@/hooks/useToast'
 import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
@@ -44,6 +49,7 @@ const draftWish = (
 		price: food?.price ?? null,
 		currency: food?.currency ?? '',
 		shouldCalculate: food?.shouldCalculate ?? true,
+		personIds: [],
 		createdAt: new Date().toISOString(),
 	}
 }
@@ -111,13 +117,18 @@ export function useTableWishes(tableId: string) {
 		mutation: {
 			// a dropped wish should land at once, not after the round trip
 			onMutate: ({ id, data }) =>
+				data.kind &&
 				patchCache(prev =>
-					prev.map(w => (w.id === id ? { ...w, kind: data.kind } : w))
+					prev.map(w => (w.id === id ? { ...w, kind: data.kind! } : w))
 				),
 			onSuccess: wish =>
 				patchCache(prev => prev.map(w => (w.id === wish.id ? wish : w))),
-			onError: () => {
-				toast.error(t('plan_board.save_failed'))
+			onError: err => {
+				toast.error(
+					isAxiosError(err) && err.response?.status === 409
+						? t('plan_board.duplicate')
+						: t('plan_board.save_failed')
+				)
 				refresh()
 			},
 		},
@@ -178,6 +189,34 @@ export function useTableWishes(tableId: string) {
 		patchCache(prev => prev.map(w => (w.id === id ? { ...w, kind } : w)))
 	}
 
+	const setVariant = (id: string, variant: FoodVariantDto) => {
+		if (drafts.current.has(id)) return
+		patchCache(prev =>
+			prev.map(w =>
+				w.id === id
+					? {
+							...w,
+							variantId: variant.id,
+							variantLabel: variant.label || null,
+							price: variant.price,
+							currency: variant.currency,
+						}
+					: w
+			)
+		)
+		update({
+			id,
+			data: { variantId: variant.id },
+			params: { lang: i18n.language },
+		})
+	}
+
+	const setPeople = (id: string, personIds: string[]) => {
+		if (drafts.current.has(id)) return
+		patchCache(prev => prev.map(w => (w.id === id ? { ...w, personIds } : w)))
+		update({ id, data: { personIds }, params: { lang: i18n.language } })
+	}
+
 	const remove = (id: string) => {
 		if (!drafts.current.has(id)) return destroy({ id })
 		drafts.current.set(id, null)
@@ -189,6 +228,8 @@ export function useTableWishes(tableId: string) {
 		isLoading,
 		add,
 		setKind,
+		setVariant,
+		setPeople,
 		remove,
 		/** Latest list, for callbacks that outlive the render they came from. */
 		snapshot: () => qc.getQueryData<TableWishDto[]>(queryKey) ?? [],

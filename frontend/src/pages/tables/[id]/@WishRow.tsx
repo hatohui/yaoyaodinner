@@ -7,11 +7,18 @@ import {
 	TriangleAlert,
 	X,
 } from 'lucide-react'
-import type { TableWishDto, WishKind } from '@/api/model'
+import type {
+	FoodVariantDto,
+	PersonDto,
+	TableWishDto,
+	WishKind,
+} from '@/api/model'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
 import type { WishStatus } from '@/hooks/useTableWishes'
 import { cn } from '@/utils/shadcn'
 import { WishDragHandle, useWishDrag } from './@WishDnd'
+import { WishPeoplePicker } from './@WishPeoplePicker'
+import { WishVariantPicker } from './@WishVariantPicker'
 
 const KIND_ORDER: WishKind[] = ['must', 'want', 'avoid']
 
@@ -20,23 +27,29 @@ const iconButton =
 
 interface WishRowProps {
 	wish: TableWishDto
+	people: PersonDto[]
 	status: WishStatus
 	avoid: boolean
 	canEdit: boolean
 	canAddToCart: boolean
 	onAddToCart: () => void
 	onMove: (kind: WishKind) => void
+	onVariantChange: (variant: FoodVariantDto) => void
+	onPeopleChange: (personIds: string[]) => void
 	onRemove: () => void
 }
 
 export function WishRow({
 	wish,
+	people,
 	status,
 	avoid,
 	canEdit,
 	canAddToCart,
 	onAddToCart,
 	onMove,
+	onVariantChange,
+	onPeopleChange,
 	onRemove,
 }: WishRowProps) {
 	const { t } = useTranslation()
@@ -67,26 +80,41 @@ export function WishRow({
 				className='size-9 rounded-lg'
 			/>
 			<div className='flex min-w-0 flex-1 flex-col'>
-				<span
-					className={cn(
-						'truncate text-sm text-foreground',
-						status === 'ordered' &&
-							!avoid &&
-							'text-muted-foreground line-through'
+				<div className='flex min-w-0 items-center gap-1.5'>
+					<span
+						className={cn(
+							'truncate text-sm text-foreground',
+							status === 'ordered' &&
+								!avoid &&
+								'text-muted-foreground line-through'
+						)}
+					>
+						{wish.name}
+					</span>
+					{canEdit && status !== 'ordered' && !wish.id.startsWith('draft-') ? (
+						<WishVariantPicker wish={wish} onChange={onVariantChange} />
+					) : (
+						wish.variantLabel && (
+							<span className='shrink-0 text-sm text-muted-foreground'>
+								{wish.variantLabel}
+							</span>
+						)
 					)}
-				>
-					{wish.name}
-					{wish.variantLabel && (
-						<span className='text-muted-foreground'>
-							{' - '}
-							{wish.variantLabel}
-						</span>
-					)}
-				</span>
+				</div>
 				{!wish.foodId && (
 					<span className='text-[11px] text-muted-foreground'>
 						{t('plan_board.off_menu')}
 					</span>
+				)}
+				{wish.foodId && !avoid && (
+					<WishPeoplePicker
+						people={people}
+						value={wish.personIds}
+						canEdit={
+							canEdit && status !== 'ordered' && !wish.id.startsWith('draft-')
+						}
+						onChange={onPeopleChange}
+					/>
 				)}
 			</div>
 

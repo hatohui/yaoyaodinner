@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, PenLine, ShoppingCart, Star } from 'lucide-react'
-import type { TableWishDto } from '@/api/model'
+import { Check, PenLine, ShoppingCart, Star, Users } from 'lucide-react'
+import type { PersonDto, TableWishDto } from '@/api/model'
 import {
 	Dialog,
 	DialogContent,
@@ -24,6 +24,7 @@ interface ApplyPlanDialogProps {
 	open: boolean
 	onOpenChange: (open: boolean) => void
 	wishes: TableWishDto[]
+	people: PersonDto[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	onConfirm: (wishes: TableWishDto[]) => void
 }
@@ -33,10 +34,16 @@ export function ApplyPlanDialog({
 	open,
 	onOpenChange,
 	wishes,
+	people,
 	statusOf,
 	onConfirm,
 }: ApplyPlanDialogProps) {
 	const { t } = useTranslation()
+	const whoFor = (wish: TableWishDto) =>
+		people
+			.filter(p => wish.personIds.includes(p.id))
+			.map(p => p.name)
+			.join(', ')
 
 	const { addable, skipped } = useMemo(() => {
 		const addable: TableWishDto[] = []
@@ -101,11 +108,17 @@ export function ApplyPlanDialog({
 									alt={wish.name}
 									className='size-10 rounded-lg'
 								/>
-								<span className='flex min-w-0 flex-1 items-center gap-1.5 text-sm text-foreground'>
-									{wish.kind === 'must' && (
-										<Star className='size-3.5 shrink-0 fill-primary text-primary' />
-									)}
-									<span className='truncate'>{wish.name}</span>
+								<span className='flex min-w-0 flex-1 flex-col'>
+									<span className='flex min-w-0 items-center gap-1.5 text-sm text-foreground'>
+										{wish.kind === 'must' && (
+											<Star className='size-3.5 shrink-0 fill-primary text-primary' />
+										)}
+										<span className='truncate'>{wish.name}</span>
+									</span>
+									<span className='flex items-center gap-1 truncate text-[11px] text-muted-foreground'>
+										<Users className='size-3 shrink-0' />
+										{whoFor(wish) || t('plan_board.whole_table')}
+									</span>
 								</span>
 								<span className='shrink-0 text-xs tabular-nums text-muted-foreground'>
 									{awaitingPrice(wish)

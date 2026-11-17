@@ -66,7 +66,10 @@ export function usePlanBoard(
 	const must = board.wishes.filter(w => w.kind === 'must')
 	const want = board.wishes.filter(w => w.kind === 'want')
 	const avoid = board.wishes.filter(w => w.kind === 'avoid')
-	const dishes = useMemo(() => personalDishes(orders, people), [orders, people])
+	const dishes = useMemo(
+		() => personalDishes(orders, cart.lines, personId, people),
+		[orders, cart.lines, personId, people]
+	)
 	const allergies = useMemo(() => allergyGroups(people), [people])
 
 	const labelOf = (group: Pick<AllergyGroup, 'allergen' | 'label'>) =>
@@ -83,7 +86,7 @@ export function usePlanBoard(
 	const addToCart = (wish: TableWishDto) => {
 		const dish = wishToCartDish(wish)
 		if (!dish) return
-		cart.addDish(dish)
+		cart.addDish(dish, wish.personIds)
 		toast.success(t('plan_board.added_to_cart', { name: wish.name }), {
 			action: viewCart,
 		})
@@ -92,7 +95,7 @@ export function usePlanBoard(
 	const applyPlan = (chosen: TableWishDto[]) => {
 		chosen.forEach(wish => {
 			const dish = wishToCartDish(wish)
-			if (dish) cart.addDish(dish)
+			if (dish) cart.addDish(dish, wish.personIds)
 		})
 		toast.success(t('plan_board.applied', { count: chosen.length }), {
 			action: viewCart,
@@ -124,6 +127,8 @@ export function usePlanBoard(
 			avoid,
 			dishes,
 			allergies: allergies.map(g => ({ label: labelOf(g), people: g.people })),
+			whoFor: wish =>
+				people.filter(p => wish.personIds.includes(p.id)).map(p => p.name),
 		})
 		try {
 			await navigator.clipboard.writeText(text)

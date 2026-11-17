@@ -94,7 +94,8 @@ export function useOrderCart(tableId: string) {
 			return next
 		})
 
-	const addDish = (dish: CartDish) =>
+	/** `people` splits a new line between them; none means the whole table. */
+	const addDish = (dish: CartDish, people: string[] = []) =>
 		setLines(prev => {
 			const next = new Map(prev)
 			const existing = next.get(dish.foodId)
@@ -105,8 +106,8 @@ export function useOrderCart(tableId: string) {
 			next.set(dish.foodId, {
 				...dish,
 				quantity: 1,
-				mode: 'table',
-				chosen: new Set<string>(),
+				mode: people.length > 0 ? 'choose' : 'table',
+				chosen: new Set(people),
 			})
 			return next
 		})

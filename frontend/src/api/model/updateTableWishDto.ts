@@ -8,5 +8,9 @@
 import type { WishKind } from './wishKind';
 
 export interface UpdateTableWishDto {
-  kind: WishKind;
+  kind?: WishKind;
+  /** Another option of the same dish */
+  variantId?: string;
+  /** Who the dish is for; empty means the whole table */
+  personIds?: string[];
 }

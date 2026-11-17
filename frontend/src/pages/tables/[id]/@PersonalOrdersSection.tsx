@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Plus, User } from 'lucide-react'
+import { Plus, ShoppingCart, User } from 'lucide-react'
 import type { PersonalDish } from './@planBoard'
 
 interface PersonalOrdersSectionProps {
@@ -43,6 +43,12 @@ export function PersonalOrdersSection({
 							{dish.people.length > 0 && (
 								<span className='text-muted-foreground'>
 									({dish.people.join(', ')})
+								</span>
+							)}
+							{dish.inCart && (
+								<span className='flex items-center gap-1 self-center rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary'>
+									<ShoppingCart className='size-3' />
+									{t('plan_board.status_in_cart')}
 								</span>
 							)}
 						</li>

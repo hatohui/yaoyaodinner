@@ -97,7 +97,7 @@ export default function TableOrderPage() {
 
 	const addWish = (wish: TableWishDto) => {
 		const dish = wishToCartDish(wish)
-		if (dish) cart.addDish(dish)
+		if (dish) cart.addDish(dish, wish.personIds)
 	}
 
 	const [activeFood, setActiveFood] = useState<FoodItemDto | null>(null)
@@ -248,6 +248,7 @@ export default function TableOrderPage() {
 						<WishlistStrip
 							tableId={tableId}
 							wishes={plan.wishes.filter(w => w.kind !== 'avoid')}
+							people={cart.people}
 							statusOf={wish =>
 								wishStatus(wish, id => orderedByFood.has(id), cart.quantityOf)
 							}

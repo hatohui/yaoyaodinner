@@ -202,6 +202,7 @@ export default function MenuPage() {
 						<WishlistStrip
 							tableId={planTableId}
 							wishes={plan.wishes.filter(w => w.kind !== 'avoid')}
+							people={ordering.cart.people}
 							statusOf={wish =>
 								wishStatus(
 									wish,
@@ -211,7 +212,7 @@ export default function MenuPage() {
 							}
 							onAdd={wish => {
 								const dish = wishToCartDish(wish)
-								if (dish) ordering.cart.addDish(dish)
+								if (dish) ordering.cart.addDish(dish, wish.personIds)
 							}}
 						/>
 					</div>

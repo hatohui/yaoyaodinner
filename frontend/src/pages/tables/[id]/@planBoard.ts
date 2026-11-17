@@ -5,12 +5,14 @@ import type {
 	TableWishDto,
 } from '@/api/model'
 import { dishKey } from '@/components/ordering/groupOrders'
+import type { CartLine } from '@/hooks/useOrderCart'
 
 export interface PersonalDish {
 	key: string
 	name: string
 	quantity: number
 	people: string[]
+	inCart: boolean
 }
 
 export interface AllergyGroup {
@@ -22,13 +24,30 @@ export interface AllergyGroup {
 
 const byName = (a: string, b: string) => a.localeCompare(b)
 
-/** Orders that aren't shared by the whole table, folded per dish with who has them. */
+/**
+ * Orders and cart lines that aren't shared by the whole table, folded per dish
+ * with who has them. Cart lines stay separate so nobody mistakes them for placed.
+ */
 export function personalDishes(
 	orders: OrderResponseDto[],
+	cart: CartLine[],
+	myPersonId: string | null,
 	people: PersonDto[]
 ): PersonalDish[] {
 	const names = new Map(people.map(p => [p.id, p.name]))
 	const dishes = new Map<string, PersonalDish & { ids: Set<string> }>()
+	for (const line of cart) {
+		if (line.mode === 'table') continue
+		const ids = line.mode === 'me' ? [myPersonId] : [...line.chosen]
+		dishes.set(`cart:${line.foodId}`, {
+			key: `cart:${line.foodId}`,
+			name: line.name,
+			quantity: line.quantity,
+			people: [],
+			inCart: true,
+			ids: new Set(ids.filter((id): id is string => Boolean(id))),
+		})
+	}
 	for (const order of orders) {
 		if (order.splitAll) continue
 		const key = dishKey(order)
@@ -40,6 +59,7 @@ export function personalDishes(
 			name,
 			quantity: 0,
 			people: [],
+			inCart: false,
 			ids: new Set<string>(),
 		}
 		dish.quantity += order.quantity
@@ -54,7 +74,9 @@ export function personalDishes(
 				.filter((n): n is string => Boolean(n))
 				.sort(byName),
 		}))
-		.sort((a, b) => byName(a.name, b.name))
+		.sort(
+			(a, b) => Number(a.inCart) - Number(b.inCart) || byName(a.name, b.name)
+		)
 }
 
 export function allergyGroups(people: PersonDto[]): AllergyGroup[] {
@@ -91,6 +113,7 @@ interface PlanTextInput {
 	avoid: TableWishDto[]
 	dishes: PersonalDish[]
 	allergies: { label: string; people: string[] }[]
+	whoFor: (wish: TableWishDto) => string[]
 }
 
 /** Plain text in the shape hosts already paste into the group chat. */
@@ -101,11 +124,15 @@ export function planText({
 	avoid,
 	dishes,
 	allergies,
+	whoFor,
 }: PlanTextInput) {
 	const section = (title: string, lines: string[]) =>
 		lines.length ? [`${title}:`, ...lines].join('\n') : null
-	const wishLine = (w: TableWishDto) =>
-		w.variantLabel ? `${w.name} (${w.variantLabel})` : w.name
+	const wishLine = (w: TableWishDto) => {
+		const name = w.variantLabel ? `${w.name} (${w.variantLabel})` : w.name
+		const who = whoFor(w)
+		return who.length ? `${name} - ${who.join(', ')}` : name
+	}
 
 	return [
 		section(headings.must, must.map(wishLine)),

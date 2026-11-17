@@ -1,6 +1,11 @@
 import type { LucideIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import type { TableWishDto, WishKind } from '@/api/model'
+import type {
+	FoodVariantDto,
+	PersonDto,
+	TableWishDto,
+	WishKind,
+} from '@/api/model'
 import type { NewWish, WishStatus } from '@/hooks/useTableWishes'
 import { cn } from '@/utils/shadcn'
 import { WishAddForm } from './@WishAddForm'
@@ -13,12 +18,15 @@ interface WishSectionProps {
 	title: string
 	empty: string
 	wishes: TableWishDto[]
+	people: PersonDto[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	canEdit: boolean
 	canAddToCart: boolean
 	onAdd: (wish: NewWish) => void
 	onAddToCart: (wish: TableWishDto) => void
 	onSetKind: (id: string, kind: WishKind) => void
+	onSetVariant: (id: string, variant: FoodVariantDto) => void
+	onSetPeople: (id: string, personIds: string[]) => void
 	onRemove: (id: string) => void
 }
 
@@ -28,12 +36,15 @@ export function WishSection({
 	title,
 	empty,
 	wishes,
+	people,
 	statusOf,
 	canEdit,
 	canAddToCart,
 	onAdd,
 	onAddToCart,
 	onSetKind,
+	onSetVariant,
+	onSetPeople,
 	onRemove,
 }: WishSectionProps) {
 	const { t } = useTranslation()
@@ -78,12 +89,15 @@ export function WishSection({
 						<WishRow
 							key={wish.id}
 							wish={wish}
+							people={people}
 							status={statusOf(wish)}
 							avoid={avoid}
 							canEdit={canEdit}
 							canAddToCart={canAddToCart}
 							onAddToCart={() => onAddToCart(wish)}
 							onMove={kind => onSetKind(wish.id, kind)}
+							onVariantChange={variant => onSetVariant(wish.id, variant)}
+							onPeopleChange={ids => onSetPeople(wish.id, ids)}
 							onRemove={() => onRemove(wish.id)}
 						/>
 					))}

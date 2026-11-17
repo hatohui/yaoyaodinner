@@ -10,7 +10,7 @@ import {
 	Star,
 	Zap,
 } from 'lucide-react'
-import type { TableWishDto } from '@/api/model'
+import type { PersonDto, TableWishDto } from '@/api/model'
 import { openPlanWishes, type WishStatus } from '@/hooks/useTableWishes'
 import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/button'
@@ -20,6 +20,7 @@ import { ApplyPlanDialog } from './ApplyPlanDialog'
 interface WishlistStripProps {
 	tableId: string
 	wishes: TableWishDto[]
+	people: PersonDto[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	onAdd: (wish: TableWishDto) => void
 }
@@ -27,6 +28,7 @@ interface WishlistStripProps {
 export function WishlistStrip({
 	tableId,
 	wishes,
+	people,
 	statusOf,
 	onAdd,
 }: WishlistStripProps) {
@@ -119,6 +121,7 @@ export function WishlistStrip({
 				open={previewing}
 				onOpenChange={setPreviewing}
 				wishes={wishes}
+				people={people}
 				statusOf={statusOf}
 				onConfirm={applyPlan}
 			/>
