@@ -5,6 +5,7 @@ import { isAxiosError } from 'axios'
 import {
 	clearTablePlan,
 	getGetTablePlanQueryKey,
+	useClearTablePlan,
 	useGetTablePlan,
 	usePlanTable,
 } from '@/api/tables/tables'
@@ -98,6 +99,26 @@ export function useTablePlan(tableId: string) {
 		}
 	}
 
+	const { mutateAsync: runDiscard, isPending: isDiscarding } = useClearTablePlan({
+		mutation: {
+			onSuccess: () =>
+				qc.setQueryData<TablePlanStateDto>(
+					getGetTablePlanQueryKey(tableId, params),
+					{ status: 'idle', plan: null, position: null }
+				),
+			onError: () => toast.error(t('table_plan.discard_failed')),
+		},
+	})
+
+	const discardPlan = async () => {
+		try {
+			await runDiscard({ id: tableId })
+			return true
+		} catch {
+			return false
+		}
+	}
+
 	return {
 		status: data?.status ?? 'idle',
 		plan: data?.plan ?? null,
@@ -108,6 +129,8 @@ export function useTablePlan(tableId: string) {
 			mutate({ id: tableId, data: { lang, ...request } }),
 		acceptPlan,
 		isAccepting,
+		discardPlan,
+		isDiscarding,
 		dismissRestriction: (restrictionId: string) =>
 			mutate({ id: tableId, data: { lang, dismiss: [restrictionId] } }),
 	}

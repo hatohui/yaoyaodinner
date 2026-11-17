@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { UtensilsCrossed } from 'lucide-react'
+import { ChevronDown, UtensilsCrossed } from 'lucide-react'
 import type { PresetMenuDto } from '@/api/model'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { billingCurrency } from '@/utils/money'
+import { cn } from '@/utils/shadcn'
 
 interface PresetMenuSectionProps {
 	preset: PresetMenuDto
@@ -11,10 +13,21 @@ interface PresetMenuSectionProps {
 
 export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
 	const { t } = useTranslation()
+	const [collapsed, setCollapsed] = useState(false)
+	const hasItems = preset.items.length > 0
 
 	return (
 		<section className='overflow-hidden rounded-2xl border border-primary/30 bg-card shadow-sm'>
-			<div className='flex items-center justify-between gap-3 border-b border-border/60 bg-primary/10 px-3 py-2.5 sm:px-4'>
+			<button
+				type='button'
+				onClick={() => hasItems && setCollapsed(c => !c)}
+				aria-expanded={hasItems ? !collapsed : undefined}
+				className={cn(
+					'flex w-full items-center justify-between gap-3 bg-primary/10 px-3 py-2.5 text-left transition-colors sm:px-4',
+					hasItems && 'cursor-pointer hover:bg-primary/15',
+					hasItems && !collapsed && 'border-b border-border/60'
+				)}
+			>
 				<div className='flex min-w-0 items-center gap-2'>
 					<UtensilsCrossed className='size-4 shrink-0 text-primary' />
 					<span className='text-sm font-semibold text-foreground'>
@@ -24,21 +37,31 @@ export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
 						{t('orders.set_menu_shared')}
 					</span>
 				</div>
-				{preset.price > 0 ? (
-					<span className='shrink-0 text-sm font-semibold tabular-nums text-foreground'>
-						<TotalAmount
-							amount={preset.price}
-							currency={billingCurrency(preset.items)}
+				<div className='flex shrink-0 items-center gap-2'>
+					{preset.price > 0 ? (
+						<span className='text-sm font-semibold tabular-nums text-foreground'>
+							<TotalAmount
+								amount={preset.price}
+								currency={billingCurrency(preset.items)}
+							/>
+						</span>
+					) : (
+						<span className='rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground'>
+							{t('orders.set_menu_included')}
+						</span>
+					)}
+					{hasItems && (
+						<ChevronDown
+							className={cn(
+								'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
+								collapsed ? '-rotate-90' : 'rotate-0'
+							)}
 						/>
-					</span>
-				) : (
-					<span className='shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground'>
-						{t('orders.set_menu_included')}
-					</span>
-				)}
-			</div>
+					)}
+				</div>
+			</button>
 
-			{preset.items.length > 0 && (
+			{hasItems && !collapsed && (
 				<ul className='flex flex-col divide-y divide-border/60'>
 					{preset.items.map(item => (
 						<li

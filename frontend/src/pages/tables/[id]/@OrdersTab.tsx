@@ -14,6 +14,7 @@ import { IncludedNoteStrip } from '@/components/common/IncludedNoteStrip'
 import { useActivePreset } from './@useActivePreset'
 import { PresetMenuSection } from './@PresetMenuSection'
 import { TablePlanCard } from './@TablePlanCard'
+import { useTablePlan } from './@useTablePlan'
 import { useConfig } from '@/hooks/useConfig'
 import { PriceDialog } from './@PriceDialog'
 import { OrderListSkeleton, TablePlanBannerSkeleton } from './@Skeletons'
@@ -80,6 +81,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const canUseAi = Boolean(
 		tablePlan && canOrder && myPersonId && stage === 'open'
 	)
+	const { plan, isPlanning } = useTablePlan(table.id)
 
 	if (isLoading) {
 		return (
@@ -163,7 +165,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 									{t('orders.add_order')}
 								</Link>
 							</Button>
-							{canUseAi && (
+							{canUseAi && !plan && !isPlanning && (
 								<Button
 									variant='outline'
 									className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai motion-safe:before:animate-ai-sheen'

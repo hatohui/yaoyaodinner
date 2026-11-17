@@ -6,6 +6,7 @@ import {
 	RefreshCw,
 	RotateCcw,
 	Sparkles,
+	X,
 } from 'lucide-react'
 import type {
 	OrderResponseDto,
@@ -72,9 +73,12 @@ export function TablePlanCard({
 		dismissRestriction,
 		acceptPlan,
 		isAccepting,
+		discardPlan,
+		isDiscarding,
 	} = useTablePlan(tableId)
 	const [asking, setAsking] = useState(false)
 	const [confirming, setConfirming] = useState(false)
+	const [discarding, setDiscarding] = useState(false)
 	const [collapsed, setCollapsed] = useState(false)
 	// edits stay on this device until the table accepts the plan
 	const [draft, setDraft] = useState<{
@@ -222,20 +226,37 @@ export function TablePlanCard({
 					/>
 				</button>
 				{plan && (
-					<Button
-						variant='ghost'
-						size='sm'
-						className='h-7 shrink-0 gap-1.5 rounded-full text-xs text-primary hover:bg-primary/10 hover:text-primary'
-						disabled={isPlanning}
-						onClick={startOver}
-					>
-						{isPlanning ? (
-							<Spinner className='size-3.5' />
-						) : (
-							<RefreshCw className='size-3.5' />
-						)}
-						{t('table_plan.again')}
-					</Button>
+					<div className='flex shrink-0 items-center gap-1'>
+						<Button
+							variant='ghost'
+							size='sm'
+							className='h-7 gap-1.5 rounded-full text-xs text-primary hover:bg-primary/10 hover:text-primary'
+							disabled={isPlanning || isDiscarding}
+							onClick={startOver}
+						>
+							{isPlanning ? (
+								<Spinner className='size-3.5' />
+							) : (
+								<RefreshCw className='size-3.5' />
+							)}
+							{t('table_plan.again')}
+						</Button>
+						<Button
+							variant='ghost'
+							size='icon-sm'
+							className='size-7 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+							aria-label={t('table_plan.discard')}
+							title={t('table_plan.discard')}
+							disabled={isPlanning || isDiscarding}
+							onClick={() => setDiscarding(true)}
+						>
+							{isDiscarding ? (
+								<Spinner className='size-3.5' />
+							) : (
+								<X className='size-3.5' />
+							)}
+						</Button>
+					</div>
 				)}
 			</div>
 
@@ -417,6 +438,17 @@ export function TablePlanCard({
 				)}
 				destructive={false}
 				onConfirm={accept}
+			/>
+			<ConfirmDialog
+				open={discarding}
+				onOpenChange={setDiscarding}
+				title={t('table_plan.discard_confirm_title')}
+				description={t('table_plan.discard_confirm_body')}
+				confirmLabel={t('table_plan.discard')}
+				onConfirm={async () => {
+					setDiscarding(false)
+					if (await discardPlan()) setDraft(null)
+				}}
 			/>
 			<PlanItemDialog
 				item={editing === null ? null : (items[editing] ?? null)}

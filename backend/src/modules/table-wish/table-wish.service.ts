@@ -28,7 +28,7 @@ const findWishes = (tableId: string, lang: string) =>
   prisma.tableWish.findMany({
     where: { tableId },
     include: includeWithLang(lang),
-    orderBy: { createdAt: 'asc' },
+    orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
   });
 
 type WishRow = Awaited<ReturnType<typeof findWishes>>[number];
@@ -46,6 +46,7 @@ const toDto = (w: WishRow): TableWishDto => ({
   currency: w.variant?.currency ?? '',
   shouldCalculate: w.variant?.food.shouldCalculate ?? true,
   personIds: w.people.map((p) => p.personId),
+  position: w.position,
   createdAt: w.createdAt,
 });
 
@@ -83,11 +84,16 @@ export class TableWishService {
       if (!variant) throw new NotFoundException('Dish not found');
     }
 
+    const last = await prisma.tableWish.aggregate({
+      where: { tableId: dto.tableId, kind: dto.kind },
+      _max: { position: true },
+    });
     const wish = await prisma.tableWish.create({
       data: {
         id: uuidv4(),
         tableId: dto.tableId,
         kind: dto.kind,
+        position: (last._max.position ?? -1) + 1,
         variantId: dto.variantId ?? null,
         label: dto.variantId ? null : label,
       },
@@ -100,17 +106,64 @@ export class TableWishService {
     if (dto.variantId) await this.assertSwappable(id, dto.variantId);
     const personIds = dto.personIds && [...new Set(dto.personIds)];
     if (personIds?.length) await this.assertSeated(id, personIds);
-    const wish = await prisma.tableWish.update({
+
+    const existing = await prisma.tableWish.findUnique({
       where: { id },
-      data: {
-        kind: dto.kind,
-        variantId: dto.variantId,
-        people: personIds && {
-          deleteMany: {},
-          create: personIds.map((personId) => ({ personId })),
+      select: { tableId: true, kind: true },
+    });
+    if (!existing) throw new NotFoundException('Wish not found');
+
+    const targetKind = dto.kind ?? existing.kind;
+    const repositioning = dto.position !== undefined || targetKind !== existing.kind;
+
+    if (!repositioning) {
+      const wish = await prisma.tableWish.update({
+        where: { id },
+        data: {
+          variantId: dto.variantId,
+          people: personIds && {
+            deleteMany: {},
+            create: personIds.map((personId) => ({ personId })),
+          },
         },
-      },
-      include: includeWithLang(lang),
+        include: includeWithLang(lang),
+      });
+      return toDto(wish);
+    }
+
+    const siblings = await prisma.tableWish.findMany({
+      where: { tableId: existing.tableId, kind: targetKind, id: { not: id } },
+      orderBy: [{ position: 'asc' }, { createdAt: 'asc' }],
+      select: { id: true },
+    });
+    const targetIndex =
+      dto.position !== undefined
+        ? Math.max(0, Math.min(dto.position, siblings.length))
+        : siblings.length;
+    const orderedIds = siblings.map((s) => s.id);
+    orderedIds.splice(targetIndex, 0, id);
+
+    const wish = await prisma.$transaction(async (tx) => {
+      await Promise.all(
+        orderedIds.map((wishId, position) =>
+          wishId === id
+            ? null
+            : tx.tableWish.update({ where: { id: wishId }, data: { position } }),
+        ),
+      );
+      return tx.tableWish.update({
+        where: { id },
+        data: {
+          kind: targetKind,
+          position: targetIndex,
+          variantId: dto.variantId,
+          people: personIds && {
+            deleteMany: {},
+            create: personIds.map((personId) => ({ personId })),
+          },
+        },
+        include: includeWithLang(lang),
+      });
     });
     return toDto(wish);
   }

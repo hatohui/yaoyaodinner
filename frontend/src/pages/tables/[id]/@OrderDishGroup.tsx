@@ -23,7 +23,7 @@ export function OrderDishGroup({
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(!compact)
 	const prevCompact = useRef(compact)
 
 	useEffect(() => {

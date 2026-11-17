@@ -5,6 +5,7 @@ import {
 	KeyboardSensor,
 	PointerSensor,
 	TouchSensor,
+	pointerWithin,
 	useDraggable,
 	useDroppable,
 	useSensor,
@@ -15,11 +16,11 @@ import type { TableWishDto, WishKind } from '@/api/model'
 
 interface WishDndProps {
 	wishes: TableWishDto[]
-	onMove: (id: string, kind: WishKind) => void
+	onMove: (id: string, kind: WishKind, position?: number) => void
 	children: ReactNode
 }
 
-/** Drag a wish onto another list to change what kind of wish it is. */
+/** Drag a wish to reorder priority within a list or move it to another category. */
 export function WishDnd({ wishes, onMove, children }: WishDndProps) {
 	const [activeId, setActiveId] = useState<string>()
 	const sensors = useSensors(
@@ -35,12 +36,29 @@ export function WishDnd({ wishes, onMove, children }: WishDndProps) {
 	return (
 		<DndContext
 			sensors={sensors}
+			collisionDetection={pointerWithin}
 			onDragStart={e => setActiveId(String(e.active.id))}
 			onDragCancel={end}
 			onDragEnd={e => {
-				const kind = e.over?.id as WishKind | undefined
+				const overId = e.over ? String(e.over.id) : null
 				const wish = wishes.find(w => w.id === e.active.id)
-				if (wish && kind && wish.kind !== kind) onMove(wish.id, kind)
+				if (wish && overId?.startsWith('row:')) {
+					const target = wishes.find(w => w.id === overId.slice(4))
+					if (target && target.id !== wish.id) {
+						const inKind = wishes.filter(w => w.kind === target.kind)
+						const targetIndex = inKind.findIndex(w => w.id === target.id)
+						const activeIndex = inKind.findIndex(w => w.id === wish.id)
+						if (
+							targetIndex !== -1 &&
+							(wish.kind !== target.kind || activeIndex !== targetIndex)
+						) {
+							onMove(wish.id, target.kind, targetIndex)
+						}
+					}
+				} else if (wish && overId?.startsWith('section:')) {
+					const kind = overId.slice(8) as WishKind
+					if (wish.kind !== kind) onMove(wish.id, kind)
+				}
 				end()
 			}}
 		>
@@ -58,18 +76,28 @@ export function WishDnd({ wishes, onMove, children }: WishDndProps) {
 }
 
 export function useWishDrop(kind: WishKind) {
-	const { setNodeRef, isOver, active } = useDroppable({ id: kind })
+	const { setNodeRef, isOver, active } = useDroppable({ id: `section:${kind}` })
 	return { ref: setNodeRef, isOver, isDragging: Boolean(active) }
 }
 
 export function useWishDrag(id: string) {
-	const { setNodeRef, attributes, listeners, isDragging } = useDraggable({
-		id,
+	const {
+		setNodeRef: setDragRef,
+		attributes,
+		listeners,
+		isDragging,
+	} = useDraggable({ id })
+	const { setNodeRef: setDropRef, isOver, active } = useDroppable({
+		id: `row:${id}`,
 	})
 	return {
-		ref: setNodeRef,
+		ref: (node: HTMLElement | null) => {
+			setDragRef(node)
+			setDropRef(node)
+		},
 		handle: { ...attributes, ...listeners },
 		isDragging,
+		isOver: isOver && active?.id !== id,
 	}
 }
 

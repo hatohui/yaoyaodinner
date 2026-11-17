@@ -13,4 +13,6 @@ export interface UpdateTableWishDto {
   variantId?: string;
   /** Who the dish is for; empty means the whole table */
   personIds?: string[];
+  /** 0-based priority position within the category */
+  position?: number;
 }

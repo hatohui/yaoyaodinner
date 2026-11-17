@@ -10,6 +10,7 @@ import { AllergySection } from './@AllergySection'
 import { PersonalOrdersSection } from './@PersonalOrdersSection'
 import { PlanAccessHint } from './@PlanAccessHint'
 import { TablePlanCard } from './@TablePlanCard'
+import { useTablePlan } from './@useTablePlan'
 import { WishDnd } from './@WishDnd'
 import { WishSection } from './@WishSection'
 import { usePlanBoard } from './@usePlanBoard'
@@ -33,6 +34,7 @@ export function PlanTab({
 }: PlanTabProps) {
 	const { t } = useTranslation()
 	const board = usePlanBoard(table.id, people, orders, canEdit)
+	const { plan, isPlanning } = useTablePlan(table.id)
 	const [modifying, setModifying] = useState(false)
 	const [previewing, setPreviewing] = useState(false)
 
@@ -80,7 +82,7 @@ export function PlanTab({
 					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
 				</p>
 				<div className='ml-auto flex flex-wrap items-center justify-end gap-2'>
-					{board.canUseAi && orders.length > 0 && (
+					{board.canUseAi && orders.length > 0 && !plan && !isPlanning && (
 						<Button
 							variant='outline'
 							size='sm'
@@ -114,7 +116,7 @@ export function PlanTab({
 				</div>
 			</div>
 
-			<WishDnd wishes={board.wishes} onMove={board.setKind}>
+			<WishDnd wishes={board.wishes} onMove={board.moveWish}>
 				<WishSection
 					kind='must'
 					icon={Star}

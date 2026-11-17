@@ -232,6 +232,7 @@ model TableWish {
   variantId String?  @map("variant_id") @db.VarChar(255)
   label     String?  @db.VarChar(255)
   kind      WishKind @default(want)
+  position  Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
 
   table   Table             @relation(fields: [tableId], references: [id], onDelete: Cascade)

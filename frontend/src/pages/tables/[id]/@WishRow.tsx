@@ -67,8 +67,9 @@ export function WishRow({
 		<li
 			ref={drag.ref}
 			className={cn(
-				'flex items-center gap-2 py-2',
-				drag.isDragging && 'opacity-40'
+				'flex items-center gap-2 py-2 transition-colors',
+				drag.isDragging && 'opacity-40',
+				drag.isOver && 'bg-primary/10 ring-1 ring-inset ring-primary/50 rounded-lg'
 			)}
 		>
 			{canEdit && (

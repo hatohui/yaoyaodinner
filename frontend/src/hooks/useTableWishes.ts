@@ -50,6 +50,7 @@ const draftWish = (
 		currency: food?.currency ?? '',
 		shouldCalculate: food?.shouldCalculate ?? true,
 		personIds: [],
+		position: 0,
 		createdAt: new Date().toISOString(),
 	}
 }
@@ -109,7 +110,31 @@ export function useTableWishes(tableId: string) {
 		qc.setQueryData<TableWishDto[]>(queryKey, prev => fn(prev ?? []))
 
 	// edits made while a new wish is still saving wait here (null = removed)
-	const drafts = useRef(new Map<string, WishKind | null>())
+	const drafts = useRef(
+		new Map<string, { kind: WishKind; position?: number } | null>()
+	)
+
+	const reorderWishes = (
+		prev: TableWishDto[],
+		id: string,
+		kind: WishKind,
+		position?: number
+	) => {
+		const target = prev.find(w => w.id === id)
+		if (!target) return prev
+		const rest = prev.filter(w => w.id !== id)
+		const inKind = rest.filter(w => w.kind === kind)
+		const others = rest.filter(w => w.kind !== kind)
+		const idx =
+			position !== undefined
+				? Math.max(0, Math.min(position, inKind.length))
+				: inKind.length
+		inKind.splice(idx, 0, { ...target, kind, position: idx })
+		return [
+			...others,
+			...inKind.map((w, i) => ({ ...w, position: i })),
+		]
+	}
 
 	const { mutate: create } = useCreateTableWish()
 
@@ -117,9 +142,14 @@ export function useTableWishes(tableId: string) {
 		mutation: {
 			// a dropped wish should land at once, not after the round trip
 			onMutate: ({ id, data }) =>
-				data.kind &&
+				(data.kind !== undefined || data.position !== undefined) &&
 				patchCache(prev =>
-					prev.map(w => (w.id === id ? { ...w, kind: data.kind! } : w))
+					reorderWishes(
+						prev,
+						id,
+						data.kind ?? prev.find(w => w.id === id)?.kind ?? 'want',
+						data.position
+					)
 				),
 			onSuccess: wish =>
 				patchCache(prev => prev.map(w => (w.id === wish.id ? wish : w))),
@@ -146,7 +176,7 @@ export function useTableWishes(tableId: string) {
 
 	const add = (wish: NewWish) => {
 		const draftId = `draft-${crypto.randomUUID()}`
-		drafts.current.set(draftId, wish.kind)
+		drafts.current.set(draftId, { kind: wish.kind })
 		void qc.cancelQueries({ queryKey })
 		patchCache(prev => [...prev, draftWish(draftId, tableId, wish)])
 
@@ -158,16 +188,21 @@ export function useTableWishes(tableId: string) {
 			{ data, params: { lang: i18n.language } },
 			{
 				onSuccess: saved => {
-					const kind = drafts.current.get(draftId)
+					const pending = drafts.current.get(draftId)
 					drafts.current.delete(draftId)
-					if (kind === null) return destroy({ id: saved.id })
+					if (pending === null) return destroy({ id: saved.id })
 					patchCache(prev => {
 						const rest = prev.filter(w => w.id !== saved.id)
 						return rest.some(w => w.id === draftId)
 							? rest.map(w => (w.id === draftId ? saved : w))
 							: [...rest, saved]
 					})
-					if (kind && kind !== saved.kind) setKind(saved.id, kind)
+					if (
+						pending &&
+						(pending.kind !== saved.kind || pending.position !== undefined)
+					) {
+						moveWish(saved.id, pending.kind, pending.position)
+					}
 				},
 				onError: err => {
 					drafts.current.delete(draftId)
@@ -182,12 +217,18 @@ export function useTableWishes(tableId: string) {
 		)
 	}
 
-	const setKind = (id: string, kind: WishKind) => {
+	const moveWish = (id: string, kind: WishKind, position?: number) => {
 		if (!drafts.current.has(id))
-			return update({ id, data: { kind }, params: { lang: i18n.language } })
-		drafts.current.set(id, kind)
-		patchCache(prev => prev.map(w => (w.id === id ? { ...w, kind } : w)))
+			return update({
+				id,
+				data: { kind, ...(position !== undefined ? { position } : {}) },
+				params: { lang: i18n.language },
+			})
+		drafts.current.set(id, { kind, position })
+		patchCache(prev => reorderWishes(prev, id, kind, position))
 	}
+
+	const setKind = (id: string, kind: WishKind) => moveWish(id, kind)
 
 	const setVariant = (id: string, variant: FoodVariantDto) => {
 		if (drafts.current.has(id)) return
@@ -228,6 +269,7 @@ export function useTableWishes(tableId: string) {
 		isLoading,
 		add,
 		setKind,
+		moveWish,
 		setVariant,
 		setPeople,
 		remove,

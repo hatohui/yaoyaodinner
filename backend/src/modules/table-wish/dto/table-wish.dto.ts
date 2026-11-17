@@ -3,10 +3,12 @@ import {
   ArrayMaxSize,
   IsArray,
   IsIn,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
+  Min,
 } from 'class-validator';
 
 export const WISH_KINDS = ['must', 'want', 'avoid'] as const;
@@ -33,6 +35,7 @@ export class TableWishDto {
     description: 'Who the dish is for; empty means the whole table',
   })
   personIds: string[];
+  @ApiProperty() position: number;
   @ApiProperty() createdAt: Date;
 }
 
@@ -78,4 +81,13 @@ export class UpdateTableWishDto {
   @ArrayMaxSize(50)
   @IsString({ each: true })
   personIds?: string[];
+
+  @ApiPropertyOptional({
+    minimum: 0,
+    description: '0-based priority position within the category',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  position?: number;
 }
