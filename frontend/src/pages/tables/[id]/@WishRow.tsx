@@ -7,6 +7,7 @@ import {
 	Plus,
 	ShoppingCart,
 	TriangleAlert,
+	User,
 	Users,
 	X,
 } from 'lucide-react'
