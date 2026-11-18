@@ -5,7 +5,7 @@ import { useVerifyTableCode, verifyTableCode } from '@/api/tables/tables'
 import { localStorage } from '@/utils/localstorage'
 import { TABLE_CODE_STORAGE_KEY } from '@/common/constants'
 import { useConfig } from '@/hooks/useConfig'
-import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { useEditMode } from '@/hooks/useEditMode'
 import { useGuest } from '@/hooks/useGuest'
 
 /** A device holds one table's code at a time, so it can't collect them. */
@@ -51,7 +51,7 @@ export const useHeldTableCode = create<TableCodeState>((set, get) => ({
  * table. Unclaimed devices can still join: claim a person or add themselves.
  */
 export function useTableAccess(tableId: string) {
-	const { isAdmin } = useIsAdmin()
+	const { isAdmin, editing } = useEditMode()
 	const held = useHeldTableCode(s => s.held)
 	const release = useHeldTableCode(s => s.release)
 	const { tableCodes } = useConfig()
@@ -72,7 +72,9 @@ export function useTableAccess(tableId: string) {
 
 	const isSeatedHere = claimedTableId === tableId
 	const hasCode = !tableCodes || Boolean(code)
-	const canEdit = isAdmin || (isSeatedHere && hasCode)
+	// admins sitting at the table don't need its code, but anywhere else they
+	// only edit with edit mode switched on
+	const canEdit = (isAdmin && editing) || (isSeatedHere && (hasCode || isAdmin))
 
 	return {
 		isAdmin,

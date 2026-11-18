@@ -7,6 +7,10 @@ export const IDENTITY_TOUR_STORAGE_KEY = 'identity_tour_done'
 export const TABLE_CODE_STORAGE_KEY = 'table_code'
 export const TABLE_TAB_STORAGE_KEY = 'table_tab_by_id'
 export const PLAN_VIEW_STORAGE_KEY = 'plan_view'
+export const PLAN_COLLAPSED_STORAGE_KEY = 'plan_collapsed'
+// mirrors WISH_LIMITS in backend table-wish.service.ts
+export const WISH_LIMITS = { must: 20, want: 40, avoid: 30 } as const
+export const WISH_PREVIEW_COUNT = 5
 export const ROSTER_VIEW_STORAGE_KEY = 'roster_view'
 export const ORDER_CART_STORAGE_KEY = 'order_cart_by_table'
 export const ORDER_LIST_VIEW_STORAGE_KEY = 'order_list_view'

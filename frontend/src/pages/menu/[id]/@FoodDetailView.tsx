@@ -191,7 +191,12 @@ export function FoodDetailView({
 	const details = (
 		<>
 			<div className='space-y-1.5'>
-				<div className='flex flex-wrap items-center gap-1.5'>
+				<div
+					className={cn(
+						'flex flex-wrap items-center gap-1.5',
+						modal && 'md:pr-20'
+					)}
+				>
 					<FoodTags
 						isPopular={food.isPopular}
 						isRecommended={food.isRecommended}

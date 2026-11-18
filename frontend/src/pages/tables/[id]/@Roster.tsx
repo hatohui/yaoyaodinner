@@ -147,8 +147,8 @@ export function Roster({
 			) : (
 				<ul
 					className={cn(
-						'grid grid-cols-1 md:grid-cols-2 md:items-start',
-						compact ? 'gap-1.5' : 'gap-2 sm:gap-3'
+						'-m-0.5 columns-1 p-0.5 md:columns-2',
+						compact ? 'gap-x-1.5' : 'gap-x-2 sm:gap-x-3'
 					)}
 				>
 					{people.map(person => {
@@ -310,11 +310,11 @@ function RosterItem({
 			data-tour='person'
 			data-name={person.name}
 			className={cn(
-				'group relative flex items-center gap-3 border border-border bg-card shadow-sm transition-all',
+				'group relative flex break-inside-avoid items-center gap-3 border border-border bg-card shadow-sm transition-all',
 				(inlineRoast || roastingInline) && 'flex-wrap border-fire/40',
 				compact
-					? 'rounded-xl px-3 py-2'
-					: 'min-h-[4.5rem] rounded-2xl px-4 py-3 sm:gap-4 sm:px-5 sm:py-4',
+					? 'mb-1.5 rounded-xl px-3 py-2'
+					: 'mb-2 min-h-[4.5rem] rounded-2xl px-4 py-3 sm:mb-3 sm:gap-4 sm:px-5 sm:py-4',
 				(editable || rowTogglesRoast) &&
 					'cursor-pointer hover:bg-secondary hover:shadow-md',
 				editable && 'hover:border-primary/50',

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, Plus } from 'lucide-react'
 import type { PersonDto } from '@/api/model'
@@ -27,15 +27,7 @@ export function OrderDishGroup({
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
-	const [open, setOpen] = useState(!compact)
-	const prevCompact = useRef(compact)
-
-	useEffect(() => {
-		if (prevCompact.current !== compact) {
-			prevCompact.current = compact
-			setOpen(!compact)
-		}
-	}, [compact])
+	const [open, setOpen] = useState(false)
 	const head = lines[0]
 	const quantity = lines.reduce((sum, l) => sum + l.quantity, 0)
 	const total = lines.reduce(

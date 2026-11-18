@@ -38,7 +38,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { relativeTime } from '@/utils/relativeTime'
 import { cn } from '@/utils/shadcn'
 
-const ICONS: Record<TableAuditDtoAction, LucideIcon> = {
+export const AUDIT_ICONS: Record<TableAuditDtoAction, LucideIcon> = {
 	created: Plus,
 	bulk_created: Plus,
 	renamed: Pencil,
@@ -70,7 +70,7 @@ const ICONS: Record<TableAuditDtoAction, LucideIcon> = {
 	feedback_removed: Trash2,
 }
 
-const DESTRUCTIVE_ACTIONS = new Set<TableAuditDtoAction>([
+export const DESTRUCTIVE_AUDIT_ACTIONS = new Set<TableAuditDtoAction>([
 	'deleted',
 	'wish_removed',
 	'order_removed',
@@ -81,13 +81,27 @@ const DESTRUCTIVE_ACTIONS = new Set<TableAuditDtoAction>([
 
 const AUDIT_COUNT = 200
 
-function messageKey(entry: TableAuditDto) {
+export function auditMessageKey(entry: TableAuditDto) {
 	const cleared = entry.details?.to == null
 	if (entry.action === 'banner_changed' && cleared) return 'banner_removed'
 	if (entry.action === 'host_changed' && cleared) return 'host_removed'
 	if (entry.action === 'person_pfp_changed' && cleared)
 		return 'person_pfp_removed'
 	return entry.action
+}
+
+export function auditEntryParams(entry: TableAuditDto) {
+	return {
+		no: entry.tableNo,
+		name: entry.tableName,
+		from: entry.details?.from,
+		to: entry.details?.to,
+		withNo: entry.details?.withNo,
+		withName: entry.details?.withName,
+		count: entry.details?.count,
+		seated: entry.details?.seated ?? 0,
+		target: entry.details?.targetName,
+	}
 }
 
 export function TableAuditDialog({
@@ -175,7 +189,7 @@ export function TableAuditDialog({
 				) : (
 					<ul className='scrollbar-thin -mx-1 flex flex-col overflow-y-auto'>
 						{data.map(entry => {
-							const Icon = ICONS[entry.action]
+							const Icon = AUDIT_ICONS[entry.action]
 							return (
 								<li
 									key={entry.id}
@@ -184,7 +198,7 @@ export function TableAuditDialog({
 									<span
 										className={cn(
 											'mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary',
-											DESTRUCTIVE_ACTIONS.has(entry.action) &&
+											DESTRUCTIVE_AUDIT_ACTIONS.has(entry.action) &&
 												'bg-destructive/10 text-destructive'
 										)}
 									>
@@ -192,17 +206,10 @@ export function TableAuditDialog({
 									</span>
 									<div className='flex min-w-0 flex-1 flex-col gap-0.5'>
 										<p className='text-sm text-foreground'>
-											{t(`table_audit.actions.${messageKey(entry)}`, {
-												no: entry.tableNo,
-												name: entry.tableName,
-												from: entry.details?.from,
-												to: entry.details?.to,
-												withNo: entry.details?.withNo,
-												withName: entry.details?.withName,
-												count: entry.details?.count,
-												seated: entry.details?.seated ?? 0,
-												target: entry.details?.targetName,
-											})}
+											{t(
+												`table_audit.actions.${auditMessageKey(entry)}`,
+												auditEntryParams(entry)
+											)}
 										</p>
 										<p className='flex items-center gap-1.5 text-xs text-muted-foreground'>
 											<time

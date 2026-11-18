@@ -45,9 +45,10 @@ export function TableCodeBar({
 		},
 	})
 
-	if (!canEdit && heldTableId && heldTableId !== tableId) return null
+	if (!canEdit && !isAdmin && heldTableId && heldTableId !== tableId)
+		return null
 
-	if (!canEdit) {
+	if (!canEdit && !isAdmin) {
 		return (
 			<div
 				data-tour='table-code'

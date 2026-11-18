@@ -687,7 +687,8 @@
 			"expand": "展开侧边栏",
 			"seasonal": "时价",
 			"content": "内容检查",
-			"glossary": "术语表"
+			"glossary": "术语表",
+			"history": "历史记录"
 		},
 		"dashboard": {
 			"title": "仪表盘",
@@ -1039,6 +1040,33 @@
 			"delete": "删除术语",
 			"empty": "还没有术语。",
 			"save_failed": "无法保存术语"
+		},
+		"history": {
+			"title": "操作历史",
+			"subtitle": "宾客和管理员在餐桌、计划、点单、成员及图片上的所有更改。",
+			"refresh": "刷新",
+			"search_placeholder": "搜索菜品、成员、餐桌或文件…",
+			"all_tables": "全部餐桌",
+			"all_actors": "所有人",
+			"actors_guest": "宾客",
+			"actors_admin": "管理员",
+			"categories": {
+				"all": "全部",
+				"plan": "计划",
+				"orders": "点单",
+				"people": "成员与备注",
+				"tables": "餐桌",
+				"images": "图片",
+				"ai": "AI",
+				"feedback": "反馈"
+			},
+			"kpi_total": "总记录",
+			"kpi_guests": "宾客操作",
+			"kpi_images": "图片变更",
+			"kpi_tables": "涉及餐桌",
+			"showing": "显示 {{shown}} / {{total}}",
+			"no_matches": "没有符合筛选条件的记录",
+			"table_tag": "{{no}}号桌"
 		}
 	},
 	"faq": {
@@ -1283,7 +1311,6 @@
 		"ai_closed": "AI 规划仅在开放点餐时可用。",
 		"move_to": "移到{{list}}",
 		"other_table": "仅可查看。你坐在另一桌。",
-		"other_table_ai": "你坐在另一桌，仅本桌客人可使用 AI 点菜规划。",
 		"add_to_plan": "加入本桌计划",
 		"remove_from_plan": "从计划中移除",
 		"add_individual": "添加个人点单",

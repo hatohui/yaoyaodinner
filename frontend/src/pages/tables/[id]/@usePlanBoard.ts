@@ -16,6 +16,7 @@ import { useOrderCart } from '@/hooks/useOrderCart'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useConfig } from '@/hooks/useConfig'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
+import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useToast } from '@/hooks/useToast'
 import type { ApplyPlanSelection } from '@/components/ordering/ApplyPlanDialog'
 import { downloadReceiptImage, type ReceiptSection } from '@/utils/receiptImage'
@@ -48,15 +49,16 @@ export function usePlanBoard(
 	const { canAdd, stage } = useOrderingStage()
 	const { tablePlan, tableCodes } = useConfig()
 	const { personId, hasIdentity } = useWhoAmI(tableId)
+	const { isAdmin } = useIsAdmin()
 	const access: PlanAccess = !canEdit
-		? tableCodes
-			? 'locked'
-			: hasIdentity
-				? 'other_table'
+		? (isAdmin || hasIdentity) && !personId
+			? 'view_only'
+			: tableCodes
+				? 'locked'
 				: 'pick_identity'
 		: tablePlan && !personId
-			? hasIdentity
-				? 'other_table_ai'
+			? hasIdentity || isAdmin
+				? 'ready'
 				: 'pick_identity'
 			: tablePlan && stage !== 'open'
 				? 'ai_closed'

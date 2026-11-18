@@ -855,8 +855,36 @@ declare module 'react-i18next' {
 						people: string
 						stats: string
 						feedback: string
+						history: string
 						settings: string
 						seasonal: string
+					}
+					history: {
+						title: string
+						subtitle: string
+						refresh: string
+						search_placeholder: string
+						all_tables: string
+						all_actors: string
+						actors_guest: string
+						actors_admin: string
+						categories: {
+							all: string
+							plan: string
+							orders: string
+							people: string
+							tables: string
+							images: string
+							ai: string
+							feedback: string
+						}
+						kpi_total: string
+						kpi_guests: string
+						kpi_images: string
+						kpi_tables: string
+						showing: string
+						no_matches: string
+						table_tag: string
 					}
 					glossary: {
 						title: string

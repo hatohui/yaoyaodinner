@@ -689,7 +689,8 @@
 			"expand": "サイドバーを展開",
 			"seasonal": "時価設定",
 			"content": "コンテンツ確認",
-			"glossary": "用語集"
+			"glossary": "用語集",
+			"history": "履歴"
 		},
 		"dashboard": {
 			"title": "ダッシュボード",
@@ -1041,6 +1042,33 @@
 			"delete": "用語を削除",
 			"empty": "用語はまだ登録されていません。",
 			"save_failed": "用語を保存できませんでした"
+		},
+		"history": {
+			"title": "操作履歴",
+			"subtitle": "テーブル、プラン、注文、メンバー、画像に対するゲストと管理者のすべての変更。",
+			"refresh": "更新",
+			"search_placeholder": "料理、メンバー、テーブル、ファイルを検索…",
+			"all_tables": "すべてのテーブル",
+			"all_actors": "全員",
+			"actors_guest": "ゲスト",
+			"actors_admin": "管理者",
+			"categories": {
+				"all": "すべて",
+				"plan": "プラン",
+				"orders": "注文",
+				"people": "メンバー・メモ",
+				"tables": "テーブル",
+				"images": "画像",
+				"ai": "AI",
+				"feedback": "フィードバック"
+			},
+			"kpi_total": "合計イベント",
+			"kpi_guests": "ゲスト操作",
+			"kpi_images": "画像変更",
+			"kpi_tables": "対象テーブル",
+			"showing": "{{total}} 件中 {{shown}} 件を表示",
+			"no_matches": "条件に一致する履歴はありません",
+			"table_tag": "テーブル {{no}}"
 		}
 	},
 	"faq": {
@@ -1285,7 +1313,6 @@
 		"ai_closed": "AI献立プランナーは注文受付期間中のみ利用可能です。",
 		"move_to": "{{list}} へ移動",
 		"other_table": "閲覧専用。あなたは別のテーブルに着席しています。",
-		"other_table_ai": "あなたは別のテーブルに着席しています。このテーブルの参加者のみがAI献立プランナーを利用できます。",
 		"add_to_plan": "テーブルのプランに追加",
 		"remove_from_plan": "プランから削除",
 		"add_individual": "個人の注文を追加",

@@ -10,9 +10,24 @@ import {
   CreateTableWishDto,
   TableWishDto,
   UpdateTableWishDto,
+  WishKind,
 } from './dto/table-wish.dto';
 
-const MAX_WISHES = 40;
+// generous per-list caps so a busy table never feels boxed in; keep in sync with the frontend
+export const WISH_LIMITS: Record<WishKind, number> = {
+  must: 20,
+  want: 40,
+  avoid: 30,
+};
+
+const listFull = (kind: WishKind) =>
+  new BadRequestException({
+    statusCode: 400,
+    message: 'This list is full',
+    code: 'WISH_KIND_FULL',
+    kind,
+    limit: WISH_LIMITS[kind],
+  });
 
 const includeWithLang = (lang: string) => ({
   variant: {
@@ -71,10 +86,10 @@ export class TableWishService {
 
     const existing = await prisma.tableWish.findMany({
       where: { tableId: dto.tableId },
-      select: { variantId: true, label: true },
+      select: { variantId: true, label: true, kind: true },
     });
-    if (existing.length >= MAX_WISHES) {
-      throw new BadRequestException('This list is full');
+    if (existing.filter((w) => w.kind === dto.kind).length >= WISH_LIMITS[dto.kind]) {
+      throw listFull(dto.kind);
     }
     const duplicate = existing.some((w) =>
       dto.variantId
@@ -130,6 +145,12 @@ export class TableWishService {
     if (!existing) throw new NotFoundException('Wish not found');
 
     const targetKind = dto.kind ?? existing.kind;
+    if (targetKind !== existing.kind) {
+      const inTarget = await prisma.tableWish.count({
+        where: { tableId: existing.tableId, kind: targetKind },
+      });
+      if (inTarget >= WISH_LIMITS[targetKind]) throw listFull(targetKind);
+    }
     const repositioning = dto.position !== undefined || targetKind !== existing.kind;
 
     if (!repositioning) {

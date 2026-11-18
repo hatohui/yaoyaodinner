@@ -687,7 +687,8 @@
 			"expand": "Mở rộng thanh bên",
 			"seasonal": "Giá theo mùa",
 			"content": "Kiểm tra nội dung",
-			"glossary": "Thuật ngữ"
+			"glossary": "Thuật ngữ",
+			"history": "Lịch sử"
 		},
 		"dashboard": {
 			"title": "Bảng điều khiển",
@@ -1039,6 +1040,33 @@
 			"delete": "Xóa thuật ngữ",
 			"empty": "Chưa có thuật ngữ nào.",
 			"save_failed": "Không lưu được thuật ngữ"
+		},
+		"history": {
+			"title": "Lịch sử hoạt động",
+			"subtitle": "Mọi thay đổi từ khách và quản trị viên trên bàn, kế hoạch, đơn món, thành viên và hình ảnh.",
+			"refresh": "Làm mới",
+			"search_placeholder": "Tìm món, người, bàn hoặc tệp…",
+			"all_tables": "Tất cả các bàn",
+			"all_actors": "Tất cả",
+			"actors_guest": "Khách",
+			"actors_admin": "Quản trị viên",
+			"categories": {
+				"all": "Tất cả",
+				"plan": "Kế hoạch",
+				"orders": "Đặt món",
+				"people": "Thành viên & ghi chú",
+				"tables": "Bàn",
+				"images": "Hình ảnh",
+				"ai": "AI",
+				"feedback": "Góp ý"
+			},
+			"kpi_total": "Tổng hoạt động",
+			"kpi_guests": "Từ khách",
+			"kpi_images": "Thay đổi ảnh",
+			"kpi_tables": "Bàn có thay đổi",
+			"showing": "Hiển thị {{shown}} / {{total}}",
+			"no_matches": "Không có hoạt động nào khớp bộ lọc",
+			"table_tag": "Bàn {{no}}"
 		}
 	},
 	"faq": {
@@ -1283,7 +1311,6 @@
 		"ai_closed": "AI lên kế hoạch chỉ dùng được khi đang mở gọi món.",
 		"move_to": "Chuyển sang {{list}}",
 		"other_table": "Chỉ xem. Bạn đang ngồi ở bàn khác.",
-		"other_table_ai": "Bạn đang ngồi ở bàn khác. Chỉ khách tại bàn này mới dùng được AI gợi ý món.",
 		"add_to_plan": "Thêm vào kế hoạch của bàn",
 		"remove_from_plan": "Xóa khỏi kế hoạch",
 		"add_individual": "Thêm món riêng",

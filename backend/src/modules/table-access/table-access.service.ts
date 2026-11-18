@@ -280,16 +280,13 @@ export class TableAccessService {
   /** Best-effort resolution of who made a request and which table it belongs to. */
   async resolveActor(headers: Headers, tableId?: string | null): Promise<AuditActor> {
     const admin = await this.isAdmin(headers);
-    let person: { id: string; name: string } | null = null;
-    if (!admin) {
-      const personId = first(headers[PERSON_HEADER]);
-      if (personId) {
-        person = await prisma.people.findUnique({
+    const personId = first(headers[PERSON_HEADER]);
+    const person = personId
+      ? await prisma.people.findUnique({
           where: { id: personId },
           select: { id: true, name: true },
-        });
-      }
-    }
+        })
+      : null;
 
     let resolvedTableId = tableId ?? null;
     if (!resolvedTableId) {

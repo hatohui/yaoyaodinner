@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button'
 
 export type PlanAccess =
 	| 'locked'
-	| 'other_table'
-	| 'other_table_ai'
+	| 'view_only'
 	| 'pick_identity'
 	| 'ai_closed'
 	| 'ready'
@@ -22,18 +21,13 @@ export function PlanAccessHint({
 	onShowPeople,
 }: PlanAccessHintProps) {
 	const { t } = useTranslation()
-	if (access === 'ready' || access === 'other_table') return null
+	if (access === 'ready' || access === 'view_only') return null
 
 	const hint = {
 		locked: {
 			icon: Lock,
 			text: t('plan_board.locked'),
 			action: { label: t('plan_board.unlock'), onClick: onJoin },
-		},
-		other_table_ai: {
-			icon: UserCheck,
-			text: t('plan_board.other_table_ai'),
-			action: null,
 		},
 		pick_identity: {
 			icon: UserCheck,
