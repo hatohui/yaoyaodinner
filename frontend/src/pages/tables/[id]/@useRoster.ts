@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import {
 	useCreatePerson,
 	useDeletePerson,
+	useSetPersonAllergies,
 	useUpdatePerson,
 	useUpdatePersonPfp,
 } from '@/api/people/people'
@@ -16,6 +17,7 @@ import {
 import { useToast } from '@/hooks/useToast'
 import type { PersonDto } from '@/api/model'
 import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
+import type { AllergyInput } from './@AllergyPicker'
 
 const isNameTaken = (e: unknown) =>
 	isAxiosError(e) && e.response?.status === 409
@@ -125,6 +127,35 @@ export function useRoster(tableId: string) {
 		},
 	})
 
+	const allergyMutation = useSetPersonAllergies({
+		mutation: {
+			onMutate: async ({ id, data: body }) => {
+				await qc.cancelQueries({ queryKey: peopleKey })
+				const prev = qc.getQueryData<PersonDto[]>(peopleKey)
+				qc.setQueryData<PersonDto[]>(peopleKey, old =>
+					(old ?? []).map(p =>
+						p.id === id
+							? {
+									...p,
+									allergies: body.allergies.map((a, i) => ({
+										id: `temp-${i}`,
+										allergen: a.allergen,
+										label: a.label ?? null,
+									})),
+								}
+							: p
+					)
+				)
+				return { prev }
+			},
+			onError: (_e, _v, ctx) => {
+				qc.setQueryData(peopleKey, ctx?.prev)
+				toast.error(t('plan_board.save_failed'))
+			},
+			onSettled: invalidate,
+		},
+	})
+
 	const nameTaken = (name: string, exceptId?: string) =>
 		(data ?? []).some(
 			p =>
@@ -151,5 +182,16 @@ export function useRoster(tableId: string) {
 		renameMutation.mutate({ id, data: { name } })
 	}
 
-	return { people: data ?? [], isLoading, add, remove, updatePfp, rename }
+	const setAllergies = (id: string, allergies: AllergyInput[]) =>
+		allergyMutation.mutate({ id, data: { allergies } })
+
+	return {
+		people: data ?? [],
+		isLoading,
+		add,
+		remove,
+		updatePfp,
+		rename,
+		setAllergies,
+	}
 }

@@ -94,10 +94,29 @@ export function WishlistStrip({
 	const visible = showAll ? sorted : sorted.slice(0, PREVIEW_LIMIT)
 	const hiddenCount = sorted.length - visible.length
 
+	const hasApply = canApply && pending.length > 0
+
+	const collapseButton = wishes.length > 0 && (
+		<button
+			type='button'
+			onClick={() => setCollapsed(v => !v)}
+			aria-expanded={!collapsed}
+			aria-label={t('plan_board.strip_title')}
+			className='inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground'
+		>
+			<ChevronDown
+				className={cn(
+					'size-4 transition-transform duration-200',
+					collapsed ? '-rotate-90' : 'rotate-0'
+				)}
+			/>
+		</button>
+	)
+
 	return (
 		<section className='flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3'>
 			<header className='flex flex-wrap items-center justify-between gap-2'>
-				<div className='flex min-w-0 items-center gap-1.5'>
+				<div className='flex min-w-0 flex-1 items-center gap-1.5 sm:flex-initial'>
 					{wishes.length > 0 ? (
 						<button
 							type='button'
@@ -168,12 +187,21 @@ export function WishlistStrip({
 					</Tooltip>
 				</div>
 
-				<div className='ml-auto flex shrink-0 items-center gap-1.5'>
-					{canApply && pending.length > 0 && (
+				{hasApply && (
+					<div className='shrink-0 sm:hidden'>{collapseButton}</div>
+				)}
+
+				<div
+					className={cn(
+						'flex shrink-0 items-center gap-1.5 sm:ml-auto',
+						hasApply ? 'w-full justify-between sm:w-auto sm:justify-start' : 'ml-auto'
+					)}
+				>
+					{hasApply && (
 						<Button
 							size='sm'
 							onClick={() => setPreviewing(true)}
-							className='h-7 shrink-0 gap-1 rounded-xl px-2.5 text-xs'
+							className='h-8 shrink-0 gap-1.5 rounded-xl px-3 text-xs'
 						>
 							<Zap className='size-3.5' />
 							{t('plan_board.apply_plan', { count: applyCount })}
@@ -181,27 +209,14 @@ export function WishlistStrip({
 					)}
 					<Link
 						to={`/tables/${tableId}?tab=plan`}
-						className='flex shrink-0 items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'
+						className='flex h-8 shrink-0 items-center gap-1 rounded-xl px-2.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'
 					>
 						{t('plan_board.open_plan')}
 						<ArrowRight className='size-3.5' />
 					</Link>
-					{wishes.length > 0 && (
-						<button
-							type='button'
-							onClick={() => setCollapsed(v => !v)}
-							aria-expanded={!collapsed}
-							aria-label={t('plan_board.strip_title')}
-							className='inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground'
-						>
-							<ChevronDown
-								className={cn(
-									'size-4 transition-transform duration-200',
-									collapsed ? '-rotate-90' : 'rotate-0'
-								)}
-							/>
-						</button>
-					)}
+					<div className={cn('shrink-0', hasApply && 'hidden sm:block')}>
+						{collapseButton}
+					</div>
 				</div>
 			</header>
 			{allergies && allergies.length > 0 && (

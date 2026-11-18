@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Allergen, type PersonDto } from '@/api/model'
+import type { Allergen, PersonDto } from '@/api/model'
 import {
 	Dialog,
 	DialogContent,
@@ -9,17 +9,18 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/utils/shadcn'
-
-const MAX_OTHER = 100
-const CHOICES = Object.values(Allergen).filter(a => a !== Allergen.other)
+import {
+	AllergyPicker,
+	allergyDraftFromPerson,
+	allergyInputsFromDraft,
+	type AllergyInput,
+} from './@AllergyPicker'
 
 interface AllergyDialogProps {
 	person: PersonDto | null
 	isSaving: boolean
 	onOpenChange: (open: boolean) => void
-	onSave: (allergies: { allergen: Allergen; label?: string }[]) => void
+	onSave: (allergies: AllergyInput[]) => void
 }
 
 export function AllergyDialog({
@@ -34,17 +35,9 @@ export function AllergyDialog({
 
 	useEffect(() => {
 		if (!person) return
-		const current = person.allergies ?? []
-		setPicked(
-			new Set(current.filter(a => a.allergen !== 'other').map(a => a.allergen))
-		)
-		setOther(
-			current
-				.filter(a => a.allergen === 'other')
-				.map(a => a.label)
-				.filter(Boolean)
-				.join(', ')
-		)
+		const draft = allergyDraftFromPerson(person)
+		setPicked(draft.picked)
+		setOther(draft.other)
 	}, [person])
 
 	const toggle = (allergen: Allergen) =>
@@ -55,15 +48,7 @@ export function AllergyDialog({
 			return next
 		})
 
-	const save = () =>
-		onSave([
-			...[...picked].map(allergen => ({ allergen })),
-			...other
-				.split(',')
-				.map(s => s.trim())
-				.filter(Boolean)
-				.map(label => ({ allergen: Allergen.other, label })),
-		])
+	const save = () => onSave(allergyInputsFromDraft(picked, other))
 
 	return (
 		<Dialog open={person !== null} onOpenChange={onOpenChange}>
@@ -74,31 +59,12 @@ export function AllergyDialog({
 					</DialogTitle>
 				</DialogHeader>
 
-				<div className='flex flex-wrap gap-2'>
-					{CHOICES.map(allergen => (
-						<button
-							key={allergen}
-							type='button'
-							aria-pressed={picked.has(allergen)}
-							onClick={() => toggle(allergen)}
-							className={cn(
-								'cursor-pointer rounded-full border px-3 py-1.5 text-sm transition-colors',
-								picked.has(allergen)
-									? 'border-primary bg-primary text-primary-foreground'
-									: 'border-border bg-card text-foreground hover:border-primary/40 hover:bg-primary/10'
-							)}
-						>
-							{t(`plan_board.allergen.${allergen}`)}
-						</button>
-					))}
-				</div>
-
-				<Input
-					value={other}
-					maxLength={MAX_OTHER}
-					placeholder={t('plan_board.other_placeholder')}
-					onChange={e => setOther(e.target.value)}
-					className='rounded-xl'
+				<AllergyPicker
+					picked={picked}
+					other={other}
+					onToggle={toggle}
+					onOtherChange={setOther}
+					t={t}
 				/>
 
 				<DialogFooter>

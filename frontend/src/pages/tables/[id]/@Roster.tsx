@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Crown, NotebookText, Pencil, UserCheck } from 'lucide-react'
+import { Crown, NotebookText, Pencil, ShieldAlert, UserCheck } from 'lucide-react'
 import type { MemberRoastDto, PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ImageViewer } from '@/components/common/ImageViewer'
@@ -14,6 +14,7 @@ import { useIdentityTour } from '@/hooks/useIdentityTour'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { ROSTER_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useRoster } from './@useRoster'
+import { formatPersonAllergies } from './@AllergyPicker'
 import { PersonDialog } from './@PersonDialog'
 import { MemberRoast } from './@MemberRoast'
 import { RoastText } from './@RoastText'
@@ -42,9 +43,8 @@ export function Roster({
 	roast,
 }: RosterProps) {
 	const { t } = useTranslation()
-	const { people, isLoading, add, remove, updatePfp, rename } = useRoster(
-		table.id
-	)
+	const { people, isLoading, add, remove, updatePfp, rename, setAllergies } =
+		useRoster(table.id)
 	const me = useGuest(s => s.me)
 	const setMe = useGuest(s => s.setMe)
 	const clearMe = useGuest(s => s.clearMe)
@@ -212,6 +212,8 @@ export function Roster({
 						onSetHost(changes.isHost ? editingPerson.id : null)
 					if (changes.pfpUrl !== undefined)
 						updatePfp(editingPerson.id, changes.pfpUrl)
+					if (changes.allergies !== undefined)
+						setAllergies(editingPerson.id, changes.allergies)
 				}}
 				onClaim={() => {
 					if (editingPerson) claim(editingPerson)
@@ -284,6 +286,7 @@ function RosterItem({
 }) {
 	const { t } = useTranslation()
 	const note = person.personalNotes?.[0]?.content
+	const allergies = formatPersonAllergies(person.allergies, t)
 	const saved = !person.id.startsWith('temp-')
 	const editable = canEdit && saved
 
@@ -398,6 +401,24 @@ function RosterItem({
 						<NotebookText className='size-3.5 shrink-0 text-primary' />
 						<TruncatedText
 							text={note}
+							onClick={editable ? onOpen : undefined}
+							className={cn(
+								'pointer-events-auto',
+								editable && 'cursor-pointer'
+							)}
+						/>
+					</span>
+				)}
+				{allergies && (
+					<span
+						className={cn(
+							'flex min-w-0 items-center gap-1.5 text-destructive',
+							compact ? 'text-xs' : 'text-sm'
+						)}
+					>
+						<ShieldAlert className='size-3.5 shrink-0' />
+						<TruncatedText
+							text={allergies}
 							onClick={editable ? onOpen : undefined}
 							className={cn(
 								'pointer-events-auto',

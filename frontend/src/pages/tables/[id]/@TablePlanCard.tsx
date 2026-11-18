@@ -152,7 +152,8 @@ export function TablePlanCard({
 						</span>
 					</div>
 					<Button
-						className='ml-auto h-9 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+						size='sm'
+						className='ml-auto h-8 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
 						onClick={startOver}
 					>
 						<Sparkles className='size-4' />

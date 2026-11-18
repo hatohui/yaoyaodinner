@@ -63,7 +63,7 @@ export function PlanTab({
 
 	if (board.isLoading) {
 		return (
-			<div className='flex flex-col gap-3 pt-2'>
+			<div className='flex flex-col gap-3'>
 				<Skeleton className='h-28 w-full rounded-2xl' />
 				<Skeleton className='h-28 w-full rounded-2xl' />
 			</div>
@@ -84,7 +84,7 @@ export function PlanTab({
 	}
 
 	return (
-		<div className='flex flex-col gap-3 pt-2'>
+		<div className='flex flex-col gap-3'>
 			<PlanAccessHint
 				access={board.access}
 				onJoin={onJoin}
@@ -106,7 +106,7 @@ export function PlanTab({
 						<Button
 							size='sm'
 							onClick={() => setPreviewing(true)}
-							className='shrink-0 gap-1.5 rounded-xl px-2.5 text-xs sm:px-3 sm:text-sm'
+							className='h-8 shrink-0 gap-1.5 rounded-xl px-2.5 text-xs sm:px-3 sm:text-sm'
 						>
 							<Zap className='size-4' />
 							{t('plan_board.apply_plan', { count: board.pendingCount })}
@@ -119,7 +119,7 @@ export function PlanTab({
 							onClick={() => setModifying(true)}
 							aria-label={t('table_plan.modify_cta')}
 							title={t('table_plan.modify_cta')}
-							className='relative shrink-0 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted px-2.5 text-xs font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted sm:px-3 sm:text-sm motion-safe:before:animate-ai-sheen'
+							className='relative h-8 shrink-0 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted px-2.5 text-xs font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted sm:px-3 sm:text-sm motion-safe:before:animate-ai-sheen'
 						>
 							<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
 							<span className='sm:hidden'>
@@ -138,7 +138,7 @@ export function PlanTab({
 							onClick={() => board.download(table)}
 							aria-label={t('common.download_image')}
 							title={t('common.download_image')}
-							className='rounded-xl'
+							className='size-8 rounded-xl'
 						>
 							<Download className='size-3.5' />
 						</Button>
@@ -149,7 +149,7 @@ export function PlanTab({
 							onClick={board.copy}
 							aria-label={t('plan_board.copy')}
 							title={t('plan_board.copy')}
-							className='size-8 shrink-0 gap-1.5 rounded-xl p-0 sm:w-auto sm:px-3'
+							className='h-8 w-8 shrink-0 gap-1.5 rounded-xl p-0 has-[>svg]:px-0 sm:w-auto sm:px-3 sm:has-[>svg]:px-2.5'
 						>
 							<ClipboardCopy className='size-3.5 sm:size-4' />
 							<span className='hidden sm:inline'>{t('plan_board.copy')}</span>

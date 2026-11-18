@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Crown, ImageOff, Trash2, UserCheck } from 'lucide-react'
-import type { PersonDto } from '@/api/model'
+import { Crown, ImageOff, ShieldAlert, Trash2, UserCheck } from 'lucide-react'
+import type { Allergen, PersonDto } from '@/api/model'
 import {
 	Dialog,
 	DialogContent,
@@ -16,6 +16,13 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { usePersonNote } from '@/hooks/usePersonNote'
+import {
+	AllergyPicker,
+	allergyDraftFromPerson,
+	allergyInputsFromDraft,
+	sameAllergies,
+	type AllergyInput,
+} from './@AllergyPicker'
 
 interface PersonDialogProps {
 	person: PersonDto | null
@@ -27,6 +34,7 @@ interface PersonDialogProps {
 		name?: string
 		isHost?: boolean
 		pfpUrl?: string | null
+		allergies?: AllergyInput[]
 	}) => void
 	onClaim: () => void
 	onRemove: () => void
@@ -48,6 +56,10 @@ export function PersonDialog({
 	const [noteDraft, setNoteDraft] = useState('')
 	const [hostDraft, setHostDraft] = useState(false)
 	const [pfpDraft, setPfpDraft] = useState<string | null>(null)
+	const [pickedAllergens, setPickedAllergens] = useState<Set<Allergen>>(
+		new Set()
+	)
+	const [otherAllergy, setOtherAllergy] = useState('')
 	const personId = person?.id
 
 	useEffect(() => {
@@ -55,6 +67,9 @@ export function PersonDialog({
 		setName(person.name)
 		setHostDraft(isHost)
 		setPfpDraft(person.pfpUrl ?? null)
+		const draft = allergyDraftFromPerson(person)
+		setPickedAllergens(draft.picked)
+		setOtherAllergy(draft.other)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [personId])
 
@@ -64,12 +79,26 @@ export function PersonDialog({
 
 	if (!person) return null
 
+	const toggleAllergen = (allergen: Allergen) =>
+		setPickedAllergens(prev => {
+			const next = new Set(prev)
+			if (next.has(allergen)) next.delete(allergen)
+			else next.add(allergen)
+			return next
+		})
+
+	const nextAllergies = allergyInputsFromDraft(pickedAllergens, otherAllergy)
 	const trimmedName = name.trim()
 	const nameChanged = Boolean(trimmedName) && trimmedName !== person.name
 	const noteChanged = noteDraft.trim() !== (note?.content ?? '')
 	const hostChanged = hostDraft !== isHost
 	const pfpChanged = pfpDraft !== (person.pfpUrl ?? null)
-	const dirty = nameChanged || noteChanged || hostChanged || pfpChanged
+	const allergiesChanged = !sameAllergies(
+		nextAllergies,
+		person.allergies ?? []
+	)
+	const dirty =
+		nameChanged || noteChanged || hostChanged || pfpChanged || allergiesChanged
 
 	const save = () => {
 		if (!dirty) return
@@ -77,6 +106,7 @@ export function PersonDialog({
 			name: nameChanged ? trimmedName : undefined,
 			isHost: hostChanged ? hostDraft : undefined,
 			pfpUrl: pfpChanged ? pfpDraft : undefined,
+			allergies: allergiesChanged ? nextAllergies : undefined,
 		})
 		if (noteChanged) saveNote(noteDraft.trim())
 		onOpenChange(false)
@@ -84,7 +114,7 @@ export function PersonDialog({
 
 	return (
 		<Dialog open onOpenChange={onOpenChange}>
-			<DialogContent className='grid-cols-[minmax(0,1fr)] gap-5 rounded-3xl sm:max-w-md'>
+			<DialogContent className='max-h-[90vh] grid-cols-[minmax(0,1fr)] gap-5 overflow-y-auto rounded-3xl sm:max-w-md'>
 				<DialogHeader>
 					<DialogTitle className='line-clamp-2 pr-6 leading-snug wrap-anywhere'>
 						{t('roster.edit_person', { name: person.name })}
@@ -130,6 +160,20 @@ export function PersonDialog({
 						placeholder={t('notes.placeholder')}
 						rows={3}
 						className='rounded-xl'
+					/>
+				</div>
+
+				<div className='flex flex-col gap-2'>
+					<Label className='flex items-center gap-1.5'>
+						<ShieldAlert className='size-4 text-destructive' />
+						{t('plan_board.allergies')}
+					</Label>
+					<AllergyPicker
+						picked={pickedAllergens}
+						other={otherAllergy}
+						onToggle={toggleAllergen}
+						onOtherChange={setOtherAllergy}
+						t={t}
 					/>
 				</div>
 
