@@ -84,9 +84,9 @@ export function PersonDialog({
 
 	return (
 		<Dialog open onOpenChange={onOpenChange}>
-			<DialogContent className='gap-5 rounded-3xl sm:max-w-md'>
+			<DialogContent className='grid-cols-[minmax(0,1fr)] gap-5 rounded-3xl sm:max-w-md'>
 				<DialogHeader>
-					<DialogTitle>
+					<DialogTitle className='line-clamp-2 pr-6 leading-snug wrap-anywhere'>
 						{t('roster.edit_person', { name: person.name })}
 					</DialogTitle>
 				</DialogHeader>
