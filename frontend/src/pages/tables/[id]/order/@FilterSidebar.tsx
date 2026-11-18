@@ -64,7 +64,7 @@ export function FilterSidebar({
 	) => onFilterChange({ category, ...flags })
 
 	return (
-		<div className='flex max-h-[calc(100vh-6rem)] flex-col gap-4 rounded-2xl border border-border bg-card p-3 shadow-sm'>
+		<div className='flex h-full max-h-full flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm'>
 			<div className='shrink-0'>
 				<SearchSuggest
 					value={search}

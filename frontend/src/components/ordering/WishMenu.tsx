@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
 import { Ban, ListPlus, Sparkles, Star, X } from 'lucide-react'
 import type { TableWishDto, WishKind } from '@/api/model'
 import {
@@ -26,41 +25,16 @@ interface WishMenuProps {
 }
 
 const TRIGGER =
-	'flex size-8 cursor-pointer items-center justify-center rounded-full shadow backdrop-blur-sm transition-colors'
+	'flex size-8 cursor-pointer items-center justify-center rounded-full border shadow backdrop-blur-sm transition-colors'
 
-/** One tap puts a dish on the plan as "want"; once there, tap again to move or drop it. */
-export function WishMenu({ name, wish, onPick, onRemove }: WishMenuProps) {
+/** Opens the plan options (Must order / Want to try / Avoid) for a dish. */
+export function WishMenu({ wish, onPick, onRemove }: WishMenuProps) {
 	const { t } = useTranslation()
 	const current = KINDS.find(k => k.kind === wish?.kind)
-
-	if (!current) {
-		const quickAdd = () => {
-			onPick('want')
-			toast.success(
-				t('plan_board.quick_added', { name, list: t('plan_board.want') }),
-				{
-					action: {
-						label: t('plan_board.must'),
-						onClick: () => onPick('must'),
-					},
-				}
-			)
-		}
-		return (
-			<button
-				type='button'
-				onClick={quickAdd}
-				aria-label={t('plan_board.add_to_plan')}
-				title={t('plan_board.add_to_plan')}
-				className={cn(TRIGGER, 'bg-card/90 text-foreground hover:text-primary')}
-			>
-				<ListPlus className='size-4' />
-			</button>
-		)
-	}
-
-	const Icon = current.icon
-	const label = t(`plan_board.${current.kind}`)
+	const Icon = current?.icon ?? ListPlus
+	const label = current
+		? t(`plan_board.${current.kind}`)
+		: t('plan_board.add_to_plan')
 
 	return (
 		<DropdownMenu>
@@ -71,9 +45,11 @@ export function WishMenu({ name, wish, onPick, onRemove }: WishMenuProps) {
 					title={label}
 					className={cn(
 						TRIGGER,
-						current.kind === 'avoid'
-							? 'bg-destructive text-primary-foreground'
-							: 'bg-primary text-primary-foreground'
+						current
+							? current.kind === 'avoid'
+								? 'border-destructive/40 bg-destructive text-primary-foreground'
+								: 'border-primary/40 bg-primary text-primary-foreground'
+							: 'border-border/80 bg-card/90 text-foreground hover:border-primary/60 hover:text-primary'
 					)}
 				>
 					<Icon className='size-4' />
@@ -97,11 +73,15 @@ export function WishMenu({ name, wish, onPick, onRemove }: WishMenuProps) {
 						{t(`plan_board.${kind}`)}
 					</DropdownMenuItem>
 				))}
-				<DropdownMenuSeparator />
-				<DropdownMenuItem onSelect={onRemove} className='gap-2'>
-					<X className='size-4' />
-					{t('plan_board.remove_from_plan')}
-				</DropdownMenuItem>
+				{current && (
+					<>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onSelect={onRemove} className='gap-2'>
+							<X className='size-4' />
+							{t('plan_board.remove_from_plan')}
+						</DropdownMenuItem>
+					</>
+				)}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

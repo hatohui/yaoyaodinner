@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
-import { ArrowLeft, ReceiptText, ShoppingCart, UserPlus } from 'lucide-react'
+import { ArrowLeft, ReceiptText, ShoppingCart, TriangleAlert, UserPlus } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ProductGridSkeleton } from '../@Skeletons'
@@ -41,6 +41,7 @@ import {
 } from '@/hooks/useTableWishes'
 import { WishlistStrip } from '@/components/ordering/WishlistStrip'
 import { WishMenu } from '@/components/ordering/WishMenu'
+import { allergyGroups } from '../@planBoard'
 import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
@@ -85,6 +86,7 @@ export default function TableOrderPage() {
 	const orderedLines = useMemo(() => groupOrders(orders), [orders])
 
 	const plan = useFoodWishes(tableId)
+	const allergies = useMemo(() => allergyGroups(cart.people), [cart.people])
 	// the plan tab's "add individual order" lands here with personal splits preselected
 	const individual = useSearchParams()[0].get('split') === 'individual'
 
@@ -166,8 +168,8 @@ export default function TableOrderPage() {
 	if (!canAdd) return <OrderingClosed tableId={tableId} />
 
 	return (
-		<div className='mx-auto max-w-6xl px-4 py-6 xl:max-w-[1400px]'>
-			<div className='mb-4 flex flex-col gap-1'>
+		<div className='mx-auto max-w-6xl px-4 py-6 lg:flex lg:h-[calc(100dvh-4rem)] lg:flex-col lg:overflow-hidden lg:py-4 xl:max-w-[1400px]'>
+			<div className='mb-4 flex shrink-0 flex-col gap-1 lg:mb-3 lg:flex-row lg:items-center lg:gap-3'>
 				<Link
 					to={`/tables/${tableId}`}
 					className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
@@ -201,10 +203,9 @@ export default function TableOrderPage() {
 					</Button>
 				</div>
 			) : (
-				<div className='flex gap-6'>
-					<aside className='hidden w-60 shrink-0 xl:block'>
-						<div className='sticky top-20'>
-							<FilterSidebar
+				<div className='flex min-h-0 flex-1 gap-6'>
+					<aside className='hidden min-h-0 w-60 shrink-0 xl:flex xl:flex-col'>
+						<FilterSidebar
 								search={search}
 								onSearchChange={setSearch}
 								onSuggestionSelect={selectSuggestion}
@@ -224,11 +225,10 @@ export default function TableOrderPage() {
 									/>
 								}
 							/>
-						</div>
 					</aside>
 
-					<div className='flex min-w-0 flex-1 flex-col gap-4'>
-						<div className='xl:hidden'>
+					<div className='scrollbar-thin flex min-h-0 min-w-0 flex-1 flex-col gap-4 lg:overflow-y-auto lg:pr-1'>
+						<div className='sticky top-16 z-20 -mx-4 bg-background/90 px-4 py-2 backdrop-blur-md xl:hidden'>
 							<FilterBar
 								search={search}
 								onSearchChange={setSearch}
@@ -254,6 +254,32 @@ export default function TableOrderPage() {
 							}
 							onAdd={addWish}
 						/>
+
+						{allergies.length > 0 && (
+							<div className='flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-destructive/30 bg-destructive/10 px-3.5 py-2 text-xs'>
+								<span className='inline-flex items-center gap-1.5 font-semibold text-destructive'>
+									<TriangleAlert className='size-3.5 shrink-0' />
+									{t('plan_board.allergies')}:
+								</span>
+								{allergies.map(g => {
+									const label =
+										g.allergen === 'other' && g.label
+											? g.label
+											: t(`plan_board.allergen.${g.allergen}`)
+									return (
+										<span key={g.key} className='text-foreground'>
+											<span className='font-semibold text-destructive'>
+												{label}
+											</span>
+											{' — '}
+											<span className='text-muted-foreground'>
+												{g.people.join(', ')}
+											</span>
+										</span>
+									)
+								})}
+							</div>
+						)}
 
 						{isLoading ? (
 							<ProductGridSkeleton count={pagination.count} />
@@ -302,8 +328,8 @@ export default function TableOrderPage() {
 						)}
 					</div>
 
-					<aside className='hidden w-80 shrink-0 lg:block'>
-						<div className='scrollbar-thin sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-sm'>
+					<aside className='hidden min-h-0 w-80 shrink-0 lg:flex lg:flex-col xl:w-96'>
+						<div className='scrollbar-thin max-h-full overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-sm'>
 							{sidePanel}
 						</div>
 					</aside>

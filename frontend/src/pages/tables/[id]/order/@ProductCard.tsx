@@ -69,13 +69,13 @@ export function ProductCard({
 				</div>
 			</div>
 
-			<div className='flex flex-1 flex-col gap-2 p-3'>
-				<span className='line-clamp-2 text-sm font-medium text-foreground'>
+			<div className='flex flex-1 flex-col gap-2 p-2.5 sm:p-3'>
+				<span className='line-clamp-2 text-xs font-medium text-foreground sm:text-sm'>
 					{food.name}
 				</span>
 
-				<div className='mt-auto flex items-center justify-between gap-2'>
-					<span className='text-sm font-semibold text-primary'>
+				<div className='mt-auto flex items-center justify-between gap-1.5 sm:gap-2'>
+					<span className='text-xs font-semibold text-primary sm:text-sm'>
 						{!food.shouldCalculate
 							? t('orders.free')
 							: food.price != null && food.price > 0

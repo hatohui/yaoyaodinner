@@ -34,6 +34,7 @@ export function BackToTop({ threshold = 300, className }: BackToTopProps) {
 	}
 
 	const isMenuPage = pathname.startsWith('/menu')
+	const isOrderPage = pathname.endsWith('/order')
 	const isTablePage = pathname.startsWith('/tables/')
 
 	return (
@@ -48,7 +49,7 @@ export function BackToTop({ threshold = 300, className }: BackToTopProps) {
 				'transition-all duration-300 hover:border-primary/60 hover:bg-primary hover:text-primary-foreground hover:shadow-lg',
 				'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-95',
 				'sm:size-11',
-				isMenuPage
+				isMenuPage || isOrderPage
 					? 'bottom-20 right-4 sm:bottom-22 sm:right-6'
 					: isTablePage
 						? 'bottom-20 right-4 sm:bottom-6 sm:right-6'
