@@ -168,7 +168,7 @@ export default function TableOrderPage() {
 	if (!canAdd) return <OrderingClosed tableId={tableId} />
 
 	return (
-		<div className='mx-auto max-w-6xl px-4 py-6 lg:flex lg:h-[calc(100dvh-4rem)] lg:flex-col lg:overflow-hidden lg:py-4 xl:max-w-[1400px]'>
+		<div className='mx-auto max-w-6xl px-4 py-6 lg:flex lg:h-[calc(100dvh-3.5rem)] lg:flex-col lg:overflow-hidden lg:py-4 xl:max-w-[1400px]'>
 			<div className='mb-4 flex shrink-0 flex-col gap-1 lg:mb-3 lg:flex-row lg:items-center lg:gap-3'>
 				<Link
 					to={`/tables/${tableId}`}
@@ -227,7 +227,7 @@ export default function TableOrderPage() {
 							/>
 					</aside>
 
-					<div className='scrollbar-thin flex min-h-0 min-w-0 flex-1 flex-col gap-4 lg:overflow-y-auto lg:pr-1'>
+					<div className='scrollbar-thin flex min-h-0 min-w-0 flex-1 flex-col gap-4 lg:overflow-y-auto lg:overscroll-contain lg:pr-1'>
 						<div className='sticky top-16 z-20 -mx-4 bg-background/90 px-4 py-2 backdrop-blur-md xl:hidden'>
 							<FilterBar
 								search={search}
@@ -329,7 +329,7 @@ export default function TableOrderPage() {
 					</div>
 
 					<aside className='hidden min-h-0 w-80 shrink-0 lg:flex lg:flex-col xl:w-96'>
-						<div className='scrollbar-thin max-h-full overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-sm'>
+						<div className='scrollbar-thin max-h-full overflow-y-auto overscroll-contain rounded-2xl border border-border bg-card p-4 shadow-sm'>
 							{sidePanel}
 						</div>
 					</aside>

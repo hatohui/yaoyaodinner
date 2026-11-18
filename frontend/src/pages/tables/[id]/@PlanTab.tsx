@@ -135,6 +135,11 @@ export function PlanTab({
 							wishes={board.want}
 							{...wishProps}
 						/>
+						<PersonalOrdersSection
+							tableId={table.id}
+							dishes={board.dishes}
+							canAdd={board.canAddToCart}
+						/>
 					</div>
 					<div className='flex min-w-0 flex-col gap-3'>
 						<WishSection
@@ -144,11 +149,6 @@ export function PlanTab({
 							empty={t('plan_board.avoid_empty')}
 							wishes={board.avoid}
 							{...wishProps}
-						/>
-						<PersonalOrdersSection
-							tableId={table.id}
-							dishes={board.dishes}
-							canAdd={board.canAddToCart}
 						/>
 						<AllergySection
 							groups={board.allergies}

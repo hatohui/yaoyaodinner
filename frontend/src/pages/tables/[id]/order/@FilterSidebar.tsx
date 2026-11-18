@@ -93,7 +93,7 @@ export function FilterSidebar({
 
 			<nav
 				aria-label={t('menu.categories')}
-				className='scrollbar-thin flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto'
+				className='scrollbar-thin flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain'
 			>
 				<p className='m-0 px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 					{t('menu.categories')}
