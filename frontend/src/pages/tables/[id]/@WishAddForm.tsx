@@ -47,7 +47,7 @@ export function WishAddForm({ placeholder, onAdd }: WishAddFormProps) {
 	return (
 		<div className='flex flex-col gap-1.5'>
 			<div className='relative'>
-				<Search className='pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground' />
+				<Search className='pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground sm:left-3 sm:size-4' />
 				<Input
 					value={query}
 					maxLength={MAX_LABEL}
@@ -63,7 +63,7 @@ export function WishAddForm({ placeholder, onAdd }: WishAddFormProps) {
 								: { label: typed }
 						)
 					}}
-					className='h-9 rounded-xl pl-9'
+					className='h-8 rounded-lg pl-8 placeholder:text-sm sm:h-9 sm:rounded-xl sm:pl-9'
 				/>
 			</div>
 			{typed.length >= MIN_SEARCH && (

@@ -1251,7 +1251,7 @@
 		"change_option": "เปลี่ยนตัวเลือก",
 		"who_for": "จานนี้ของใคร?",
 		"who_hint": "เลือกคนที่จะหารจานนี้ หรือปล่อยให้ทั้งโต๊ะหารกัน",
-		"whole_table": "ทั้งโต๊ะ",
+		"whole_table": "ทุกคน",
 		"off_menu": "ไม่มีในเมนู",
 		"progress": "สั่งแล้ว {{done}}/{{total}}",
 		"copy": "คัดลอก",
@@ -1320,7 +1320,7 @@
 		"add_to_target": "เพิ่มไปยัง",
 		"add_to_plan_btn": "เพิ่มลงแผน",
 		"priority": "ความสำคัญ",
-		"added_by": "เพิ่มโดย {{name}}"
+		"added_by": "โดย {{name}}"
 	},
 	"exclude": {
 		"button": "ไม่รวม",

@@ -1251,7 +1251,7 @@
 		"change_option": "更换规格",
 		"who_for": "这道菜给谁？",
 		"who_hint": "选择要分摊的人，或留给全桌一起分摊。",
-		"whole_table": "全桌",
+		"whole_table": "所有人",
 		"off_menu": "不在菜单上",
 		"progress": "已点 {{done}}/{{total}}",
 		"copy": "复制",
@@ -1320,7 +1320,7 @@
 		"add_to_target": "添加到",
 		"add_to_plan_btn": "加入计划",
 		"priority": "优先级",
-		"added_by": "由 {{name}} 添加"
+		"added_by": "{{name}} 加的"
 	},
 	"exclude": {
 		"button": "排除",

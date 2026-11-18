@@ -154,7 +154,7 @@ export function WishRow({
 		<li
 			ref={drag.ref}
 			className={cn(
-				'flex items-center gap-2.5 py-2.5 transition-colors',
+				'flex items-center gap-2 py-1.5 transition-colors sm:gap-2.5 sm:py-2.5',
 				drag.isDragging && 'opacity-40',
 				drag.isOver &&
 					'rounded-lg bg-primary/10 ring-1 ring-inset ring-primary/50'
@@ -172,14 +172,14 @@ export function WishRow({
 					<OrderThumb
 						imageKey={wish.foodImageUrl}
 						alt={wish.name}
-						className='size-10 rounded-xl sm:size-11'
+						className='size-8 rounded-lg sm:size-11 sm:rounded-xl'
 					/>
 				</button>
 			) : (
 				<OrderThumb
 					imageKey={wish.foodImageUrl}
 					alt={wish.name}
-					className='size-10 rounded-xl sm:size-11'
+					className='size-8 rounded-lg sm:size-11 sm:rounded-xl'
 				/>
 			)}
 			<div className='flex min-w-0 flex-1 flex-col justify-center gap-0.5 sm:gap-1'>
@@ -212,7 +212,7 @@ export function WishRow({
 				)}
 
 				{hasMobileMeta && (
-					<div className='flex min-w-0 items-center gap-1.5 text-xs leading-tight text-muted-foreground sm:hidden'>
+					<div className='flex min-w-0 items-center gap-1 text-[11px] leading-tight text-muted-foreground sm:hidden'>
 						{!wish.foodId && (
 							<span className='shrink-0'>{t('plan_board.off_menu')}</span>
 						)}
