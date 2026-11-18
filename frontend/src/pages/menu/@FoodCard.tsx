@@ -62,7 +62,7 @@ export function FoodCard({
 		<div
 			className={cn(
 				'group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-md',
-				'transition-[transform,box-shadow,opacity] duration-300 hover:-translate-y-1 hover:shadow-xl',
+				'transition-[box-shadow,border-color,opacity] duration-300 hover:border-primary/40 hover:shadow-xl',
 				!food.isAvailable && 'opacity-70',
 				quantity > 0 && 'ring-2 ring-primary',
 				isEditing &&

@@ -1,7 +1,13 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams, useSearchParams } from 'react-router'
-import { ArrowLeft, ReceiptText, ShoppingCart, TriangleAlert, UserPlus } from 'lucide-react'
+import {
+	ArrowLeft,
+	ReceiptText,
+	ShoppingCart,
+	TriangleAlert,
+	UserPlus,
+} from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ProductGridSkeleton } from '../@Skeletons'
@@ -41,6 +47,7 @@ import {
 } from '@/hooks/useTableWishes'
 import { WishlistStrip } from '@/components/ordering/WishlistStrip'
 import { WishMenu } from '@/components/ordering/WishMenu'
+import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
 import { allergyGroups } from '../@planBoard'
 import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
@@ -103,6 +110,7 @@ export default function TableOrderPage() {
 	}
 
 	const [activeFood, setActiveFood] = useState<FoodItemDto | null>(null)
+	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 	const [panelTab, setPanelTab] = useState<SidePanelTab>('cart')
 	const [sheetOpen, setSheetOpen] = useState(false)
 
@@ -206,25 +214,25 @@ export default function TableOrderPage() {
 				<div className='flex min-h-0 flex-1 gap-6'>
 					<aside className='hidden min-h-0 w-60 shrink-0 xl:flex xl:flex-col'>
 						<FilterSidebar
-								search={search}
-								onSearchChange={setSearch}
-								onSuggestionSelect={selectSuggestion}
-								activeCategory={category}
-								categories={categories}
-								categoriesState={categoriesState}
-								sort={sort}
-								onSortChange={setSort}
-								popular={popular}
-								recommended={recommended}
-								onFilterChange={setFilter}
-								exclude={
-									<ExcludeFilter
-										filter={exclude}
-										align='start'
-										className='w-full'
-									/>
-								}
-							/>
+							search={search}
+							onSearchChange={setSearch}
+							onSuggestionSelect={selectSuggestion}
+							activeCategory={category}
+							categories={categories}
+							categoriesState={categoriesState}
+							sort={sort}
+							onSortChange={setSort}
+							popular={popular}
+							recommended={recommended}
+							onFilterChange={setFilter}
+							exclude={
+								<ExcludeFilter
+									filter={exclude}
+									align='start'
+									className='w-full'
+								/>
+							}
+						/>
 					</aside>
 
 					<div className='scrollbar-thin flex min-h-0 min-w-0 flex-1 flex-col gap-4 lg:overflow-y-auto lg:overscroll-contain lg:pr-1'>
@@ -247,8 +255,9 @@ export default function TableOrderPage() {
 
 						<WishlistStrip
 							tableId={tableId}
-							wishes={plan.wishes.filter(w => w.kind !== 'avoid')}
+							wishes={plan.wishes}
 							people={cart.people}
+							onSelectFood={setQuickViewId}
 							statusOf={wish =>
 								wishStatus(wish, id => orderedByFood.has(id), cart.quantityOf)
 							}
@@ -377,6 +386,11 @@ export default function TableOrderPage() {
 				tableId={tableId}
 				onAdd={cart.addConfigured}
 				defaultMode={individual ? 'me' : 'table'}
+			/>
+
+			<FoodDetailModal
+				id={quickViewId}
+				onOpenChange={open => !open && setQuickViewId(null)}
 			/>
 		</div>
 	)

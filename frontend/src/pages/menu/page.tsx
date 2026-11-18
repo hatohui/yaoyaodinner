@@ -91,8 +91,8 @@ export default function MenuPage() {
 
 	const ordering = useMenuOrdering()
 	const exclude = useExcludeFilter(ordering.tableId)
-	const planTableId =
-		canOrder && ordering.canEdit && !editing ? ordering.tableId : ''
+	const planTableId = !editing ? ordering.tableId : ''
+	const canEditPlan = canOrder && ordering.canEdit && !editing
 	const plan = useFoodWishes(planTableId)
 
 	useEffect(() => {
@@ -201,8 +201,11 @@ export default function MenuPage() {
 					<div className='pt-6'>
 						<WishlistStrip
 							tableId={planTableId}
-							wishes={plan.wishes.filter(w => w.kind !== 'avoid')}
+							wishes={plan.wishes}
 							people={ordering.cart.people}
+							compact={compact}
+							canApply={canEditPlan}
+							onSelectFood={setQuickViewId}
 							statusOf={wish =>
 								wishStatus(
 									wish,
@@ -232,7 +235,7 @@ export default function MenuPage() {
 								className={cn(
 									'grid transition-opacity',
 									compact
-										? 'gap-3 md:grid-cols-2 xl:grid-cols-3'
+										? 'grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3'
 										: 'grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5',
 									isPlaceholderData && 'opacity-60'
 								)}
@@ -254,7 +257,13 @@ export default function MenuPage() {
 										onQuickView: setQuickViewId,
 									}
 									return compact ? (
-										<FoodRow key={food.id} {...shared} />
+										<FoodRow
+											key={food.id}
+											{...shared}
+											wishKind={
+												planTableId ? plan.wishOf(food.id)?.kind : undefined
+											}
+										/>
 									) : (
 										<FoodCard
 											key={food.id}
@@ -271,12 +280,16 @@ export default function MenuPage() {
 												editing ? key => setImage(food.id, key) : undefined
 											}
 											wishMenu={
-												planTableId && food.defaultVariantId ? (
+												planTableId &&
+												(canEditPlan
+													? Boolean(food.defaultVariantId)
+													: Boolean(plan.wishOf(food.id))) ? (
 													<WishMenu
 														name={food.name}
 														wish={plan.wishOf(food.id)}
 														onPick={kind => plan.pick(food, kind)}
 														onRemove={() => plan.removeFood(food.id)}
+														readOnly={!canEditPlan}
 													/>
 												) : undefined
 											}

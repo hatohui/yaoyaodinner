@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Minus, Pencil, Plus, Trash2 } from 'lucide-react'
 import type { OrderResponseDto, PersonDto } from '@/api/model'
+import { StoredImage } from '@/components/common/StoredImage'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/utils/shadcn'
 
@@ -67,6 +68,11 @@ export function OrderListItem({
 		commitQuantity(next)
 	}
 
+	const splitPeople = order.splitAll
+		? []
+		: order.splits
+				.map(s => people.find(p => p.id === s.personId))
+				.filter((p): p is PersonDto => Boolean(p))
 	const splitNames = order.splits.map(
 		s =>
 			people.find(p => p.id === s.personId)?.name ?? t('orders.unknown_person')
@@ -154,9 +160,30 @@ export function OrderListItem({
 					type='button'
 					onClick={onEditSplit}
 					disabled={lockSplit}
-					className='min-w-0 truncate text-left text-sm font-medium text-primary transition-opacity hover:underline disabled:pointer-events-none'
+					className='flex min-w-0 items-center gap-1.5 text-left text-sm font-medium text-primary transition-opacity hover:underline disabled:pointer-events-none'
 				>
-					{splitLabel}
+					{splitPeople.length > 0 && (
+						<span className='flex shrink-0 items-center -space-x-1.5'>
+							{splitPeople.slice(0, 4).map(p => (
+								<span
+									key={p.id}
+									className='flex size-5 items-center justify-center overflow-hidden rounded-full bg-brand-muted text-[10px] font-semibold text-primary ring-1 ring-card'
+								>
+									<StoredImage
+										imageKey={p.pfpUrl}
+										className='size-full object-cover'
+										fallback={p.name.charAt(0).toUpperCase()}
+									/>
+								</span>
+							))}
+							{splitPeople.length > 4 && (
+								<span className='flex size-5 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground ring-1 ring-card'>
+									+{splitPeople.length - 4}
+								</span>
+							)}
+						</span>
+					)}
+					<span className='truncate'>{splitLabel}</span>
 				</button>
 				{order.priceEdited && (
 					<Badge

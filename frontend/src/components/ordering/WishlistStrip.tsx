@@ -1,21 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import {
 	ArrowRight,
+	Ban,
 	Check,
+	ChevronDown,
+	CircleHelp,
 	ListChecks,
-	Plus,
 	ShoppingCart,
+	Sparkles,
 	Star,
 	Zap,
 } from 'lucide-react'
-import type { PersonDto, TableWishDto } from '@/api/model'
+import type { PersonDto, TableWishDto, WishKind } from '@/api/model'
 import { openPlanWishes, type WishStatus } from '@/hooks/useTableWishes'
 import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/button'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { cn } from '@/utils/shadcn'
 import { ApplyPlanDialog } from './ApplyPlanDialog'
+
+const KIND_ORDER: Record<WishKind, number> = {
+	must: 0,
+	want: 1,
+	avoid: 2,
+}
 
 interface WishlistStripProps {
 	tableId: string
@@ -23,6 +37,9 @@ interface WishlistStripProps {
 	people: PersonDto[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	onAdd: (wish: TableWishDto) => void
+	onSelectFood?: (foodId: string) => void
+	compact?: boolean
+	canApply?: boolean
 }
 
 export function WishlistStrip({
@@ -31,16 +48,27 @@ export function WishlistStrip({
 	people,
 	statusOf,
 	onAdd,
+	onSelectFood,
+	compact,
+	canApply = true,
 }: WishlistStripProps) {
 	const { t } = useTranslation()
 	const toast = useToast()
 
 	const sorted = [...wishes].sort(
-		(a, b) => Number(b.kind === 'must') - Number(a.kind === 'must')
+		(a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]
 	)
-	const left = sorted.filter(w => statusOf(w) === 'open').length
+	const left = sorted.filter(
+		w => w.kind !== 'avoid' && statusOf(w) === 'open'
+	).length
 	const pending = openPlanWishes(wishes, statusOf)
 	const [previewing, setPreviewing] = useState(false)
+	const [collapsed, setCollapsed] = useState(compact ?? false)
+	const [legendOpen, setLegendOpen] = useState(false)
+
+	useEffect(() => {
+		setCollapsed(Boolean(compact))
+	}, [compact])
 
 	const applyPlan = (chosen: TableWishDto[]) => {
 		chosen.forEach(onAdd)
@@ -49,69 +77,210 @@ export function WishlistStrip({
 
 	return (
 		<section className='flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3'>
-			<header className='flex items-center gap-2'>
-				<ListChecks className='size-4 shrink-0 text-primary' />
-				<h2 className='text-sm font-semibold text-foreground'>
-					{t('plan_board.strip_title')}
-				</h2>
-				<span className='min-w-0 flex-1 truncate text-xs text-muted-foreground'>
-					{wishes.length === 0
-						? t('plan_board.strip_empty')
-						: left > 0
-							? t('plan_board.strip_left', { count: left })
-							: t('plan_board.strip_done')}
-				</span>
-				{pending.length > 0 && (
-					<Button
-						size='sm'
-						onClick={() => setPreviewing(true)}
-						className='h-7 shrink-0 gap-1 rounded-full px-2.5 text-xs'
+			<header className='flex flex-wrap items-center gap-x-2 gap-y-1.5'>
+				<div className='flex min-w-0 flex-1 items-center gap-1.5'>
+					{wishes.length > 0 ? (
+						<button
+							type='button'
+							onClick={() => setCollapsed(v => !v)}
+							aria-expanded={!collapsed}
+							className='flex min-w-0 cursor-pointer items-center gap-2 text-left'
+						>
+							<ListChecks className='size-4 shrink-0 text-primary' />
+							<h2 className='shrink-0 text-sm font-semibold text-foreground'>
+								{t('plan_board.strip_title')}
+							</h2>
+							<span className='min-w-0 truncate text-xs text-muted-foreground'>
+								{left > 0
+									? t('plan_board.strip_left', { count: left })
+									: t('plan_board.strip_done')}
+							</span>
+						</button>
+					) : (
+						<div className='flex min-w-0 items-center gap-2'>
+							<ListChecks className='size-4 shrink-0 text-primary' />
+							<h2 className='shrink-0 text-sm font-semibold text-foreground'>
+								{t('plan_board.strip_title')}
+							</h2>
+							<span className='min-w-0 truncate text-xs text-muted-foreground'>
+								{t('plan_board.strip_empty')}
+							</span>
+						</div>
+					)}
+					<Tooltip open={legendOpen} onOpenChange={setLegendOpen}>
+						<TooltipTrigger asChild>
+							<button
+								type='button'
+								aria-label={t('plan_board.strip_title')}
+								onClick={e => {
+									e.stopPropagation()
+									setLegendOpen(v => !v)
+								}}
+								className='inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+							>
+								<CircleHelp className='size-3.5' />
+							</button>
+						</TooltipTrigger>
+						<TooltipContent
+							side='bottom'
+							className='flex flex-col gap-1.5 p-2.5 text-xs'
+						>
+							<span className='flex items-center gap-1.5'>
+								<Star className='size-3.5 shrink-0 fill-primary text-primary' />
+								{t('plan_board.must')}
+							</span>
+							<span className='flex items-center gap-1.5'>
+								<Sparkles className='size-3.5 shrink-0 text-primary' />
+								{t('plan_board.want')}
+							</span>
+							<span className='flex items-center gap-1.5'>
+								<Ban className='size-3.5 shrink-0 text-destructive' />
+								{t('plan_board.avoid')}
+							</span>
+							<span className='flex items-center gap-1.5'>
+								<Check className='size-3.5 shrink-0 text-primary' />
+								{t('plan_board.status_ordered')}
+							</span>
+							<span className='flex items-center gap-1.5'>
+								<ShoppingCart className='size-3.5 shrink-0 text-primary' />
+								{t('plan_board.status_in_cart')}
+							</span>
+						</TooltipContent>
+					</Tooltip>
+				</div>
+
+				<div className='flex shrink-0 items-center gap-1.5'>
+					{canApply && pending.length > 0 && (
+						<Button
+							size='sm'
+							onClick={() => setPreviewing(true)}
+							className='h-7 shrink-0 gap-1 rounded-full px-2.5 text-xs'
+						>
+							<Zap className='size-3.5' />
+							{t('plan_board.apply_plan', { count: pending.length })}
+						</Button>
+					)}
+					<Link
+						to={`/tables/${tableId}?tab=plan`}
+						className='flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'
 					>
-						<Zap className='size-3.5' />
-						{t('plan_board.apply_plan', { count: pending.length })}
-					</Button>
-				)}
-				<Link
-					to={`/tables/${tableId}?tab=plan`}
-					className='flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'
-				>
-					{t('plan_board.open_plan')}
-					<ArrowRight className='size-3.5' />
-				</Link>
+						{t('plan_board.open_plan')}
+						<ArrowRight className='size-3.5' />
+					</Link>
+					{wishes.length > 0 && (
+						<button
+							type='button'
+							onClick={() => setCollapsed(v => !v)}
+							aria-expanded={!collapsed}
+							aria-label={t('plan_board.strip_title')}
+							className='inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground'
+						>
+							<ChevronDown
+								className={cn(
+									'size-4 transition-transform duration-200',
+									collapsed ? '-rotate-90' : 'rotate-0'
+								)}
+							/>
+						</button>
+					)}
+				</div>
 			</header>
-			{wishes.length > 0 && (
+			{wishes.length > 0 && !collapsed && (
 				<ul className='flex flex-wrap gap-1.5'>
 					{sorted.map(wish => {
 						const status = statusOf(wish)
-						const addable = status === 'open' && Boolean(wish.foodId)
+						const isAvoid = wish.kind === 'avoid'
+						const kindLabel = t(`plan_board.${wish.kind}`)
+						const statusLabel = !wish.foodId
+							? t('plan_board.off_menu')
+							: !isAvoid && status === 'ordered'
+								? t('plan_board.status_ordered')
+								: !isAvoid && status === 'in_cart'
+									? t('plan_board.status_in_cart')
+									: null
+						const tipText = statusLabel
+							? `${kindLabel} · ${statusLabel}`
+							: kindLabel
+
+						const chipClass = cn(
+							'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors',
+							isAvoid &&
+								'border-destructive/40 bg-destructive/10 text-destructive',
+							!isAvoid &&
+								status === 'ordered' &&
+								'border-transparent bg-primary text-primary-foreground',
+							!isAvoid &&
+								status === 'in_cart' &&
+								'border-primary/40 bg-primary/15 text-primary',
+							!isAvoid &&
+								status === 'open' &&
+								'border-border bg-card text-foreground',
+							wish.foodId
+								? isAvoid
+									? 'cursor-pointer hover:border-destructive/60 hover:bg-destructive/15'
+									: status === 'ordered'
+										? 'cursor-pointer hover:opacity-90'
+										: 'cursor-pointer hover:border-primary/40 hover:bg-primary/10'
+								: 'cursor-default'
+						)
+
+						const content = (
+							<>
+								{wish.kind === 'must' && (
+									<Star
+										className={cn(
+											'size-3 shrink-0',
+											status === 'ordered'
+												? 'fill-current text-current'
+												: 'fill-primary text-primary'
+										)}
+									/>
+								)}
+								{wish.kind === 'want' && (
+									<Sparkles
+										className={cn(
+											'size-3 shrink-0',
+											status === 'ordered' ? 'text-current' : 'text-primary'
+										)}
+									/>
+								)}
+								{wish.kind === 'avoid' && (
+									<Ban className='size-3 shrink-0 text-destructive' />
+								)}
+								<span>{wish.name}</span>
+								{!isAvoid && status === 'ordered' && (
+									<Check className='size-3 shrink-0' />
+								)}
+								{!isAvoid && status === 'in_cart' && (
+									<ShoppingCart className='size-3 shrink-0' />
+								)}
+							</>
+						)
+
+						const chip = wish.foodId ? (
+							<Link
+								to={`/menu/${wish.foodId}`}
+								onClick={e => {
+									if (!onSelectFood) return
+									if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0)
+										return
+									e.preventDefault()
+									onSelectFood(wish.foodId!)
+								}}
+								className={chipClass}
+							>
+								{content}
+							</Link>
+						) : (
+							<span className={chipClass}>{content}</span>
+						)
+
 						return (
 							<li key={wish.id}>
-								<button
-									type='button'
-									disabled={!addable}
-									onClick={() => onAdd(wish)}
-									title={addable ? t('plan_board.add_to_cart') : undefined}
-									className={cn(
-										'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors',
-										status === 'ordered' &&
-											'border-transparent bg-primary text-primary-foreground',
-										status === 'in_cart' &&
-											'border-primary/40 bg-primary/15 text-primary',
-										status === 'open' &&
-											'border-border bg-card text-foreground',
-										addable
-											? 'cursor-pointer hover:border-primary/40 hover:bg-primary/10'
-											: 'cursor-default'
-									)}
-								>
-									{wish.kind === 'must' && status === 'open' && (
-										<Star className='size-3 fill-primary text-primary' />
-									)}
-									{wish.name}
-									{status === 'ordered' && <Check className='size-3' />}
-									{status === 'in_cart' && <ShoppingCart className='size-3' />}
-									{addable && <Plus className='size-3 text-primary' />}
-								</button>
+								<Tooltip>
+									<TooltipTrigger asChild>{chip}</TooltipTrigger>
+									<TooltipContent>{tipText}</TooltipContent>
+								</Tooltip>
 							</li>
 						)
 					})}

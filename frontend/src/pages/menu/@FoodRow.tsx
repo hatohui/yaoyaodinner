@@ -2,7 +2,7 @@ import type { MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Check, UtensilsCrossed } from 'lucide-react'
-import type { FoodItemDto } from '@/api/model'
+import type { FoodItemDto, WishKind } from '@/api/model'
 import { FoodTags } from '@/components/common/FoodTags'
 import { StoredImage } from '@/components/common/StoredImage'
 import { usePrefetchFood } from '@/hooks/usePrefetchFood'
@@ -15,6 +15,7 @@ interface FoodRowProps {
 	categoryName?: string
 	quantity?: number
 	orderedQuantity?: number
+	wishKind?: WishKind
 	onAdd?: () => void
 	onQuantityChange?: (quantity: number) => void
 	onQuickView?: (id: string) => void
@@ -26,6 +27,7 @@ export function FoodRow({
 	categoryName,
 	quantity = 0,
 	orderedQuantity = 0,
+	wishKind,
 	onAdd,
 	onQuantityChange,
 	onQuickView,
@@ -53,7 +55,7 @@ export function FoodRow({
 			onTouchStart={prefetch}
 			onFocus={prefetch}
 			className={cn(
-				'group flex items-center gap-3 rounded-2xl border border-border bg-card p-2.5 shadow-sm transition-colors hover:border-primary/40',
+				'group flex min-w-0 items-center gap-3 rounded-2xl border border-border bg-card p-2.5 shadow-sm transition-colors hover:border-primary/40',
 				!food.isAvailable && 'opacity-70',
 				quantity > 0 && 'ring-2 ring-primary'
 			)}
@@ -72,6 +74,7 @@ export function FoodRow({
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
 					isAiTranslated={food.isAiTranslated}
+					wishKind={wishKind}
 				/>
 				{categoryName && (
 					<span className='truncate text-[11px] font-semibold uppercase tracking-wide text-primary'>

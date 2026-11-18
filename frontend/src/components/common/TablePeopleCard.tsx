@@ -16,7 +16,7 @@ export function TablePeopleCard({ table }: { table: TableDto }) {
 	return (
 		<Link
 			to={`/tables/${table.id}`}
-			className='flex h-full flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md'
+			className='flex h-full flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm transition-all hover:border-primary/40 hover:shadow-md'
 		>
 			<div className='flex items-center justify-between gap-2'>
 				<span className='flex min-w-0 items-center gap-2'>

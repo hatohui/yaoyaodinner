@@ -86,7 +86,7 @@ function PathOption({
 			type='button'
 			onClick={onClick}
 			autoFocus={autoFocus}
-			className='group flex cursor-pointer flex-col items-start gap-2 rounded-2xl border border-border bg-control p-4 text-left shadow-xs outline-none transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:bg-brand-muted focus-visible:ring-2 focus-visible:ring-ring'
+			className='group flex cursor-pointer flex-col items-start gap-2 rounded-2xl border border-border bg-control p-4 text-left shadow-xs outline-none transition-all hover:border-primary/50 hover:bg-brand-muted focus-visible:ring-2 focus-visible:ring-ring'
 		>
 			<span className='flex size-10 items-center justify-center rounded-xl bg-brand-muted text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground'>
 				<Icon className='size-5' />

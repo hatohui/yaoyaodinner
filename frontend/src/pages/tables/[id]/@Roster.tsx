@@ -317,7 +317,7 @@ function RosterItem({
 					: 'min-h-[4.5rem] rounded-2xl px-4 py-3 sm:gap-4 sm:px-5 sm:py-4',
 				(editable || rowTogglesRoast) &&
 					'cursor-pointer hover:bg-secondary hover:shadow-md',
-				editable && 'hover:-translate-y-0.5 hover:border-primary/50',
+				editable && 'hover:border-primary/50',
 				isMe &&
 					'border-primary ring-2 ring-primary/30 hover:border-primary hover:ring-primary/50',
 				isMatched && 'border-primary ring-2 ring-primary'
