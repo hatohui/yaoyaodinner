@@ -17,4 +17,11 @@ export interface CreateTableWishDto {
      * @maxLength 120
      */
   label?: string;
+  /**
+     * @minimum 1
+     * @maximum 99
+     */
+  quantity?: number;
+  /** Who the dish is for; empty means the whole table */
+  personIds?: string[];
 }

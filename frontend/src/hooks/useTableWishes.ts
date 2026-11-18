@@ -27,6 +27,12 @@ export type WishFood = Pick<
 >
 
 /** `food` only feeds the instant preview row; the server fills in the rest. */
+export type WishDraft = NewWish extends infer W
+	? W extends unknown
+		? Omit<W, 'kind'>
+		: never
+	: never
+
 export type NewWish =
 	| {
 			kind: WishKind
@@ -372,13 +378,11 @@ export function useFoodWishes(tableId: string) {
 				if (existing.variantId !== variantId) {
 					board.setVariant(existing.id, {
 						id: variantId,
-						foodId: food.id,
 						label: '',
 						price: food.price ?? null,
 						currency: food.currency ?? '',
 						isAvailable: food.isAvailable,
 						isSeasonal: false,
-						sortOrder: 0,
 					})
 				}
 				board.setPeople(existing.id, personIds)

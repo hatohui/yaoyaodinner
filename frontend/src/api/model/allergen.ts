@@ -23,5 +23,8 @@ export const Allergen = {
   beef: 'beef',
   alcohol: 'alcohol',
   vegetarian: 'vegetarian',
+  vegetables: 'vegetables',
+  organs: 'organs',
+  spicy: 'spicy',
   other: 'other',
 } as const;

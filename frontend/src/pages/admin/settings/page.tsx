@@ -30,7 +30,6 @@ export default function AdminSettingsPage() {
 	const { selectedEvent, remove, deleting } = useAdminEvents()
 	const [confirmDelete, setConfirmDelete] = useState(false)
 	const [confirmClearRoasts, setConfirmClearRoasts] = useState(false)
-	const [clearingRoasts, setClearingRoasts] = useState(false)
 
 	const eventLabel = selectedEvent?.name || selectedEvent?.id || ''
 
@@ -145,18 +144,14 @@ export default function AdminSettingsPage() {
 				title={t('admin.roast.clear_all', 'Clear all roasts & limits')}
 				description={t('admin.roast.clear_all_confirm', 'This will delete all generated roasts for all tables and reset daily limits for everyone. Are you sure?')}
 				confirmLabel={t('admin.roast.clear_all_btn', 'Clear roasts')}
-				variant='destructive'
-				loading={clearingRoasts}
+				destructive
 				onConfirm={async () => {
 					try {
-						setClearingRoasts(true)
 						await clearAllRoasts()
 						toast.success(t('admin.roast.clear_all_success', 'All roasts and limits cleared'))
 						setConfirmClearRoasts(false)
 					} catch {
 						toast.error(t('roast.failed', 'Failed to clear roasts'))
-					} finally {
-						setClearingRoasts(false)
 					}
 				}}
 			/>

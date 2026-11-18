@@ -27,9 +27,11 @@ export interface TableWishDto {
   shouldCalculate: boolean;
   /** Who the dish is for; empty means the whole table */
   personIds: string[];
-  createdAt: string;
   /** @nullable */
   addedById?: string | null;
   /** @nullable */
   addedByName?: string | null;
+  position: number;
+  quantity: number;
+  createdAt: string;
 }

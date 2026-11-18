@@ -14,4 +14,5 @@ export const SaveFoodLocaleDtoLang = {
   vi: 'vi',
   zh: 'zh',
   th: 'th',
+  ja: 'ja',
 } as const;

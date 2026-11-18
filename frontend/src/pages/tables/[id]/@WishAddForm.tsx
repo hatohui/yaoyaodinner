@@ -7,7 +7,7 @@ import type { GetFoodsResponseDto } from '@/api/model'
 import { Input } from '@/components/ui/input'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
 import { useDebounce } from '@/hooks/useDebounce'
-import type { NewWish } from '@/hooks/useTableWishes'
+import type { WishDraft } from '@/hooks/useTableWishes'
 import { STALE_TIME_STATIC } from '@/common/constants'
 
 const MIN_SEARCH = 2
@@ -15,7 +15,7 @@ const MAX_LABEL = 120
 
 interface WishAddFormProps {
 	placeholder: string
-	onAdd: (wish: Omit<NewWish, 'kind'>) => void
+	onAdd: (wish: WishDraft) => void
 }
 
 export function WishAddForm({ placeholder, onAdd }: WishAddFormProps) {
@@ -39,7 +39,7 @@ export function WishAddForm({ placeholder, onAdd }: WishAddFormProps) {
 		: []
 	const typed = query.trim()
 
-	const pick = (wish: Omit<NewWish, 'kind'>) => {
+	const pick = (wish: WishDraft) => {
 		onAdd(wish)
 		setQuery('')
 	}

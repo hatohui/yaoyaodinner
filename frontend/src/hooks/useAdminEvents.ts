@@ -133,7 +133,7 @@ export function useAdminEvents() {
 			stageMutate({ id, data: { stage, passphrase } }),
 		settingStage,
 		remove: (id: string, passphrase?: string) =>
-			deleteMutate({ id, passphrase }),
+			deleteMutate({ id, params: { passphrase: passphrase ?? '' } }),
 		deleting,
 	}
 }

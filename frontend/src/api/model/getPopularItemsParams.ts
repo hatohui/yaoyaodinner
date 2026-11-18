@@ -5,6 +5,7 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { GetPopularItemsGroupBy } from './getPopularItemsGroupBy';
 import type { GetPopularItemsScope } from './getPopularItemsScope';
 
 export type GetPopularItemsParams = {
@@ -14,5 +15,13 @@ eventId?: string;
  * How many items to return, most ordered first; 0 for all. Defaults to 10.
  */
 limit?: number;
+/**
+ * Include joke dishes (shouldCalculate=false). Defaults to true.
+ */
+includeJokes?: boolean;
+/**
+ * Aggregate by dish (food) or by variant. Defaults to food.
+ */
+groupBy?: GetPopularItemsGroupBy;
 lang?: string;
 };
