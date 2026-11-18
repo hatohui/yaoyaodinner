@@ -51,6 +51,12 @@ function formatTableMeta(table: TableMetaDto, lang: SupportedLang) {
 			const peopleText = `${seated} คน`
 			return { title, description: `${hostText} · ${peopleText}` }
 		}
+		case 'ja': {
+			const title = name ? `${table.no}番テーブル · ${name}` : `${table.no}番テーブル`
+			const hostText = host ? `テーブルホスト：${host}` : 'ホスト未定'
+			const peopleText = `${seated}人`
+			return { title, description: `${hostText} · ${peopleText}` }
+		}
 		case 'en':
 		default: {
 			const title = name ? `Table ${table.no} · ${name}` : `Table ${table.no}`

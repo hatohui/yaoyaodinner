@@ -80,6 +80,7 @@ async function seedLanguages() {
     { code: 'zh', name: '中文', direction: 'LTR' },
     { code: 'vi', name: 'Tiếng Việt', direction: 'LTR' },
     { code: 'th', name: 'ภาษาไทย', direction: 'LTR' },
+    { code: 'ja', name: '日本語', direction: 'LTR' },
   ];
 
   for (const lang of languages) {

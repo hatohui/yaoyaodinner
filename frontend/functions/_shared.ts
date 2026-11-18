@@ -26,15 +26,16 @@ declare class HTMLRewriter {
 	transform(response: Response): Response
 }
 
-export type SupportedLang = 'en' | 'vi' | 'zh' | 'th'
+export type SupportedLang = 'en' | 'vi' | 'zh' | 'th' | 'ja'
 
-const SUPPORTED_LANGS: readonly SupportedLang[] = ['en', 'vi', 'zh', 'th']
+const SUPPORTED_LANGS: readonly SupportedLang[] = ['en', 'vi', 'zh', 'th', 'ja']
 
 export const LOCALE_MAP: Record<SupportedLang, string> = {
 	en: 'en_US',
 	vi: 'vi_VN',
 	zh: 'zh_CN',
 	th: 'th_TH',
+	ja: 'ja_JP',
 }
 
 export function resolveLang(

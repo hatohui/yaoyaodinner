@@ -51,6 +51,11 @@ const FOOD_LABELS: Record<
 		popular: 'ยอดนิยม',
 		recommended: 'แนะนำ',
 	},
+	ja: {
+		seasonal: '時価',
+		popular: '人気',
+		recommended: 'おすすめ',
+	},
 }
 
 function formatFoodDescription(food: FoodMetaDto, lang: SupportedLang): string {

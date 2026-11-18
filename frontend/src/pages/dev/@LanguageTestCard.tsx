@@ -26,6 +26,7 @@ const LanguageTestCard = () => {
 		{ code: 'vi', name: 'Tiếng Việt' },
 		{ code: 'th', name: 'ไทย' },
 		{ code: 'zh', name: '中文' },
+		{ code: 'ja', name: '日本語' },
 	]
 
 	return (

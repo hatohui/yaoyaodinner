@@ -20,7 +20,7 @@ interface ManualTranslationDialogProps {
   onSave: (translations: Record<string, string>) => Promise<void>
 }
 
-const TARGET_LANGS = ['en', 'vi', 'zh', 'th']
+const TARGET_LANGS = ['en', 'vi', 'zh', 'th', 'ja']
 
 export function ManualTranslationDialog({
   open,

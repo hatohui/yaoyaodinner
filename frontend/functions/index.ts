@@ -40,6 +40,11 @@ const LANDING_COPY: Record<
 		dinnerLabel: 'เวลามื้อค่ำ',
 		orderByLabel: 'สั่งได้ถึง',
 	},
+	ja: {
+		subtitle: 'Yao Yao 主催、Furum 後のプライベートな集まり',
+		dinnerLabel: 'ディナー開始',
+		orderByLabel: '注文締切',
+	},
 }
 
 function formatTime(iso: string | null, timeZone: string, lang: string) {

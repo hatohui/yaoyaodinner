@@ -11,6 +11,7 @@ const FEEDBACK_TITLES: Record<SupportedLang, string> = {
 	vi: 'Bảng góp ý',
 	zh: '反馈墙',
 	th: 'กระดานความคิดเห็น',
+	ja: 'フィードバックウォール',
 }
 
 const FEEDBACK_DESCRIPTIONS: Record<SupportedLang, string> = {
@@ -18,6 +19,7 @@ const FEEDBACK_DESCRIPTIONS: Record<SupportedLang, string> = {
 	vi: 'Chia sẻ kỷ niệm, hình ảnh và cảm xúc tại Furum After Gathering.',
 	zh: '分享 Furum After Gathering 的照片、留言与互动。',
 	th: 'แบ่งปันความทรงจำ รูปภาพ และความรู้สึกจาก Furum After Gathering',
+	ja: 'Furum After Gathering の思い出や写真、リアクションをシェアしよう。',
 }
 
 export const onRequestGet = async (
