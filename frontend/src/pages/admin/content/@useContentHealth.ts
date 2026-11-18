@@ -52,6 +52,11 @@ export function useContentHealth() {
 		},
 	})
 
+	const [startingBatch, setStartingBatch] = React.useState(false)
+	const [dismissedBatchId, setDismissedBatchId] = React.useState<string | null>(
+		null
+	)
+
 	const fillCategory = async (id: string) => {
 		try {
 			await fillCategoryContent(id)
@@ -62,13 +67,17 @@ export function useContentHealth() {
 	}
 
 	const fillAll = async (tab: FillAllContentDtoTab) => {
+		setStartingBatch(true)
 		try {
 			const batch = await fillAllContent({ tab })
+			setDismissedBatchId(null)
 			if (batch.total > 0) jobs.watchBatch(batch)
 		} catch (err) {
 			if (isAxiosError(err) && err.response?.status === 409)
 				toast.info(t('admin.content.batch_running'))
 			else toast.error(t('admin.content.fill_failed'))
+		} finally {
+			setStartingBatch(false)
 		}
 	}
 
@@ -91,11 +100,21 @@ export function useContentHealth() {
 		categories: data?.categories ?? [],
 	}
 
+	const batchErrors = jobs.batch?.errors?.length
+		? jobs.batch.errors
+		: jobs.lastBatchErrors && jobs.lastBatchErrors.batchId !== dismissedBatchId
+			? jobs.lastBatchErrors.errors
+			: []
+
 	return {
 		isLoading,
 		lists,
 		pendingIds: jobs.pendingIds,
 		batch: jobs.batch,
+		startingBatch,
+		batchErrors,
+		dismissErrors: () =>
+			jobs.lastBatchErrors && setDismissedBatchId(jobs.lastBatchErrors.batchId),
 		fillCategory,
 		refresh,
 		fillAll,

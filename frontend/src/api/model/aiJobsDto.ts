@@ -5,10 +5,12 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { AiBatchErrorsDto } from './aiBatchErrorsDto';
 import type { AiBatchProgressDto } from './aiBatchProgressDto';
 import type { AiJobStatusDto } from './aiJobStatusDto';
 
 export interface AiJobsDto {
   batch: AiBatchProgressDto | null;
   jobs: AiJobStatusDto[];
+  lastBatchErrors?: AiBatchErrorsDto | null;
 }

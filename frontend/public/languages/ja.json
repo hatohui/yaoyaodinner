@@ -1000,7 +1000,9 @@
 			"nothing_to_fill": "この料理に補完する項目はありません。",
 			"regenerate": "再生成",
 			"current": "現在: {{value}}",
-			"variant_label": "オプション: {{label}}"
+			"variant_label": "オプション: {{label}}",
+			"batch_errors_title": "{{count}}件の自動補完に失敗しました",
+			"dismiss_errors": "閉じる"
 		},
 		"glossary": {
 			"title": "用語集",

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CircleCheck } from 'lucide-react'
+import { AlertCircle, CircleCheck, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
@@ -25,6 +26,9 @@ export default function AdminContentHealthPage() {
 		lists,
 		pendingIds,
 		batch,
+		startingBatch,
+		batchErrors,
+		dismissErrors,
 		fillCategory,
 		fillAll,
 		setImage,
@@ -36,7 +40,7 @@ export default function AdminContentHealthPage() {
 		describe: boolean
 	} | null>(null)
 
-	const busy = batch !== null
+	const busy = batch !== null || startingBatch
 	const fillAllCount = tab === 'images' ? 0 : lists[tab].length
 
 	const empty = (
@@ -57,7 +61,7 @@ export default function AdminContentHealthPage() {
 						{t('admin.content.subtitle')}
 					</p>
 				</div>
-				{(fillAllCount > 0 || batch) && (
+				{(fillAllCount > 0 || busy) && (
 					<AiFillButton
 						size='default'
 						variant='default'
@@ -74,6 +78,68 @@ export default function AdminContentHealthPage() {
 					/>
 				)}
 			</div>
+
+			{batchErrors.length > 0 && (
+				<div className='flex flex-col gap-2 rounded-2xl border border-destructive/40 bg-destructive/10 p-3.5 text-sm'>
+					<div className='flex items-center justify-between gap-2'>
+						<div className='flex items-center gap-2 font-semibold text-destructive'>
+							<AlertCircle className='size-4 shrink-0' />
+							{t('admin.content.batch_errors_title', {
+								count: batchErrors.length,
+							})}
+						</div>
+						{!busy && (
+							<Button
+								variant='ghost'
+								size='icon-sm'
+								className='size-7 rounded-full text-muted-foreground hover:text-foreground'
+								aria-label={t('admin.content.dismiss_errors')}
+								onClick={dismissErrors}
+							>
+								<X className='size-4' />
+							</Button>
+						)}
+					</div>
+					<ul className='flex max-h-48 flex-col gap-1.5 overflow-y-auto text-xs'>
+						{batchErrors.map(err => {
+							const isCategory = lists.categories.some(c => c.id === err.id)
+							const isDescribe =
+								!isCategory &&
+								tab === 'descriptions' &&
+								lists.descriptions.some(f => f.id === err.id)
+							return (
+								<li
+									key={err.id}
+									className='flex items-center justify-between gap-2 text-foreground'
+								>
+									<span className='min-w-0'>
+										<span className='font-semibold'>{err.name}:</span>{' '}
+										<span className='text-muted-foreground'>{err.error}</span>
+									</span>
+									<AiFillButton
+										label={
+											isDescribe
+												? t('admin.content.ai_describe')
+												: t('admin.content.ai_translate')
+										}
+										pending={isCategory && pendingIds.has(err.id)}
+										disabled={busy}
+										onClick={() =>
+											isCategory
+												? fillCategory(err.id)
+												: setReviewing({
+														id: err.id,
+														name: err.name,
+														describe: isDescribe,
+													})
+										}
+									/>
+								</li>
+							)
+						})}
+					</ul>
+				</div>
+			)}
 
 			{isLoading ? (
 				<div className='flex justify-center py-16'>
@@ -202,7 +268,9 @@ export default function AdminContentHealthPage() {
 										isAvailable={category.isAvailable}
 										showImage={false}
 										missingLocales={category.missingTranslations}
-										missingNames={category.missingNames ?? category.missingTranslations}
+										missingNames={
+											category.missingNames ?? category.missingTranslations
+										}
 									>
 										<AiFillButton
 											label={t('admin.content.ai_translate')}

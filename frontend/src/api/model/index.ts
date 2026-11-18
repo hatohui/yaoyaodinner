@@ -10,6 +10,8 @@ export * from './addFoodVariantDto';
 export * from './addPresetItemDto';
 export * from './adminAuthResponseDto';
 export * from './adminLoginDto';
+export * from './aiBatchErrorDto';
+export * from './aiBatchErrorsDto';
 export * from './aiBatchProgressDto';
 export * from './aiJobsDto';
 export * from './aiJobStatusDto';

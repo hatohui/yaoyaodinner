@@ -877,6 +877,8 @@ declare module 'react-i18next' {
 						regenerate: string
 						current: string
 						variant_label: string
+						batch_errors_title: string
+						dismiss_errors: string
 					}
 					seasonal: {
 						title: string

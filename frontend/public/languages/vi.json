@@ -998,7 +998,9 @@
 			"nothing_to_fill": "Món này không còn gì cần điền.",
 			"regenerate": "Tạo lại",
 			"current": "Hiện tại: {{value}}",
-			"variant_label": "Lựa chọn: {{label}}"
+			"variant_label": "Lựa chọn: {{label}}",
+			"batch_errors_title": "{{count}} mục không điền được",
+			"dismiss_errors": "Đóng"
 		},
 		"glossary": {
 			"title": "Thuật ngữ",

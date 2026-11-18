@@ -1000,7 +1000,9 @@
 			"nothing_to_fill": "Nothing left to fill for this dish.",
 			"regenerate": "Regenerate",
 			"current": "Now: {{value}}",
-			"variant_label": "Option: {{label}}"
+			"variant_label": "Option: {{label}}",
+			"batch_errors_title": "{{count}} failed to fill",
+			"dismiss_errors": "Dismiss"
 		},
 		"glossary": {
 			"title": "Glossary",

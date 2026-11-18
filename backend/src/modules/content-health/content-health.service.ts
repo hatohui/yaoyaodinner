@@ -153,23 +153,24 @@ export class ContentHealthService {
     const { foods, categories } = await this.report();
     const items: BatchItem[] =
       tab === 'categories'
-        ? categories.map((c) => ({ kind: 'category', id: c.id }))
+        ? categories.map((c) => ({ kind: 'category', id: c.id, name: c.name }))
         : tab === 'descriptions'
           ? foods
               .filter((f) => f.missingDescription)
-              .map((f) => ({ kind: 'food', id: f.id, describe: true }))
+              .map((f) => ({ kind: 'food', id: f.id, name: f.name, describe: true }))
           : foods
               .filter((f) => f.missingTranslations.length > 0)
-              .map((f) => ({ kind: 'food', id: f.id }));
+              .map((f) => ({ kind: 'food', id: f.id, name: f.name }));
     return this.aiJobs.enqueueBatch(items);
   }
 
   async jobs(ids: string[]) {
-    const [batch, jobs] = await Promise.all([
+    const [batch, jobs, lastBatchErrors] = await Promise.all([
       this.aiJobs.batch(),
       this.aiJobs.statuses(ids),
+      this.aiJobs.lastBatchErrors(),
     ]);
-    return { batch, jobs };
+    return { batch, jobs, lastBatchErrors };
   }
 
   async draftFood(id: string, describe = false, regenerate = false) {

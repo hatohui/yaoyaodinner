@@ -998,7 +998,9 @@
 			"nothing_to_fill": "这道菜已没有需要填写的内容。",
 			"regenerate": "重新生成",
 			"current": "当前：{{value}}",
-			"variant_label": "选项：{{label}}"
+			"variant_label": "选项：{{label}}",
+			"batch_errors_title": "{{count}} 项填写失败",
+			"dismiss_errors": "关闭"
 		},
 		"glossary": {
 			"title": "术语表",

@@ -9,11 +9,12 @@ export type BatchItem =
   | {
       kind: 'food';
       id: string;
+      name?: string;
       describe?: boolean;
       mode?: DraftMode;
       sourceLang?: string;
     }
-  | { kind: 'category'; id: string };
+  | { kind: 'category'; id: string; name?: string };
 
 export type AiJob =
   | BatchItem
@@ -21,15 +22,23 @@ export type AiJob =
   | { kind: 'batch'; batchId: string; items: BatchItem[]; offset: number };
 
 export type JobStatus = 'pending' | 'failed' | 'done';
+export type BatchError = { id: string; name: string; error: string };
 export type BatchProgress = {
   id: string;
   total: number;
   done: number;
   failed: number;
+  errors: BatchError[];
+};
+export type LastBatchErrors = {
+  batchId: string;
+  errors: BatchError[];
 };
 
 const STATUS_PREFIX = 'ai-job:';
 const BATCH_KEY = 'ai-job-batch';
+const BATCH_ERRORS_KEY = 'ai-job-batch-errors';
+const MAX_BATCH_ERRORS = 50;
 const PENDING_TTL = 5 * 60;
 const BATCH_TTL = 45 * 60;
 const FAILED_TTL = 30 * 60;
@@ -60,10 +69,19 @@ export class AiJobsService {
     if (await this.batch()) {
       throw new ConflictException('An AI batch is already running');
     }
-    const progress = { id: uuidv4(), total: items.length, done: 0, failed: 0 };
+    const progress: BatchProgress = {
+      id: uuidv4(),
+      total: items.length,
+      done: 0,
+      failed: 0,
+      errors: [],
+    };
     if (items.length === 0) return progress;
 
-    await CacheService.set(BATCH_KEY, progress, BATCH_TTL);
+    await Promise.all([
+      CacheService.set(BATCH_KEY, progress, BATCH_TTL),
+      CacheService.delete(BATCH_ERRORS_KEY),
+    ]);
     await Promise.all(
       items.map((item) =>
         CacheService.set(STATUS_PREFIX + item.id, 'pending', BATCH_TTL),
@@ -87,31 +105,42 @@ export class AiJobsService {
     return CacheService.get<BatchProgress>(BATCH_KEY);
   }
 
-  async run(job: AiJob) {
-    if (job.kind === 'batch') return this.runBatch(job);
-    await this.finish(job.id, await this.execute(job));
+  lastBatchErrors() {
+    return CacheService.get<LastBatchErrors>(BATCH_ERRORS_KEY);
   }
 
-  private async execute(job: Exclude<AiJob, { kind: 'batch' }>) {
+  async run(job: AiJob) {
+    if (job.kind === 'batch') return this.runBatch(job);
+    const outcome = await this.execute(job);
+    await this.finish(job.id, outcome.ok);
+  }
+
+  private async execute(
+    job: Exclude<AiJob, { kind: 'batch' }>,
+  ): Promise<{ ok: boolean; error?: string }> {
     try {
       switch (job.kind) {
         case 'food':
-          return (
-            await AiService.fillFood(job.id, {
-              describe: job.describe,
-              mode: job.mode,
-              sourceLang: job.sourceLang,
-              loadImage: this.loadImage,
-            })
-          ).ok;
+          return await AiService.fillFood(job.id, {
+            describe: job.describe,
+            mode: job.mode,
+            sourceLang: job.sourceLang,
+            loadImage: this.loadImage,
+          });
         case 'category':
-          return (await AiService.fillCategory(job.id)).ok;
-        case 'preset-note':
-          return AiService.translatePresetNote(job.id, job.lang, job.note);
+          return await AiService.fillCategory(job.id);
+        case 'preset-note': {
+          const ok = await AiService.translatePresetNote(
+            job.id,
+            job.lang,
+            job.note,
+          );
+          return ok ? { ok } : { ok, error: 'AI returned no preset note translation' };
+        }
       }
     } catch (err) {
       console.error(`[AI job] ${job.kind} ${job.id} failed`, err);
-      return false;
+      return { ok: false, error: err instanceof Error ? err.message : String(err) };
     }
   }
 
@@ -128,7 +157,9 @@ export class AiJobsService {
     return group;
   }
 
-  private async executeGroup(group: BatchItem[]): Promise<Record<string, boolean>> {
+  private async executeGroup(
+    group: BatchItem[],
+  ): Promise<Record<string, { ok: boolean; error?: string }>> {
     const [first] = group;
     if (first.kind !== 'food' || group.length === 1) {
       return { [first.id]: await this.execute(first) };
@@ -140,7 +171,10 @@ export class AiJobsService {
       );
     } catch (err) {
       console.error('[AI job] dish group failed', err);
-      return Object.fromEntries(group.map((item) => [item.id, false]));
+      const message = err instanceof Error ? err.message : String(err);
+      return Object.fromEntries(
+        group.map((item) => [item.id, { ok: false, error: message }]),
+      );
     }
   }
 
@@ -159,16 +193,34 @@ export class AiJobsService {
       const groupStartedAt = Date.now();
       const group = this.nextGroup(job.items, i);
       const results = await this.executeGroup(group);
-      const failed = group.filter((item) => !results[item.id]).length;
-      await Promise.all(
-        group.map((item) => this.finish(item.id, Boolean(results[item.id]))),
+      const groupErrors: BatchError[] = group
+        .filter((item) => !results[item.id]?.ok)
+        .map((item) => ({
+          id: item.id,
+          name: item.name ?? item.id,
+          error: results[item.id]?.error ?? 'AI could not fill this item',
+        }));
+      const errors = [...(progress.errors ?? []), ...groupErrors].slice(
+        0,
+        MAX_BATCH_ERRORS,
       );
+      await Promise.all(
+        group.map((item) => this.finish(item.id, Boolean(results[item.id]?.ok))),
+      );
+      if (errors.length > 0) {
+        await CacheService.set(
+          BATCH_ERRORS_KEY,
+          { batchId: job.batchId, errors },
+          FAILED_TTL,
+        );
+      }
       await CacheService.set(
         BATCH_KEY,
         {
           ...progress,
           done: progress.done + group.length,
-          failed: progress.failed + failed,
+          failed: progress.failed + groupErrors.length,
+          errors,
         },
         BATCH_TTL,
       );

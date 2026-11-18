@@ -998,7 +998,9 @@
 			"nothing_to_fill": "เมนูนี้ไม่มีอะไรต้องเติมแล้ว",
 			"regenerate": "สร้างใหม่",
 			"current": "ปัจจุบัน: {{value}}",
-			"variant_label": "ตัวเลือก: {{label}}"
+			"variant_label": "ตัวเลือก: {{label}}",
+			"batch_errors_title": "เติมไม่สำเร็จ {{count}} รายการ",
+			"dismiss_errors": "ปิด"
 		},
 		"glossary": {
 			"title": "อภิธานศัพท์",

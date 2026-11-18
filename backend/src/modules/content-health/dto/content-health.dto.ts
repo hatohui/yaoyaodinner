@@ -84,17 +84,32 @@ export class AiJobStatusDto {
   status: 'pending' | 'failed' | 'done';
 }
 
+export class AiBatchErrorDto {
+  @ApiProperty() id: string;
+  @ApiProperty() name: string;
+  @ApiProperty() error: string;
+}
+
+export class AiBatchErrorsDto {
+  @ApiProperty() batchId: string;
+  @ApiProperty({ type: [AiBatchErrorDto] }) errors: AiBatchErrorDto[];
+}
+
 export class AiBatchProgressDto {
   @ApiProperty() id: string;
   @ApiProperty() total: number;
   @ApiProperty() done: number;
   @ApiProperty() failed: number;
+  @ApiProperty({ type: [AiBatchErrorDto], required: false })
+  errors?: AiBatchErrorDto[];
 }
 
 export class AiJobsDto {
   @ApiProperty({ type: AiBatchProgressDto, nullable: true })
   batch: AiBatchProgressDto | null;
   @ApiProperty({ type: [AiJobStatusDto] }) jobs: AiJobStatusDto[];
+  @ApiProperty({ type: AiBatchErrorsDto, nullable: true, required: false })
+  lastBatchErrors?: AiBatchErrorsDto | null;
 }
 
 export class DescribeDishDto {
