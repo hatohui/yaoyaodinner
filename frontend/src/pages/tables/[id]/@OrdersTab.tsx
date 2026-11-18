@@ -1,7 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Download, Plus, Wand2 } from 'lucide-react'
+import {
+	Download,
+	Plus,
+	ReceiptText,
+	Users,
+	UtensilsCrossed,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { PersonDto, TableDto } from '@/api/model'
@@ -13,11 +19,8 @@ import { TabEmptyState } from './@TabEmptyState'
 import { IncludedNoteStrip } from '@/components/common/IncludedNoteStrip'
 import { useActivePreset } from './@useActivePreset'
 import { PresetMenuSection } from './@PresetMenuSection'
-import { TablePlanCard } from './@TablePlanCard'
-import { useTablePlan } from './@useTablePlan'
-import { useConfig } from '@/hooks/useConfig'
 import { PriceDialog } from './@PriceDialog'
-import { OrderListSkeleton, TablePlanBannerSkeleton } from './@Skeletons'
+import { OrderListSkeleton } from './@Skeletons'
 import { OrderRoundSection } from './@OrderRoundSection'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import {
@@ -31,13 +34,18 @@ import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { billingCurrency, hasUnpriced } from '@/utils/money'
 import { downloadReceiptImage } from '@/utils/receiptImage'
+import { cn } from '@/utils/shadcn'
 import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
+import { SplitsTab } from './@SplitsTab'
+
+export type OrdersSubView = 'dishes' | 'people' | 'receipt'
 
 interface OrdersTabProps {
 	table: TableDto
 	people: PersonDto[]
 	canEdit: boolean
+	initialSubView?: OrdersSubView
 }
 
 /** Lines of the same dish and portion, in first-ordered order. */
@@ -56,7 +64,12 @@ const linesTotal = (lines: OrderedLine[]) =>
 		0
 	)
 
-export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
+export function OrdersTab({
+	table,
+	people,
+	canEdit,
+	initialSubView,
+}: OrdersTabProps) {
 	const { t } = useTranslation()
 	const {
 		orders,
@@ -70,7 +83,6 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const canOrder = canEdit && canAdd
 	const { preset } = useActivePreset(table.eventId)
 	const total = ordersTotal + (preset?.price ?? 0)
-	const { tablePlan } = useConfig()
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
 	const lines = useMemo(() => groupOrders(orders), [orders])
@@ -83,16 +95,17 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const [editing, setEditing] = useState<OrderedLine | null>(null)
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)
 	const [pricing, setPricing] = useState<OrderedLine | null>(null)
-	const [modifying, setModifying] = useState(false)
-	const canUseAi = Boolean(
-		tablePlan && canOrder && myPersonId && stage === 'open'
+	const [subView, setSubView] = useState<OrdersSubView>(
+		initialSubView ?? 'dishes'
 	)
-	const { plan, isPlanning } = useTablePlan(table.id)
+
+	useEffect(() => {
+		if (initialSubView) setSubView(initialSubView)
+	}, [initialSubView])
 
 	if (isLoading) {
 		return (
 			<div className='flex flex-col gap-3'>
-				{canUseAi && <TablePlanBannerSkeleton />}
 				<div className='flex items-center justify-between'>
 					<Skeleton className='h-9 w-32 rounded-full bg-primary/15' />
 					<Skeleton className='h-8 w-16 rounded-full' />
@@ -140,239 +153,271 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		</ul>
 	)
 
-	const hasSidebar = Boolean(
-		preset || (canUseAi && (orders.length === 0 || plan || isPlanning))
-	)
+	const hasSidebar = Boolean(preset)
+	const showSubSwitcher =
+		orders.length > 0 || Boolean(preset && preset.price > 0)
+	const activeSubView = showSubSwitcher ? subView : 'dishes'
+	const subOptions = [
+		{ value: 'dishes', icon: UtensilsCrossed, label: t('tabs.orders') },
+		{ value: 'people', icon: Users, label: t('tabs.splits') },
+		{ value: 'receipt', icon: ReceiptText, label: t('split.view_receipt') },
+	] as const
+
+	const downloadOrders = () => {
+		const splitText = (line: OrderedLine) => {
+			if (line.splitAll) return t('orders.shared')
+			return (
+				line.splits
+					.map(
+						s =>
+							people.find(p => p.id === s.personId)?.name ??
+							t('orders.unknown_person')
+					)
+					.join(', ') || t('orders.personal')
+			)
+		}
+		const slug =
+			(table.name || `table-${table.no}`)
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/^-|-$/g, '') || 'orders'
+		downloadReceiptImage({
+			filename: `${slug}-orders.png`,
+			title: `${table.no}. ${table.name || t('roster.table_no', { no: table.no })} · ${t('tabs.orders')}`,
+			sections: [
+				{
+					rows: [
+						...(preset && preset.price > 0
+							? [
+									{
+										left: t('orders.set_menu'),
+										sub: t('orders.set_menu_shared'),
+										right:
+											`${preset.price.toFixed(2)} ${billingCurrency(preset.items)}`.trim(),
+									},
+								]
+							: []),
+						...groupByDish(lines).map(dish => {
+							const head = dish[0]
+							const qty = dish.reduce((s, l) => s + l.quantity, 0)
+							const amt = dish.reduce(
+								(s, l) => (l.shouldCalculate ? s + l.price * l.quantity : s),
+								0
+							)
+							return {
+								left: `${qty} × ${head.foodName}${head.variantLabel ? ` · ${head.variantLabel}` : ''}`,
+								sub: dish
+									.map(l =>
+										dish.length > 1
+											? `${splitText(l)} ×${l.quantity}`
+											: splitText(l)
+									)
+									.join(', '),
+								right: !head.shouldCalculate
+									? t('orders.free')
+									: amt > 0
+										? `${amt.toFixed(2)} ${currency}`
+										: t('menu.seasonal_price'),
+								muted: !head.shouldCalculate,
+							}
+						}),
+					],
+				},
+			],
+			totalLabel: t('orders.total'),
+			totalValue:
+				`${hasUnpriced(orders) ? `${t('menu.price_from')} ` : ''}${total.toFixed(2)} ${currency}`.trim(),
+			footer: t('orders.estimate_note'),
+		})
+	}
 
 	return (
-		<div
-			className={
-				hasSidebar
-					? 'flex flex-col gap-3 lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-5'
-					: 'flex flex-col gap-3'
-			}
-		>
-			{(canUseAi || preset) && (
-				<aside
-					className={
-						hasSidebar
-							? 'flex flex-col gap-3 lg:order-2 lg:sticky lg:top-20'
-							: 'contents'
-					}
-				>
-					{canUseAi && (
-						<TablePlanCard
-							tableId={table.id}
-							seatedCount={people.length}
-							orders={orders}
-							modifying={modifying}
-							onModifyingChange={setModifying}
-						/>
+		<div className='flex flex-col gap-3'>
+			{(showSubSwitcher ||
+				(activeSubView === 'dishes' &&
+					(orders.length > 0 || Boolean(preset?.items.length))) ||
+				(canOrder && orders.length > 0)) && (
+				<div className='flex flex-wrap items-center justify-between gap-2'>
+					{canOrder && (
+						<Button
+							asChild
+							className='hidden h-9 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100 sm:inline-flex'
+						>
+							<Link to={`/tables/${table.id}/order`}>
+								<Plus className='size-4' />
+								{t('orders.add_order')}
+							</Link>
+						</Button>
 					)}
-					{preset?.note && <IncludedNoteStrip note={preset.note} />}
-					{preset && <PresetMenuSection preset={preset} />}
-				</aside>
-			)}
-
-			<div className='flex min-w-0 flex-col gap-3 lg:order-1'>
-				{people.length === 0 ? (
-					<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
-						{t('orders.needs_people_body')}
-					</p>
-				) : orders.length === 0 ? (
-					<TabEmptyState
-						message={t('orders.empty')}
-						tableId={table.id}
-						canEdit={canOrder}
-					/>
-				) : (
-					<div className='flex flex-wrap items-center justify-between gap-2'>
-						{canOrder ? (
-							<div className='flex min-w-0 flex-wrap items-center gap-2'>
-								<Button
-									asChild
-									className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+					{showSubSwitcher && (
+						<div
+							role='group'
+							className='flex flex-1 items-center gap-0.5 rounded-full border border-border bg-control p-0.5 shadow-2xs sm:flex-none'
+						>
+							{subOptions.map(({ value, icon: Icon, label }) => (
+								<button
+									key={value}
+									type='button'
+									aria-pressed={activeSubView === value}
+									onClick={() => setSubView(value)}
+									className={cn(
+										'flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-colors sm:flex-none',
+										activeSubView === value
+											? 'bg-primary text-primary-foreground'
+											: 'text-muted-foreground hover:text-foreground'
+									)}
 								>
-									<Link to={`/tables/${table.id}/order`}>
-										<Plus className='size-4' />
-										{t('orders.add_order')}
-									</Link>
-								</Button>
-								{canUseAi && !plan && !isPlanning && (
+									<Icon className='size-3.5' />
+									{label}
+								</button>
+							))}
+						</div>
+					)}
+					{activeSubView === 'dishes' &&
+						(orders.length > 0 || Boolean(preset?.items.length)) && (
+							<div className='ml-auto flex shrink-0 items-center gap-1.5'>
+								{(orders.length > 0 || Boolean(preset && preset.price > 0)) && (
 									<Button
 										variant='outline'
-										className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted motion-safe:before:animate-ai-sheen'
-										onClick={() => setModifying(true)}
+										size='icon-sm'
+										className='rounded-full'
+										aria-label={t('common.download_image')}
+										title={t('common.download_image')}
+										onClick={downloadOrders}
 									>
-										<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
-										{t('table_plan.modify_cta')}
+										<Download className='size-3.5' />
+									</Button>
+								)}
+								<ViewToggle view={view} onChange={setView} />
+							</div>
+						)}
+				</div>
+			)}
+
+			{activeSubView !== 'dishes' ? (
+				<SplitsTab
+					table={table}
+					people={people}
+					canEdit={canEdit}
+					view={activeSubView}
+				/>
+			) : (
+				<div
+					className={
+						hasSidebar
+							? 'flex flex-col gap-3 lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-5'
+							: 'flex flex-col gap-3'
+					}
+				>
+					{preset && (
+						<aside
+							className={
+								hasSidebar
+									? 'flex flex-col gap-3 lg:order-2 lg:sticky lg:top-20'
+									: 'contents'
+							}
+						>
+							{preset.note && <IncludedNoteStrip note={preset.note} />}
+							<PresetMenuSection preset={preset} compact={compact} />
+						</aside>
+					)}
+
+					<div className='flex min-w-0 flex-col gap-3 lg:order-1'>
+						{people.length === 0 ? (
+							<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
+								{t('orders.needs_people_body')}
+							</p>
+						) : (
+							orders.length === 0 && (
+								<TabEmptyState
+									message={t('orders.empty')}
+									tableId={table.id}
+									canEdit={canOrder}
+								/>
+							)
+						)}
+
+						{orders.length > 0 &&
+							(showRounds ? (
+								<>
+									{preLines.length > 0 && (
+										<OrderRoundSection
+											title={t('orders.round_pre')}
+											locked={stage !== 'open'}
+											subtotal={linesTotal(preLines)}
+											currency={currency}
+											partial={hasUnpriced(preLines)}
+										>
+											{renderLines(preLines)}
+										</OrderRoundSection>
+									)}
+									<OrderRoundSection
+										title={t('orders.round_dinner')}
+										locked={stage === 'finalized'}
+										subtotal={linesTotal(dinnerLines)}
+										currency={currency}
+										partial={hasUnpriced(dinnerLines)}
+									>
+										{dinnerLines.length > 0 ? (
+											renderLines(dinnerLines)
+										) : (
+											<p className='rounded-2xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground'>
+												{t('orders.round_dinner_empty')}
+											</p>
+										)}
+									</OrderRoundSection>
+								</>
+							) : (
+								renderLines(lines)
+							))}
+
+						{orders.length > 0 && (
+							<>
+								<div className='hidden items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground sm:flex'>
+									<span>{t('orders.total')}</span>
+									<span>
+										<TotalAmount
+											amount={total}
+											currency={currency}
+											partial={hasUnpriced(orders)}
+										/>
+									</span>
+								</div>
+								<PriceEstimateNote />
+							</>
+						)}
+
+						{orders.length > 0 && (
+							<div className='sticky bottom-2 z-20 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-3.5 py-2.5 shadow-lg backdrop-blur-md sm:hidden'>
+								<div className='flex min-w-0 flex-col'>
+									<span className='text-[11px] text-muted-foreground'>
+										{t('orders.total')}
+									</span>
+									<span className='text-sm font-semibold tabular-nums text-foreground'>
+										<TotalAmount
+											amount={total}
+											currency={currency}
+											partial={hasUnpriced(orders)}
+										/>
+									</span>
+								</div>
+								{canOrder && (
+									<Button
+										asChild
+										size='sm'
+										className='h-9 shrink-0 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground'
+									>
+										<Link to={`/tables/${table.id}/order`}>
+											<Plus className='size-4' />
+											{t('orders.add_order')}
+										</Link>
 									</Button>
 								)}
 							</div>
-						) : (
-							<span />
-						)}
-
-						<div className='ml-auto flex shrink-0 items-center gap-1.5'>
-							<Button
-								variant='outline'
-								size='icon-sm'
-								className='rounded-full'
-								aria-label={t('common.download_image')}
-								title={t('common.download_image')}
-								onClick={() => {
-									const splitText = (line: OrderedLine) => {
-										if (line.splitAll) return t('orders.shared')
-										return (
-											line.splits
-												.map(
-													s =>
-														people.find(p => p.id === s.personId)?.name ??
-														t('orders.unknown_person')
-												)
-												.join(', ') || t('orders.personal')
-										)
-									}
-									const slug =
-										(table.name || `table-${table.no}`)
-											.toLowerCase()
-											.replace(/[^a-z0-9]+/g, '-')
-											.replace(/^-|-$/g, '') || 'orders'
-									downloadReceiptImage({
-										filename: `${slug}-orders.png`,
-										title: `${table.no}. ${table.name || t('roster.table_no', { no: table.no })} · ${t('tabs.orders')}`,
-										sections: [
-											{
-												rows: [
-													...(preset && preset.price > 0
-														? [
-																{
-																	left: t('orders.set_menu'),
-																	sub: t('orders.set_menu_shared'),
-																	right: `${preset.price.toFixed(2)} ${billingCurrency(preset.items)}`.trim(),
-																},
-															]
-														: []),
-													...groupByDish(lines).map(dish => {
-														const head = dish[0]
-														const qty = dish.reduce((s, l) => s + l.quantity, 0)
-														const amt = dish.reduce(
-															(s, l) =>
-																l.shouldCalculate ? s + l.price * l.quantity : s,
-															0
-														)
-														return {
-															left: `${qty} × ${head.foodName}${head.variantLabel ? ` · ${head.variantLabel}` : ''}`,
-															sub: dish
-																.map(l =>
-																	dish.length > 1
-																		? `${splitText(l)} ×${l.quantity}`
-																		: splitText(l)
-																)
-																.join(', '),
-															right: !head.shouldCalculate
-																? t('orders.free')
-																: amt > 0
-																	? `${amt.toFixed(2)} ${currency}`
-																	: t('menu.seasonal_price'),
-															muted: !head.shouldCalculate,
-														}
-													}),
-												],
-											},
-										],
-										totalLabel: t('orders.total'),
-										totalValue: `${hasUnpriced(orders) ? `${t('menu.price_from')} ` : ''}${total.toFixed(2)} ${currency}`.trim(),
-										footer: t('orders.estimate_note'),
-									})
-								}}
-							>
-								<Download className='size-3.5' />
-							</Button>
-							<ViewToggle view={view} onChange={setView} />
-						</div>
-					</div>
-				)}
-
-				{orders.length > 0 &&
-					(showRounds ? (
-						<>
-							{preLines.length > 0 && (
-								<OrderRoundSection
-									title={t('orders.round_pre')}
-									locked={stage !== 'open'}
-									subtotal={linesTotal(preLines)}
-									currency={currency}
-									partial={hasUnpriced(preLines)}
-								>
-									{renderLines(preLines)}
-								</OrderRoundSection>
-							)}
-							<OrderRoundSection
-								title={t('orders.round_dinner')}
-								locked={stage === 'finalized'}
-								subtotal={linesTotal(dinnerLines)}
-								currency={currency}
-								partial={hasUnpriced(dinnerLines)}
-							>
-								{dinnerLines.length > 0 ? (
-									renderLines(dinnerLines)
-								) : (
-									<p className='rounded-2xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground'>
-										{t('orders.round_dinner_empty')}
-									</p>
-								)}
-							</OrderRoundSection>
-						</>
-					) : (
-						renderLines(lines)
-					))}
-
-				{orders.length > 0 && (
-					<>
-						<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
-							<span>{t('orders.total')}</span>
-							<span>
-								<TotalAmount
-									amount={total}
-									currency={currency}
-									partial={hasUnpriced(orders)}
-								/>
-							</span>
-						</div>
-						<PriceEstimateNote />
-					</>
-				)}
-
-				{orders.length > 0 && (
-					<div className='sticky bottom-2 z-20 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-3.5 py-2.5 shadow-lg backdrop-blur-md sm:hidden'>
-						<div className='flex min-w-0 flex-col'>
-							<span className='text-[11px] text-muted-foreground'>
-								{t('orders.total')}
-							</span>
-							<span className='text-sm font-semibold tabular-nums text-foreground'>
-								<TotalAmount
-									amount={total}
-									currency={currency}
-									partial={hasUnpriced(orders)}
-								/>
-							</span>
-						</div>
-						{canOrder && (
-							<Button
-								asChild
-								size='sm'
-								className='h-9 shrink-0 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground'
-							>
-								<Link to={`/tables/${table.id}/order`}>
-									<Plus className='size-4' />
-									{t('orders.add_order')}
-								</Link>
-							</Button>
 						)}
 					</div>
-				)}
-			</div>
+				</div>
+			)}
 
 			<SplitPickerModal
 				open={editing !== null}

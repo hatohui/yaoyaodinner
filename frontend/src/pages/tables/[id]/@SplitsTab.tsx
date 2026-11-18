@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
-import { ChevronDown, ReceiptText, Users } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { getGetOrdersQueryOptions } from '@/api/orders/orders'
 import { getGetPresetMenusQueryOptions } from '@/api/preset-menus/preset-menus'
 import type {
@@ -19,9 +19,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
-import { SPLIT_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
-import { localStorage } from '@/utils/localstorage'
 import {
 	allocateCents,
 	awaitingPrice,
@@ -36,30 +34,22 @@ import { SplitsSkeleton } from './@Skeletons'
 import { SplitBreakdown, type SplitRound } from './@SplitBreakdown'
 import { SplitReceipt } from './@SplitReceipt'
 
+export type SplitView = 'people' | 'receipt'
+
 interface SplitsTabProps {
 	table: TableDto
 	people: PersonDto[]
 	canEdit: boolean
+	view: SplitView
 }
 
-type SplitView = 'people' | 'receipt'
-
-export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
+export function SplitsTab({ table, people, canEdit, view }: SplitsTabProps) {
 	const { t, i18n } = useTranslation()
 	const { personId: myPersonId } = useWhoAmI(table.id)
 	const [expanded, setExpanded] = useState<Set<string>>(new Set())
 	const [selectedOrder, setSelectedOrder] = useState<OrderResponseDto | null>(
 		null
 	)
-	const [view, setViewState] = useState<SplitView>(() =>
-		localStorage.load(SPLIT_VIEW_STORAGE_KEY) === 'receipt'
-			? 'receipt'
-			: 'people'
-	)
-	const setView = (next: SplitView) => {
-		localStorage.save(SPLIT_VIEW_STORAGE_KEY, next)
-		setViewState(next)
-	}
 
 	const { data: orders = [], isLoading: ordersLoading } = useQuery(
 		getGetOrdersQueryOptions<OrderResponseDto[]>({
@@ -148,38 +138,8 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 		)
 	}
 
-	const viewOptions = [
-		{ value: 'people', icon: Users, label: t('split.view_people') },
-		{ value: 'receipt', icon: ReceiptText, label: t('split.view_receipt') },
-	] as const
-
 	return (
 		<>
-			<div className='mb-3 flex justify-end'>
-				<div
-					role='group'
-					className='flex w-full items-center gap-1 rounded-full border border-border bg-card p-0.5 shadow-xs sm:w-auto'
-				>
-					{viewOptions.map(({ value, icon: Icon, label }) => (
-						<button
-							key={value}
-							type='button'
-							aria-pressed={view === value}
-							onClick={() => setView(value)}
-							className={cn(
-								'flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors sm:flex-none sm:py-1',
-								view === value
-									? 'bg-primary text-primary-foreground'
-									: 'text-muted-foreground hover:text-foreground'
-							)}
-						>
-							<Icon className='size-3.5' />
-							{label}
-						</button>
-					))}
-				</div>
-			</div>
-
 			{view === 'receipt' ? (
 				<SplitReceipt
 					tableName={table.name}

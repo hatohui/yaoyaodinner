@@ -65,15 +65,19 @@ export function WishSection({
 			)}
 		>
 			<header className='flex items-center gap-2'>
-				<Icon
+				<span
 					className={cn(
-						'size-4 shrink-0',
-						avoid ? 'text-destructive' : 'text-primary'
+						'flex size-6 shrink-0 items-center justify-center rounded-lg',
+						avoid
+							? 'bg-destructive/15 text-destructive'
+							: 'bg-primary/15 text-primary'
 					)}
-				/>
+				>
+					<Icon className='size-3.5' />
+				</span>
 				<h2 className='text-sm font-semibold text-foreground'>{title}</h2>
 				{wishes.length > 0 && !avoid && (
-					<span className='ml-auto rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium tabular-nums text-primary'>
+					<span className='ml-auto rounded-full bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
 						{t('plan_board.progress', { done, total: wishes.length })}
 					</span>
 				)}
@@ -85,10 +89,9 @@ export function WishSection({
 				</p>
 			) : (
 				<ul className='flex flex-col divide-y divide-border/60'>
-					{wishes.map((wish, index) => (
+					{wishes.map(wish => (
 						<WishRow
 							key={wish.id}
-							rank={index + 1}
 							wish={wish}
 							people={people}
 							status={statusOf(wish)}

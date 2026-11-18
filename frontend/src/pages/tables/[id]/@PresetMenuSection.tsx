@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, UtensilsCrossed } from 'lucide-react'
 import type { PresetMenuDto } from '@/api/model'
@@ -9,15 +9,24 @@ import { cn } from '@/utils/shadcn'
 
 interface PresetMenuSectionProps {
 	preset: PresetMenuDto
+	compact?: boolean
 }
 
-export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
+export function PresetMenuSection({
+	preset,
+	compact = false,
+}: PresetMenuSectionProps) {
 	const { t } = useTranslation()
-	const [collapsed, setCollapsed] = useState(
-		() =>
-			typeof window !== 'undefined' &&
-			window.matchMedia('(max-width: 639px)').matches
-	)
+	const [collapsed, setCollapsed] = useState(compact)
+	const prevCompact = useRef(compact)
+
+	useEffect(() => {
+		if (prevCompact.current !== compact) {
+			prevCompact.current = compact
+			setCollapsed(compact)
+		}
+	}, [compact])
+
 	const hasItems = preset.items.length > 0
 
 	return (
@@ -27,7 +36,8 @@ export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
 				onClick={() => hasItems && setCollapsed(c => !c)}
 				aria-expanded={hasItems ? !collapsed : undefined}
 				className={cn(
-					'flex w-full items-center justify-between gap-3 bg-primary/10 px-3 py-2.5 text-left transition-colors sm:px-4',
+					'flex w-full items-center justify-between gap-3 bg-primary/10 text-left transition-colors',
+					compact ? 'px-3 py-2 sm:px-3.5' : 'px-3 py-2.5 sm:px-4',
 					hasItems && 'cursor-pointer hover:bg-primary/15',
 					hasItems && !collapsed && 'border-b border-border/60'
 				)}
@@ -72,23 +82,38 @@ export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
 					{preset.items.map(item => (
 						<li
 							key={item.variantId}
-							className='flex items-center gap-3 px-3 py-2 sm:px-4'
+							className={cn(
+								'flex items-center',
+								compact
+									? 'gap-2.5 px-3 py-1.5 sm:px-3.5'
+									: 'gap-3 px-3 py-2 sm:px-4'
+							)}
 						>
 							<OrderThumb
 								imageKey={item.imageUrl}
 								alt={item.foodName}
-								className='size-10 rounded-lg'
+								className={compact ? 'size-7 rounded-md' : 'size-10 rounded-lg'}
 							/>
-							<span className='min-w-0 flex-1 truncate text-sm text-foreground'>
+							<span
+								className={cn(
+									'min-w-0 flex-1 truncate text-foreground',
+									compact ? 'text-xs font-medium' : 'text-sm'
+								)}
+							>
 								{item.foodName}
 								{item.variantLabel && (
-									<span className='text-muted-foreground'>
+									<span className='font-normal text-muted-foreground'>
 										{' - '}
 										{item.variantLabel}
 									</span>
 								)}
 							</span>
-							<span className='shrink-0 text-sm font-semibold tabular-nums text-muted-foreground'>
+							<span
+								className={cn(
+									'shrink-0 font-semibold tabular-nums text-muted-foreground',
+									compact ? 'text-xs' : 'text-sm'
+								)}
+							>
 								×{item.quantity}
 							</span>
 						</li>

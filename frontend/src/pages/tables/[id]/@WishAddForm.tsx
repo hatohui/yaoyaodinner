@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { keepPreviousData } from '@tanstack/react-query'
-import { PenLine, Plus } from 'lucide-react'
+import { PenLine, Plus, Search } from 'lucide-react'
 import { useGetFoods } from '@/api/foods/foods'
 import type { GetFoodsResponseDto } from '@/api/model'
 import { Input } from '@/components/ui/input'
@@ -46,23 +46,26 @@ export function WishAddForm({ placeholder, onAdd }: WishAddFormProps) {
 
 	return (
 		<div className='flex flex-col gap-1.5'>
-			<Input
-				value={query}
-				maxLength={MAX_LABEL}
-				placeholder={placeholder}
-				onChange={e => setQuery(e.target.value)}
-				onKeyDown={e => {
-					if (e.key !== 'Enter' || !typed) return
-					e.preventDefault()
-					const first = results[0]
-					pick(
-						first?.defaultVariantId
-							? { variantId: first.defaultVariantId, food: first }
-							: { label: typed }
-					)
-				}}
-				className='h-9 rounded-xl'
-			/>
+			<div className='relative'>
+				<Search className='pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground' />
+				<Input
+					value={query}
+					maxLength={MAX_LABEL}
+					placeholder={placeholder}
+					onChange={e => setQuery(e.target.value)}
+					onKeyDown={e => {
+						if (e.key !== 'Enter' || !typed) return
+						e.preventDefault()
+						const first = results[0]
+						pick(
+							first?.defaultVariantId
+								? { variantId: first.defaultVariantId, food: first }
+								: { label: typed }
+						)
+					}}
+					className='h-9 rounded-xl pl-9'
+				/>
+			</div>
 			{typed.length >= MIN_SEARCH && (
 				<ul className='flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
 					{results.map(food => (

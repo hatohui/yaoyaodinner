@@ -87,7 +87,11 @@ export function useWishDrag(id: string) {
 		listeners,
 		isDragging,
 	} = useDraggable({ id })
-	const { setNodeRef: setDropRef, isOver, active } = useDroppable({
+	const {
+		setNodeRef: setDropRef,
+		isOver,
+		active,
+	} = useDroppable({
 		id: `row:${id}`,
 	})
 	return {
@@ -113,7 +117,7 @@ export function WishDragHandle({ label, handle }: WishDragHandleProps) {
 			aria-label={label}
 			title={label}
 			{...handle}
-			className='flex size-7 shrink-0 cursor-grab touch-none items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary active:cursor-grabbing'
+			className='-ml-1 flex size-6 shrink-0 cursor-grab touch-none items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary active:cursor-grabbing sm:ml-0 sm:size-7'
 		>
 			<GripVertical className='size-4' />
 		</button>

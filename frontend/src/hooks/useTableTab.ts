@@ -2,12 +2,18 @@ import { useCallback, useState } from 'react'
 import { localStorage } from '@/utils/localstorage'
 import { TABLE_TAB_STORAGE_KEY } from '@/common/constants'
 
-export type TableTab = 'people' | 'plan' | 'orders' | 'split'
+export type TableTab = 'people' | 'plan' | 'orders'
 
 const DEFAULT_TAB: TableTab = 'people'
-const TABS: TableTab[] = ['people', 'plan', 'orders', 'split']
+const TABS: TableTab[] = ['people', 'plan', 'orders']
 
 type TabMap = Record<string, TableTab>
+
+const normalizeTab = (value?: string | null): TableTab | null => {
+	if (value === 'split') return 'orders'
+	if (value && TABS.includes(value as TableTab)) return value as TableTab
+	return null
+}
 
 const readMap = (): TabMap => {
 	const raw = localStorage.load(TABLE_TAB_STORAGE_KEY)
@@ -21,18 +27,18 @@ const readMap = (): TabMap => {
 
 /** Remembers the last tab per table so reopening a table lands where you left it. */
 export function useTableTab(tableId: string) {
-	const [tab, setTabState] = useState<TableTab>(() => {
-		const stored = readMap()[tableId]
-		return stored && TABS.includes(stored) ? stored : DEFAULT_TAB
-	})
+	const [tab, setTabState] = useState<TableTab>(
+		() => normalizeTab(readMap()[tableId]) ?? DEFAULT_TAB
+	)
 
 	const setTab = useCallback(
 		(next: string) => {
-			if (!TABS.includes(next as TableTab)) return
+			const normalized = normalizeTab(next)
+			if (!normalized) return
 			const map = readMap()
-			map[tableId] = next as TableTab
+			map[tableId] = normalized
 			localStorage.save(TABLE_TAB_STORAGE_KEY, JSON.stringify(map))
-			setTabState(next as TableTab)
+			setTabState(normalized)
 		},
 		[tableId]
 	)

@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Ban, ClipboardCopy, Sparkles, Star, Wand2, Zap } from 'lucide-react'
+import {
+	Ban,
+	ClipboardCopy,
+	Download,
+	Sparkles,
+	Star,
+	Wand2,
+	Zap,
+} from 'lucide-react'
 import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -77,11 +85,18 @@ export function PlanTab({
 				/>
 			)}
 
-			<div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-2'>
-				<p className='text-xs text-muted-foreground'>
-					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
-				</p>
-				<div className='flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end'>
+			<div className='flex flex-col gap-2'>
+				<div className='flex flex-wrap items-center gap-2'>
+					{board.canAddToCart && board.pendingCount > 0 && (
+						<Button
+							size='sm'
+							onClick={() => setPreviewing(true)}
+							className='shrink-0 gap-1.5 rounded-full'
+						>
+							<Zap className='size-4' />
+							{t('plan_board.apply_plan', { count: board.pendingCount })}
+						</Button>
+					)}
 					{board.canUseAi && orders.length > 0 && !plan && !isPlanning && (
 						<Button
 							variant='outline'
@@ -93,27 +108,33 @@ export function PlanTab({
 							{t('table_plan.modify_cta')}
 						</Button>
 					)}
-					{board.canAddToCart && board.pendingCount > 0 && (
+					<div className='ml-auto flex shrink-0 items-center gap-1.5'>
 						<Button
+							variant='outline'
+							size='icon-sm'
+							disabled={board.isEmpty}
+							onClick={() => board.download(table)}
+							aria-label={t('common.download_image')}
+							title={t('common.download_image')}
+							className='rounded-full'
+						>
+							<Download className='size-3.5' />
+						</Button>
+						<Button
+							variant='outline'
 							size='sm'
-							onClick={() => setPreviewing(true)}
+							disabled={board.isEmpty}
+							onClick={board.copy}
 							className='shrink-0 gap-1.5 rounded-full'
 						>
-							<Zap className='size-4' />
-							{t('plan_board.apply_plan', { count: board.pendingCount })}
+							<ClipboardCopy className='size-4' />
+							{t('plan_board.copy')}
 						</Button>
-					)}
-					<Button
-						variant='outline'
-						size='sm'
-						disabled={board.isEmpty}
-						onClick={board.copy}
-						className='shrink-0 gap-1.5 rounded-full'
-					>
-						<ClipboardCopy className='size-4' />
-						{t('plan_board.copy')}
-					</Button>
+					</div>
 				</div>
+				<p className='text-xs text-muted-foreground'>
+					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
+				</p>
 			</div>
 
 			<WishDnd wishes={board.wishes} onMove={board.moveWish}>

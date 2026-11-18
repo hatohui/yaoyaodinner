@@ -9,6 +9,7 @@ import type {
 	Allergen,
 	OrderResponseDto,
 	PersonDto,
+	TableDto,
 	TableWishDto,
 } from '@/api/model'
 import { useOrderCart } from '@/hooks/useOrderCart'
@@ -16,6 +17,7 @@ import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useConfig } from '@/hooks/useConfig'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useToast } from '@/hooks/useToast'
+import { downloadReceiptImage, type ReceiptSection } from '@/utils/receiptImage'
 import {
 	openPlanWishes,
 	useTableWishes,
@@ -117,6 +119,9 @@ export function usePlanBoard(
 			},
 		})
 
+	const whoFor = (wish: TableWishDto) =>
+		people.filter(p => wish.personIds.includes(p.id)).map(p => p.name)
+
 	const copy = async () => {
 		const text = planText({
 			headings: {
@@ -131,8 +136,7 @@ export function usePlanBoard(
 			avoid,
 			dishes,
 			allergies: allergies.map(g => ({ label: labelOf(g), people: g.people })),
-			whoFor: wish =>
-				people.filter(p => wish.personIds.includes(p.id)).map(p => p.name),
+			whoFor,
 		})
 		try {
 			await navigator.clipboard.writeText(text)
@@ -140,6 +144,85 @@ export function usePlanBoard(
 		} catch {
 			notify.error(t('plan_board.copy_failed'))
 		}
+	}
+
+	const download = (table: TableDto) => {
+		const wishSection = (
+			heading: string,
+			list: TableWishDto[],
+			isAvoid = false
+		): ReceiptSection => ({
+			rows:
+				list.length === 0
+					? []
+					: [
+							{ left: heading, right: '', bold: true },
+							...list.map(w => {
+								const status = statusOf(w)
+								const who = whoFor(w)
+								return {
+									left: w.variantLabel
+										? `${w.name} · ${w.variantLabel}`
+										: w.name,
+									sub: who.length
+										? who.join(', ')
+										: !isAvoid
+											? t('plan_board.whole_table')
+											: undefined,
+									right:
+										status === 'ordered'
+											? t('plan_board.status_ordered')
+											: status === 'in_cart'
+												? t('plan_board.status_in_cart')
+												: '',
+									muted: !isAvoid && status === 'ordered',
+								}
+							}),
+						],
+		})
+
+		const sections: ReceiptSection[] = [
+			wishSection(t('plan_board.must'), must),
+			wishSection(t('plan_board.want'), want),
+			wishSection(t('plan_board.avoid'), avoid, true),
+			{
+				rows:
+					dishes.length === 0
+						? []
+						: [
+								{ left: t('plan_board.individual'), right: '', bold: true },
+								...dishes.map(d => ({
+									left: `${d.name} ×${d.quantity}`,
+									sub: d.people.join(', ') || undefined,
+									right: d.inCart ? t('plan_board.status_in_cart') : '',
+								})),
+							],
+			},
+			{
+				rows:
+					allergies.length === 0
+						? []
+						: [
+								{ left: t('plan_board.allergies'), right: '', bold: true },
+								...allergies.map(g => ({
+									left: labelOf(g),
+									right: g.people.join(', '),
+									highlight: true,
+								})),
+							],
+			},
+		]
+
+		const slug =
+			(table.name || `table-${table.no}`)
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/^-|-$/g, '') || 'plan'
+		downloadReceiptImage({
+			filename: `${slug}-plan.png`,
+			title: `${table.no}. ${table.name || t('roster.table_no', { no: table.no })} · ${t('tabs.plan')}`,
+			sections,
+		})
 	}
 
 	return {
@@ -162,6 +245,7 @@ export function usePlanBoard(
 		pendingCount,
 		applyPlan,
 		copy,
+		download,
 		editing,
 		setEditing,
 		isSavingAllergies,

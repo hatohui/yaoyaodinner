@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Users } from 'lucide-react'
+import { ChevronDown, Users } from 'lucide-react'
 import type { PersonDto } from '@/api/model'
 import {
 	Popover,
@@ -33,9 +33,9 @@ export function WishPeoplePicker({
 
 	if (!canEdit) {
 		return names.length ? (
-			<span className='flex items-center gap-1 truncate text-[11px] text-muted-foreground'>
+			<span className='inline-flex h-5 min-w-0 items-center gap-1 truncate rounded-md border border-border/60 bg-muted/40 px-1.5 text-[11px] font-medium text-muted-foreground'>
 				<Users className='size-3 shrink-0' />
-				{label}
+				<span className='truncate'>{label}</span>
 			</span>
 		) : null
 	}
@@ -74,12 +74,15 @@ export function WishPeoplePicker({
 					type='button'
 					title={t('plan_board.who_for')}
 					className={cn(
-						'flex w-fit max-w-full cursor-pointer items-center gap-1 rounded-full text-[11px] transition-colors hover:text-primary',
-						names.length ? 'font-medium text-primary' : 'text-muted-foreground'
+						'relative inline-flex h-5 min-w-0 max-w-full cursor-pointer items-center gap-1 rounded-md border px-1.5 text-[11px] font-medium transition-colors after:absolute after:-inset-x-1 after:-inset-y-1.5 after:content-[""] sm:after:hidden',
+						names.length
+							? 'border-primary/40 bg-primary/10 text-primary hover:bg-primary/15'
+							: 'border-border/60 bg-muted/40 text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 					)}
 				>
 					<Users className='size-3 shrink-0' />
 					<span className='truncate'>{label}</span>
+					<ChevronDown className='size-3 shrink-0 opacity-70' />
 				</button>
 			</PopoverTrigger>
 			<PopoverContent align='start' className='flex w-72 flex-col gap-3'>

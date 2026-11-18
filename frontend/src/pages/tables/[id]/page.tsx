@@ -26,7 +26,6 @@ import { EditableName } from '@/components/common/EditableName'
 import { Roster } from './@Roster'
 import { OrdersTab } from './@OrdersTab'
 import { PlanTab } from './@PlanTab'
-import { SplitsTab } from './@SplitsTab'
 import { TableBanner } from './@TableBanner'
 import { SeatCountChip } from './@SeatCountChip'
 import { TableCodeBar } from './@TableCodeBar'
@@ -120,8 +119,6 @@ export default function TableDetailPage() {
 		}
 	)
 	const orderCount = useMemo(() => groupOrders(orders ?? []).length, [orders])
-	const showSplits = orderCount > 0
-	const activeTab = tab === 'split' && orders && !showSplits ? 'orders' : tab
 	const [joining, setJoining] = useState(false)
 	const join = () => setJoining(true)
 
@@ -170,15 +167,15 @@ export default function TableDetailPage() {
 				onChange={bannerUrl => updateTable({ bannerUrl })}
 			/>
 
-			<div className='flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
-				<div className='flex min-w-0 items-center gap-2'>
+			<div className='flex items-center justify-between gap-2 sm:gap-4'>
+				<div className='flex min-w-0 flex-1 items-center gap-2'>
 					<span
 						aria-label={t('roster.table_no', { no: table.no })}
 						className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold tabular-nums text-primary-foreground shadow-sm sm:size-9 sm:text-base'
 					>
 						{table.no}
 					</span>
-					<h1 className='flex min-w-0 text-xl font-bold text-foreground sm:text-2xl'>
+					<h1 className='flex min-w-0 text-lg font-bold text-foreground sm:text-2xl'>
 						{canEdit ? (
 							<EditableName
 								value={table.name}
@@ -190,7 +187,7 @@ export default function TableDetailPage() {
 					</h1>
 					<SeatCountChip table={table} />
 				</div>
-				<div className='flex w-full items-center gap-2 sm:w-auto sm:shrink-0'>
+				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
 					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
 					{tableRoast &&
 						canTriggerAi &&
@@ -212,21 +209,25 @@ export default function TableDetailPage() {
 										disabled={roasts.isRoastingTable}
 										aria-label={t('roast.toggle')}
 										className={cn(
-											'group relative inline-flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border px-3 text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait sm:flex-none',
+											'group relative inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait sm:h-9 sm:w-auto sm:rounded-xl sm:px-3',
 											roasts.isRoastingTable
 												? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-lg shadow-fire/30 ring-2 ring-fire/40 motion-safe:animate-pulse'
-												: 'border-fire bg-fire text-fire-foreground shadow-md hover:bg-fire-glow'
+												: 'border-fire bg-fire text-fire-foreground shadow-sm hover:bg-fire-glow'
 										)}
 									>
 										{roasts.isRoastingTable ? (
 											<>
 												<Flame className='size-4 fill-fire-foreground text-fire-foreground motion-safe:animate-bounce' />
-												<span>{t('roast.roasting')}</span>
+												<span className='hidden sm:inline'>
+													{t('roast.roasting')}
+												</span>
 											</>
 										) : (
 											<>
 												<Flame className='size-4 fill-fire-foreground/30 text-fire-foreground motion-safe:animate-flame' />
-												<span>{t('roast.toggle')}</span>
+												<span className='hidden sm:inline'>
+													{t('roast.toggle')}
+												</span>
 											</>
 										)}
 									</button>
@@ -240,20 +241,24 @@ export default function TableDetailPage() {
 						<Link
 							to={`/tables/map?highlight=${table.id}`}
 							aria-label={t('floor_plan.view_map')}
-							className='inline-flex h-9 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-transparent bg-action px-3 text-sm font-medium text-action-foreground shadow-md transition-colors hover:bg-primary hover:text-primary-foreground sm:flex-none'
+							title={t('floor_plan.view_map')}
+							className='inline-flex size-8 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:rounded-xl sm:px-3'
 						>
 							<Map className='size-4' />
-							<span>{t('floor_plan.view_map')}</span>
+							<span className='hidden sm:inline'>
+								{t('floor_plan.view_map')}
+							</span>
 						</Link>
 					)}
 					<button
 						type='button'
 						onClick={shareLink}
 						aria-label={t('roster.copy_link')}
-						className='inline-flex h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-transparent bg-action px-3 text-sm font-medium text-action-foreground shadow-md transition-colors hover:bg-primary hover:text-primary-foreground sm:flex-none'
+						title={t('roster.copy_link')}
+						className='inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:rounded-xl sm:px-3'
 					>
 						<LinkIcon className='size-4' />
-						<span>{t('roster.copy_link')}</span>
+						<span className='hidden sm:inline'>{t('roster.copy_link')}</span>
 					</button>
 				</div>
 			</div>
@@ -279,7 +284,7 @@ export default function TableDetailPage() {
 			)}
 
 			{showOrdering ? (
-				<Tabs value={activeTab} onValueChange={setTab}>
+				<Tabs value={tab} onValueChange={setTab}>
 					<TabsList className='sticky top-16 z-20 h-10 w-full rounded-full border border-border bg-control/95 p-1 shadow-sm backdrop-blur-md sm:static sm:bg-control sm:shadow-none sm:backdrop-blur-none'>
 						<TabsTrigger
 							value='people'
@@ -295,11 +300,6 @@ export default function TableDetailPage() {
 							{t('tabs.orders')}
 							<TabCount count={orderCount} />
 						</TabsTrigger>
-						{showSplits && (
-							<TabsTrigger value='split' className={tabTrigger}>
-								{t('tabs.splits')}
-							</TabsTrigger>
-						)}
 					</TabsList>
 
 					<TabsContent value='people'>
@@ -323,10 +323,12 @@ export default function TableDetailPage() {
 						/>
 					</TabsContent>
 					<TabsContent value='orders'>
-						<OrdersTab table={table} people={people ?? []} canEdit={canEdit} />
-					</TabsContent>
-					<TabsContent value='split'>
-						<SplitsTab table={table} people={people ?? []} canEdit={canEdit} />
+						<OrdersTab
+							table={table}
+							people={people ?? []}
+							canEdit={canEdit}
+							initialSubView={tabParam === 'split' ? 'people' : undefined}
+						/>
 					</TabsContent>
 				</Tabs>
 			) : (
