@@ -786,7 +786,10 @@
 			"outlier": "异常",
 			"all_ordered": "查看所有已点菜品",
 			"all_ordered_title": "所有已点菜品",
-			"all_ordered_summary": "{{items}} 道菜，共点 {{count}} 份"
+			"all_ordered_summary": "{{items}} 道菜，共点 {{count}} 份",
+			"include_jokes": "包含恶搞菜",
+			"group_food": "按菜品",
+			"group_variant": "按规格"
 		},
 		"feedback": {
 			"title": "反馈",

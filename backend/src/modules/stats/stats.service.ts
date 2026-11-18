@@ -14,24 +14,36 @@ export class StatsService {
       where: { id: { in: variantIds } },
       include: {
         translations: { where: { language: lang } },
-        food: { include: { translations: { where: { language: lang } } } },
+        food: {
+          include: {
+            translations: { where: { language: lang } },
+            _count: { select: { variants: true } },
+          },
+        },
       },
     });
     const names = new Map<string, string>();
     for (const v of variants) {
       const foodName = v.food.translations[0]?.name ?? 'Unknown';
-      const label = v.translations[0]?.label;
-      names.set(v.id, label ? `${foodName} (${label})` : foodName);
+      const label = v.translations[0]?.label?.trim();
+      const suffix =
+        label ||
+        (v.food._count.variants > 1 && v.price !== null
+          ? `${Number(v.price)} ${v.currency}`
+          : '');
+      names.set(v.id, suffix ? `${foodName} (${suffix})` : foodName);
     }
     return names;
   }
 
-  /** `limit` 0 returns every variant that has been ordered. */
+  /** `limit` 0 returns every item that has been ordered. */
   async popular(
     scope: 'event' | 'all',
     lang = 'en',
     forEventId?: string,
     limit = 10,
+    includeJokes = true,
+    groupBy: 'food' | 'variant' = 'food',
   ) {
     const eventId =
       scope === 'event'
@@ -41,22 +53,70 @@ export class StatsService {
 
     const grouped = await prisma.order.groupBy({
       by: ['variantId'],
-      where: eventId ? { eventId } : {},
+      where: {
+        ...(eventId ? { eventId } : {}),
+        ...(includeJokes ? {} : { variant: { food: { shouldCalculate: true } } }),
+      },
       _sum: { quantity: true },
       orderBy: { _sum: { quantity: 'desc' } },
-      ...(limit > 0 ? { take: limit } : {}),
+      ...(groupBy === 'variant' && limit > 0 ? { take: limit } : {}),
     });
 
-    const names = await this.variantNames(
-      grouped.map((g) => g.variantId),
-      lang,
-    );
+    if (groupBy === 'variant') {
+      const names = await this.variantNames(
+        grouped.map((g) => g.variantId),
+        lang,
+      );
 
-    return grouped.map((g) => ({
-      variantId: g.variantId,
-      name: names.get(g.variantId) ?? 'Unknown',
-      count: g._sum.quantity ?? 0,
-    }));
+      return grouped.map((g) => ({
+        variantId: g.variantId,
+        name: names.get(g.variantId) ?? 'Unknown',
+        count: g._sum.quantity ?? 0,
+      }));
+    }
+
+    const variants = await prisma.foodVariant.findMany({
+      where: { id: { in: grouped.map((g) => g.variantId) } },
+      select: {
+        id: true,
+        foodId: true,
+        food: {
+          select: {
+            translations: {
+              where: { language: lang },
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
+    const variantMap = new Map(variants.map((v) => [v.id, v]));
+    const byFood = new Map<string, { name: string; count: number }>();
+
+    for (const g of grouped) {
+      const v = variantMap.get(g.variantId);
+      if (!v) continue;
+      const qty = g._sum.quantity ?? 0;
+      const existing = byFood.get(v.foodId);
+      if (existing) {
+        existing.count += qty;
+      } else {
+        byFood.set(v.foodId, {
+          name: v.food.translations[0]?.name ?? 'Unknown',
+          count: qty,
+        });
+      }
+    }
+
+    const sorted = Array.from(byFood.entries())
+      .map(([foodId, info]) => ({
+        variantId: foodId,
+        name: info.name,
+        count: info.count,
+      }))
+      .sort((a, b) => b.count - a.count);
+
+    return limit > 0 ? sorted.slice(0, limit) : sorted;
   }
 
   async tableTotals(forEventId?: string) {

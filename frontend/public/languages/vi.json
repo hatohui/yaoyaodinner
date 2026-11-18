@@ -786,7 +786,10 @@
 			"outlier": "Bất thường",
 			"all_ordered": "Xem tất cả món đã gọi",
 			"all_ordered_title": "Tất cả món đã gọi",
-			"all_ordered_summary": "{{items}} món, tổng cộng {{count}} phần"
+			"all_ordered_summary": "{{items}} món, tổng cộng {{count}} phần",
+			"include_jokes": "Gồm món đùa",
+			"group_food": "Theo món",
+			"group_variant": "Theo loại"
 		},
 		"feedback": {
 			"title": "Phản hồi",

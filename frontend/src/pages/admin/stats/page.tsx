@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Coins, Calculator, UtensilsCrossed, Flame } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
 import { cn } from '@/utils/shadcn'
 import { PopularItemsList } from './@PopularItemsList'
 import { PopularItemsChart } from './@PopularItemsChart'
@@ -14,6 +15,10 @@ export default function AdminStatsPage() {
 	const {
 		scope,
 		setScope,
+		includeJokes,
+		setIncludeJokes,
+		groupBy,
+		setGroupBy,
 		popular,
 		popularLoading,
 		allOpen,
@@ -37,24 +42,30 @@ export default function AdminStatsPage() {
 				<h1 className='text-xl font-bold text-foreground'>
 					{t('admin.stats.title')}
 				</h1>
-				<div className='flex items-center gap-1 rounded-full border border-border/60 bg-card p-0.5'>
-					{(['event', 'all'] as const).map(s => (
-						<button
-							key={s}
-							type='button'
-							onClick={() => setScope(s)}
-							className={cn(
-								'rounded-full px-3 py-1 text-xs font-medium transition-colors',
-								scope === s
-									? 'bg-primary text-primary-foreground'
-									: 'text-muted-foreground hover:text-foreground'
-							)}
-						>
-							{s === 'event'
-								? t('admin.stats.scope_event')
-								: t('admin.stats.scope_all')}
-						</button>
-					))}
+				<div className='flex flex-wrap items-center gap-2'>
+					<label className='flex cursor-pointer items-center gap-2 rounded-full border border-border/60 bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground'>
+						<Switch checked={includeJokes} onCheckedChange={setIncludeJokes} />
+						{t('admin.stats.include_jokes')}
+					</label>
+					<div className='flex items-center gap-1 rounded-full border border-border/60 bg-card p-0.5'>
+						{(['event', 'all'] as const).map(s => (
+							<button
+								key={s}
+								type='button'
+								onClick={() => setScope(s)}
+								className={cn(
+									'rounded-full px-3 py-1 text-xs font-medium transition-colors',
+									scope === s
+										? 'bg-primary text-primary-foreground'
+										: 'text-muted-foreground hover:text-foreground'
+								)}
+							>
+								{s === 'event'
+									? t('admin.stats.scope_event')
+									: t('admin.stats.scope_all')}
+							</button>
+						))}
+					</div>
 				</div>
 			</div>
 
@@ -124,9 +135,30 @@ export default function AdminStatsPage() {
 			</div>
 
 			<div className='flex flex-col gap-3'>
-				<p className='text-base font-semibold text-foreground'>
-					{t('admin.stats.popular_title')}
-				</p>
+				<div className='flex flex-wrap items-center justify-between gap-2'>
+					<p className='text-base font-semibold text-foreground'>
+						{t('admin.stats.popular_title')}
+					</p>
+					<div className='flex items-center gap-1 rounded-full border border-border/60 bg-card p-0.5'>
+						{(['food', 'variant'] as const).map(g => (
+							<button
+								key={g}
+								type='button'
+								onClick={() => setGroupBy(g)}
+								className={cn(
+									'rounded-full px-3 py-1 text-xs font-medium transition-colors',
+									groupBy === g
+										? 'bg-primary text-primary-foreground'
+										: 'text-muted-foreground hover:text-foreground'
+								)}
+							>
+								{g === 'food'
+									? t('admin.stats.group_food')
+									: t('admin.stats.group_variant')}
+							</button>
+						))}
+					</div>
+				</div>
 				<div className='grid gap-4 lg:grid-cols-[280px_1fr]'>
 					<PopularItemsChart items={popular} isLoading={popularLoading} />
 					<div className='rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>

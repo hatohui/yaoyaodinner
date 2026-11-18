@@ -1004,6 +1004,9 @@ declare module 'react-i18next' {
 						all_ordered: string
 						all_ordered_title: string
 						all_ordered_summary: string
+						include_jokes: string
+						group_food: string
+						group_variant: string
 					}
 					feedback: {
 						title: string

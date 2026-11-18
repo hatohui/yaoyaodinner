@@ -788,7 +788,10 @@
 			"outlier": "特異値",
 			"all_ordered": "注文された全品目を見る",
 			"all_ordered_title": "注文全品目一覧",
-			"all_ordered_summary": "{{items}}品目、合計 {{count}}品 注文済み"
+			"all_ordered_summary": "{{items}}品目、合計 {{count}}品 注文済み",
+			"include_jokes": "ジョーク料理を含める",
+			"group_food": "料理別",
+			"group_variant": "種類別"
 		},
 		"feedback": {
 			"title": "感想・写真",

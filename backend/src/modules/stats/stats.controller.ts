@@ -25,12 +25,26 @@ export class StatsController {
     type: Number,
     description: 'How many items to return, most ordered first; 0 for all. Defaults to 10.',
   })
+  @ApiQuery({
+    name: 'includeJokes',
+    required: false,
+    type: Boolean,
+    description: 'Include joke dishes (shouldCalculate=false). Defaults to true.',
+  })
+  @ApiQuery({
+    name: 'groupBy',
+    required: false,
+    enum: ['food', 'variant'],
+    description: 'Aggregate by dish (food) or by variant. Defaults to food.',
+  })
   @ApiResponse({ status: 200, type: [PopularItemDto] })
   popular(
     @Query('scope') scope: 'event' | 'all' = 'event',
     @Query('lang') lang = 'en',
     @Query('eventId') eventId?: string,
     @Query('limit') limit?: string,
+    @Query('includeJokes') includeJokes?: string,
+    @Query('groupBy') groupBy: 'food' | 'variant' = 'food',
   ) {
     const parsed = Number(limit);
     return this.stats.popular(
@@ -38,6 +52,8 @@ export class StatsController {
       lang,
       eventId,
       limit !== undefined && Number.isInteger(parsed) && parsed >= 0 ? parsed : 10,
+      includeJokes !== 'false',
+      groupBy === 'variant' ? 'variant' : 'food',
     );
   }
 

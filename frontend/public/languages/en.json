@@ -788,7 +788,10 @@
 			"outlier": "Outlier",
 			"all_ordered": "See everything ordered",
 			"all_ordered_title": "Everything ordered",
-			"all_ordered_summary": "{{items}} items, {{count}} ordered in total"
+			"all_ordered_summary": "{{items}} items, {{count}} ordered in total",
+			"include_jokes": "Include joke dishes",
+			"group_food": "By dish",
+			"group_variant": "By variant"
 		},
 		"feedback": {
 			"title": "Feedback",

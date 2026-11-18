@@ -786,7 +786,10 @@
 			"outlier": "ผิดปกติ",
 			"all_ordered": "ดูรายการที่สั่งทั้งหมด",
 			"all_ordered_title": "รายการที่สั่งทั้งหมด",
-			"all_ordered_summary": "{{items}} รายการ สั่งรวม {{count}} ที่"
+			"all_ordered_summary": "{{items}} รายการ สั่งรวม {{count}} ที่",
+			"include_jokes": "รวมเมนูแกล้ง",
+			"group_food": "ตามเมนู",
+			"group_variant": "ตามตัวเลือก"
 		},
 		"feedback": {
 			"title": "ความคิดเห็น",

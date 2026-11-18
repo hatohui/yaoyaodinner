@@ -8,12 +8,20 @@ import { useAdminEvents } from '@/hooks/useAdminEvents'
 export function useAdminStats() {
 	const { i18n } = useTranslation()
 	const [scope, setScope] = useState<'event' | 'all'>('event')
+	const [includeJokes, setIncludeJokes] = useState(true)
+	const [groupBy, setGroupBy] = useState<'food' | 'variant'>('food')
 	const { scopedEventId } = useAdminEvents()
 
 	const { data: popular = [], isLoading: popularLoading } = useGetPopularItems<
 		PopularItemDto[]
 	>(
-		{ scope, lang: i18n.language, eventId: scopedEventId },
+		{
+			scope,
+			lang: i18n.language,
+			eventId: scopedEventId,
+			includeJokes,
+			groupBy,
+		},
 		{ query: { placeholderData: keepPreviousData } }
 	)
 
@@ -21,7 +29,14 @@ export function useAdminStats() {
 	const { data: allOrdered = [], isLoading: allLoading } = useGetPopularItems<
 		PopularItemDto[]
 	>(
-		{ scope, lang: i18n.language, eventId: scopedEventId, limit: 0 },
+		{
+			scope,
+			lang: i18n.language,
+			eventId: scopedEventId,
+			limit: 0,
+			includeJokes,
+			groupBy,
+		},
 		{ query: { placeholderData: keepPreviousData } }
 	)
 
@@ -46,6 +61,10 @@ export function useAdminStats() {
 	return {
 		scope,
 		setScope,
+		includeJokes,
+		setIncludeJokes,
+		groupBy,
+		setGroupBy,
 		popular,
 		popularLoading,
 		allOpen,
