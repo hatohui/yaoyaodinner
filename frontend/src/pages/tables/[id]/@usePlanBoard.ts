@@ -17,6 +17,7 @@ import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useConfig } from '@/hooks/useConfig'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useToast } from '@/hooks/useToast'
+import type { ApplyPlanSelection } from '@/components/ordering/ApplyPlanDialog'
 import { downloadReceiptImage, type ReceiptSection } from '@/utils/receiptImage'
 import {
 	openPlanWishes,
@@ -83,7 +84,11 @@ export function usePlanBoard(
 			? group.label
 			: t(`plan_board.allergen.${group.allergen}`)
 
-	const pendingCount = openPlanWishes(board.wishes, statusOf).length
+	const openWishes = openPlanWishes(board.wishes, statusOf)
+	const extraCartCount = cart.lines.filter(
+		l => !openWishes.some(w => w.foodId === l.foodId)
+	).length
+	const pendingCount = openWishes.length + extraCartCount
 	const viewCart = {
 		label: t('plan_board.view_cart'),
 		onClick: () => navigate(`/tables/${tableId}/order`),
@@ -92,21 +97,14 @@ export function usePlanBoard(
 	const addToCart = (wish: TableWishDto) => {
 		const dish = wishToCartDish(wish)
 		if (!dish) return
-		cart.addDish(dish, wish.personIds)
+		cart.addDish(dish, wish.personIds, wish.quantity ?? 1)
 		toast.success(t('plan_board.added_to_cart', { name: wish.name }), {
 			action: viewCart,
 		})
 	}
 
-	const applyPlan = (chosen: TableWishDto[]) => {
-		chosen.forEach(wish => {
-			const dish = wishToCartDish(wish)
-			if (dish) cart.addDish(dish, wish.personIds)
-		})
-		toast.success(t('plan_board.applied', { count: chosen.length }), {
-			action: viewCart,
-		})
-	}
+	const applyPlan = (selection: ApplyPlanSelection) =>
+		cart.orderFromPlan(selection)
 
 	const { mutate: saveAllergies, isPending: isSavingAllergies } =
 		useSetPersonAllergies({
@@ -227,6 +225,7 @@ export function usePlanBoard(
 
 	return {
 		...board,
+		cart,
 		must,
 		want,
 		avoid,

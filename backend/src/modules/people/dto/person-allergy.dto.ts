@@ -24,6 +24,9 @@ export const ALLERGENS = [
   'beef',
   'alcohol',
   'vegetarian',
+  'vegetables',
+  'organs',
+  'spicy',
   'other',
 ] as const;
 

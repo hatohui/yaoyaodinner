@@ -2,9 +2,12 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
 	Check,
+	Minus,
 	Pencil,
+	Plus,
 	ShoppingCart,
 	TriangleAlert,
+	User,
 	Users,
 	X,
 } from 'lucide-react'
@@ -40,6 +43,7 @@ interface WishRowProps {
 	onMove: (kind: WishKind) => void
 	onVariantChange: (variant: FoodVariantDto) => void
 	onPeopleChange: (personIds: string[]) => void
+	onQuantityChange: (quantity: number) => void
 	onRemove: () => void
 }
 
@@ -55,6 +59,7 @@ export function WishRow({
 	onMove,
 	onVariantChange,
 	onPeopleChange,
+	onQuantityChange,
 	onRemove,
 }: WishRowProps) {
 	const { t } = useTranslation()
@@ -63,6 +68,7 @@ export function WishRow({
 
 	const canEditDetails =
 		canEdit && status !== 'ordered' && !wish.id.startsWith('draft-')
+	const qty = wish.quantity ?? 1
 
 	const variantControl =
 		!avoid &&
@@ -96,9 +102,16 @@ export function WishRow({
 		/>
 	)
 
-	const hasMeta = !wish.foodId || Boolean(variantControl) || showPeople
+	const hasMeta =
+		!wish.foodId ||
+		Boolean(variantControl) ||
+		showPeople ||
+		Boolean(wish.addedByName) ||
+		(!avoid && Boolean(wish.foodId) && (canEditDetails || qty > 1))
 	const hasMobileMeta =
-		!wish.foodId || (!avoid && (Boolean(wish.variantLabel) || showPeople))
+		!wish.foodId ||
+		Boolean(wish.addedByName) ||
+		(!avoid && (Boolean(wish.variantLabel) || showPeople || qty > 1))
 
 	const statusControl = (
 		<>
@@ -208,7 +221,17 @@ export function WishRow({
 								{wish.variantLabel}
 							</span>
 						)}
-						{!avoid && wish.variantLabel && showPeople && (
+						{!avoid && qty > 1 && (
+							<>
+								{wish.variantLabel && (
+									<span className='shrink-0 text-muted-foreground/50'>·</span>
+								)}
+								<span className='shrink-0 font-semibold tabular-nums text-primary'>
+									×{qty}
+								</span>
+							</>
+						)}
+						{!avoid && (wish.variantLabel || qty > 1) && showPeople && (
 							<span className='shrink-0 text-muted-foreground/50'>·</span>
 						)}
 						{showPeople && (
@@ -233,6 +256,39 @@ export function WishRow({
 							</span>
 						)}
 						{variantControl}
+						{!avoid &&
+							wish.foodId &&
+							(canEditDetails ? (
+								<span className='inline-flex h-5 shrink-0 items-center rounded-md border border-border/60 bg-muted/40 text-[11px] font-medium text-muted-foreground'>
+									<button
+										type='button'
+										disabled={qty <= 1}
+										onClick={() => onQuantityChange(qty - 1)}
+										aria-label={t('orders.decrease')}
+										className='flex h-full w-4 cursor-pointer items-center justify-center rounded-l-md transition-colors hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+									>
+										<Minus className='size-2.5' />
+									</button>
+									<span className='min-w-4 px-0.5 text-center tabular-nums text-foreground'>
+										{qty}
+									</span>
+									<button
+										type='button'
+										disabled={qty >= 99}
+										onClick={() => onQuantityChange(qty + 1)}
+										aria-label={t('orders.increase')}
+										className='flex h-full w-4 cursor-pointer items-center justify-center rounded-r-md transition-colors hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+									>
+										<Plus className='size-2.5' />
+									</button>
+								</span>
+							) : (
+								qty > 1 && (
+									<span className='inline-flex h-5 shrink-0 items-center rounded-md border border-border/60 bg-muted/40 px-1.5 text-[11px] font-semibold tabular-nums text-primary'>
+										×{qty}
+									</span>
+								)
+							))}
 						{peopleControl}
 					</div>
 				)}
@@ -277,9 +333,4 @@ export function WishRow({
 					onMove={onMove}
 					onVariantChange={onVariantChange}
 					onPeopleChange={onPeopleChange}
-					onRemove={onRemove}
-				/>
-			)}
-		</li>
-	)
-}
+					onQuantityChange={onQuant

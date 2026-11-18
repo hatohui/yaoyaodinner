@@ -21,6 +21,7 @@ const ALLERGEN_CATEGORIES: Partial<Record<Allergen, string[]>> = {
 	egg: ['egg'],
 	soy: ['bean curd'],
 	vegetarian: MEAT_AND_SEAFOOD,
+	vegetables: ['vegetable'],
 }
 
 interface ExcludeState {

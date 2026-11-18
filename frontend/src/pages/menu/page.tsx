@@ -18,11 +18,7 @@ import { useExcludeFilter } from '@/hooks/useExcludeFilter'
 import { ExcludeFilter } from '@/components/ordering/ExcludeFilter'
 import { WishMenu } from '@/components/ordering/WishMenu'
 import { WishlistStrip } from '@/components/ordering/WishlistStrip'
-import {
-	useFoodWishes,
-	wishStatus,
-	wishToCartDish,
-} from '@/hooks/useTableWishes'
+import { useFoodWishes, wishStatus } from '@/hooks/useTableWishes'
 import { LoadingView } from './@LoadingView'
 import { cn } from '@/utils/shadcn'
 import { ErrorView } from './@ErrorView'
@@ -202,6 +198,8 @@ export default function MenuPage() {
 						<WishlistStrip
 							tableId={planTableId}
 							wishes={plan.wishes}
+							cartLines={ordering.cart.lines}
+							myPersonId={ordering.cart.myPersonId}
 							people={ordering.cart.people}
 							compact={compact}
 							canApply={canOrder && canEditPlan}
@@ -213,10 +211,8 @@ export default function MenuPage() {
 									ordering.cart.quantityOf
 								)
 							}
-							onAdd={wish => {
-								const dish = wishToCartDish(wish)
-								if (dish) ordering.cart.addDish(dish, wish.personIds)
-							}}
+							isApplying={ordering.cart.isPlacing}
+							onApply={ordering.cart.orderFromPlan}
 						/>
 					</div>
 				)}
@@ -241,6 +237,16 @@ export default function MenuPage() {
 								)}
 							>
 								{filteredFoods.map((food: FoodItemDto) => {
+									const wish = planTableId ? plan.wishOf(food.id) : undefined
+									const wishControl =
+										canEditPlan && food.defaultVariantId ? (
+											<WishMenu
+												name={food.name}
+												wish={wish}
+												onPick={kind => plan.pick(food, kind)}
+												onRemove={() => plan.removeFood(food.id)}
+											/>
+										) : undefined
 									const shared = {
 										food,
 										categoryName: food.categoryId
@@ -250,36 +256,16 @@ export default function MenuPage() {
 										orderedQuantity: canOrder
 											? ordering.orderedQuantityOf(food.id)
 											: 0,
+										wishKind: wish?.kind,
+										wishMenu: wishControl,
 										onAdd: canOrder ? () => ordering.request(food) : undefined,
 										onQuantityChange: canOrder
 											? (q: number) => ordering.cart.setQuantity(food.id, q)
 											: undefined,
 										onQuickView: setQuickViewId,
 									}
-									const wishControl =
-										planTableId &&
-										(canEditPlan
-											? Boolean(food.defaultVariantId)
-											: Boolean(plan.wishOf(food.id))) ? (
-											<WishMenu
-												name={food.name}
-												wish={plan.wishOf(food.id)}
-												onPick={kind => plan.pick(food, kind)}
-												onRemove={() => plan.removeFood(food.id)}
-												readOnly={!canEditPlan}
-											/>
-										) : undefined
 									return compact ? (
-										<FoodRow
-											key={food.id}
-											{...shared}
-											wishMenu={wishControl}
-											wishKind={
-												!wishControl && planTableId
-													? plan.wishOf(food.id)?.kind
-													: undefined
-											}
-										/>
+										<FoodRow key={food.id} {...shared} />
 									) : (
 										<FoodCard
 											key={food.id}
@@ -295,7 +281,6 @@ export default function MenuPage() {
 											onImageChange={
 												editing ? key => setImage(food.id, key) : undefined
 											}
-											wishMenu={wishControl}
 											footer={
 												editing && seasonalByFood.has(food.id) ? (
 													<MenuSeasonalPrices

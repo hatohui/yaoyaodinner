@@ -495,6 +495,7 @@ export class TableService {
     id: string,
     dto: UpdateTableDetailsDto,
     actor: TableAuditActor,
+    person?: { id: string; name: string } | null,
   ) {
     const table = await this.findOne(id);
     let newHostName: string | null = null;
@@ -538,13 +539,16 @@ export class TableService {
       tableNo: table.no,
       tableName: table.name,
     };
+    const who = person
+      ? { personId: person.id, personName: person.name }
+      : {};
     await this.audit.log(
       ...(dto.name !== undefined && dto.name !== table.name
         ? [
             {
               ...base,
               action: "renamed" as const,
-              details: { from: table.name, to: dto.name },
+              details: { ...who, from: table.name, to: dto.name },
             },
           ]
         : []),
@@ -554,7 +558,7 @@ export class TableService {
             {
               ...base,
               action: "host_changed" as const,
-              details: { from: table.tableLeaderName ?? null, to: newHostName },
+              details: { ...who, from: table.tableLeaderName ?? null, to: newHostName },
             },
           ]
         : []),
@@ -563,7 +567,7 @@ export class TableService {
             {
               ...base,
               action: "banner_changed" as const,
-              details: { from: table.bannerUrl, to: dto.bannerUrl },
+              details: { ...who, from: table.bannerUrl, to: dto.bannerUrl },
             },
           ]
         : []),

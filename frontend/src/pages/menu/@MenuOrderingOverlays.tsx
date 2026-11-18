@@ -13,6 +13,8 @@ import { OrderedList } from '@/components/ordering/OrderedList'
 import { OrderSidePanel } from '@/components/ordering/OrderSidePanel'
 import { TableCodeForm } from '@/components/common/TableCodeForm'
 import { useConfig } from '@/hooks/useConfig'
+import { useFoodWishes } from '@/hooks/useTableWishes'
+import { useToast } from '@/hooks/useToast'
 import { SelectionBar } from './@SelectionBar'
 import { TablePickerModal } from './@TablePickerModal'
 import type { MenuOrdering } from './@useMenuOrdering'
@@ -26,8 +28,10 @@ export function MenuOrderingOverlays({
 	canOrder: boolean
 }) {
 	const { t } = useTranslation()
+	const toast = useToast()
 	const { tableCodes } = useConfig()
 	const { cart, table } = ordering
+	const plan = useFoodWishes(ordering.tableId)
 
 	return (
 		<>
@@ -123,6 +127,15 @@ export function MenuOrderingOverlays({
 				food={ordering.configuring}
 				tableId={ordering.tableId}
 				onAdd={cart.addConfigured}
+				onAddToPlan={(food, variantId, kind, quantity, personIds) => {
+					plan.addConfigured(food, variantId, kind, quantity, personIds)
+					toast.success(
+						t('plan_board.quick_added', {
+							name: food.name,
+							list: t(`plan_board.${kind}`),
+						})
+					)
+				}}
 			/>
 		</>
 	)

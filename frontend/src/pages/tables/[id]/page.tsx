@@ -37,6 +37,7 @@ import { RosterSkeleton } from './@Skeletons'
 import { TableRoastCard } from './@TableRoastCard'
 import { useTableRoast } from './@useTableRoast'
 import { useMenuOrderingStore } from '@/pages/menu/@useMenuOrdering'
+import { TableAuditDialog } from '@/pages/admin/tables/@TableAuditDialog'
 
 const tabTrigger =
 	'rounded-xl text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
@@ -263,6 +264,7 @@ export default function TableDetailPage() {
 							</span>
 						</Link>
 					)}
+					<TableAuditDialog tableId={id} compact />
 					<button
 						type='button'
 						onClick={shareLink}

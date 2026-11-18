@@ -28,8 +28,21 @@ export type WishFood = Pick<
 
 /** `food` only feeds the instant preview row; the server fills in the rest. */
 export type NewWish =
-	| { kind: WishKind; variantId: string; food?: WishFood }
-	| { kind: WishKind; label: string }
+	| {
+			kind: WishKind
+			variantId: string
+			food?: WishFood
+			quantity?: number
+			personIds?: string[]
+	  }
+	| {
+			kind: WishKind
+			label: string
+			quantity?: number
+			personIds?: string[]
+	  }
+
+const clampWishQuantity = (value: number) => Math.min(99, Math.max(1, value))
 
 const draftWish = (
 	id: string,
@@ -49,8 +62,9 @@ const draftWish = (
 		price: food?.price ?? null,
 		currency: food?.currency ?? '',
 		shouldCalculate: food?.shouldCalculate ?? true,
-		personIds: [],
+		personIds: wish.personIds ?? [],
 		position: 0,
+		quantity: clampWishQuantity(wish.quantity ?? 1),
 		createdAt: new Date().toISOString(),
 	}
 }
@@ -79,13 +93,14 @@ export function wishStatus(
 	return cartQuantityOf(wish.foodId) > 0 ? 'in_cart' : 'open'
 }
 
-/** Must and want menu dishes not yet ordered or in the cart. */
+/** Must and want menu dishes not yet ordered. */
 export const openPlanWishes = (
 	wishes: TableWishDto[],
 	statusOf: (wish: TableWishDto) => WishStatus
 ) =>
 	wishes.filter(
-		w => w.kind !== 'avoid' && w.foodId && w.variantId && statusOf(w) === 'open'
+		w =>
+			w.kind !== 'avoid' && w.foodId && w.variantId && statusOf(w) !== 'ordered'
 	)
 
 export function useTableWishes(tableId: string) {
@@ -111,7 +126,10 @@ export function useTableWishes(tableId: string) {
 
 	// edits made while a new wish is still saving wait here (null = removed)
 	const drafts = useRef(
-		new Map<string, { kind: WishKind; position?: number } | null>()
+		new Map<
+			string,
+			{ kind: WishKind; position?: number; quantity?: number } | null
+		>()
 	)
 
 	const reorderWishes = (
@@ -130,10 +148,7 @@ export function useTableWishes(tableId: string) {
 				? Math.max(0, Math.min(position, inKind.length))
 				: inKind.length
 		inKind.splice(idx, 0, { ...target, kind, position: idx })
-		return [
-			...others,
-			...inKind.map((w, i) => ({ ...w, position: i })),
-		]
+		return [...others, ...inKind.map((w, i) => ({ ...w, position: i }))]
 	}
 
 	const { mutate: create } = useCreateTableWish()
@@ -152,8 +167,23 @@ export function useTableWishes(tableId: string) {
 					)
 				),
 			onSuccess: wish =>
-				patchCache(prev => prev.map(w => (w.id === wish.id ? wish : w))),
-			onError: err => {
+				patchCache(prev =>
+					prev.map(w =>
+						w.id === wish.id
+							? { ...wish, quantity: wish.quantity ?? w.quantity ?? 1 }
+							: w
+					)
+				),
+			onError: (err, vars) => {
+				// older backends without `quantity` on UpdateTableWishDto return 400
+				if (
+					vars.data.quantity !== undefined &&
+					Object.keys(vars.data).length === 1 &&
+					isAxiosError(err) &&
+					err.response?.status === 400
+				) {
+					return
+				}
 				toast.error(
 					isAxiosError(err) && err.response?.status === 409
 						? t('plan_board.duplicate')
@@ -191,17 +221,33 @@ export function useTableWishes(tableId: string) {
 					const pending = drafts.current.get(draftId)
 					drafts.current.delete(draftId)
 					if (pending === null) return destroy({ id: saved.id })
+					const initialQty = clampWishQuantity(wish.quantity ?? 1)
+					const savedWithDraft: TableWishDto = {
+						...saved,
+						quantity: saved.quantity ?? initialQty,
+						personIds:
+							saved.personIds.length > 0
+								? saved.personIds
+								: (wish.personIds ?? []),
+					}
 					patchCache(prev => {
 						const rest = prev.filter(w => w.id !== saved.id)
 						return rest.some(w => w.id === draftId)
-							? rest.map(w => (w.id === draftId ? saved : w))
-							: [...rest, saved]
+							? rest.map(w => (w.id === draftId ? savedWithDraft : w))
+							: [...rest, savedWithDraft]
 					})
 					if (
 						pending &&
 						(pending.kind !== saved.kind || pending.position !== undefined)
 					) {
 						moveWish(saved.id, pending.kind, pending.position)
+					}
+					if (wish.personIds?.length) {
+						setPeople(saved.id, wish.personIds)
+					}
+					const targetQty = pending?.quantity ?? initialQty
+					if (targetQty > 1) {
+						setQuantity(saved.id, targetQty)
 					}
 				},
 				onError: err => {
@@ -258,6 +304,19 @@ export function useTableWishes(tableId: string) {
 		update({ id, data: { personIds }, params: { lang: i18n.language } })
 	}
 
+	const setQuantity = (id: string, quantity: number) => {
+		const next = clampWishQuantity(quantity)
+		patchCache(prev =>
+			prev.map(w => (w.id === id ? { ...w, quantity: next } : w))
+		)
+		if (drafts.current.has(id)) {
+			const pending = drafts.current.get(id)
+			if (pending) drafts.current.set(id, { ...pending, quantity: next })
+			return
+		}
+		update({ id, data: { quantity: next }, params: { lang: i18n.language } })
+	}
+
 	const remove = (id: string) => {
 		if (!drafts.current.has(id)) return destroy({ id })
 		drafts.current.set(id, null)
@@ -272,6 +331,7 @@ export function useTableWishes(tableId: string) {
 		moveWish,
 		setVariant,
 		setPeople,
+		setQuantity,
 		remove,
 		/** Latest list, for callbacks that outlive the render they came from. */
 		snapshot: () => qc.getQueryData<TableWishDto[]>(queryKey) ?? [],
@@ -297,6 +357,34 @@ export function useFoodWishes(tableId: string) {
 			if (wish) board.setKind(wish.id, kind)
 			else if (food.defaultVariantId)
 				board.add({ kind, variantId: food.defaultVariantId, food })
+		},
+		addConfigured: (
+			food: FoodItemDto,
+			variantId: string,
+			kind: WishKind,
+			quantity: number,
+			personIds: string[]
+		) => {
+			const existing = board.snapshot().find(w => w.foodId === food.id)
+			if (existing) {
+				if (existing.kind !== kind) board.setKind(existing.id, kind)
+				if (existing.variantId !== variantId) {
+					board.setVariant(existing.id, {
+						id: variantId,
+						foodId: food.id,
+						label: '',
+						price: food.price ?? null,
+						currency: food.currency ?? '',
+						isAvailable: food.isAvailable,
+						isSeasonal: false,
+						sortOrder: 0,
+					})
+				}
+				board.setPeople(existing.id, personIds)
+				board.setQuantity(existing.id, quantity)
+				return
+			}
+			board.add({ kind, variantId, food, quantity, personIds })
 		},
 		removeFood: (foodId: string) => {
 			const wish = byFood.get(foodId)

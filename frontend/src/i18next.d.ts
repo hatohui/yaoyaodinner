@@ -195,6 +195,7 @@ declare module 'react-i18next' {
 					open: string
 					title: string
 					description: string
+					table_description: string
 					empty: string
 					load_error: string
 					by_guest: string
@@ -214,7 +215,25 @@ declare module 'react-i18next' {
 						| 'deleted'
 						| 'ai_roast_table'
 						| 'ai_roast_guest'
-						| 'ai_plan',
+						| 'ai_plan'
+						| 'wish_added'
+						| 'wish_updated'
+						| 'wish_removed'
+						| 'order_added'
+						| 'order_updated'
+						| 'order_removed'
+						| 'person_added'
+						| 'person_renamed'
+						| 'person_pfp_changed'
+						| 'person_pfp_removed'
+						| 'person_allergies_changed'
+						| 'person_removed'
+						| 'people_moved'
+						| 'note_saved'
+						| 'note_removed'
+						| 'image_uploaded'
+						| 'feedback_added'
+						| 'feedback_removed',
 						string
 					>
 				}
@@ -415,6 +434,7 @@ declare module 'react-i18next' {
 					add_order: string
 					cart: string
 					cart_empty: string
+					cart_local_note: string
 					clear_cart: string
 					place_order: string
 					placing: string
@@ -545,6 +565,7 @@ declare module 'react-i18next' {
 					who_for: string
 					who_hint: string
 					whole_table: string
+					added_by: string
 					off_menu: string
 					progress: string
 					copy: string
@@ -568,9 +589,13 @@ declare module 'react-i18next' {
 					apply_total: string
 					apply_confirm_one: string
 					apply_confirm_other: string
+					apply_from_cart: string
 					strip_left_one: string
 					strip_left_other: string
 					strip_done: string
+					add_to_target: string
+					add_to_plan_btn: string
+					priority: string
 					strip_empty: string
 					open_plan: string
 					avoid: string
@@ -603,6 +628,9 @@ declare module 'react-i18next' {
 						| 'beef'
 						| 'alcohol'
 						| 'vegetarian'
+						| 'vegetables'
+						| 'organs'
+						| 'spicy'
 						| 'other',
 						string
 					>

@@ -52,6 +52,13 @@ export type AiCaller = {
   table: { id: string; eventId: string | null; no: number; name: string | null };
 };
 
+/** Resolved actor + table context for audit logging. */
+export type AuditActor = {
+  actor: 'admin' | 'guest';
+  person: { id: string; name: string } | null;
+  table: { id: string; eventId: string | null; no: number; name: string | null } | null;
+};
+
 /**
  * Edits to a table's people, notes, orders and details need that table's code
  * (or the admin passphrase), and nobody can edit once the event is finalized.
@@ -268,5 +275,49 @@ export class TableAccessService {
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
+  }
+
+  /** Best-effort resolution of who made a request and which table it belongs to. */
+  async resolveActor(headers: Headers, tableId?: string | null): Promise<AuditActor> {
+    const admin = await this.isAdmin(headers);
+    let person: { id: string; name: string } | null = null;
+    if (!admin) {
+      const personId = first(headers[PERSON_HEADER]);
+      if (personId) {
+        person = await prisma.people.findUnique({
+          where: { id: personId },
+          select: { id: true, name: true },
+        });
+      }
+    }
+
+    let resolvedTableId = tableId ?? null;
+    if (!resolvedTableId) {
+      const raw = first(headers[TABLE_ACCESS_HEADER]) ?? '';
+      const split = raw.indexOf(':');
+      if (split > 0) resolvedTableId = raw.slice(0, split);
+    }
+
+    let table: AuditActor['table'] = null;
+    if (resolvedTableId) {
+      const found = await prisma.table.findUnique({
+        where: { id: resolvedTableId },
+        select: { id: true, eventId: true, no: true, slot: { select: { name: true } } },
+      });
+      if (found) {
+        table = {
+          id: found.id,
+          eventId: found.eventId,
+          no: found.no,
+          name: found.slot?.name || null,
+        };
+      }
+    }
+
+    return {
+      actor: admin ? 'admin' : 'guest',
+      person,
+      table,
+    };
   }
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCreateOrderBatch, getGetOrdersQueryKey } from '@/api/orders/orders'
 import { useGetTablePeople } from '@/api/tables/tables'
-import type { FoodItemDto, PersonDto } from '@/api/model'
+import type { FoodItemDto, PersonDto, TableWishDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useToast } from '@/hooks/useToast'
@@ -95,17 +95,20 @@ export function useOrderCart(tableId: string) {
 		})
 
 	/** `people` splits a new line between them; none means the whole table. */
-	const addDish = (dish: CartDish, people: string[] = []) =>
+	const addDish = (dish: CartDish, people: string[] = [], quantity = 1) =>
 		setLines(prev => {
 			const next = new Map(prev)
 			const existing = next.get(dish.foodId)
 			if (existing) {
-				next.set(dish.foodId, { ...existing, quantity: existing.quantity + 1 })
+				next.set(dish.foodId, {
+					...existing,
+					quantity: existing.quantity + quantity,
+				})
 				return next
 			}
 			next.set(dish.foodId, {
 				...dish,
-				quantity: 1,
+				quantity,
 				mode: people.length > 0 ? 'choose' : 'table',
 				chosen: new Set(people),
 			})
@@ -192,6 +195,7 @@ export function useOrderCart(tableId: string) {
 	const currency = billingCurrency(items)
 
 	const { mutateAsync: createBatch, isPending } = useCreateOrderBatch()
+	const [isPlacingPlan, setIsPlacingPlan] = useState(false)
 
 	const dropLines = (foodIds: string[]) =>
 		setLines(prev => {
@@ -248,6 +252,107 @@ export function useOrderCart(tableId: string) {
 		}
 	}
 
+	const orderFromPlan = async ({
+		wishes,
+		cartFoodIds,
+	}: {
+		wishes: TableWishDto[]
+		cartFoodIds: string[]
+	}): Promise<boolean> => {
+		if (wishes.length === 0 && cartFoodIds.length === 0) return false
+		if (people.length === 0) {
+			toast.error(t('orders.needs_people_title'))
+			return false
+		}
+
+		const seatedIds = new Set(people.map(p => p.id))
+		type OrderGroup = {
+			splitAll: boolean
+			personIds: string[]
+			items: { variantId: string; quantity: number }[]
+			cartIdsToDrop: string[]
+		}
+		const groups = new Map<string, OrderGroup>()
+		const pushItem = (
+			splitAll: boolean,
+			personIds: string[],
+			item: { variantId: string; quantity: number },
+			dropFoodId?: string
+		) => {
+			const sortedIds = splitAll ? [] : [...new Set(personIds)].sort()
+			const key = splitAll ? 'table' : `choose:${sortedIds.join(',')}`
+			const group = groups.get(key) ?? {
+				splitAll,
+				personIds: sortedIds,
+				items: [],
+				cartIdsToDrop: [],
+			}
+			group.items.push(item)
+			if (dropFoodId) group.cartIdsToDrop.push(dropFoodId)
+			groups.set(key, group)
+		}
+
+		let orderedCount = 0
+		for (const wish of wishes) {
+			if (!wish.variantId) continue
+			const validPeople = wish.personIds.filter(id => seatedIds.has(id))
+			const splitAll = validPeople.length === 0
+			pushItem(
+				splitAll,
+				validPeople,
+				{ variantId: wish.variantId, quantity: wish.quantity ?? 1 },
+				wish.foodId && lines.has(wish.foodId) ? wish.foodId : undefined
+			)
+			orderedCount += 1
+		}
+
+		for (const foodId of cartFoodIds) {
+			const line = lines.get(foodId)
+			if (!line) continue
+			const personIds =
+				line.mode === 'table'
+					? []
+					: line.mode === 'me'
+						? myPersonId && seatedIds.has(myPersonId)
+							? [myPersonId]
+							: []
+						: [...line.chosen].filter(id => seatedIds.has(id))
+			const splitAll = line.mode === 'table' || personIds.length === 0
+			pushItem(
+				splitAll,
+				personIds,
+				{ variantId: line.variantId, quantity: line.quantity },
+				line.foodId
+			)
+			orderedCount += 1
+		}
+
+		if (groups.size === 0) return false
+
+		setIsPlacingPlan(true)
+		try {
+			for (const group of groups.values()) {
+				await createBatch({
+					data: {
+						tableId,
+						items: group.items,
+						splitAll: group.splitAll,
+						personIds: group.personIds,
+					},
+				})
+				if (group.cartIdsToDrop.length > 0) dropLines(group.cartIdsToDrop)
+			}
+			toast.success(t('plan_board.applied', { count: orderedCount }))
+			return true
+		} catch {
+			toast.error(t('orders.place_failed'))
+			return false
+		} finally {
+			setIsPlacingPlan(false)
+			qc.invalidateQueries({ queryKey: getGetOrdersQueryKey() })
+		}
+	}
+
 	return {
 		lines: items,
 		quantityOf: (foodId: string) => lines.get(foodId)?.quantity ?? 0,
@@ -266,6 +371,7 @@ export function useOrderCart(tableId: string) {
 		people,
 		myPersonId,
 		checkout,
-		isPlacing: isPending,
+		orderFromPlan,
+		isPlacing: isPending || isPlacingPlan,
 	}
 }

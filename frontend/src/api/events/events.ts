@@ -26,6 +26,7 @@ import type {
 
 import type {
   AssignPresetDto,
+  DeleteEventParams,
   EventDto,
   EventSummaryDto,
   PublishEventDto,
@@ -356,15 +357,14 @@ const {mutation: mutationOptions} = options ?
     }
     export const deleteEvent = (
     id: string,
-    passphrase?: string,
+    params: DeleteEventParams,
  signal?: AbortSignal
 ) => {
 
 
       return customInstance<void>(
       {url: `/api/events/${id}`, method: 'DELETE',
-      headers: passphrase ? {'x-owner-passphrase': passphrase} : undefined,
-      signal
+        params, signal
     },
       );
     }
@@ -372,8 +372,8 @@ const {mutation: mutationOptions} = options ?
 
 
 export const getDeleteEventMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string; passphrase?: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string; passphrase?: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string;params: DeleteEventParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string;params: DeleteEventParams}, TContext> => {
 
 const mutationKey = ['deleteEvent'];
 const {mutation: mutationOptions} = options ?
@@ -385,10 +385,10 @@ const {mutation: mutationOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteEvent>>, {id: string; passphrase?: string}> = (props) => {
-          const {id, passphrase} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteEvent>>, {id: string;params: DeleteEventParams}> = (props) => {
+          const {id,params} = props ?? {};
 
-          return  deleteEvent(id, passphrase)
+          return  deleteEvent(id,params,)
         }
 
 
@@ -403,11 +403,11 @@ const {mutation: mutationOptions} = options ?
     export type DeleteEventMutationError = unknown
 
     export const useDeleteEvent = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string; passphrase?: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEvent>>, TError,{id: string;params: DeleteEventParams}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteEvent>>,
         TError,
-        {id: string; passphrase?: string},
+        {id: string;params: DeleteEventParams},
         TContext
       > => {
       return useMutation(getDeleteEventMutationOptions(options), queryClient);

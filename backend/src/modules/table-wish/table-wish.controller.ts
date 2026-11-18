@@ -14,6 +14,7 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
 import { CONFIG_KEYS } from '@common/config/registry';
 import { TableAccessService } from '@modules/table-access/table-access.service';
+import { TableAuditService } from '@modules/table/table-audit.service';
 import { TableWishService } from './table-wish.service';
 import {
   CreateTableWishDto,
@@ -29,6 +30,7 @@ export class TableWishController {
   constructor(
     private wishes: TableWishService,
     private access: TableAccessService,
+    private audit: TableAuditService,
   ) {}
 
   @Get()
@@ -50,7 +52,13 @@ export class TableWishController {
     @Headers() headers: Record<string, string>,
   ) {
     await this.access.forTable(dto.tableId, headers);
-    return this.wishes.create(dto, lang);
+    const caller = await this.access.resolveActor(headers, dto.tableId);
+    const wish = await this.wishes.create(dto, lang, caller.person);
+    await this.audit.logForActor(caller, 'wish_added', {
+      targetName: wish.name,
+      to: wish.kind,
+    });
+    return wish;
   }
 
   @Patch(':id')
@@ -63,8 +71,21 @@ export class TableWishController {
     @Query('lang') lang = 'en',
     @Headers() headers: Record<string, string>,
   ) {
-    await this.access.forTable(await this.wishes.tableOf(id), headers);
-    return this.wishes.update(id, dto, lang);
+    const tableId = await this.wishes.tableOf(id);
+    await this.access.forTable(tableId, headers);
+    const caller = await this.access.resolveActor(headers, tableId);
+    const wish = await this.wishes.update(id, dto, lang);
+    if (
+      dto.kind !== undefined ||
+      dto.variantId !== undefined ||
+      dto.personIds !== undefined
+    ) {
+      await this.audit.logForActor(caller, 'wish_updated', {
+        targetName: wish.name,
+        to: dto.kind ?? wish.kind,
+      });
+    }
+    return wish;
   }
 
   @Delete(':id')
@@ -73,7 +94,13 @@ export class TableWishController {
     @Param('id') id: string,
     @Headers() headers: Record<string, string>,
   ) {
-    await this.access.forTable(await this.wishes.tableOf(id), headers);
-    return this.wishes.remove(id);
+    const tableId = await this.wishes.tableOf(id);
+    await this.access.forTable(tableId, headers);
+    const caller = await this.access.resolveActor(headers, tableId);
+    const removed = await this.wishes.remove(id);
+    await this.audit.logForActor(caller, 'wish_removed', {
+      targetName: removed.name,
+      from: removed.kind,
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Plus, ShoppingCart, User } from 'lucide-react'
+import { Plus, ShoppingCart, User, Users } from 'lucide-react'
+import { OrderThumb } from '@/components/ordering/OrderThumb'
 import type { PersonalDish } from './@planBoard'
 
 interface PersonalOrdersSectionProps {
@@ -21,7 +22,9 @@ export function PersonalOrdersSection({
 	return (
 		<section className='flex h-full flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4'>
 			<header className='flex items-center gap-2'>
-				<User className='size-4 shrink-0 text-primary' />
+				<span className='flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary'>
+					<User className='size-3.5' />
+				</span>
 				<h2 className='text-sm font-semibold text-foreground'>
 					{t('plan_board.individual')}
 				</h2>
@@ -32,33 +35,60 @@ export function PersonalOrdersSection({
 					{t('plan_board.individual_empty')}
 				</p>
 			) : (
-				<ul className='flex flex-col gap-1.5'>
+				<ul className='flex flex-col divide-y divide-border/60'>
 					{dishes.map(dish => (
-						<li
-							key={dish.key}
-							className='flex flex-wrap items-baseline gap-x-1.5 text-sm text-foreground'
-						>
+						<li key={dish.key} className='flex items-center gap-2.5 py-2.5'>
 							{onSelectFood ? (
 								<button
 									type='button'
 									onClick={() => onSelectFood(dish.foodId)}
-									className='cursor-pointer text-left transition-colors hover:text-primary'
+									className='shrink-0 cursor-pointer rounded-xl transition-opacity hover:opacity-85'
 								>
-									{dish.name}
+									<OrderThumb
+										imageKey={dish.imageUrl}
+										alt={dish.name}
+										className='size-10 rounded-xl sm:size-11'
+									/>
 								</button>
 							) : (
-								<span>{dish.name}</span>
+								<OrderThumb
+									imageKey={dish.imageUrl}
+									alt={dish.name}
+									className='size-10 rounded-xl sm:size-11'
+								/>
 							)}
-							<span className='font-semibold tabular-nums text-primary'>
-								x{dish.quantity}
-							</span>
-							{dish.people.length > 0 && (
-								<span className='text-muted-foreground'>
-									({dish.people.join(', ')})
-								</span>
-							)}
+							<div className='flex min-w-0 flex-1 flex-col justify-center gap-0.5'>
+								<div className='flex min-w-0 items-baseline gap-1.5'>
+									{onSelectFood ? (
+										<button
+											type='button'
+											title={dish.name}
+											onClick={() => onSelectFood(dish.foodId)}
+											className='min-w-0 cursor-pointer truncate text-left text-sm leading-tight font-medium text-foreground transition-colors hover:text-primary'
+										>
+											{dish.name}
+										</button>
+									) : (
+										<span
+											title={dish.name}
+											className='min-w-0 truncate text-sm leading-tight font-medium text-foreground'
+										>
+											{dish.name}
+										</span>
+									)}
+									<span className='shrink-0 text-xs font-semibold tabular-nums text-primary'>
+										×{dish.quantity}
+									</span>
+								</div>
+								{dish.people.length > 0 && (
+									<span className='inline-flex min-w-0 items-center gap-1 truncate text-xs text-muted-foreground'>
+										<Users className='size-3 shrink-0' />
+										<span className='truncate'>{dish.people.join(', ')}</span>
+									</span>
+								)}
+							</div>
 							{dish.inCart && (
-								<span className='flex items-center gap-1 self-center rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary'>
+								<span className='inline-flex h-5 shrink-0 items-center gap-1 rounded-md bg-primary/15 px-2 text-[11px] font-semibold text-primary'>
 									<ShoppingCart className='size-3' />
 									{t('plan_board.status_in_cart')}
 								</span>

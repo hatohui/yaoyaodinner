@@ -8,5 +8,11 @@ export function usePrefetchFood() {
 	const { i18n } = useTranslation()
 
 	return (id: string) =>
-		qc.prefetchQuery(getGetFoodByIdQueryOptions(id, { lang: i18n.language }))
+		qc.prefetchQuery(
+			getGetFoodByIdQueryOptions(
+				id,
+				{ lang: i18n.language },
+				{ query: { meta: { silent: true } } }
+			)
+		)
 }

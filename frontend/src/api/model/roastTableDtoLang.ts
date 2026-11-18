@@ -14,5 +14,4 @@ export const RoastTableDtoLang = {
   vi: 'vi',
   zh: 'zh',
   th: 'th',
-  ja: 'ja',
 } as const;

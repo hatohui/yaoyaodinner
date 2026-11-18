@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
   Min,
 } from 'class-validator';
@@ -35,7 +36,12 @@ export class TableWishDto {
     description: 'Who the dish is for; empty means the whole table',
   })
   personIds: string[];
+  @ApiPropertyOptional({ nullable: true, type: String })
+  addedById: string | null;
+  @ApiPropertyOptional({ nullable: true, type: String })
+  addedByName: string | null;
   @ApiProperty() position: number;
+  @ApiProperty({ default: 1 }) quantity: number;
   @ApiProperty() createdAt: Date;
 }
 
@@ -59,6 +65,23 @@ export class CreateTableWishDto {
   @IsString()
   @MaxLength(120)
   label?: string;
+
+  @ApiPropertyOptional({ minimum: 1, maximum: 99, default: 1 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(99)
+  quantity?: number;
+
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'Who the dish is for; empty means the whole table',
+  })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(50)
+  @IsString({ each: true })
+  personIds?: string[];
 }
 
 export class UpdateTableWishDto {
@@ -90,4 +113,11 @@ export class UpdateTableWishDto {
   @IsInt()
   @Min(0)
   position?: number;
+
+  @ApiPropertyOptional({ minimum: 1, maximum: 99 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(99)
+  quantity?: number;
 }

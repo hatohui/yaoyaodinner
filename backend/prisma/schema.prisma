@@ -227,13 +227,16 @@ enum WishKind {
 
 /// Either a menu dish (variantId) or a free-text name for one not on the menu.
 model TableWish {
-  id        String   @id @db.VarChar(255)
-  tableId   String   @map("table_id") @db.VarChar(255)
-  variantId String?  @map("variant_id") @db.VarChar(255)
-  label     String?  @db.VarChar(255)
-  kind      WishKind @default(want)
-  position  Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at")
+  id          String   @id @db.VarChar(255)
+  tableId     String   @map("table_id") @db.VarChar(255)
+  variantId   String?  @map("variant_id") @db.VarChar(255)
+  label       String?  @db.VarChar(255)
+  kind        WishKind @default(want)
+  position    Int      @default(0)
+  quantity    Int      @default(1)
+  addedById   String?  @map("added_by_id") @db.VarChar(255)
+  addedByName String?  @map("added_by_name") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
 
   table   Table             @relation(fields: [tableId], references: [id], onDelete: Cascade)
   variant FoodVariant?      @relation(fields: [variantId], references: [id], onDelete: Cascade)
@@ -413,6 +416,7 @@ model TableAudit {
 
   @@index([createdAt])
   @@index([eventId, createdAt])
+  @@index([tableId, createdAt])
   @@map("table_audit")
 }
 

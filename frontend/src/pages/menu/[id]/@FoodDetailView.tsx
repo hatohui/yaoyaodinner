@@ -2,11 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useParams } from 'react-router'
 import {
 	ArrowLeft,
-	Ban,
 	Link as LinkIcon,
 	ShoppingCart,
-	Sparkles,
-	Star,
 	Users,
 	UtensilsCrossed,
 } from 'lucide-react'
@@ -19,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
 import { FoodTags } from '@/components/common/FoodTags'
+import { WishMenu } from '@/components/ordering/WishMenu'
 import { useGuest } from '@/hooks/useGuest'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
@@ -110,9 +108,12 @@ export function FoodDetailView({
 			type='button'
 			onClick={shareLink}
 			aria-label={t('roster.copy_link')}
+			title={t('roster.copy_link')}
 			className={cn(
-				'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-border bg-control text-sm font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary',
-				modal ? 'size-11' : 'px-3 py-1.5'
+				'inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-sm font-medium transition-colors',
+				modal
+					? 'absolute top-3 right-13 z-20 size-8 border-border/80 bg-card/90 text-foreground shadow-md backdrop-blur-sm hover:border-primary/40 hover:bg-card hover:text-primary'
+					: 'border-border bg-control px-3 py-1.5 text-foreground/80 hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
 			)}
 		>
 			<LinkIcon className='size-4' />
@@ -169,7 +170,7 @@ export function FoodDetailView({
 						isPopular={food.isPopular}
 						isRecommended={food.isRecommended}
 						isAiTranslated={food.isAiTranslated}
-						wishKind={!canEditPlan ? currentWish?.kind : undefined}
+						wishKind={currentWish?.kind}
 					/>
 					{food.orderedBy > 0 && (
 						<span className='flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary'>
@@ -178,75 +179,10 @@ export function FoodDetailView({
 						</span>
 					)}
 				</div>
-				{canEditPlan && (
-					<div className='flex flex-wrap items-center gap-1.5'>
-						{(
-							[
-								{ kind: 'must', icon: Star },
-								{ kind: 'want', icon: Sparkles },
-								{ kind: 'avoid', icon: Ban },
-							] as const
-						).map(({ kind, icon: KindIcon }) => {
-							const active = currentWish?.kind === kind
-							const avoid = kind === 'avoid'
-							return (
-								<button
-									key={kind}
-									type='button'
-									aria-pressed={active}
-									onClick={() => {
-										if (active) {
-											plan.removeFood(food.id)
-											return
-										}
-										const selectedVariant =
-											availableVariants.find(v => v.id === selectedVariantId) ??
-											availableVariants[0]
-										if (!selectedVariant) return
-										const item: FoodItemDto = {
-											id: food.id,
-											name: food.name,
-											imageUrl: food.imageUrl,
-											description: food.description,
-											categoryId: food.categoryId,
-											isAvailable: food.isAvailable,
-											isPopular: food.isPopular,
-											isRecommended: food.isRecommended,
-											shouldCalculate: food.shouldCalculate,
-											defaultVariantId: selectedVariant.id,
-											variantCount: availableVariants.length,
-											price: selectedVariant.price,
-											currency: selectedVariant.currency,
-										}
-										plan.pick(item, kind)
-									}}
-									className={cn(
-										'inline-flex h-7 cursor-pointer items-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition-colors',
-										active
-											? avoid
-												? 'border-destructive bg-destructive text-primary-foreground shadow-xs'
-												: 'border-primary bg-primary text-primary-foreground shadow-xs'
-											: avoid
-												? 'border-border bg-control text-muted-foreground hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive'
-												: 'border-border bg-control text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
-									)}
-								>
-									<KindIcon
-										className={cn(
-											'size-3.5 shrink-0',
-											active && kind === 'must' && 'fill-current'
-										)}
-									/>
-									{t(`plan_board.${kind}`)}
-								</button>
-							)
-						})}
-					</div>
-				)}
 				<h1
 					className={cn(
 						'font-bold leading-tight text-foreground',
-						modal ? 'pr-8 text-xl sm:text-2xl' : 'text-2xl'
+						modal ? 'pr-20 text-xl sm:text-2xl' : 'text-2xl'
 					)}
 				>
 					<InlineEdit
@@ -373,45 +309,80 @@ export function FoodDetailView({
 		</>
 	)
 
-	const actions = hasAccess ? (
-		<div className='flex flex-col gap-2'>
-			<div className='flex items-center gap-2'>
-				<Button
-					size='lg'
-					className='h-11 flex-1 gap-2 rounded-full'
-					disabled={availableVariants.length === 0 || !canOrder}
-					onClick={onAddToCart}
-				>
-					<ShoppingCart className='size-4' />
-					{t('food_detail.add_to_cart')}
-				</Button>
-				{modal && shareButton}
-			</div>
-			{!canOrder && (
-				<p className='text-center text-xs text-muted-foreground'>
-					{stageTitle}
-				</p>
-			)}
-		</div>
-	) : modal ? (
-		<div className='flex justify-end'>{shareButton}</div>
+	const wishControl = canEditPlan ? (
+		<WishMenu
+			name={food.name}
+			wish={currentWish}
+			size='lg'
+			onPick={kind => {
+				const selectedVariant =
+					availableVariants.find(v => v.id === selectedVariantId) ??
+					availableVariants[0]
+				if (!selectedVariant) return
+				const item: FoodItemDto = {
+					id: food.id,
+					name: food.name,
+					imageUrl: food.imageUrl,
+					description: food.description,
+					categoryId: food.categoryId,
+					isAvailable: food.isAvailable,
+					isPopular: food.isPopular,
+					isRecommended: food.isRecommended,
+					shouldCalculate: food.shouldCalculate,
+					defaultVariantId: selectedVariant.id,
+					variantCount: availableVariants.length,
+					price: selectedVariant.price,
+					currency: selectedVariant.currency,
+				}
+				plan.pick(item, kind)
+			}}
+			onRemove={() => plan.removeFood(food.id)}
+		/>
 	) : null
+
+	const actions =
+		hasAccess || wishControl ? (
+			<div className='flex flex-col gap-2'>
+				<div className='flex items-center gap-2'>
+					{hasAccess && (
+						<Button
+							size='lg'
+							className='h-11 flex-1 gap-2 rounded-full'
+							disabled={availableVariants.length === 0 || !canOrder}
+							onClick={onAddToCart}
+						>
+							<ShoppingCart className='size-4' />
+							{t('food_detail.add_to_cart')}
+						</Button>
+					)}
+					{wishControl}
+				</div>
+				{hasAccess && !canOrder && (
+					<p className='text-center text-xs text-muted-foreground'>
+						{stageTitle}
+					</p>
+				)}
+			</div>
+		) : null
 
 	if (modal) {
 		return (
-			<div className='grid md:h-[min(85vh,34rem)] md:grid-cols-[1.1fr_1fr]'>
-				{image}
-				<div className='flex min-h-0 flex-col'>
-					<div className='scrollbar-thin flex flex-1 flex-col gap-4 overflow-y-auto p-5 sm:p-6'>
-						{details}
-					</div>
-					{actions && (
-						<div className='border-t border-border bg-background p-4 sm:px-6'>
-							{actions}
+			<>
+				{shareButton}
+				<div className='grid md:h-[min(85vh,34rem)] md:grid-cols-[1.1fr_1fr]'>
+					{image}
+					<div className='flex min-h-0 flex-col'>
+						<div className='scrollbar-thin flex flex-1 flex-col gap-4 overflow-y-auto p-5 sm:p-6'>
+							{details}
 						</div>
-					)}
+						{actions && (
+							<div className='border-t border-border bg-background p-4 sm:px-6'>
+								{actions}
+							</div>
+						)}
+					</div>
 				</div>
-			</div>
+			</>
 		)
 	}
 

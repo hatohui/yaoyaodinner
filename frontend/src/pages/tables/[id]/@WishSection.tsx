@@ -28,6 +28,7 @@ interface WishSectionProps {
 	onSetKind: (id: string, kind: WishKind) => void
 	onSetVariant: (id: string, variant: FoodVariantDto) => void
 	onSetPeople: (id: string, personIds: string[]) => void
+	onSetQuantity: (id: string, quantity: number) => void
 	onRemove: (id: string) => void
 }
 
@@ -47,6 +48,7 @@ export function WishSection({
 	onSetKind,
 	onSetVariant,
 	onSetPeople,
+	onSetQuantity,
 	onRemove,
 }: WishSectionProps) {
 	const { t } = useTranslation()
@@ -105,6 +107,7 @@ export function WishSection({
 							onMove={kind => onSetKind(wish.id, kind)}
 							onVariantChange={variant => onSetVariant(wish.id, variant)}
 							onPeopleChange={ids => onSetPeople(wish.id, ids)}
+							onQuantityChange={qty => onSetQuantity(wish.id, qty)}
 							onRemove={() => onRemove(wish.id)}
 						/>
 					))}

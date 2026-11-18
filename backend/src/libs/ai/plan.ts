@@ -57,7 +57,7 @@ export type TablePlanInput = {
   /** The table's own words about what to change, when they rework a plan. */
   tableNote: string | null;
   /** The plan as the table edited it; reworked rather than replaced. */
-  startFrom: { id: string; quantity: number }[] | null;
+  startFrom: { id: string; quantity: number; for?: string }[] | null;
   /** Restrictions found on the first plan; a rework reuses them instead of rereading notes. */
   knownRestrictions: PlanRestriction[] | null;
   menu: PlanMenuItem[];
@@ -138,12 +138,14 @@ const EDIT_INSTRUCTION = [
   "You edit a table's shared order at a furry community dinner in a Malaysian Chinese restaurant.",
   `Always answer by calling the ${TOOL_NAME} tool.`,
   MENU_KEYS,
-  "startFrom is what the table has now, as ids and quantities; tableNote says what they want changed.",
+  "startFrom is what the table has now, as ids, quantities, and when set, for (who shares each dish: whole table or specific guests); tableNote says what they want changed.",
   "Make exactly the food changes tableNote asks for and nothing else: no dishes it did not ask for (joke dishes included), no rebalancing, no completing or improving the dinner on your own.",
+  "When choosing replacement or new dishes, respect guests (their allergies, dietary avoidances, and notes), setMenu (do not duplicate what the set menu already includes), and preference (the table's Must have, Would like to try, and Keep off the table wish lists — prefer matching dishes they wished for, and never add anything from Keep off the table).",
+  "Leave personal dishes (where for names specific guests rather than whole table) untouched unless tableNote specifically asks to change them.",
   "In picks, list only the dishes that change, each with change: how many to add (positive) or take away (negative) compared with startFrom. A dish you do not list stays exactly as it is.",
   "Examples: two fewer of a dish is change -2; making a dish of 10 into 8 is also change -2; dropping a dish is minus its whole startFrom quantity; a new dish is its quantity, like 1.",
   "A swap drops one dish and adds exactly one dish at the same quantity. When the note asks for a whole course to be one dish, like all mango pudding, that dish goes up by the rest of the course and every other dish in that course is dropped.",
-  "When the note names a kind of dish rather than a dish, like something with chicken, pick the single best match from menu, preferring a high n and staff picks.",
+  "When the note names a kind of dish rather than a dish, like something with chicken, pick the single best match from menu, preferring dishes on the table's wish list, a high n, and staff picks.",
   ...RESTRICTION_RULES,
   "Every dish you add must contain none of the restricted ingredients; dishes already in startFrom are the table's own choice and stay unless the note says otherwise.",
   ...VOICE_RULES,

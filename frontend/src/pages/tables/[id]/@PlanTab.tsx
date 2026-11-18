@@ -4,6 +4,7 @@ import {
 	Ban,
 	ClipboardCopy,
 	Download,
+	ShoppingCart,
 	Sparkles,
 	Star,
 	Wand2,
@@ -13,6 +14,7 @@ import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApplyPlanDialog } from '@/components/ordering/ApplyPlanDialog'
+import { CartPanel } from '@/components/ordering/CartPanel'
 import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
 import { AllergyDialog } from './@AllergyDialog'
 import { AllergySection } from './@AllergySection'
@@ -68,6 +70,7 @@ export function PlanTab({
 		onSetKind: board.setKind,
 		onSetVariant: board.setVariant,
 		onSetPeople: board.setPeople,
+		onSetQuantity: board.setQuantity,
 		onRemove: board.remove,
 	}
 
@@ -167,6 +170,36 @@ export function PlanTab({
 						/>
 					</div>
 					<div className='flex min-w-0 flex-col gap-3'>
+						<section className='flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4'>
+							<header className='flex items-center gap-2'>
+								<span className='flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary'>
+									<ShoppingCart className='size-3.5' />
+								</span>
+								<h2 className='text-sm font-semibold text-foreground'>
+									{t('orders.cart')}
+								</h2>
+								{board.cart.itemCount > 0 && (
+									<span className='ml-auto rounded-md bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
+										{board.cart.itemCount}
+									</span>
+								)}
+							</header>
+							<CartPanel
+								lines={board.cart.lines}
+								people={people}
+								myPersonId={board.cart.myPersonId}
+								total={board.cart.total}
+								currency={board.cart.currency}
+								isPlacing={board.cart.isPlacing}
+								onQuantityChange={board.cart.setQuantity}
+								onModeChange={board.cart.setMode}
+								onTogglePerson={board.cart.togglePerson}
+								onVariantChange={board.cart.setVariant}
+								onRemove={board.cart.remove}
+								onClear={board.cart.clear}
+								onCheckout={board.cart.checkout}
+							/>
+						</section>
 						<WishSection
 							kind='avoid'
 							icon={Ban}
@@ -190,8 +223,11 @@ export function PlanTab({
 				open={previewing}
 				onOpenChange={setPreviewing}
 				wishes={board.wishes}
+				cartLines={board.cart.lines}
+				myPersonId={board.cart.myPersonId}
 				people={people}
 				statusOf={board.statusOf}
+				isSubmitting={board.cart.isPlacing}
 				onConfirm={board.applyPlan}
 			/>
 			<AllergyDialog

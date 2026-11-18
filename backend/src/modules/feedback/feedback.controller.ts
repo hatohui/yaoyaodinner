@@ -23,6 +23,7 @@ import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
 import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
 import { CONFIG_KEYS } from '@common/config/registry';
 import { TableAccessService } from '@modules/table-access/table-access.service';
+import { TableAuditService } from '@modules/table/table-audit.service';
 
 type FeedbackSort = 'recent' | 'top';
 
@@ -34,6 +35,7 @@ export class FeedbackController {
   constructor(
     private feedback: FeedbackService,
     private access: TableAccessService,
+    private audit: TableAuditService,
   ) {}
 
   @Get()
@@ -85,7 +87,12 @@ export class FeedbackController {
     @Headers() headers: Record<string, string>,
   ) {
     await this.access.forEventPin(headers);
-    return this.feedback.create(dto);
+    const created = await this.feedback.create(dto);
+    const caller = await this.access.resolveActor(headers);
+    await this.audit.logForActor(caller, 'feedback_added', {
+      targetName: created.by ?? undefined,
+    });
+    return created;
   }
 
   @Post(':id/react')
@@ -104,7 +111,13 @@ export class FeedbackController {
   @Delete(':id')
   @UseGuards(AdminGuard)
   @ApiOperation({ operationId: 'deleteFeedback' })
-  remove(@Param('id') id: string) {
-    return this.feedback.remove(id);
+  async remove(@Param('id') id: string) {
+    const removed = await this.feedback.remove(id);
+    await this.audit.log({
+      action: 'feedback_removed',
+      actor: 'admin',
+      details: { targetName: id },
+    });
+    return removed;
   }
 }

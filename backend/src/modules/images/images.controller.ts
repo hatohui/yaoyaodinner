@@ -10,6 +10,7 @@ import { ApiTags, ApiQuery, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { ImagesService } from './images.service';
 import { SignUrlResponseDto } from './dto/sign-url-response.dto';
 import { TableAccessService } from '@modules/table-access/table-access.service';
+import { TableAuditService } from '@modules/table/table-audit.service';
 import { RateLimit, RateLimitGuard } from '@common/guards/rate-limit.guard';
 import { CONFIG_KEYS } from '@common/config/registry';
 
@@ -29,6 +30,7 @@ export class ImagesController {
   constructor(
     private images: ImagesService,
     private access: TableAccessService,
+    private audit: TableAuditService,
   ) {}
 
   @Get('sign-url')
@@ -54,6 +56,12 @@ export class ImagesController {
       await this.access.forHeldTable(headers);
     }
 
-    return this.images.signUrl(folder);
+    const result = await this.images.signUrl(folder);
+    const caller = await this.access.resolveActor(headers);
+    await this.audit.logForActor(caller, 'image_uploaded', {
+      to: folder,
+      targetName: result.key,
+    });
+    return result;
   }
 }

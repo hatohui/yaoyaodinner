@@ -11,6 +11,7 @@ export interface PersonalDish {
 	key: string
 	foodId: string
 	name: string
+	imageUrl: string | null
 	quantity: number
 	people: string[]
 	inCart: boolean
@@ -44,6 +45,7 @@ export function personalDishes(
 			key: `cart:${line.foodId}`,
 			foodId: line.foodId,
 			name: line.name,
+			imageUrl: line.imageUrl ?? null,
 			quantity: line.quantity,
 			people: [],
 			inCart: true,
@@ -60,6 +62,7 @@ export function personalDishes(
 			key,
 			foodId: order.foodId,
 			name,
+			imageUrl: order.foodImageUrl ?? null,
 			quantity: 0,
 			people: [],
 			inCart: false,

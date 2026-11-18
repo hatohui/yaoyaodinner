@@ -435,7 +435,7 @@ export class FoodService {
             {
               id: uuidv4(),
               price: dish.price,
-              currency: "RM",
+              currency: dish.currency,
               isAvailable: true,
               translations: { create: [{ language: "en", label: "Regular" }] },
             },

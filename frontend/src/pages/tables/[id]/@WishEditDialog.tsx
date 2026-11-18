@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Trash2 } from 'lucide-react'
+import { Minus, Plus, Trash2 } from 'lucide-react'
 import { useGetFoodById } from '@/api/foods/foods'
 import type {
 	FoodDetailDto,
@@ -33,10 +33,11 @@ interface WishEditDialogProps {
 	onMove: (kind: WishKind) => void
 	onVariantChange: (variant: FoodVariantDto) => void
 	onPeopleChange: (personIds: string[]) => void
+	onQuantityChange: (quantity: number) => void
 	onRemove: () => void
 }
 
-/** Mobile-friendly modal for editing a planned dish's list, size, and split. */
+/** Mobile-friendly modal for editing a planned dish's list, size, quantity, and split. */
 export function WishEditDialog({
 	open,
 	onOpenChange,
@@ -46,6 +47,7 @@ export function WishEditDialog({
 	onMove,
 	onVariantChange,
 	onPeopleChange,
+	onQuantityChange,
 	onRemove,
 }: WishEditDialogProps) {
 	const { t, i18n } = useTranslation()
@@ -66,6 +68,7 @@ export function WishEditDialog({
 	const [draftKind, setDraftKind] = useState<WishKind>(wish.kind)
 	const [draftVariantId, setDraftVariantId] = useState(wish.variantId ?? '')
 	const [draftPersonIds, setDraftPersonIds] = useState<Set<string>>(new Set())
+	const [draftQuantity, setDraftQuantity] = useState(wish.quantity ?? 1)
 
 	useEffect(() => {
 		if (!open) return
@@ -73,7 +76,8 @@ export function WishEditDialog({
 		setDraftKind(wish.kind)
 		setDraftVariantId(wish.variantId ?? '')
 		setDraftPersonIds(new Set(wish.personIds.filter(id => seated.has(id))))
-	}, [open, wish.kind, wish.variantId, wish.personIds, people])
+		setDraftQuantity(wish.quantity ?? 1)
+	}, [open, wish.kind, wish.variantId, wish.personIds, wish.quantity, people])
 
 	const togglePerson = (id: string) =>
 		setDraftPersonIds(prev => {
@@ -99,6 +103,9 @@ export function WishEditDialog({
 				current.some(id => !draftPersonIds.has(id))
 			) {
 				onPeopleChange([...draftPersonIds])
+			}
+			if (draftQuantity !== (wish.quantity ?? 1)) {
+				onQuantityChange(draftQuantity)
 			}
 		}
 		onOpenChange(false)
@@ -168,6 +175,37 @@ export function WishEditDialog({
 											: ''}
 									</button>
 								))}
+							</div>
+						</div>
+					)}
+
+					{canEditDetails && draftKind !== 'avoid' && wish.foodId && (
+						<div className='flex items-center justify-between gap-3'>
+							<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+								{t('orders.quantity')}
+							</span>
+							<div className='flex items-center gap-2'>
+								<button
+									type='button'
+									onClick={() => setDraftQuantity(q => Math.max(1, q - 1))}
+									disabled={draftQuantity <= 1}
+									aria-label={t('orders.decrease')}
+									className='flex size-8 cursor-pointer items-center justify-center rounded-full border border-border bg-control text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+								>
+									<Minus className='size-3.5' />
+								</button>
+								<span className='min-w-6 text-center text-sm font-semibold tabular-nums text-foreground'>
+									{draftQuantity}
+								</span>
+								<button
+									type='button'
+									onClick={() => setDraftQuantity(q => Math.min(99, q + 1))}
+									disabled={draftQuantity >= 99}
+									aria-label={t('orders.increase')}
+									className='flex size-8 cursor-pointer items-center justify-center rounded-full border border-border bg-control text-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary disabled:opacity-40'
+								>
+									<Plus className='size-3.5' />
+								</button>
 							</div>
 						</div>
 					)}

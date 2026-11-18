@@ -6,12 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 
-import type { AiBatchErrorDto } from './aiBatchErrorDto';
-
 export interface AiBatchProgressDto {
   id: string;
   total: number;
   done: number;
   failed: number;
-  errors?: AiBatchErrorDto[];
 }

@@ -21,7 +21,13 @@ export function WishVariantPicker({ wish, onChange }: WishVariantPickerProps) {
 	const { data: food } = useGetFoodById<FoodDetailDto>(
 		wish.foodId ?? '',
 		{ lang: i18n.language },
-		{ query: { enabled: Boolean(wish.foodId), staleTime: STALE_TIME_STATIC } }
+		{
+			query: {
+				enabled: Boolean(wish.foodId),
+				staleTime: STALE_TIME_STATIC,
+				meta: { silent: true },
+			},
+		}
 	)
 	const variants = (food?.variants ?? []).filter(
 		v => v.isAvailable || v.id === wish.variantId

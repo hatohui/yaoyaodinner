@@ -37,6 +37,7 @@ export function useFoodDetail(idOverride?: string) {
 			query: {
 				refetchOnWindowFocus: false,
 				enabled: Boolean(id),
+				meta: { silent: true },
 			},
 		}
 	)

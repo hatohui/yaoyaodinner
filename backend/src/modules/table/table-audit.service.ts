@@ -10,6 +10,7 @@ import type {
   TableAuditDetailsDto,
   TableAuditDto,
 } from './dto/table-audit.dto';
+import type { AuditActor } from '@modules/table-access/table-access.service';
 
 export interface TableAuditEntry {
   action: TableAuditAction;
@@ -44,6 +45,31 @@ export class TableAuditService {
     } catch (error) {
       this.logger.error('Failed to write table audit', error);
     }
+  }
+
+  async logForActor(
+    caller: AuditActor,
+    action: TableAuditAction,
+    details?: TableAuditDetailsDto,
+  ) {
+    const mergedDetails: TableAuditDetailsDto | undefined =
+      caller.person || details
+        ? {
+            ...(caller.person
+              ? { personId: caller.person.id, personName: caller.person.name }
+              : {}),
+            ...details,
+          }
+        : undefined;
+    await this.log({
+      action,
+      actor: caller.actor,
+      tableId: caller.table?.id ?? null,
+      eventId: caller.table?.eventId ?? null,
+      tableNo: caller.table?.no ?? null,
+      tableName: caller.table?.name ?? null,
+      details: mergedDetails,
+    });
   }
 
   /** AI usage rows are never pruned; they feed the admin usage board. */
@@ -91,6 +117,20 @@ export class TableAuditService {
 
   async list(count: number): Promise<TableAuditDto[]> {
     const rows = await prisma.tableAudit.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: count,
+    });
+    return rows.map((r) => ({
+      ...r,
+      action: r.action as TableAuditAction,
+      actor: r.actor as TableAuditActor,
+      details: (r.details as TableAuditDetailsDto | null) ?? null,
+    }));
+  }
+
+  async listForTable(tableId: string, count: number): Promise<TableAuditDto[]> {
+    const rows = await prisma.tableAudit.findMany({
+      where: { tableId },
       orderBy: { createdAt: 'desc' },
       take: count,
     });

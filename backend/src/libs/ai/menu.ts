@@ -170,6 +170,7 @@ export type FoodDraft = {
 export type InventedDish = {
   categoryId: string | null;
   price: number;
+  currency: string;
   locales: Record<string, { name: string; description: string }>;
 };
 
@@ -762,7 +763,13 @@ export async function inventDish(
         },
         price: {
           type: Type.NUMBER,
-          description: "A playful price in RM, between 1 and 99.",
+          description:
+            "A varied playful price number between 1 and 999 (avoid defaulting to 69; vary it to fit the joke and currency, decimals allowed).",
+        },
+        currency: {
+          type: Type.STRING,
+          description:
+            'A short, funny joke currency or unit matching the dish (1 word, max 10 chars), e.g. "barks", "boops", "headpats", "socks", "awoos", "bleps", "tears", "hugs" — never "RM" or real money.',
         },
         ...Object.fromEntries(
           SUPPORTED_LOCALES.map((lang) => [
@@ -779,7 +786,7 @@ export async function inventDish(
           ]),
         ),
       },
-      required: ["categoryId", "price", ...SUPPORTED_LOCALES],
+      required: ["categoryId", "price", "currency", ...SUPPORTED_LOCALES],
     },
     INVENT_INSTRUCTION,
     PLAYFUL_CALL,
@@ -804,13 +811,20 @@ export async function inventDish(
   if (Object.keys(locales).length === 0) return null;
 
   const price = Number(result.price);
+  const rawCurrency =
+    typeof result.currency === "string" ? result.currency.trim() : "";
+  const currency =
+    rawCurrency && !/^(rm|myr)$/i.test(rawCurrency)
+      ? rawCurrency.slice(0, 10)
+      : "boops";
   return {
     categoryId: categories.some((c) => c.id === result.categoryId)
       ? (result.categoryId as string)
       : null,
     price: Number.isFinite(price)
-      ? Math.round(Math.min(99, Math.max(1, price)) * 100) / 100
+      ? Math.round(Math.min(999, Math.max(1, price)) * 100) / 100
       : 9.99,
+    currency,
     locales,
   };
 }

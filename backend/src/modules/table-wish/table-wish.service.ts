@@ -46,7 +46,10 @@ const toDto = (w: WishRow): TableWishDto => ({
   currency: w.variant?.currency ?? '',
   shouldCalculate: w.variant?.food.shouldCalculate ?? true,
   personIds: w.people.map((p) => p.personId),
+  addedById: w.addedById ?? null,
+  addedByName: w.addedByName ?? null,
   position: w.position,
+  quantity: w.quantity,
   createdAt: w.createdAt,
 });
 
@@ -56,7 +59,11 @@ export class TableWishService {
     return (await findWishes(tableId, lang)).map(toDto);
   }
 
-  async create(dto: CreateTableWishDto, lang: string) {
+  async create(
+    dto: CreateTableWishDto,
+    lang: string,
+    addedBy?: { id: string; name: string } | null,
+  ) {
     const label = dto.label?.trim() || null;
     if (Boolean(dto.variantId) === Boolean(label)) {
       throw new BadRequestException('Pick a dish or type one, not both');
@@ -84,6 +91,9 @@ export class TableWishService {
       if (!variant) throw new NotFoundException('Dish not found');
     }
 
+    const personIds = dto.personIds && [...new Set(dto.personIds)];
+    if (personIds?.length) await this.assertPeopleAtTable(dto.tableId, personIds);
+
     const last = await prisma.tableWish.aggregate({
       where: { tableId: dto.tableId, kind: dto.kind },
       _max: { position: true },
@@ -94,8 +104,14 @@ export class TableWishService {
         tableId: dto.tableId,
         kind: dto.kind,
         position: (last._max.position ?? -1) + 1,
+        quantity: dto.quantity ?? 1,
         variantId: dto.variantId ?? null,
         label: dto.variantId ? null : label,
+        addedById: addedBy?.id ?? null,
+        addedByName: addedBy?.name ?? null,
+        people: personIds?.length
+          ? { create: personIds.map((personId) => ({ personId })) }
+          : undefined,
       },
       include: includeWithLang(lang),
     });
@@ -168,18 +184,22 @@ export class TableWishService {
     return toDto(wish);
   }
 
+  private async assertPeopleAtTable(tableId: string, personIds: string[]) {
+    const seated = await prisma.people.count({
+      where: { id: { in: personIds }, tableId },
+    });
+    if (seated !== personIds.length) {
+      throw new BadRequestException('Pick people sitting at this table');
+    }
+  }
+
   private async assertSeated(id: string, personIds: string[]) {
     const wish = await prisma.tableWish.findUnique({
       where: { id },
       select: { tableId: true },
     });
     if (!wish) throw new NotFoundException('Wish not found');
-    const seated = await prisma.people.count({
-      where: { id: { in: personIds }, tableId: wish.tableId },
-    });
-    if (seated !== personIds.length) {
-      throw new BadRequestException('Pick people sitting at this table');
-    }
+    await this.assertPeopleAtTable(wish.tableId, personIds);
   }
 
   /** A wish can only switch to another option of its own dish. */
@@ -206,7 +226,16 @@ export class TableWishService {
   }
 
   async remove(id: string) {
+    const wish = await prisma.tableWish.findUnique({
+      where: { id },
+      include: includeWithLang('en'),
+    });
+    if (!wish) throw new NotFoundException('Wish not found');
     await prisma.tableWish.delete({ where: { id } });
+    return {
+      name: wish.variant?.food.translations[0]?.name ?? wish.label ?? '',
+      kind: wish.kind,
+    };
   }
 
   async tableOf(id: string) {

@@ -14,5 +14,4 @@ export const PlanTableDtoLang = {
   vi: 'vi',
   zh: 'zh',
   th: 'th',
-  ja: 'ja',
 } as const;

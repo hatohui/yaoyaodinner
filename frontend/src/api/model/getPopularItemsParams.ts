@@ -14,7 +14,5 @@ eventId?: string;
  * How many items to return, most ordered first; 0 for all. Defaults to 10.
  */
 limit?: number;
-includeJokes?: boolean;
-groupBy?: 'food' | 'variant';
 lang?: string;
 };

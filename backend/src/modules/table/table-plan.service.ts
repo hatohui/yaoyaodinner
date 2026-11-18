@@ -87,13 +87,71 @@ const DIET_GROUPS: Record<string, string[]> = {
   egg: ['egg', 'omelette', 'foo yong'],
   dairy: ['milk', 'cheese', 'butter', 'cream', 'dairy'],
   spicy: ['spicy', 'chilli', 'chili', 'sambal', 'curry', 'mala'],
+  vegetables: [
+    'vegetable',
+    'veggie',
+    'greens',
+    'bok choy',
+    'choy sum',
+    'kailan',
+    'kangkung',
+    'spinach',
+    'cabbage',
+    'broccoli',
+    'cauliflower',
+    'lettuce',
+    'okra',
+    'eggplant',
+    'brinjal',
+    'bitter gourd',
+    'french bean',
+    'long bean',
+    'petai',
+    'bean sprout',
+    'mushroom',
+    'lotus root',
+    'yam',
+    'pumpkin',
+    'gourd',
+  ],
+  organs: [
+    'organ',
+    'offal',
+    'innards',
+    'intestine',
+    'liver',
+    'tripe',
+    'stomach',
+    'gizzard',
+    'heart',
+    'kidney',
+    'blood',
+    'lung',
+    'tongue',
+    'brain',
+    'chitterling',
+  ],
   alcohol: ['beer', 'wine', 'liquor', 'alcohol', 'sake', 'soju', 'whisky', 'cocktail', 'carlsberg', 'heineken', 'guinness'],
 };
 const MEAT = ['meat', 'chicken', 'duck', 'goose', 'lamb', 'mutton', ...DIET_GROUPS.pork, ...DIET_GROUPS.beef, ...DIET_GROUPS.seafood];
 DIET_GROUPS.vegetarian = MEAT;
 DIET_GROUPS.vegan = [...MEAT, ...DIET_GROUPS.egg, ...DIET_GROUPS.dairy];
 DIET_GROUPS.halal = [...DIET_GROUPS.pork, ...DIET_GROUPS.alcohol];
-const DIET_ALIASES: Record<string, string> = { nut: 'nuts', peanuts: 'peanut', eggs: 'egg', prawns: 'shrimp', shrimps: 'shrimp', chilli: 'spicy', chili: 'spicy' };
+const DIET_ALIASES: Record<string, string> = {
+  nut: 'nuts',
+  peanuts: 'peanut',
+  eggs: 'egg',
+  prawns: 'shrimp',
+  shrimps: 'shrimp',
+  chilli: 'spicy',
+  chili: 'spicy',
+  veggie: 'vegetables',
+  veggies: 'vegetables',
+  vegetable: 'vegetables',
+  organ: 'organs',
+  offal: 'organs',
+  innards: 'organs',
+};
 const NOT_INGREDIENTS = new Set(['no', 'not', 'free', 'allergy', 'allergic', 'to', 'eat', "don't", 'dont', 'avoid', 'without', 'and', 'or', 'food', 'diet', 'intolerant', 'intolerance']);
 
 const escape = (word: string) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -208,6 +266,7 @@ export class TablePlanService {
           select: {
             kind: true,
             label: true,
+            people: { select: { person: { select: { name: true } } } },
             variant: {
               select: {
                 food: {
@@ -227,6 +286,8 @@ export class TablePlanService {
           select: {
             variantId: true,
             quantity: true,
+            splitAll: true,
+            splits: { select: { person: { select: { name: true } } } },
             variant: {
               select: {
                 food: {
@@ -262,8 +323,13 @@ export class TablePlanService {
     const wishNames = (kind: string) =>
       table.wishes
         .filter((w) => w.kind === kind)
-        .map((w) => (w.variant ? nameIn(w.variant.food.translations, lang) : w.label))
-        .filter(Boolean);
+        .map((w) => {
+          const name = w.variant ? nameIn(w.variant.food.translations, lang) : w.label;
+          if (!name) return null;
+          const who = w.people.map((p) => p.person.name).filter(Boolean);
+          return who.length > 0 ? `${name} (${who.join(', ')})` : name;
+        })
+        .filter((name): name is string => Boolean(name));
     const wishNote =
       (
         [
@@ -508,10 +574,26 @@ export class TablePlanService {
     // when modifying, what the table ordered is the starting point, so it stays on the menu
     const orderedVariants = new Set(modifying ? [] : table.orders.map((o) => o.variantId));
     const tableOrders = new Map<string, number>();
-    for (const o of table.orders) tableOrders.set(o.variantId, (tableOrders.get(o.variantId) ?? 0) + o.quantity);
-    const startFrom =
+    const orderWho = new Map<string, Set<string>>();
+    for (const o of table.orders) {
+      tableOrders.set(o.variantId, (tableOrders.get(o.variantId) ?? 0) + o.quantity);
+      const who = orderWho.get(o.variantId) ?? new Set<string>();
+      if (o.splitAll) who.add('whole table');
+      else for (const s of o.splits) who.add(s.person.name);
+      orderWho.set(o.variantId, who);
+    }
+    const startFrom: { variantId: string; quantity: number; for?: string }[] | null =
       rework?.current ??
-      (modifying ? [...tableOrders].map(([variantId, quantity]) => ({ variantId, quantity })) : null);
+      (modifying
+        ? [...tableOrders].map(([variantId, quantity]) => {
+            const who = [...(orderWho.get(variantId) ?? [])];
+            return {
+              variantId,
+              quantity,
+              ...(who.length > 0 ? { for: who.join(', ') } : {}),
+            };
+          })
+        : null);
     const items = new Map<string, TablePlanItemDto>();
     const searchText = new Map<string, string>();
     const courseOf = new Map<string, TablePlanItemDto['course']>();
@@ -595,7 +677,7 @@ export class TablePlanService {
       startFrom: startFrom
         ? startFrom.flatMap((i) => {
             const id = shortIds.get(i.variantId);
-            return id ? [{ id, quantity: i.quantity }] : [];
+            return id ? [{ id, quantity: i.quantity, ...(i.for ? { for: i.for } : {}) }] : [];
           })
         : null,
       knownRestrictions: rework ? rework.restrictions : null,

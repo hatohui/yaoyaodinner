@@ -29,6 +29,7 @@ import type {
   BulkCreateTableDto,
   CreateTableDto,
   ExportTablesParams,
+  GetTableAuditByTableParams,
   GetTableAuditParams,
   GetTablePlanParams,
   GetTableRoastParams,
@@ -2047,3 +2048,97 @@ const {mutation: mutationOptions} = options ?
       > => {
       return useMutation(getUpdateTablePositionMutationOptions(options), queryClient);
     }
+    export const getTableAuditByTable = (
+    id: string,
+    params?: GetTableAuditByTableParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<TableAuditDto[]>(
+      {url: `/api/tables/${id}/audit`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetTableAuditByTableQueryKey = (id: string,
+    params?: GetTableAuditByTableParams,) => {
+    return [
+    `/api/tables/${id}/audit`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetTableAuditByTableQueryOptions = <TData = Awaited<ReturnType<typeof getTableAuditByTable>>, TError = unknown>(id: string,
+    params?: GetTableAuditByTableParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAuditByTable>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTableAuditByTableQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTableAuditByTable>>> = ({ signal }) => getTableAuditByTable(id,params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTableAuditByTable>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTableAuditByTableQueryResult = NonNullable<Awaited<ReturnType<typeof getTableAuditByTable>>>
+export type GetTableAuditByTableQueryError = unknown
+
+
+export function useGetTableAuditByTable<TData = Awaited<ReturnType<typeof getTableAuditByTable>>, TError = unknown>(
+ id: string,
+    params: undefined |  GetTableAuditByTableParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAuditByTable>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableAuditByTable>>,
+          TError,
+          Awaited<ReturnType<typeof getTableAuditByTable>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableAuditByTable<TData = Awaited<ReturnType<typeof getTableAuditByTable>>, TError = unknown>(
+ id: string,
+    params?: GetTableAuditByTableParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAuditByTable>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTableAuditByTable>>,
+          TError,
+          Awaited<ReturnType<typeof getTableAuditByTable>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTableAuditByTable<TData = Awaited<ReturnType<typeof getTableAuditByTable>>, TError = unknown>(
+ id: string,
+    params?: GetTableAuditByTableParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAuditByTable>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetTableAuditByTable<TData = Awaited<ReturnType<typeof getTableAuditByTable>>, TError = unknown>(
+ id: string,
+    params?: GetTableAuditByTableParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTableAuditByTable>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTableAuditByTableQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+

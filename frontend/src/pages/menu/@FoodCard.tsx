@@ -2,7 +2,7 @@ import type { MouseEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Check, Eye, EyeOff, Trash2, UtensilsCrossed } from 'lucide-react'
-import type { FoodItemDto } from '@/api/model'
+import type { FoodItemDto, WishKind } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import { FoodTags } from '@/components/common/FoodTags'
 import { cn } from '@/utils/shadcn'
@@ -24,6 +24,7 @@ interface FoodCardProps {
 	onDelete?: () => void
 	onImageChange?: (key: string) => void
 	footer?: ReactNode
+	wishKind?: WishKind
 	wishMenu?: ReactNode
 }
 
@@ -39,6 +40,7 @@ export function FoodCard({
 	onDelete,
 	onImageChange,
 	footer,
+	wishKind,
 	wishMenu,
 }: FoodCardProps) {
 	const { t } = useTranslation()
@@ -89,7 +91,7 @@ export function FoodCard({
 
 				<div className='absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
 
-				{(food.isPopular || food.isRecommended) && (
+				{(food.isPopular || food.isRecommended || wishKind) && (
 					// keeps the tags readable on bright or busy photos
 					<div className='pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/35 to-transparent' />
 				)}
@@ -97,6 +99,7 @@ export function FoodCard({
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
 					isAiTranslated={food.isAiTranslated}
+					wishKind={wishKind}
 					className='absolute left-2 top-2 max-w-[calc(100%-1rem)]'
 				/>
 
@@ -118,10 +121,6 @@ export function FoodCard({
 					</span>
 				)}
 			</Link>
-
-			{wishMenu && !isEditing && (
-				<div className='absolute right-2 top-2 z-10'>{wishMenu}</div>
-			)}
 
 			{isEditing && (
 				<div className='pointer-events-none absolute inset-x-0 top-0 z-10 aspect-[4/3]'>
@@ -187,12 +186,23 @@ export function FoodCard({
 				</h3>
 				<div className='mt-auto flex items-end justify-between gap-2 pt-2'>
 					<FoodPrice food={food} />
-					{canAdd && (
-						<AddControl
-							quantity={quantity}
-							onAdd={onAdd}
-							onQuantityChange={onQuantityChange}
-						/>
+					{(wishMenu || canAdd) && (
+						<div
+							onClick={e => {
+								e.preventDefault()
+								e.stopPropagation()
+							}}
+							className='flex items-center gap-1.5'
+						>
+							{!isEditing && wishMenu}
+							{canAdd && (
+								<AddControl
+									quantity={quantity}
+									onAdd={onAdd}
+									onQuantityChange={onQuantityChange}
+								/>
+							)}
+						</div>
 					)}
 				</div>
 			</Link>

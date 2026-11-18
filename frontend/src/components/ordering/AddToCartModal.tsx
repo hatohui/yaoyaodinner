@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Minus, Plus } from 'lucide-react'
+import {
+	ListChecks,
+	Minus,
+	Plus,
+	ShoppingCart,
+	Sparkles,
+	Star,
+} from 'lucide-react'
 import { useGetFoodById } from '@/api/foods/foods'
 import { useGetTablePeople } from '@/api/tables/tables'
 import type { FoodItemDto, FoodDetailDto, PersonDto } from '@/api/model'
@@ -35,7 +42,15 @@ interface AddToCartModalProps {
 		mode: SplitMode,
 		chosen: Set<string>
 	) => void
+	onAddToPlan?: (
+		food: FoodItemDto,
+		variantId: string,
+		kind: 'must' | 'want',
+		quantity: number,
+		personIds: string[]
+	) => void
 	defaultMode?: SplitMode
+	defaultTarget?: 'cart' | 'plan'
 }
 
 export function AddToCartModal({
@@ -44,7 +59,9 @@ export function AddToCartModal({
 	food,
 	tableId,
 	onAdd,
+	onAddToPlan,
 	defaultMode = 'table',
+	defaultTarget = 'cart',
 }: AddToCartModalProps) {
 	const { t, i18n } = useTranslation()
 
@@ -64,6 +81,8 @@ export function AddToCartModal({
 	const [quantity, setQuantity] = useState(1)
 	const [mode, setMode] = useState<SplitMode>('table')
 	const [chosen, setChosen] = useState<Set<string>>(new Set())
+	const [target, setTarget] = useState<'cart' | 'plan'>(defaultTarget)
+	const [planKind, setPlanKind] = useState<'must' | 'want'>('must')
 
 	const variants = detail?.variants ?? []
 	const availableVariants = variants.filter(v => v.isAvailable)
@@ -80,8 +99,10 @@ export function AddToCartModal({
 			setQuantity(1)
 			setMode(defaultMode === 'me' && !myPersonId ? 'choose' : defaultMode)
 			setChosen(new Set())
+			setTarget(onAddToPlan ? defaultTarget : 'cart')
+			setPlanKind('must')
 		}
-	}, [open, food, defaultMode, myPersonId])
+	}, [open, food, defaultMode, defaultTarget, myPersonId, onAddToPlan])
 
 	const toggleChosen = (personId: string) => {
 		setChosen(prev => {
@@ -94,6 +115,19 @@ export function AddToCartModal({
 
 	const handleConfirm = () => {
 		if (!food || !variantId) return
+		if (target === 'plan' && onAddToPlan) {
+			const personIds =
+				mode === 'table'
+					? []
+					: mode === 'me'
+						? myPersonId
+							? [myPersonId]
+							: []
+						: [...chosen]
+			onAddToPlan(food, variantId, planKind, quantity, personIds)
+			onOpenChange(false)
+			return
+		}
 		const selectedVariant = variants.find(v => v.id === variantId)
 		const price = selectedVariant?.price ?? food.price ?? 0
 		onAdd(
@@ -152,6 +186,77 @@ export function AddToCartModal({
 						</div>
 					) : (
 						<div className='flex flex-col gap-5'>
+							{onAddToPlan && (
+								<div className='flex flex-col gap-2'>
+									<span className='text-sm font-medium'>
+										{t('plan_board.add_to_target')}
+									</span>
+									<div className='grid grid-cols-2 gap-1.5 rounded-xl border border-border bg-control p-1'>
+										<button
+											type='button'
+											aria-pressed={target === 'cart'}
+											onClick={() => setTarget('cart')}
+											className={cn(
+												'flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded-lg text-xs font-semibold transition-colors',
+												target === 'cart'
+													? 'bg-primary text-primary-foreground shadow-xs'
+													: 'text-muted-foreground hover:text-foreground'
+											)}
+										>
+											<ShoppingCart className='size-3.5' />
+											{t('orders.cart')}
+										</button>
+										<button
+											type='button'
+											aria-pressed={target === 'plan'}
+											onClick={() => setTarget('plan')}
+											className={cn(
+												'flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded-lg text-xs font-semibold transition-colors',
+												target === 'plan'
+													? 'bg-primary text-primary-foreground shadow-xs'
+													: 'text-muted-foreground hover:text-foreground'
+											)}
+										>
+											<ListChecks className='size-3.5' />
+											{t('plan_board.strip_title')}
+										</button>
+									</div>
+									{target === 'plan' && (
+										<div className='flex flex-wrap gap-2 pt-1'>
+											{(
+												[
+													{ kind: 'must', icon: Star },
+													{ kind: 'want', icon: Sparkles },
+												] as const
+											).map(({ kind, icon: Icon }) => (
+												<button
+													key={kind}
+													type='button'
+													aria-pressed={planKind === kind}
+													onClick={() => setPlanKind(kind)}
+													className={cn(
+														'inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
+														planKind === kind
+															? 'border-primary bg-primary text-primary-foreground'
+															: 'border-border/60 bg-card text-foreground hover:bg-muted'
+													)}
+												>
+													<Icon
+														className={cn(
+															'size-3.5',
+															planKind === kind &&
+																kind === 'must' &&
+																'fill-current'
+														)}
+													/>
+													{t(`plan_board.${kind}`)}
+												</button>
+											))}
+										</div>
+									)}
+								</div>
+							)}
+
 							{availableVariants.length > 1 && (
 								<div className='flex flex-col gap-2'>
 									<span className='text-sm font-medium'>
@@ -230,7 +335,9 @@ export function AddToCartModal({
 						disabled={!canConfirm() || loading}
 						onClick={handleConfirm}
 					>
-						{t('orders.add')}
+						{target === 'plan' && onAddToPlan
+							? t('plan_board.add_to_plan_btn')
+							: t('orders.add')}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

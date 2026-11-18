@@ -100,6 +100,20 @@ export class TableController {
     );
   }
 
+  @Get(':id/audit')
+  @ApiOperation({ operationId: 'getTableAuditByTable' })
+  @ApiQuery({ name: 'count', required: false, type: Number })
+  @ApiResponse({ status: 200, type: [TableAuditDto] })
+  getAuditForTable(
+    @Param('id') id: string,
+    @Query('count') count = '100',
+  ) {
+    return this.audit.listForTable(
+      id,
+      Math.min(500, Math.max(1, parseInt(count, 10) || 100)),
+    );
+  }
+
   @Get('audit/ai-usage')
   @UseGuards(AdminGuard)
   @ApiOperation({ operationId: 'getAiUsage' })
@@ -383,15 +397,11 @@ export class TableController {
   ) {
     // name and banner need the table's code; who hosts is the admin's call
     await this.access.forTable(id, headers);
-    const passphrase = await this.config.getAdminPassphrase();
-    const adminSecret = headers[ADMIN_HEADER];
-    const isAdmin = Boolean(
-      adminSecret && passphrase && adminSecret === passphrase,
-    );
-    if (dto.tableLeaderId !== undefined && !isAdmin) {
+    const caller = await this.access.resolveActor(headers, id);
+    if (dto.tableLeaderId !== undefined && caller.actor !== 'admin') {
       throw new ForbiddenException('Only admins can change the host');
     }
-    return this.table.updateDetails(id, dto, isAdmin ? 'admin' : 'guest');
+    return this.table.updateDetails(id, dto, caller.actor, caller.person);
   }
 
   @Patch(':id/position')

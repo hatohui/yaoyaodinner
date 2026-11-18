@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Check, Minus, Plus, ShoppingCart, UtensilsCrossed } from 'lucide-react'
-import type { FoodItemDto } from '@/api/model'
+import type { FoodItemDto, WishKind } from '@/api/model'
 import { StoredImage } from '@/components/common/StoredImage'
 import { Button } from '@/components/ui/button'
 import { FoodTags } from '@/components/common/FoodTags'
@@ -14,6 +14,7 @@ interface ProductCardProps {
 	onAdd: () => void
 	onQuantityChange: (quantity: number) => void
 	onQuickView?: () => void
+	wishKind?: WishKind
 	wishMenu?: ReactNode
 }
 
@@ -24,6 +25,7 @@ export function ProductCard({
 	onAdd,
 	onQuantityChange,
 	onQuickView,
+	wishKind,
 	wishMenu,
 }: ProductCardProps) {
 	const { t } = useTranslation()
@@ -66,9 +68,9 @@ export function ProductCard({
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
 					isAiTranslated={food.isAiTranslated}
-					className='pointer-events-none absolute left-2 top-2 max-w-[calc(100%-3rem)]'
+					wishKind={wishKind}
+					className='pointer-events-none absolute left-2 top-2 max-w-[calc(100%-1rem)]'
 				/>
-				{wishMenu && <div className='absolute right-2 top-2'>{wishMenu}</div>}
 
 				<div className='pointer-events-none absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5'>
 					{orderedQuantity > 0 && (
@@ -110,39 +112,42 @@ export function ProductCard({
 								: t('menu.seasonal_price')}
 					</span>
 
-					{quantity === 0 ? (
-						<Button
-							size='sm'
-							className='gap-1 rounded-full'
-							disabled={!food.defaultVariantId}
-							onClick={onAdd}
-						>
-							<Plus className='size-3.5' />
-							{t('orders.add')}
-						</Button>
-					) : (
-						<div className='flex items-center gap-1 rounded-full border border-border bg-control'>
-							<button
-								type='button'
-								onClick={() => onQuantityChange(quantity - 1)}
-								aria-label={t('orders.decrease')}
-								className='flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-							>
-								<Minus className='size-3.5' />
-							</button>
-							<span className='min-w-5 text-center text-sm font-medium text-foreground'>
-								{quantity}
-							</span>
-							<button
-								type='button'
-								onClick={() => onQuantityChange(quantity + 1)}
-								aria-label={t('orders.increase')}
-								className='flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+					<div className='flex items-center gap-1.5'>
+						{wishMenu}
+						{quantity === 0 ? (
+							<Button
+								size='sm'
+								className='gap-1 rounded-full'
+								disabled={!food.defaultVariantId}
+								onClick={onAdd}
 							>
 								<Plus className='size-3.5' />
-							</button>
-						</div>
-					)}
+								{t('orders.add')}
+							</Button>
+						) : (
+							<div className='flex items-center gap-1 rounded-full border border-border bg-control'>
+								<button
+									type='button'
+									onClick={() => onQuantityChange(quantity - 1)}
+									aria-label={t('orders.decrease')}
+									className='flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+								>
+									<Minus className='size-3.5' />
+								</button>
+								<span className='min-w-5 text-center text-sm font-medium text-foreground'>
+									{quantity}
+								</span>
+								<button
+									type='button'
+									onClick={() => onQuantityChange(quantity + 1)}
+									aria-label={t('orders.increase')}
+									className='flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
+								>
+									<Plus className='size-3.5' />
+								</button>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

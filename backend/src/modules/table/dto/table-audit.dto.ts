@@ -13,6 +13,23 @@ export const TABLE_AUDIT_ACTIONS = [
   'ai_roast_table',
   'ai_roast_guest',
   'ai_plan',
+  'wish_added',
+  'wish_updated',
+  'wish_removed',
+  'order_added',
+  'order_updated',
+  'order_removed',
+  'person_added',
+  'person_renamed',
+  'person_pfp_changed',
+  'person_allergies_changed',
+  'person_removed',
+  'people_moved',
+  'note_saved',
+  'note_removed',
+  'image_uploaded',
+  'feedback_added',
+  'feedback_removed',
 ] as const;
 export const AI_AUDIT_ACTIONS = ['ai_roast_table', 'ai_roast_guest', 'ai_plan'] as const;
 export type TableAuditAction = (typeof TABLE_AUDIT_ACTIONS)[number];

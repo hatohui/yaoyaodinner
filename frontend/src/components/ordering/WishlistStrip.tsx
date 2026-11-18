@@ -15,8 +15,8 @@ import {
 	Zap,
 } from 'lucide-react'
 import type { PersonDto, TableWishDto, WishKind } from '@/api/model'
+import type { CartLine } from '@/hooks/useOrderCart'
 import { openPlanWishes, type WishStatus } from '@/hooks/useTableWishes'
-import { useToast } from '@/hooks/useToast'
 import { Button } from '@/components/ui/button'
 import {
 	Tooltip,
@@ -24,7 +24,7 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/utils/shadcn'
-import { ApplyPlanDialog } from './ApplyPlanDialog'
+import { ApplyPlanDialog, type ApplyPlanSelection } from './ApplyPlanDialog'
 
 const PREVIEW_LIMIT = 4
 
@@ -43,10 +43,13 @@ export interface WishlistAllergy {
 interface WishlistStripProps {
 	tableId: string
 	wishes: TableWishDto[]
+	cartLines?: CartLine[]
+	myPersonId?: string | null
 	people: PersonDto[]
 	allergies?: WishlistAllergy[]
 	statusOf: (wish: TableWishDto) => WishStatus
-	onAdd: (wish: TableWishDto) => void
+	isApplying?: boolean
+	onApply: (selection: ApplyPlanSelection) => Promise<boolean> | boolean | void
 	onSelectFood?: (foodId: string) => void
 	compact?: boolean
 	canApply?: boolean
@@ -55,24 +58,30 @@ interface WishlistStripProps {
 export function WishlistStrip({
 	tableId,
 	wishes,
+	cartLines = [],
+	myPersonId = null,
 	people,
 	allergies,
 	statusOf,
-	onAdd,
+	isApplying = false,
+	onApply,
 	onSelectFood,
 	compact,
 	canApply = true,
 }: WishlistStripProps) {
 	const { t } = useTranslation()
-	const toast = useToast()
 
 	const sorted = [...wishes].sort(
 		(a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]
 	)
 	const left = sorted.filter(
-		w => w.kind !== 'avoid' && statusOf(w) === 'open'
+		w => w.kind !== 'avoid' && statusOf(w) !== 'ordered'
 	).length
 	const pending = openPlanWishes(wishes, statusOf)
+	const extraCartCount = cartLines.filter(
+		l => !pending.some(w => w.foodId === l.foodId)
+	).length
+	const applyCount = pending.length + extraCartCount
 	const [previewing, setPreviewing] = useState(false)
 	const [collapsed, setCollapsed] = useState(compact ?? false)
 	const [showAll, setShowAll] = useState(false)
@@ -84,11 +93,6 @@ export function WishlistStrip({
 
 	const visible = showAll ? sorted : sorted.slice(0, PREVIEW_LIMIT)
 	const hiddenCount = sorted.length - visible.length
-
-	const applyPlan = (chosen: TableWishDto[]) => {
-		chosen.forEach(onAdd)
-		toast.success(t('plan_board.applied', { count: chosen.length }))
-	}
 
 	return (
 		<section className='flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3'>
@@ -197,7 +201,7 @@ export function WishlistStrip({
 							className='h-7 shrink-0 gap-1 rounded-xl px-2.5 text-xs'
 						>
 							<Zap className='size-3.5' />
-							{t('plan_board.apply_plan', { count: pending.length })}
+							{t('plan_board.apply_plan', { count: applyCount })}
 						</Button>
 					)}
 					<Link
@@ -288,6 +292,11 @@ export function WishlistStrip({
 									<Ban className='size-3 shrink-0 text-destructive' />
 								)}
 								<span>{wish.name}</span>
+								{(wish.quantity ?? 1) > 1 && (
+									<span className='font-semibold tabular-nums text-primary'>
+										×{wish.quantity}
+									</span>
+								)}
 								{!isAvoid && status === 'ordered' && (
 									<Check className='size-3 shrink-0' />
 								)}
@@ -341,9 +350,12 @@ export function WishlistStrip({
 				open={previewing}
 				onOpenChange={setPreviewing}
 				wishes={wishes}
+				cartLines={cartLines}
+				myPersonId={myPersonId}
 				people={people}
 				statusOf={statusOf}
-				onConfirm={applyPlan}
+				isSubmitting={isApplying}
+				onConfirm={onApply}
 			/>
 		</section>
 	)

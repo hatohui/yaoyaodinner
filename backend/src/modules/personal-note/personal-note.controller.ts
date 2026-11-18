@@ -15,8 +15,10 @@ import { PersonalNoteService } from './personal-note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { NoteResponseDto } from './dto/note-response.dto';
 import { TableAccessService } from '@modules/table-access/table-access.service';
+import { TableAuditService } from '@modules/table/table-audit.service';
 import { FeatureGuard, RequireFeature } from '@common/guards/feature.guard';
 import { CONFIG_KEYS } from '@common/config/registry';
+import { prisma } from '../../libs/prisma';
 
 @ApiTags('personal-notes')
 @Controller('personal-notes')
@@ -26,6 +28,7 @@ export class PersonalNoteController {
   constructor(
     private notes: PersonalNoteService,
     private access: TableAccessService,
+    private audit: TableAuditService,
   ) {}
 
   @Get()
@@ -44,7 +47,16 @@ export class PersonalNoteController {
     @Headers() headers: Record<string, string>,
   ) {
     await this.access.forPerson(dto.personId, headers);
-    return this.notes.create(dto);
+    const person = await prisma.people.findUnique({
+      where: { id: dto.personId },
+      select: { name: true, tableId: true },
+    });
+    const created = await this.notes.create(dto);
+    const caller = await this.access.resolveActor(headers, person?.tableId);
+    await this.audit.logForActor(caller, 'note_saved', {
+      targetName: person?.name,
+    });
+    return created;
   }
 
   @Put()
@@ -55,7 +67,16 @@ export class PersonalNoteController {
     @Headers() headers: Record<string, string>,
   ) {
     await this.access.forPerson(dto.personId, headers);
-    return this.notes.upsert(dto);
+    const person = await prisma.people.findUnique({
+      where: { id: dto.personId },
+      select: { name: true, tableId: true },
+    });
+    const saved = await this.notes.upsert(dto);
+    const caller = await this.access.resolveActor(headers, person?.tableId);
+    await this.audit.logForActor(caller, 'note_saved', {
+      targetName: person?.name,
+    });
+    return saved;
   }
 
   @Delete(':id')
@@ -65,6 +86,15 @@ export class PersonalNoteController {
     @Headers() headers: Record<string, string>,
   ) {
     await this.access.forNote(id, headers);
-    return this.notes.remove(id);
+    const note = await prisma.personalNote.findUnique({
+      where: { id },
+      select: { person: { select: { name: true, tableId: true } } },
+    });
+    const caller = await this.access.resolveActor(headers, note?.person.tableId);
+    const removed = await this.notes.remove(id);
+    await this.audit.logForActor(caller, 'note_removed', {
+      targetName: note?.person.name,
+    });
+    return removed;
   }
 }

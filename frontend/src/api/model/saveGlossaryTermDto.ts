@@ -16,7 +16,5 @@ export interface SaveGlossaryTermDto {
   /** @nullable */
   th?: string | null;
   /** @nullable */
-  ja?: string | null;
-  /** @nullable */
   note?: string | null;
 }

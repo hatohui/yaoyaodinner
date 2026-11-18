@@ -19,7 +19,6 @@ import type {
 	FoodItemDto,
 	FoodSuggestionDto,
 	OrderResponseDto,
-	TableWishDto,
 } from '@/api/model'
 import { ProductCard } from './@ProductCard'
 import { CartPanel } from '@/components/ordering/CartPanel'
@@ -34,11 +33,7 @@ import { useTableOrdering } from './@useTableOrdering'
 import { useOrderCart } from '@/hooks/useOrderCart'
 import { useExcludeFilter } from '@/hooks/useExcludeFilter'
 import { ExcludeFilter } from '@/components/ordering/ExcludeFilter'
-import {
-	useFoodWishes,
-	wishStatus,
-	wishToCartDish,
-} from '@/hooks/useTableWishes'
+import { useFoodWishes, wishStatus } from '@/hooks/useTableWishes'
 import { WishlistStrip } from '@/components/ordering/WishlistStrip'
 import { WishMenu } from '@/components/ordering/WishMenu'
 import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
@@ -48,11 +43,13 @@ import { OrderLocked } from './@OrderLocked'
 import { OrderingClosed } from './@OrderingClosed'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useTableAccess } from '@/hooks/useTableCode'
+import { useToast } from '@/hooks/useToast'
 import { cn } from '@/utils/shadcn'
 import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 export default function TableOrderPage() {
 	const { t } = useTranslation()
+	const toast = useToast()
 	const { id: routeTableId = '' } = useParams()
 	const exclude = useExcludeFilter(routeTableId)
 	const {
@@ -102,11 +99,6 @@ export default function TableOrderPage() {
 			counts.set(o.foodId, (counts.get(o.foodId) ?? 0) + o.quantity)
 		return counts
 	}, [orders])
-
-	const addWish = (wish: TableWishDto) => {
-		const dish = wishToCartDish(wish)
-		if (dish) cart.addDish(dish, wish.personIds)
-	}
 
 	const [activeFood, setActiveFood] = useState<FoodItemDto | null>(null)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
@@ -255,6 +247,8 @@ export default function TableOrderPage() {
 						<WishlistStrip
 							tableId={tableId}
 							wishes={plan.wishes}
+							cartLines={cart.lines}
+							myPersonId={cart.myPersonId}
 							people={cart.people}
 							allergies={allergies.map(g => ({
 								key: g.key,
@@ -268,7 +262,8 @@ export default function TableOrderPage() {
 							statusOf={wish =>
 								wishStatus(wish, id => orderedByFood.has(id), cart.quantityOf)
 							}
-							onAdd={addWish}
+							isApplying={cart.isPlacing}
+							onApply={cart.orderFromPlan}
 						/>
 
 						{isLoading ? (
@@ -299,6 +294,7 @@ export default function TableOrderPage() {
 											onAdd={() => setActiveFood(food)}
 											onQuantityChange={q => cart.setQuantity(food.id, q)}
 											onQuickView={() => setQuickViewId(food.id)}
+											wishKind={plan.wishOf(food.id)?.kind}
 											wishMenu={
 												food.defaultVariantId && (
 													<WishMenu
@@ -376,6 +372,15 @@ export default function TableOrderPage() {
 				food={activeFood}
 				tableId={tableId}
 				onAdd={cart.addConfigured}
+				onAddToPlan={(food, variantId, kind, quantity, personIds) => {
+					plan.addConfigured(food, variantId, kind, quantity, personIds)
+					toast.success(
+						t('plan_board.quick_added', {
+							name: food.name,
+							list: t(`plan_board.${kind}`),
+						})
+					)
+				}}
 				defaultMode={individual ? 'me' : 'table'}
 			/>
 

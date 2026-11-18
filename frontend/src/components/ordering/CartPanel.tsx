@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Info } from 'lucide-react'
 import type { PersonDto } from '@/api/model'
 import type { SplitMode } from '@/components/common/SplitModeSelector'
 import { Button } from '@/components/ui/button'
@@ -101,6 +102,11 @@ export function CartPanel({
 					<PriceEstimateNote />
 				</div>
 			)}
+
+			<p className='flex items-start gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground'>
+				<Info className='mt-0.5 size-3.5 shrink-0 text-primary' />
+				<span>{t('orders.cart_local_note')}</span>
+			</p>
 		</div>
 	)
 }
