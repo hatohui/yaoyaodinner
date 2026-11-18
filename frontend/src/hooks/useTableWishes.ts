@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
@@ -137,6 +137,15 @@ export function useTableWishes(tableId: string) {
 			{ kind: WishKind; position?: number; quantity?: number } | null
 		>()
 	)
+	const qtyTimers = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+
+	useEffect(() => {
+		const timers = qtyTimers.current
+		return () => {
+			timers.forEach(clearTimeout)
+			timers.clear()
+		}
+	}, [])
 
 	const reorderWishes = (
 		prev: TableWishDto[],
@@ -176,7 +185,12 @@ export function useTableWishes(tableId: string) {
 				patchCache(prev =>
 					prev.map(w =>
 						w.id === wish.id
-							? { ...wish, quantity: wish.quantity ?? w.quantity ?? 1 }
+							? {
+									...wish,
+									quantity: qtyTimers.current.has(wish.id)
+										? (w.quantity ?? wish.quantity ?? 1)
+										: (wish.quantity ?? w.quantity ?? 1),
+								}
 							: w
 					)
 				),
@@ -320,10 +334,28 @@ export function useTableWishes(tableId: string) {
 			if (pending) drafts.current.set(id, { ...pending, quantity: next })
 			return
 		}
-		update({ id, data: { quantity: next }, params: { lang: i18n.language } })
+		const prevTimer = qtyTimers.current.get(id)
+		if (prevTimer) clearTimeout(prevTimer)
+		qtyTimers.current.set(
+			id,
+			setTimeout(() => {
+				qtyTimers.current.delete(id)
+				void qc.cancelQueries({ queryKey })
+				update({
+					id,
+					data: { quantity: next },
+					params: { lang: i18n.language },
+				})
+			}, 400)
+		)
 	}
 
 	const remove = (id: string) => {
+		const timer = qtyTimers.current.get(id)
+		if (timer) {
+			clearTimeout(timer)
+			qtyTimers.current.delete(id)
+		}
 		if (!drafts.current.has(id)) return destroy({ id })
 		drafts.current.set(id, null)
 		patchCache(prev => prev.filter(w => w.id !== id))

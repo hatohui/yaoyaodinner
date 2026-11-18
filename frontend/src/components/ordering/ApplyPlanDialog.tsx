@@ -168,7 +168,9 @@ export function ApplyPlanDialog({
 
 	const chosenWishes = addable.filter(w => !unpicked.has(w.id))
 	const chosenCart = cartLines.filter(l => !unpicked.has(`cart:${l.foodId}`))
-	const chosenCount = chosenWishes.length + chosenCart.length
+	const chosenCount =
+		chosenWishes.reduce((sum, w) => sum + (w.quantity ?? 1), 0) +
+		chosenCart.reduce((sum, l) => sum + l.quantity, 0)
 	const total =
 		chosenWishes.reduce(
 			(sum, w) =>

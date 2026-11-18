@@ -129,7 +129,7 @@ const PLAN_INSTRUCTION = [
   "No two mains built on the same main ingredient or base, like two tofu dishes or two steamed eggs.",
   "budgetPerPerson is extra spend per person on top of the set menu: keep the sum of price times quantity at or under budgetPerPerson times people, trimming dessert and snacks first; when it is null, plan a normal, generous dinner.",
   "Lean on dishes with a high n and on staff picks, but mix in one or two less obvious dishes; add at most one joke dish, and only as a bonus snack.",
-  "preference is what the table is in the mood for: let its food wishes (flavours, cuisines, ingredients, dishes, portions, healthiness, things to skip) shape the whole plan, but they never override a restriction.",
+  "preference is what the table is in the mood for: let its food wishes (flavours, cuisines, ingredients, dishes, portions, quantities like ×2, healthiness, things to skip) shape the whole plan, matching any requested dish quantities when restrictions allow, but they never override a restriction.",
   ...VOICE_RULES,
 ].join(" ");
 
@@ -140,7 +140,7 @@ const EDIT_INSTRUCTION = [
   MENU_KEYS,
   "startFrom is what the table has now, as ids, quantities, and when set, for (who shares each dish: whole table or specific guests); tableNote says what they want changed.",
   "Make exactly the food changes tableNote asks for and nothing else: no dishes it did not ask for (joke dishes included), no rebalancing, no completing or improving the dinner on your own.",
-  "When choosing replacement or new dishes, respect guests (their allergies, dietary avoidances, and notes), setMenu (do not duplicate what the set menu already includes), and preference (the table's Must have, Would like to try, and Keep off the table wish lists — prefer matching dishes they wished for, and never add anything from Keep off the table).",
+  "When choosing replacement or new dishes, respect guests (their allergies, dietary avoidances, and notes), setMenu (do not duplicate what the set menu already includes), and preference (the table's Must have, Would like to try, and Keep off the table wish lists — prefer matching dishes they wished for at their requested quantities like ×2, and never add anything from Keep off the table).",
   "Leave personal dishes (where for names specific guests rather than whole table) untouched unless tableNote specifically asks to change them.",
   "In picks, list only the dishes that change, each with change: how many to add (positive) or take away (negative) compared with startFrom. A dish you do not list stays exactly as it is.",
   "Examples: two fewer of a dish is change -2; making a dish of 10 into 8 is also change -2; dropping a dish is minus its whole startFrom quantity; a new dish is its quantity, like 1.",

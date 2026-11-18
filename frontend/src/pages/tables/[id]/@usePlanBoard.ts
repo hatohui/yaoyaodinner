@@ -87,10 +87,11 @@ export function usePlanBoard(
 			: t(`plan_board.allergen.${group.allergen}`)
 
 	const openWishes = openPlanWishes(board.wishes, statusOf)
-	const extraCartCount = cart.lines.filter(
-		l => !openWishes.some(w => w.foodId === l.foodId)
-	).length
-	const pendingCount = openWishes.length + extraCartCount
+	const extraCartCount = cart.lines
+		.filter(l => !openWishes.some(w => w.foodId === l.foodId))
+		.reduce((sum, l) => sum + l.quantity, 0)
+	const pendingCount =
+		openWishes.reduce((sum, w) => sum + (w.quantity ?? 1), 0) + extraCartCount
 	const viewCart = {
 		label: t('plan_board.view_cart'),
 		onClick: () => navigate(`/tables/${tableId}/order`),

@@ -158,6 +158,7 @@ export class TableWishService {
         where: { id },
         data: {
           variantId: dto.variantId,
+          quantity: dto.quantity,
           people: personIds && {
             deleteMany: {},
             create: personIds.map((personId) => ({ personId })),
@@ -194,6 +195,7 @@ export class TableWishService {
           kind: targetKind,
           position: targetIndex,
           variantId: dto.variantId,
+          quantity: dto.quantity,
           people: personIds && {
             deleteMany: {},
             create: personIds.map((personId) => ({ personId })),

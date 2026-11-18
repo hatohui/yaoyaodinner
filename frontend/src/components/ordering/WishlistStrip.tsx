@@ -78,10 +78,11 @@ export function WishlistStrip({
 		w => w.kind !== 'avoid' && statusOf(w) !== 'ordered'
 	).length
 	const pending = openPlanWishes(wishes, statusOf)
-	const extraCartCount = cartLines.filter(
-		l => !pending.some(w => w.foodId === l.foodId)
-	).length
-	const applyCount = pending.length + extraCartCount
+	const extraCartCount = cartLines
+		.filter(l => !pending.some(w => w.foodId === l.foodId))
+		.reduce((sum, l) => sum + l.quantity, 0)
+	const applyCount =
+		pending.reduce((sum, w) => sum + (w.quantity ?? 1), 0) + extraCartCount
 	const [previewing, setPreviewing] = useState(false)
 	const [collapsed, setCollapsed] = useState(compact ?? false)
 	const [showAll, setShowAll] = useState(false)
