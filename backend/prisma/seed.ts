@@ -438,12 +438,51 @@ async function seedFeedback() {
   console.log(`✓ Feedback (${SAMPLE_FEEDBACK.length})`);
 }
 
+const GLOSSARY_TERMS = [
+  { id: 'f93aa21f-f8dd-4f19-90fb-51c0ae1466f3', en: 'Assam', vi: 'sốt me', zh: '亚参', th: 'มะขาม', ja: 'アサム', note: "Tamarind: a sour, tangy gravy (Malay 'asam'). Not ginseng and not the Indian region." },
+  { id: 'f1a93068-e08d-4975-9fb3-d1eb95816980', en: 'Belacan', vi: null, zh: '马拉盏', th: 'กะปิ', ja: 'ブラチャン', note: 'Fermented shrimp paste' },
+  { id: 'd4724589-843e-4fc8-bc1e-24bbfc7ffde2', en: 'Char Siew', vi: 'xá xíu', zh: '叉烧', th: 'หมูแดง', ja: 'チャーシュー', note: 'Chinese barbecued pork' },
+  { id: '97a0c873-918b-41d5-8f6e-8e7bae7e7f91', en: 'Cincau', vi: 'sương sáo', zh: '凉粉', th: 'เฉาก๊วย', ja: '仙草ゼリー', note: 'Grass jelly' },
+  { id: 'a10887ff-bb16-4d6e-8dbe-d9c4d1b1b07b', en: 'Dace', vi: null, zh: '鲮鱼', th: null, ja: 'ケンヒー', note: 'Canned fried dace fish, usually with fermented black beans' },
+  { id: 'efece4b6-8308-4e0a-b0e2-9b28b0a98582', en: 'Garoupa', vi: 'cá mú', zh: '石斑', th: 'ปลาเก๋า', ja: 'ハタ', note: 'Grouper fish' },
+  { id: 'fc388b85-aa60-49ab-9ab5-acdfc349a2ec', en: 'Gong-Bo', vi: null, zh: '宫保', th: null, ja: '宮保', note: 'Kung Pao: stir-fried with dried chillies and peanuts' },
+  { id: '2de4dc24-9379-473e-afc3-07d1e7caebe1', en: 'Kai Lan', vi: 'cải làn', zh: '芥兰', th: 'คะน้า', ja: 'カイラン', note: 'Chinese kale' },
+  { id: 'ed65bc88-d375-45e1-a11f-805753aead64', en: 'Kam Heong', vi: null, zh: '金香', th: null, ja: 'カムヒョン', note: 'Fragrant dry stir-fry with curry leaves, dried shrimp and chilli' },
+  { id: '24daaec2-aff9-4e1e-b27b-1265c3631756', en: 'Kangkong', vi: 'rau muống', zh: '蕹菜', th: 'ผักบุ้ง', ja: '空心菜', note: 'Water spinach' },
+  { id: 'c3086ccb-8248-402b-97e7-2ce7827aa9f4', en: 'La-La', vi: 'nghêu', zh: '啦啦', th: null, ja: 'アサリ', note: "Clams (Malaysian 'lala')" },
+  { id: 'c609976f-b6e1-4528-b71a-fbe9358bd3e6', en: 'Lady Finger', vi: 'đậu bắp', zh: '秋葵', th: 'กระเจี๊ยบเขียว', ja: 'オクラ', note: 'Okra' },
+  { id: '70199e88-84fc-4fd5-bf28-5dec6e99b4b1', en: 'Marmite', vi: null, zh: '妈蜜', th: null, ja: 'マーマイト', note: 'Sweet and savoury glaze made with Marmite yeast extract and honey' },
+  { id: '198bc5a8-8206-40a7-9be5-0ce3bdee95dd', en: 'Nam Yu', vi: null, zh: '南乳', th: null, ja: '南乳', note: 'Red fermented bean curd' },
+  { id: 'adfee7f7-e91f-4f7d-a6c2-6a8da808828d', en: 'Pandan', vi: 'lá dứa', zh: '班兰', th: 'ใบเตย', ja: 'パンダン', note: 'Pandan leaf' },
+  { id: '6913a877-93e8-4e92-abea-d90149a4f015', en: 'Petai', vi: null, zh: '臭豆', th: 'สะตอ', ja: 'ペタイ', note: 'Stink bean (bitter bean)' },
+  { id: '4f59849f-60d1-46c2-a7cd-596adcbc4f7b', en: 'Rendang', vi: null, zh: '冷当', th: null, ja: 'ルンダン', note: 'Slow-cooked dry curry with coconut and spices' },
+  { id: '480f55dd-f15e-40a7-9985-343968a0c176', en: 'Salted Egg', vi: 'trứng muối', zh: '咸蛋', th: 'ไข่เค็ม', ja: '塩卵', note: 'Salted duck egg yolk sauce' },
+  { id: 'f0e33dce-fce3-487d-88be-d5a569f8ee72', en: 'Sambal', vi: null, zh: '参巴', th: null, ja: 'サンバル', note: 'Malaysian chilli paste' },
+  { id: '3d68fe2a-837c-484a-b9c8-e39aadc79134', en: 'Seng Gua', vi: 'mướp', zh: '胜瓜', th: 'บวบ', ja: 'ヘチマ', note: 'Luffa gourd' },
+  { id: '5ec2b1a0-bb37-41ce-bb64-741965a09c58', en: 'Shao Hsing', vi: null, zh: '花雕', th: null, ja: '紹興酒', note: 'Shaoxing Chinese rice wine' },
+  { id: '809f2b6a-79ad-49fd-ae76-d3f0b720a7ab', en: 'Threadfin', vi: 'cá chét', zh: '马友', th: 'ปลากุเลา', ja: 'ツバメコノシロ', note: 'Threadfin fish' },
+  { id: 'a685d4de-e57b-4154-a738-1e8a8c9d35ec', en: 'Village Chicken', vi: 'gà ta', zh: '菜园鸡', th: 'ไก่บ้าน', ja: '地鶏', note: 'Free-range local chicken' },
+  { id: '8c1f84db-03d0-4762-8a9a-8a7f2f0902a3', en: 'Yu Sheng', vi: null, zh: '鱼生', th: null, ja: 'ユーシェン', note: 'Chinese New Year raw fish salad tossed for good fortune' },
+];
+
+async function seedGlossary() {
+  for (const term of GLOSSARY_TERMS) {
+    await prisma.glossaryTerm.upsert({
+      where: { id: term.id },
+      update: { ja: term.ja, note: term.note },
+      create: term,
+    });
+  }
+  console.log(`✓ Glossary (${GLOSSARY_TERMS.length})`);
+}
+
 async function main() {
   const withSampleData = process.argv.includes('--with-sample-data');
 
   console.log('🌱 Seeding core data...\n');
   await seedLanguages();
   await seedConfig();
+  await seedGlossary();
   const categoryIds = await seedCategories();
   await seedFoods(categoryIds);
 
