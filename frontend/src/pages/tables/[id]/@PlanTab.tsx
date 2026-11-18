@@ -87,7 +87,7 @@ export function PlanTab({
 							variant='outline'
 							size='sm'
 							onClick={() => setModifying(true)}
-							className='relative shrink-0 gap-1.5 overflow-hidden rounded-full border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai'
+							className='relative shrink-0 gap-1.5 overflow-hidden rounded-full border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted motion-safe:before:animate-ai-sheen'
 						>
 							<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
 							{t('table_plan.modify_cta')}

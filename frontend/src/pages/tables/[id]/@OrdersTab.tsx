@@ -58,13 +58,18 @@ const linesTotal = (lines: OrderedLine[]) =>
 
 export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const { t } = useTranslation()
-	const { orders, isLoading, total, updateLine, removeLine } = useOrders(
-		table.id
-	)
+	const {
+		orders,
+		isLoading,
+		total: ordersTotal,
+		updateLine,
+		removeLine,
+	} = useOrders(table.id)
 	const { stage, canAdd, canSplit, canChangeItems, canEditPrice } =
 		useOrderingStage()
 	const canOrder = canEdit && canAdd
 	const { preset } = useActivePreset(table.eventId)
+	const total = ordersTotal + (preset?.price ?? 0)
 	const { tablePlan } = useConfig()
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
@@ -73,7 +78,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	const dinnerLines = lines.filter(l => l.round === 'dinner')
 	const showRounds =
 		dinnerLines.length > 0 || stage === 'dinner' || stage === 'finalized'
-	const currency = billingCurrency(orders)
+	const currency = billingCurrency([...orders, ...(preset?.items ?? [])])
 	const { personId: myPersonId } = useWhoAmI(table.id)
 	const [editing, setEditing] = useState<OrderedLine | null>(null)
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)
@@ -196,7 +201,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 								{canUseAi && !plan && !isPlanning && (
 									<Button
 										variant='outline'
-										className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai motion-safe:before:animate-ai-sheen'
+										className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted motion-safe:before:animate-ai-sheen'
 										onClick={() => setModifying(true)}
 									>
 										<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
