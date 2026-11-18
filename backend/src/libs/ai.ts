@@ -7,7 +7,14 @@ import {
 import type { StoredImage } from "@modules/images/images.service";
 import { prisma } from "./prisma";
 import { CacheService } from "./redis";
-import { SUPPORTED_LOCALES } from "@common/locales";
+import {
+  LANGUAGE_ROWS,
+  LOCALE_NAMES,
+  PHRASES,
+  SUPPORTED_LOCALES,
+  UNITS,
+  isTextInLocaleScript,
+} from "@common/locales";
 import type { GlossaryTerm } from "@prisma/client";
 
 const MODEL =
@@ -30,12 +37,9 @@ const Type = {
   ARRAY: "array",
 } as const;
 
-const LOCALE_NAMES: Record<string, string> = {
-  en: "English",
-  vi: "Vietnamese",
-  zh: "Simplified Chinese",
-  th: "Thai",
-};
+const LOCALE_LEGEND = SUPPORTED_LOCALES.map(
+  (l) => `${l} is ${LOCALE_NAMES[l] ?? l}`,
+).join(", ");
 
 const FIELD = {
   dishName: {
@@ -67,7 +71,7 @@ const FIELD = {
 const SYSTEM_INSTRUCTION = [
   "You write and translate menu content for a Malaysian Chinese restaurant.",
   `Always answer by calling the ${TOOL_NAME} tool with every requested field in every requested locale.`,
-  "Top-level keys are locale codes: en is English, vi is Vietnamese, zh is Simplified Chinese, th is Thai.",
+  `Top-level keys are locale codes: ${LOCALE_LEGEND}.`,
   "Copy any provided id value verbatim; never invent, drop, reorder, or merge array entries.",
   "Name each dish the way a native speaker expects to see it on a restaurant menu, not word for word; keep proper nouns and brand names as they are.",
   "Option labels are portions: keep the number and translate the unit naturally, where pcs means pieces, pax means people served, pairs means pairs and per portion means one serving; keep S, M and L unchanged.",
@@ -87,24 +91,6 @@ const UNIT_ALIASES: Record<string, string> = {
   pairs: "pairs",
 };
 
-const UNITS: Record<string, Record<string, string>> = {
-  pcs: { vi: "miếng", zh: "件", th: "ชิ้น" },
-  pax: { vi: "người", zh: "位", th: "ท่าน" },
-  pairs: { vi: "đôi", zh: "对", th: "คู่" },
-};
-
-const PHRASES: Record<string, Record<string, string>> = {
-  "per portion": { vi: "Mỗi phần", zh: "每份", th: "ต่อที่" },
-  "per person": { vi: "Mỗi người", zh: "每位", th: "ต่อท่าน" },
-  regular: { vi: "Thường", zh: "常规", th: "ปกติ" },
-  small: { vi: "Nhỏ", zh: "小", th: "เล็ก" },
-  large: { vi: "Lớn", zh: "大", th: "ใหญ่" },
-};
-
-const CJK = /[\u4e00-\u9fff]/;
-const THAI = /[\u0e00-\u0e7f]/;
-const VIETNAMESE = /[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
-
 function isInLanguage(
   raw: string,
   lang: string,
@@ -117,14 +103,7 @@ function isInLanguage(
     .filter((n) => n.trim())
     .sort((a, b) => b.length - a.length)
     .reduce((t, n) => t.split(n).join(" "), raw);
-  const ok =
-    lang === "zh"
-      ? CJK.test(text)
-      : lang === "th"
-        ? THAI.test(text)
-        : !CJK.test(text) &&
-          !THAI.test(text) &&
-          (lang !== "vi" || !isSentence || VIETNAMESE.test(text));
+  const ok = isTextInLocaleScript(text, lang, isSentence);
   if (!ok) console.warn(`[AI] Dropped ${lang} text in the wrong language`);
   return ok;
 }
@@ -209,9 +188,21 @@ function getClient(): BedrockRuntimeClient {
     region:
       process.env.BEDROCK_REGION || process.env.AWS_REGION || "ap-southeast-1",
     maxAttempts: 2,
-    requestHandler: { connectionTimeout: 3_000, requestTimeout: 40_000 },
+    requestHandler: { connectionTimeout: 3_000, requestTimeout: 50_000 },
   });
   return _client;
+}
+
+let languagesEnsured: Promise<void> | null = null;
+function ensureLanguages() {
+  languagesEnsured ??= prisma.language
+    .createMany({ data: LANGUAGE_ROWS, skipDuplicates: true })
+    .then(() => undefined)
+    .catch((err) => {
+      languagesEnsured = null;
+      throw err;
+    });
+  return languagesEnsured;
 }
 
 async function isOverPrimaryLimit() {
@@ -407,7 +398,7 @@ function loadFood(foodId: string) {
 
 type LocaleNeed = { name: boolean; description: boolean; labels: Set<string> };
 
-type Term = Pick<GlossaryTerm, "en" | "vi" | "zh" | "th" | "note">;
+type Term = Pick<GlossaryTerm, "en" | "vi" | "zh" | "th" | "ja" | "note">;
 
 const GLOSSARY_TTL_MS = 30_000;
 let glossaryCache: { at: number; terms: Term[] } | null = null;
@@ -416,7 +407,7 @@ async function loadGlossary(): Promise<Term[]> {
   if (glossaryCache && Date.now() - glossaryCache.at < GLOSSARY_TTL_MS)
     return glossaryCache.terms;
   const terms = await prisma.glossaryTerm.findMany({
-    select: { en: true, vi: true, zh: true, th: true, note: true },
+    select: { en: true, vi: true, zh: true, th: true, ja: true, note: true },
   });
   glossaryCache = { at: Date.now(), terms };
   return terms;
@@ -747,6 +738,7 @@ async function saveFoodContent(
   locales: Record<string, FoodContent>,
   isAiGenerated: (lang: string) => boolean,
 ) {
+  await ensureLanguages();
   const [rows, variants] = await Promise.all([
     prisma.foodTranslation.findMany({ where: { foodId } }),
     prisma.foodVariant.findMany({
@@ -997,7 +989,7 @@ const INVENT_INSTRUCTION = [
   "Lean hard on innuendo: every name or description should carry at least one suggestive double meaning, the cheekier the better, while staying a wink rather than a description.",
   "The only lines: nothing explicit or graphic, no slurs or attacks on any group, and no real people or brands.",
   "Write the joke in English first, then give each locale a version that is funny to a native speaker, adapting the pun rather than translating word for word.",
-  "Locale codes: en is English, vi is Vietnamese, zh is Simplified Chinese, th is Thai.",
+  `Locale codes: ${LOCALE_LEGEND}.`,
 ].join(" ");
 
 export type PlanMenuItem = {
@@ -1339,6 +1331,23 @@ function isCompleteMeal(plan: TablePlanResult) {
   return count("main") >= 2 && count("vegetable") >= 1 && count("carb") >= 1 && count("drink") >= 1;
 }
 
+function hasDraftContent(plan: FoodPlan, draft: FoodDraft): boolean {
+  if (plan.needs.size === 0) return true;
+  for (const [lang, need] of plan.needs) {
+    const entry = draft.locales[lang];
+    if (!entry) continue;
+    if (need.name && entry.name) return true;
+    if (need.description && entry.description) return true;
+    if (
+      need.labels.size > 0 &&
+      entry.variants?.some((v) => need.labels.has(v.id) && Boolean(v.label))
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export const AiService = {
   async planTable(
     lang: string,
@@ -1366,10 +1375,12 @@ export const AiService = {
   saveFoodContent,
 
   async fillFood(foodId: string, options: DraftOptions): Promise<FillResult> {
+    const plan = await planFood(foodId, options);
+    if (!plan) return { ok: false, updated: 0 };
     const draft = await draftFood(foodId, options);
     if (!draft) return { ok: false, updated: 0 };
     const updated = await saveFoodContent(foodId, draft.locales, () => true);
-    return { ok: true, updated };
+    return { ok: plan.needs.size === 0 || updated > 0, updated };
   },
 
   async fillFoods(
@@ -1392,23 +1403,32 @@ export const AiService = {
         ok[id] = false;
         continue;
       }
-      const draft =
-        plan.needs.size === 0
-          ? finishDraft(plan)
-          : result?.[id]
-            ? finishDraft(plan, result[id])
-            : await draftFood(id, options);
-      if (!draft) {
+      try {
+        let draft =
+          plan.needs.size === 0
+            ? finishDraft(plan)
+            : result?.[id]
+              ? finishDraft(plan, result[id])
+              : null;
+        if (!draft || !hasDraftContent(plan, draft)) {
+          draft = await draftFood(id, options);
+        }
+        if (!draft || !hasDraftContent(plan, draft)) {
+          ok[id] = false;
+          continue;
+        }
+        const updated = await saveFoodContent(id, draft.locales, () => true);
+        ok[id] = plan.needs.size === 0 || updated > 0;
+      } catch (err) {
+        console.error(`[AI job] dish ${id} in group failed`, err);
         ok[id] = false;
-        continue;
       }
-      await saveFoodContent(id, draft.locales, () => true);
-      ok[id] = true;
     }
     return ok;
   },
 
   async fillCategory(categoryId: string): Promise<FillResult> {
+    await ensureLanguages();
     const rows = await prisma.categoryTranslation.findMany({
       where: { categoryId },
     });
@@ -1736,6 +1756,7 @@ export const AiService = {
     sourceLang: string,
     note: string,
   ): Promise<boolean> {
+    await ensureLanguages();
     const result = await translateOnce<{ note?: string }>(
       "note about a free, limited item included with a set menu",
       sourceLang,

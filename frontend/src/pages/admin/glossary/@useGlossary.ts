@@ -10,7 +10,8 @@ import {
 import type { GlossaryTermDto, SaveGlossaryTermDto } from '@/api/model'
 import { useToast } from '@/hooks/useToast'
 
-export const GLOSSARY_FIELDS = ['en', 'vi', 'zh', 'th', 'note'] as const
+export const GLOSSARY_LANG_FIELDS = ['en', 'vi', 'zh', 'th', 'ja'] as const
+export const GLOSSARY_FIELDS = [...GLOSSARY_LANG_FIELDS, 'note'] as const
 export type GlossaryField = (typeof GLOSSARY_FIELDS)[number]
 
 export function useGlossary() {

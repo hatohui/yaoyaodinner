@@ -7,6 +7,7 @@ export class GlossaryTermDto {
   @ApiProperty({ nullable: true, type: String }) vi: string | null;
   @ApiProperty({ nullable: true, type: String }) zh: string | null;
   @ApiProperty({ nullable: true, type: String }) th: string | null;
+  @ApiProperty({ nullable: true, type: String }) ja: string | null;
   @ApiProperty({
     nullable: true,
     type: String,
@@ -39,6 +40,12 @@ export class SaveGlossaryTermDto {
   @IsString()
   @MaxLength(255)
   th?: string | null;
+
+  @ApiProperty({ required: false, nullable: true, type: String })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  ja?: string | null;
 
   @ApiProperty({ required: false, nullable: true, type: String })
   @IsOptional()

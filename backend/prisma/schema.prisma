@@ -422,6 +422,7 @@ model GlossaryTerm {
   vi        String?  @db.VarChar(255)
   zh        String?  @db.VarChar(255)
   th        String?  @db.VarChar(255)
+  ja        String?  @db.VarChar(255)
   note      String?  @db.VarChar(500)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

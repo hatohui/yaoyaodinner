@@ -88,7 +88,7 @@ export class SaveFoodLocaleDto extends FoodContentDto {
 export class SaveFoodContentDto {
   @ApiProperty({ type: [SaveFoodLocaleDto] })
   @IsArray()
-  @ArrayMaxSize(4)
+  @ArrayMaxSize(SUPPORTED_LOCALES.length)
   @ValidateNested({ each: true })
   @Type(() => SaveFoodLocaleDto)
   locales: SaveFoodLocaleDto[];

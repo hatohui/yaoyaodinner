@@ -5,7 +5,11 @@ import type { SaveGlossaryTermDto } from '@/api/model'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { GLOSSARY_FIELDS, type GlossaryField } from './@useGlossary'
+import {
+	GLOSSARY_FIELDS,
+	GLOSSARY_LANG_FIELDS,
+	type GlossaryField,
+} from './@useGlossary'
 
 const EMPTY = Object.fromEntries(GLOSSARY_FIELDS.map(f => [f, ''])) as Record<
 	GlossaryField,
@@ -20,9 +24,7 @@ interface AddGlossaryTermProps {
 export function AddGlossaryTerm({ pending, onAdd }: AddGlossaryTermProps) {
 	const { t } = useTranslation()
 	const [values, setValues] = useState(EMPTY)
-	const hasTerm = (['en', 'vi', 'zh', 'th'] as const).some(f =>
-		values[f].trim()
-	)
+	const hasTerm = GLOSSARY_LANG_FIELDS.some(f => values[f].trim())
 
 	const submit = async () => {
 		await onAdd(
@@ -35,7 +37,7 @@ export function AddGlossaryTerm({ pending, onAdd }: AddGlossaryTermProps) {
 
 	return (
 		<form
-			className='grid grid-cols-2 gap-2 rounded-2xl border border-dashed border-primary/40 p-3 sm:grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.5fr)_auto] sm:items-center'
+			className='grid grid-cols-2 gap-2 rounded-2xl border border-dashed border-primary/40 p-3 sm:grid-cols-[repeat(5,minmax(0,1fr))_minmax(0,1.5fr)_auto] sm:items-center'
 			onSubmit={e => {
 				e.preventDefault()
 				if (hasTerm) void submit().catch(() => undefined)

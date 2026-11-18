@@ -16,6 +16,8 @@ export interface GlossaryTermDto {
   zh: string | null;
   /** @nullable */
   th: string | null;
+  /** @nullable */
+  ja: string | null;
   /**
      * What the term means, for languages without an agreed word
      * @nullable

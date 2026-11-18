@@ -835,6 +835,7 @@ declare module 'react-i18next' {
 							vi: string
 							zh: string
 							th: string
+							ja: string
 							note: string
 						}
 						add: string

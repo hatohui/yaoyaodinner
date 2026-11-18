@@ -27,7 +27,7 @@ export function GlossaryRow({ term, onSave, onDelete }: GlossaryRowProps) {
 	}
 
 	return (
-		<li className='grid grid-cols-2 gap-2 rounded-2xl border border-border bg-card p-3 shadow-sm sm:grid-cols-[repeat(4,minmax(0,1fr))_minmax(0,1.5fr)_auto] sm:items-center'>
+		<li className='grid grid-cols-2 gap-2 rounded-2xl border border-border bg-card p-3 shadow-sm sm:grid-cols-[repeat(5,minmax(0,1fr))_minmax(0,1.5fr)_auto] sm:items-center'>
 			{GLOSSARY_FIELDS.map(field => (
 				<Input
 					key={field}
