@@ -1162,6 +1162,7 @@
 		"accept_confirm_body": "全員でシェアする料理としてテーブルの注文に追加されます。追加後も変更や削除が可能です。",
 		"accept_confirm": "注文に追加する",
 		"modify_cta": "AIで変更を指示",
+		"modify_cta_short": "変更",
 		"modify_dialog_title": "注文内容を変更する",
 		"modify_label": "変更内容を入力してください",
 		"modify_placeholder": "例: 魚料理をチキンに変更、野菜を一品追加、デザートを少なめに",

@@ -1162,6 +1162,7 @@
 		"accept_confirm_body": "They go straight into the table’s orders, shared by everyone. You can still change or remove them afterwards.",
 		"accept_confirm": "Order them",
 		"modify_cta": "Change with AI",
+		"modify_cta_short": "Change",
 		"modify_dialog_title": "Change our order",
 		"modify_label": "Describe your change",
 		"modify_placeholder": "e.g. swap the fish for chicken, add a vegetable, fewer desserts",

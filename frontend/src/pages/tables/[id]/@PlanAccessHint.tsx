@@ -22,18 +22,13 @@ export function PlanAccessHint({
 	onShowPeople,
 }: PlanAccessHintProps) {
 	const { t } = useTranslation()
-	if (access === 'ready') return null
+	if (access === 'ready' || access === 'other_table') return null
 
 	const hint = {
 		locked: {
 			icon: Lock,
 			text: t('plan_board.locked'),
 			action: { label: t('plan_board.unlock'), onClick: onJoin },
-		},
-		other_table: {
-			icon: Lock,
-			text: t('plan_board.other_table'),
-			action: null,
 		},
 		other_table_ai: {
 			icon: UserCheck,

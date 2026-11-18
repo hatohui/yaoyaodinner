@@ -13,6 +13,12 @@ import {
 import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+	useListView,
+	ViewToggle,
+	type ListView,
+} from '@/components/common/ViewToggle'
+import { PLAN_VIEW_STORAGE_KEY } from '@/common/constants'
 import { ApplyPlanDialog } from '@/components/ordering/ApplyPlanDialog'
 import { CartPanel } from '@/components/ordering/CartPanel'
 import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
@@ -20,6 +26,7 @@ import { AllergyDialog } from './@AllergyDialog'
 import { AllergySection } from './@AllergySection'
 import { PersonalOrdersSection } from './@PersonalOrdersSection'
 import { PlanAccessHint } from './@PlanAccessHint'
+import { PlanSummaryView } from './@PlanSummaryView'
 import { TablePlanCard } from './@TablePlanCard'
 import { useTablePlan } from './@useTablePlan'
 import { WishDnd } from './@WishDnd'
@@ -49,6 +56,12 @@ export function PlanTab({
 	const [modifying, setModifying] = useState(false)
 	const [previewing, setPreviewing] = useState(false)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
+	const { view: savedView, setView: setSavedView } = useListView(
+		PLAN_VIEW_STORAGE_KEY
+	)
+	const [guestView, setGuestView] = useState<ListView>('compact')
+	const view = canEdit ? savedView : guestView
+	const setView = canEdit ? setSavedView : setGuestView
 
 	if (board.isLoading) {
 		return (
@@ -92,12 +105,12 @@ export function PlanTab({
 			)}
 
 			<div className='flex flex-col gap-2'>
-				<div className='flex flex-wrap items-center gap-2'>
+				<div className='flex flex-wrap items-center gap-1.5 sm:gap-2'>
 					{board.canAddToCart && board.pendingCount > 0 && (
 						<Button
 							size='sm'
 							onClick={() => setPreviewing(true)}
-							className='shrink-0 gap-1.5 rounded-xl'
+							className='shrink-0 gap-1.5 rounded-xl px-2.5 text-xs sm:px-3 sm:text-sm'
 						>
 							<Zap className='size-4' />
 							{t('plan_board.apply_plan', { count: board.pendingCount })}
@@ -108,10 +121,17 @@ export function PlanTab({
 							variant='outline'
 							size='sm'
 							onClick={() => setModifying(true)}
-							className='relative shrink-0 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted motion-safe:before:animate-ai-sheen'
+							aria-label={t('table_plan.modify_cta')}
+							title={t('table_plan.modify_cta')}
+							className='relative shrink-0 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted px-2.5 text-xs font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted sm:px-3 sm:text-sm motion-safe:before:animate-ai-sheen'
 						>
 							<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
-							{t('table_plan.modify_cta')}
+							<span className='sm:hidden'>
+								{t('table_plan.modify_cta_short')}
+							</span>
+							<span className='hidden sm:inline'>
+								{t('table_plan.modify_cta')}
+							</span>
 						</Button>
 					)}
 					<div className='ml-auto flex shrink-0 items-center gap-1.5'>
@@ -131,93 +151,112 @@ export function PlanTab({
 							size='sm'
 							disabled={board.isEmpty}
 							onClick={board.copy}
-							className='shrink-0 gap-1.5 rounded-xl'
+							aria-label={t('plan_board.copy')}
+							title={t('plan_board.copy')}
+							className='size-8 shrink-0 gap-1.5 rounded-xl p-0 sm:w-auto sm:px-3'
 						>
-							<ClipboardCopy className='size-4' />
-							{t('plan_board.copy')}
+							<ClipboardCopy className='size-3.5 sm:size-4' />
+							<span className='hidden sm:inline'>{t('plan_board.copy')}</span>
 						</Button>
+						<ViewToggle view={view} onChange={setView} />
 					</div>
 				</div>
-				<p className='text-xs text-muted-foreground'>
-					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
-				</p>
+				{canEdit && view === 'card' && (
+					<p className='text-xs text-muted-foreground'>
+						{t('plan_board.intro_drag')}
+					</p>
+				)}
 			</div>
 
-			<WishDnd wishes={board.wishes} onMove={board.moveWish}>
-				<div className='grid grid-cols-1 gap-3 lg:grid-cols-[1fr_360px] lg:items-start lg:gap-5'>
-					<div className='flex min-w-0 flex-col gap-3'>
-						<WishSection
-							kind='must'
-							icon={Star}
-							title={t('plan_board.must')}
-							empty={t('plan_board.must_empty')}
-							wishes={board.must}
-							{...wishProps}
-						/>
-						<WishSection
-							kind='want'
-							icon={Sparkles}
-							title={t('plan_board.want')}
-							empty={t('plan_board.want_empty')}
-							wishes={board.want}
-							{...wishProps}
-						/>
-						<PersonalOrdersSection
-							tableId={table.id}
-							dishes={board.dishes}
-							canAdd={board.canAddToCart}
-							onSelectFood={setQuickViewId}
-						/>
-					</div>
-					<div className='flex min-w-0 flex-col gap-3'>
-						<section className='flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4'>
-							<header className='flex items-center gap-2'>
-								<span className='flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary'>
-									<ShoppingCart className='size-3.5' />
-								</span>
-								<h2 className='text-sm font-semibold text-foreground'>
-									{t('orders.cart')}
-								</h2>
-								{board.cart.itemCount > 0 && (
-									<span className='ml-auto rounded-md bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
-										{board.cart.itemCount}
-									</span>
-								)}
-							</header>
-							<CartPanel
-								lines={board.cart.lines}
-								people={people}
-								myPersonId={board.cart.myPersonId}
-								total={board.cart.total}
-								currency={board.cart.currency}
-								isPlacing={board.cart.isPlacing}
-								onQuantityChange={board.cart.setQuantity}
-								onModeChange={board.cart.setMode}
-								onTogglePerson={board.cart.togglePerson}
-								onVariantChange={board.cart.setVariant}
-								onRemove={board.cart.remove}
-								onClear={board.cart.clear}
-								onCheckout={board.cart.checkout}
+			{view === 'compact' ? (
+				<PlanSummaryView
+					must={board.must}
+					want={board.want}
+					avoid={board.avoid}
+					dishes={board.dishes}
+					allergies={board.allergies}
+					people={people}
+					statusOf={board.statusOf}
+					labelOf={board.labelOf}
+					onSelectFood={setQuickViewId}
+				/>
+			) : (
+				<WishDnd wishes={board.wishes} onMove={board.moveWish}>
+					<div className='grid grid-cols-1 gap-3 lg:grid-cols-[1fr_360px] lg:items-start lg:gap-5'>
+						<div className='flex min-w-0 flex-col gap-3'>
+							<WishSection
+								kind='must'
+								icon={Star}
+								title={t('plan_board.must')}
+								empty={t('plan_board.must_empty')}
+								wishes={board.must}
+								{...wishProps}
 							/>
-						</section>
-						<WishSection
-							kind='avoid'
-							icon={Ban}
-							title={t('plan_board.avoid')}
-							empty={t('plan_board.avoid_empty')}
-							wishes={board.avoid}
-							{...wishProps}
-						/>
-						<AllergySection
-							groups={board.allergies}
-							people={people}
-							canEdit={canEdit}
-							labelOf={board.labelOf}
-							onEditPerson={board.setEditing}
-						/>
+							<WishSection
+								kind='want'
+								icon={Sparkles}
+								title={t('plan_board.want')}
+								empty={t('plan_board.want_empty')}
+								wishes={board.want}
+								{...wishProps}
+							/>
+							<PersonalOrdersSection
+								tableId={table.id}
+								dishes={board.dishes}
+								canAdd={board.canAddToCart}
+								onSelectFood={setQuickViewId}
+							/>
+						</div>
+						<div className='flex min-w-0 flex-col gap-3'>
+							<section className='flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4'>
+								<header className='flex items-center gap-2'>
+									<span className='flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary'>
+										<ShoppingCart className='size-3.5' />
+									</span>
+									<h2 className='text-sm font-semibold text-foreground'>
+										{t('orders.cart')}
+									</h2>
+									{board.cart.itemCount > 0 && (
+										<span className='ml-auto rounded-md bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
+											{board.cart.itemCount}
+										</span>
+									)}
+								</header>
+								<CartPanel
+									lines={board.cart.lines}
+									people={people}
+									myPersonId={board.cart.myPersonId}
+									total={board.cart.total}
+									currency={board.cart.currency}
+									isPlacing={board.cart.isPlacing}
+									onQuantityChange={board.cart.setQuantity}
+									onModeChange={board.cart.setMode}
+									onTogglePerson={board.cart.togglePerson}
+									onVariantChange={board.cart.setVariant}
+									onRemove={board.cart.remove}
+									onClear={board.cart.clear}
+									onCheckout={board.cart.checkout}
+								/>
+							</section>
+							<WishSection
+								kind='avoid'
+								icon={Ban}
+								title={t('plan_board.avoid')}
+								empty={t('plan_board.avoid_empty')}
+								wishes={board.avoid}
+								{...wishProps}
+							/>
+							<AllergySection
+								groups={board.allergies}
+								people={people}
+								canEdit={canEdit}
+								labelOf={board.labelOf}
+								onEditPerson={board.setEditing}
+							/>
+						</div>
 					</div>
-				</div>
-			</WishDnd>
+				</WishDnd>
+			)}
 
 			<ApplyPlanDialog
 				open={previewing}

@@ -642,6 +642,7 @@ declare module 'react-i18next' {
 					cta_body: string
 					char_count: string
 					modify_cta: string
+					modify_cta_short: string
 					modify_dialog_title: string
 					modify_label: string
 					modify_placeholder: string

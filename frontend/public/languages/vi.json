@@ -1160,6 +1160,7 @@
 		"accept_confirm_body": "Các món sẽ vào thẳng danh sách gọi món của bàn, chia đều cho mọi người. Sau đó vẫn có thể sửa hoặc bỏ.",
 		"accept_confirm": "Gọi luôn",
 		"modify_cta": "Đổi bằng AI",
+		"modify_cta_short": "Đổi",
 		"modify_dialog_title": "Đổi món của bàn",
 		"modify_label": "Mô tả thay đổi của bạn",
 		"modify_placeholder": "vd: đổi cá sang gà, thêm một món rau, bớt tráng miệng",
