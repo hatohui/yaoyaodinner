@@ -252,7 +252,7 @@ export function OrdersTab({
 					{showSubSwitcher && (
 						<div
 							role='group'
-							className='flex flex-1 items-center gap-0.5 rounded-full border border-border bg-control p-0.5 shadow-2xs sm:flex-none'
+							className='inline-flex w-fit items-center gap-0.5 rounded-full border border-border bg-control p-0.5 shadow-2xs'
 						>
 							{subOptions.map(({ value, icon: Icon, label }) => (
 								<button
@@ -261,13 +261,13 @@ export function OrdersTab({
 									aria-pressed={activeSubView === value}
 									onClick={() => setSubView(value)}
 									className={cn(
-										'flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-colors sm:flex-none',
+										'flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition-colors',
 										activeSubView === value
 											? 'bg-primary text-primary-foreground'
 											: 'text-muted-foreground hover:text-foreground'
 									)}
 								>
-									<Icon className='size-3.5' />
+									<Icon className='size-3' />
 									{label}
 								</button>
 							))}

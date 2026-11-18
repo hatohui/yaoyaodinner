@@ -11,14 +11,16 @@ export default function FloorPlanPage() {
 	const { tables, isLoading, isError } = useFloorPlan()
 	const [params] = useSearchParams()
 
+	const highlightId = params.get('highlight')
+
 	return (
 		<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
 			<Link
-				to='/tables'
+				to={highlightId ? `/tables/${highlightId}` : '/tables'}
 				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
 			>
 				<ArrowLeft className='size-4' />
-				{t('tables.all_tables')}
+				{highlightId ? t('orders.back_to_table') : t('tables.all_tables')}
 			</Link>
 
 			<h1 className='text-xl font-bold text-foreground'>
@@ -35,10 +37,7 @@ export default function FloorPlanPage() {
 				</p>
 			) : (
 				<>
-					<FloorPlanCanvas
-						tables={tables}
-						highlightId={params.get('highlight')}
-					/>
+					<FloorPlanCanvas tables={tables} highlightId={highlightId} />
 					<FloorPlanLegend />
 				</>
 			)}

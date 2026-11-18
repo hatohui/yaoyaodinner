@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import {
 	Armchair,
+	ArrowLeft,
 	CircleHelp,
 	FlaskConical,
 	Info,
@@ -29,8 +30,27 @@ import {
 
 export function Navbar() {
 	const { t } = useTranslation()
-	const { pathname } = useLocation()
+	const location = useLocation()
+	const { pathname } = location
+	const [searchParams] = useSearchParams()
 	const navigate = useNavigate()
+	const backTo = (() => {
+		if (pathname === '/') return null
+		const orderMatch = /^\/tables\/([^/]+)\/order\/?$/.exec(pathname)
+		if (orderMatch) return `/tables/${orderMatch[1]}`
+		if (pathname === '/tables/map') {
+			const highlight = searchParams.get('highlight')
+			return highlight ? `/tables/${highlight}` : '/tables'
+		}
+		if (/^\/tables\/[^/]+\/?$/.test(pathname)) {
+			const stateBack = (location.state as { backTo?: string } | null)?.backTo
+			return stateBack ?? '/tables'
+		}
+		if (/^\/menu\/[^/]+\/?$/.test(pathname)) return '/menu'
+		if (pathname === '/legal') return '/about'
+		if (pathname.startsWith('/admin/') && pathname !== '/admin') return '/admin'
+		return '/'
+	})()
 	const { isAdmin } = useIsAdmin()
 	const { feedbackWall, menu, tables, isLoading: isConfigLoading } = useConfig()
 	const tapCount = useRef(0)
@@ -114,14 +134,26 @@ export function Navbar() {
 	return (
 		<header className='fixed top-0 z-50 w-full border-b border-border bg-card/90 dark:bg-card/75 shadow-sm backdrop-blur-xl'>
 			<div className='mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-3 sm:px-4'>
-				<Link
-					to='/'
-					onClick={handleLogoClick}
-					className='flex min-w-0 shrink items-center gap-1.5 font-bold tracking-tight text-foreground transition-opacity hover:opacity-70'
-					title={t('site.title')}
-				>
-					<AppLogo className='h-5 w-auto' />
-				</Link>
+				<div className='flex min-w-0 shrink items-center gap-1.5'>
+					{backTo && (
+						<Link
+							to={backTo}
+							aria-label={t('common.back')}
+							title={t('common.back')}
+							className='flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+						>
+							<ArrowLeft className='size-4' />
+						</Link>
+					)}
+					<Link
+						to='/'
+						onClick={handleLogoClick}
+						className='flex min-w-0 shrink items-center gap-1.5 font-bold tracking-tight text-foreground transition-opacity hover:opacity-70'
+						title={t('site.title')}
+					>
+						<AppLogo className='h-5 w-auto' />
+					</Link>
+				</div>
 
 				<DesktopNav
 					links={desktopLinks}

@@ -145,9 +145,18 @@ export default function TableDetailPage() {
 
 	if (isError || !table) {
 		return (
-			<p className='py-20 text-center text-sm text-muted-foreground'>
-				{t('roster.not_found')}
-			</p>
+			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-6xl'>
+				<Link
+					to={backTo ?? '/tables'}
+					className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
+				>
+					<ArrowLeft className='size-4' />
+					{backTo ? t('common.back') : t('tables.all_tables')}
+				</Link>
+				<p className='py-16 text-center text-sm text-muted-foreground'>
+					{t('roster.not_found')}
+				</p>
+			</div>
 		)
 	}
 

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { ArrowLeft } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { FoodDetailView } from './@FoodDetailView'
 import { useFoodDetail } from './@useFoodDetail'
@@ -51,9 +52,18 @@ export default function FoodDetailPage() {
 
 	if (isError || !food) {
 		return (
-			<p className='py-20 text-center text-sm text-muted-foreground'>
-				{t('food_detail.not_found')}
-			</p>
+			<div className='mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6'>
+				<Link
+					to='/menu'
+					className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
+				>
+					<ArrowLeft className='size-4' />
+					{t('food_detail.back_to_menu')}
+				</Link>
+				<p className='py-16 text-center text-sm text-muted-foreground'>
+					{t('food_detail.not_found')}
+				</p>
+			</div>
 		)
 	}
 
