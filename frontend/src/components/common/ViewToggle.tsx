@@ -36,7 +36,7 @@ export function ViewToggle({ view, onChange }: ViewToggleProps) {
 	] as const
 
 	return (
-		<div className='flex items-center gap-1 rounded-full border border-border bg-control p-0.5'>
+		<div className='flex h-8 items-center gap-0.5 rounded-xl border border-border bg-control p-0.5'>
 			{options.map(({ value, icon: Icon, label }) => (
 				<button
 					key={value}
@@ -45,7 +45,7 @@ export function ViewToggle({ view, onChange }: ViewToggleProps) {
 					aria-label={label}
 					aria-pressed={view === value}
 					className={cn(
-						'flex size-7 items-center justify-center rounded-full transition-colors',
+						'flex h-full w-7 items-center justify-center rounded-lg transition-colors',
 						view === value
 							? 'bg-primary text-primary-foreground'
 							: 'text-muted-foreground hover:text-foreground'

@@ -13,6 +13,7 @@ import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ApplyPlanDialog } from '@/components/ordering/ApplyPlanDialog'
+import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
 import { AllergyDialog } from './@AllergyDialog'
 import { AllergySection } from './@AllergySection'
 import { PersonalOrdersSection } from './@PersonalOrdersSection'
@@ -45,6 +46,7 @@ export function PlanTab({
 	const { plan, isPlanning } = useTablePlan(table.id)
 	const [modifying, setModifying] = useState(false)
 	const [previewing, setPreviewing] = useState(false)
+	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 
 	if (board.isLoading) {
 		return (
@@ -62,6 +64,7 @@ export function PlanTab({
 		canAddToCart: board.canAddToCart,
 		onAdd: board.add,
 		onAddToCart: board.addToCart,
+		onSelectFood: setQuickViewId,
 		onSetKind: board.setKind,
 		onSetVariant: board.setVariant,
 		onSetPeople: board.setPeople,
@@ -91,7 +94,7 @@ export function PlanTab({
 						<Button
 							size='sm'
 							onClick={() => setPreviewing(true)}
-							className='shrink-0 gap-1.5 rounded-full'
+							className='shrink-0 gap-1.5 rounded-xl'
 						>
 							<Zap className='size-4' />
 							{t('plan_board.apply_plan', { count: board.pendingCount })}
@@ -102,7 +105,7 @@ export function PlanTab({
 							variant='outline'
 							size='sm'
 							onClick={() => setModifying(true)}
-							className='relative shrink-0 gap-1.5 overflow-hidden rounded-full border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted motion-safe:before:animate-ai-sheen'
+							className='relative shrink-0 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted motion-safe:before:animate-ai-sheen'
 						>
 							<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
 							{t('table_plan.modify_cta')}
@@ -116,7 +119,7 @@ export function PlanTab({
 							onClick={() => board.download(table)}
 							aria-label={t('common.download_image')}
 							title={t('common.download_image')}
-							className='rounded-full'
+							className='rounded-xl'
 						>
 							<Download className='size-3.5' />
 						</Button>
@@ -125,7 +128,7 @@ export function PlanTab({
 							size='sm'
 							disabled={board.isEmpty}
 							onClick={board.copy}
-							className='shrink-0 gap-1.5 rounded-full'
+							className='shrink-0 gap-1.5 rounded-xl'
 						>
 							<ClipboardCopy className='size-4' />
 							{t('plan_board.copy')}
@@ -160,6 +163,7 @@ export function PlanTab({
 							tableId={table.id}
 							dishes={board.dishes}
 							canAdd={board.canAddToCart}
+							onSelectFood={setQuickViewId}
 						/>
 					</div>
 					<div className='flex min-w-0 flex-col gap-3'>
@@ -195,6 +199,10 @@ export function PlanTab({
 				isSaving={board.isSavingAllergies}
 				onOpenChange={open => !open && board.setEditing(null)}
 				onSave={board.saveAllergies}
+			/>
+			<FoodDetailModal
+				id={quickViewId}
+				onOpenChange={open => !open && setQuickViewId(null)}
 			/>
 		</div>
 	)

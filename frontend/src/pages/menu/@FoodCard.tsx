@@ -48,7 +48,6 @@ export function FoodCard({
 	const handleLinkClick = (e: MouseEvent) => {
 		if (!onQuickView) return
 		if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
-		if (!window.matchMedia('(min-width: 640px)').matches) return
 		e.preventDefault()
 		onQuickView(food.id)
 	}

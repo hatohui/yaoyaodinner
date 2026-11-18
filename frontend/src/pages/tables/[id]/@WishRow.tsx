@@ -23,10 +23,10 @@ import { WishPeoplePicker } from './@WishPeoplePicker'
 import { WishVariantPicker } from './@WishVariantPicker'
 
 const iconButton =
-	'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+	'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
 
 const cartButton =
-	'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary/15 text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
+	'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-primary/15 text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
 
 interface WishRowProps {
 	wish: TableWishDto
@@ -36,6 +36,7 @@ interface WishRowProps {
 	canEdit: boolean
 	canAddToCart: boolean
 	onAddToCart: () => void
+	onSelectFood?: (foodId: string) => void
 	onMove: (kind: WishKind) => void
 	onVariantChange: (variant: FoodVariantDto) => void
 	onPeopleChange: (personIds: string[]) => void
@@ -50,6 +51,7 @@ export function WishRow({
 	canEdit,
 	canAddToCart,
 	onAddToCart,
+	onSelectFood,
 	onMove,
 	onVariantChange,
 	onPeopleChange,
@@ -103,20 +105,20 @@ export function WishRow({
 			{avoid && status === 'ordered' && (
 				<span
 					title={t('plan_board.ordered_anyway')}
-					className='inline-flex h-5 shrink-0 items-center gap-1 rounded-full border border-destructive/50 px-2 text-[11px] font-semibold text-destructive'
+					className='inline-flex h-5 shrink-0 items-center gap-1 rounded-md border border-destructive/50 px-2 text-[11px] font-semibold text-destructive'
 				>
 					<TriangleAlert className='size-3' />
 					<span>{t('plan_board.ordered_anyway')}</span>
 				</span>
 			)}
 			{!avoid && status === 'ordered' && (
-				<span className='inline-flex h-5 shrink-0 items-center gap-1 rounded-full bg-primary px-2 text-[11px] font-semibold text-primary-foreground'>
+				<span className='inline-flex h-5 shrink-0 items-center gap-1 rounded-md bg-primary px-2 text-[11px] font-semibold text-primary-foreground'>
 					<Check className='size-3' />
 					<span>{t('plan_board.status_ordered')}</span>
 				</span>
 			)}
 			{!avoid && status === 'in_cart' && (
-				<span className='inline-flex h-5 shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 text-[11px] font-semibold text-primary'>
+				<span className='inline-flex h-5 shrink-0 items-center gap-1 rounded-md bg-primary/15 px-2 text-[11px] font-semibold text-primary'>
 					<ShoppingCart className='size-3' />
 					<span>{t('plan_board.status_in_cart')}</span>
 				</span>
@@ -148,23 +150,53 @@ export function WishRow({
 			{canEdit && (
 				<WishDragHandle label={t('plan_board.drag')} handle={drag.handle} />
 			)}
-			<OrderThumb
-				imageKey={wish.foodImageUrl}
-				alt={wish.name}
-				className='size-10 rounded-xl sm:size-11'
-			/>
-			<div className='flex min-w-0 flex-1 flex-col justify-center gap-0.5 sm:gap-1'>
-				<span
-					title={wish.name}
-					className={cn(
-						'truncate text-sm leading-tight font-medium text-foreground',
-						status === 'ordered' &&
-							!avoid &&
-							'text-muted-foreground line-through'
-					)}
+			{wish.foodId && onSelectFood ? (
+				<button
+					type='button'
+					onClick={() => onSelectFood(wish.foodId!)}
+					className='shrink-0 cursor-pointer rounded-xl transition-opacity hover:opacity-85'
 				>
-					{wish.name}
-				</span>
+					<OrderThumb
+						imageKey={wish.foodImageUrl}
+						alt={wish.name}
+						className='size-10 rounded-xl sm:size-11'
+					/>
+				</button>
+			) : (
+				<OrderThumb
+					imageKey={wish.foodImageUrl}
+					alt={wish.name}
+					className='size-10 rounded-xl sm:size-11'
+				/>
+			)}
+			<div className='flex min-w-0 flex-1 flex-col justify-center gap-0.5 sm:gap-1'>
+				{wish.foodId && onSelectFood ? (
+					<button
+						type='button'
+						title={wish.name}
+						onClick={() => onSelectFood(wish.foodId!)}
+						className={cn(
+							'w-fit max-w-full cursor-pointer truncate text-left text-sm leading-tight font-medium text-foreground transition-colors hover:text-primary',
+							status === 'ordered' &&
+								!avoid &&
+								'text-muted-foreground line-through'
+						)}
+					>
+						{wish.name}
+					</button>
+				) : (
+					<span
+						title={wish.name}
+						className={cn(
+							'truncate text-sm leading-tight font-medium text-foreground',
+							status === 'ordered' &&
+								!avoid &&
+								'text-muted-foreground line-through'
+						)}
+					>
+						{wish.name}
+					</span>
+				)}
 
 				{hasMobileMeta && (
 					<div className='flex min-w-0 items-center gap-1.5 text-xs leading-tight text-muted-foreground sm:hidden'>

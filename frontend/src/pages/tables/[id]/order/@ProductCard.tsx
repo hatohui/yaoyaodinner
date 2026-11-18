@@ -13,6 +13,7 @@ interface ProductCardProps {
 	orderedQuantity: number
 	onAdd: () => void
 	onQuantityChange: (quantity: number) => void
+	onQuickView?: () => void
 	wishMenu?: ReactNode
 }
 
@@ -22,9 +23,23 @@ export function ProductCard({
 	orderedQuantity,
 	onAdd,
 	onQuantityChange,
+	onQuickView,
 	wishMenu,
 }: ProductCardProps) {
 	const { t } = useTranslation()
+
+	const photo = (
+		<StoredImage
+			imageKey={food.imageUrl}
+			alt={food.name}
+			className='size-full object-cover'
+			fallback={
+				<div className='flex size-full items-center justify-center bg-secondary/70 text-muted-foreground'>
+					<UtensilsCrossed className='size-8' />
+				</div>
+			}
+		/>
+	)
 
 	return (
 		<div
@@ -34,26 +49,28 @@ export function ProductCard({
 			)}
 		>
 			<div className='relative aspect-[4/3] w-full overflow-hidden border-b border-border bg-muted'>
-				<StoredImage
-					imageKey={food.imageUrl}
-					alt={food.name}
-					className='size-full object-cover'
-					fallback={
-						<div className='flex size-full items-center justify-center bg-secondary/70 text-muted-foreground'>
-							<UtensilsCrossed className='size-8' />
-						</div>
-					}
-				/>
+				{onQuickView ? (
+					<button
+						type='button'
+						onClick={onQuickView}
+						aria-label={food.name}
+						className='block size-full cursor-pointer transition-transform duration-300 hover:scale-105'
+					>
+						{photo}
+					</button>
+				) : (
+					photo
+				)}
 
 				<FoodTags
 					isPopular={food.isPopular}
 					isRecommended={food.isRecommended}
 					isAiTranslated={food.isAiTranslated}
-					className='absolute left-2 top-2 max-w-[calc(100%-3rem)]'
+					className='pointer-events-none absolute left-2 top-2 max-w-[calc(100%-3rem)]'
 				/>
 				{wishMenu && <div className='absolute right-2 top-2'>{wishMenu}</div>}
 
-				<div className='absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5'>
+				<div className='pointer-events-none absolute inset-x-2 bottom-2 flex flex-wrap justify-end gap-1.5'>
 					{orderedQuantity > 0 && (
 						<span className='flex items-center gap-1 rounded-full bg-card/90 px-2 py-0.5 text-xs font-semibold text-foreground shadow backdrop-blur-sm'>
 							<Check className='size-3.5 text-primary' />
@@ -70,9 +87,19 @@ export function ProductCard({
 			</div>
 
 			<div className='flex flex-1 flex-col gap-2 p-2.5 sm:p-3'>
-				<span className='line-clamp-2 text-xs font-medium text-foreground sm:text-sm'>
-					{food.name}
-				</span>
+				{onQuickView ? (
+					<button
+						type='button'
+						onClick={onQuickView}
+						className='line-clamp-2 w-fit max-w-full cursor-pointer text-left text-xs font-medium text-foreground transition-colors hover:text-primary sm:text-sm'
+					>
+						{food.name}
+					</button>
+				) : (
+					<span className='line-clamp-2 text-xs font-medium text-foreground sm:text-sm'>
+						{food.name}
+					</span>
+				)}
 
 				<div className='mt-auto flex items-center justify-between gap-1.5 sm:gap-2'>
 					<span className='text-xs font-semibold text-primary sm:text-sm'>

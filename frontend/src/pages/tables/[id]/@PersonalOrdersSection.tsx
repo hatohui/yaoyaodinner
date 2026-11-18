@@ -7,12 +7,14 @@ interface PersonalOrdersSectionProps {
 	tableId: string
 	dishes: PersonalDish[]
 	canAdd: boolean
+	onSelectFood?: (foodId: string) => void
 }
 
 export function PersonalOrdersSection({
 	tableId,
 	dishes,
 	canAdd,
+	onSelectFood,
 }: PersonalOrdersSectionProps) {
 	const { t } = useTranslation()
 
@@ -36,7 +38,17 @@ export function PersonalOrdersSection({
 							key={dish.key}
 							className='flex flex-wrap items-baseline gap-x-1.5 text-sm text-foreground'
 						>
-							<span>{dish.name}</span>
+							{onSelectFood ? (
+								<button
+									type='button'
+									onClick={() => onSelectFood(dish.foodId)}
+									className='cursor-pointer text-left transition-colors hover:text-primary'
+								>
+									{dish.name}
+								</button>
+							) : (
+								<span>{dish.name}</span>
+							)}
 							<span className='font-semibold tabular-nums text-primary'>
 								x{dish.quantity}
 							</span>
@@ -46,7 +58,7 @@ export function PersonalOrdersSection({
 								</span>
 							)}
 							{dish.inCart && (
-								<span className='flex items-center gap-1 self-center rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary'>
+								<span className='flex items-center gap-1 self-center rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary'>
 									<ShoppingCart className='size-3' />
 									{t('plan_board.status_in_cart')}
 								</span>
@@ -59,7 +71,7 @@ export function PersonalOrdersSection({
 			{canAdd && (
 				<Link
 					to={`/tables/${tableId}/order?split=individual`}
-					className='flex w-fit items-center gap-1.5 rounded-full border border-dashed border-primary/50 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:border-solid hover:bg-primary/10'
+					className='flex w-fit items-center gap-1.5 rounded-xl border border-dashed border-primary/50 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:border-solid hover:bg-primary/10'
 				>
 					<Plus className='size-3.5' />
 					{t('plan_board.add_individual')}

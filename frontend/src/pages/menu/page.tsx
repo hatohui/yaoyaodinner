@@ -92,7 +92,7 @@ export default function MenuPage() {
 	const ordering = useMenuOrdering()
 	const exclude = useExcludeFilter(ordering.tableId)
 	const planTableId = !editing ? ordering.tableId : ''
-	const canEditPlan = canOrder && ordering.canEdit && !editing
+	const canEditPlan = Boolean(planTableId) && ordering.canEdit && !editing
 	const plan = useFoodWishes(planTableId)
 
 	useEffect(() => {
@@ -204,7 +204,7 @@ export default function MenuPage() {
 							wishes={plan.wishes}
 							people={ordering.cart.people}
 							compact={compact}
-							canApply={canEditPlan}
+							canApply={canOrder && canEditPlan}
 							onSelectFood={setQuickViewId}
 							statusOf={wish =>
 								wishStatus(
@@ -256,12 +256,28 @@ export default function MenuPage() {
 											: undefined,
 										onQuickView: setQuickViewId,
 									}
+									const wishControl =
+										planTableId &&
+										(canEditPlan
+											? Boolean(food.defaultVariantId)
+											: Boolean(plan.wishOf(food.id))) ? (
+											<WishMenu
+												name={food.name}
+												wish={plan.wishOf(food.id)}
+												onPick={kind => plan.pick(food, kind)}
+												onRemove={() => plan.removeFood(food.id)}
+												readOnly={!canEditPlan}
+											/>
+										) : undefined
 									return compact ? (
 										<FoodRow
 											key={food.id}
 											{...shared}
+											wishMenu={wishControl}
 											wishKind={
-												planTableId ? plan.wishOf(food.id)?.kind : undefined
+												!wishControl && planTableId
+													? plan.wishOf(food.id)?.kind
+													: undefined
 											}
 										/>
 									) : (
@@ -279,20 +295,7 @@ export default function MenuPage() {
 											onImageChange={
 												editing ? key => setImage(food.id, key) : undefined
 											}
-											wishMenu={
-												planTableId &&
-												(canEditPlan
-													? Boolean(food.defaultVariantId)
-													: Boolean(plan.wishOf(food.id))) ? (
-													<WishMenu
-														name={food.name}
-														wish={plan.wishOf(food.id)}
-														onPick={kind => plan.pick(food, kind)}
-														onRemove={() => plan.removeFood(food.id)}
-														readOnly={!canEditPlan}
-													/>
-												) : undefined
-											}
+											wishMenu={wishControl}
 											footer={
 												editing && seasonalByFood.has(food.id) ? (
 													<MenuSeasonalPrices

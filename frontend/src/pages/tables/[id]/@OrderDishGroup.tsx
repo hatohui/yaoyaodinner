@@ -11,6 +11,7 @@ interface OrderDishGroupProps {
 	people: PersonDto[]
 	currency: string
 	compact?: boolean
+	onSelectFood?: (foodId: string) => void
 	children: ReactNode
 }
 
@@ -20,6 +21,7 @@ export function OrderDishGroup({
 	people,
 	currency,
 	compact = false,
+	onSelectFood,
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
@@ -62,6 +64,38 @@ export function OrderDishGroup({
 			: t('menu.seasonal_price')
 		: t('orders.free')
 
+	const thumb = (extraClass?: string) => {
+		const img = (
+			<OrderThumb
+				imageKey={head.foodImageUrl}
+				alt={head.foodName}
+				className={extraClass}
+			/>
+		)
+		if (!onSelectFood) return img
+		return (
+			<span
+				role='button'
+				tabIndex={0}
+				aria-label={head.foodName}
+				onClick={e => {
+					e.stopPropagation()
+					onSelectFood(head.foodId)
+				}}
+				onKeyDown={e => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault()
+						e.stopPropagation()
+						onSelectFood(head.foodId)
+					}
+				}}
+				className='shrink-0 cursor-pointer transition-opacity hover:opacity-85'
+			>
+				{img}
+			</span>
+		)
+	}
+
 	if (compact) {
 		return (
 			<li>
@@ -71,13 +105,12 @@ export function OrderDishGroup({
 					onClick={() => setOpen(o => !o)}
 					className='group flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-brand-muted/35 focus-visible:bg-brand-muted/35 focus-visible:outline-none sm:px-4'
 				>
-					<OrderThumb
-						imageKey={head.foodImageUrl}
-						alt={head.foodName}
-						className='size-8 rounded-lg'
-					/>
+					{thumb('size-8 rounded-lg')}
 					<span className='flex min-w-0 flex-1 flex-col'>
-						<span title={name} className='truncate text-sm font-medium text-foreground'>
+						<span
+							title={name}
+							className='truncate text-sm font-medium text-foreground'
+						>
 							{name}
 						</span>
 						<span className='truncate text-xs text-muted-foreground'>
@@ -116,7 +149,7 @@ export function OrderDishGroup({
 				onClick={() => setOpen(o => !o)}
 				className='group flex w-full cursor-pointer items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-brand-muted/35 focus-visible:bg-brand-muted/35 focus-visible:outline-none sm:px-4 sm:py-3'
 			>
-				<OrderThumb imageKey={head.foodImageUrl} alt={head.foodName} />
+				{thumb()}
 				<span className='flex min-w-0 flex-1 flex-col gap-1'>
 					<span title={name} className='truncate font-medium text-foreground'>
 						{name}

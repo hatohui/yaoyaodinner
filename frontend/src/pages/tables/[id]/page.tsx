@@ -36,9 +36,10 @@ import { useTableDetail } from './@useTableDetail'
 import { RosterSkeleton } from './@Skeletons'
 import { TableRoastCard } from './@TableRoastCard'
 import { useTableRoast } from './@useTableRoast'
+import { useMenuOrderingStore } from '@/pages/menu/@useMenuOrdering'
 
 const tabTrigger =
-	'rounded-full text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
+	'rounded-xl text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
 
 export default function TableDetailPage() {
 	const { t, i18n } = useTranslation()
@@ -46,6 +47,9 @@ export default function TableDetailPage() {
 	const backTo: string | undefined = useLocation().state?.backTo
 	const { id, table, isLoading, isError, shareLink, updateTable } =
 		useTableDetail()
+	useEffect(() => {
+		if (id) useMenuOrderingStore.getState().pickTable(id)
+	}, [id])
 	const { tab, setTab } = useTableTab(id)
 	const tourQuery = useIdentityTour(s => s.query)
 
@@ -137,7 +141,7 @@ export default function TableDetailPage() {
 						<Skeleton className='size-9 rounded-full sm:w-28' />
 					</div>
 				</div>
-				<Skeleton className='h-10 w-full rounded-full' />
+				<Skeleton className='h-10 w-full rounded-2xl' />
 				<RosterSkeleton />
 			</div>
 		)
@@ -218,7 +222,7 @@ export default function TableDetailPage() {
 										disabled={roasts.isRoastingTable}
 										aria-label={t('roast.toggle')}
 										className={cn(
-											'group relative inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait sm:h-9 sm:w-auto sm:rounded-xl sm:px-3',
+											'group relative inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border text-sm font-medium transition-[background-color,color,border-color] motion-safe:animate-ember disabled:cursor-wait sm:h-9 sm:w-auto sm:px-3',
 											roasts.isRoastingTable
 												? 'border-fire bg-gradient-to-r from-fire via-fire-glow to-ember text-fire-foreground shadow-lg shadow-fire/30 ring-2 ring-fire/40 motion-safe:animate-pulse'
 												: 'border-fire bg-fire text-fire-foreground shadow-sm hover:bg-fire-glow'
@@ -251,7 +255,7 @@ export default function TableDetailPage() {
 							to={`/tables/map?highlight=${table.id}`}
 							aria-label={t('floor_plan.view_map')}
 							title={t('floor_plan.view_map')}
-							className='inline-flex size-8 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:rounded-xl sm:px-3'
+							className='inline-flex size-8 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3'
 						>
 							<Map className='size-4' />
 							<span className='hidden sm:inline'>
@@ -264,7 +268,7 @@ export default function TableDetailPage() {
 						onClick={shareLink}
 						aria-label={t('roster.copy_link')}
 						title={t('roster.copy_link')}
-						className='inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:rounded-xl sm:px-3'
+						className='inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3'
 					>
 						<LinkIcon className='size-4' />
 						<span className='hidden sm:inline'>{t('roster.copy_link')}</span>
@@ -294,7 +298,7 @@ export default function TableDetailPage() {
 
 			{showOrdering ? (
 				<Tabs value={tab} onValueChange={setTab}>
-					<TabsList className='sticky top-16 z-20 h-10 w-full rounded-full border border-border bg-control/95 p-1 shadow-sm backdrop-blur-md sm:static sm:bg-control sm:shadow-none sm:backdrop-blur-none'>
+					<TabsList className='sticky top-16 z-20 h-10 w-full rounded-2xl border border-border bg-control/95 p-1 shadow-sm backdrop-blur-md sm:static sm:bg-control sm:shadow-none sm:backdrop-blur-none'>
 						<TabsTrigger
 							value='people'
 							data-tour='people-tab'

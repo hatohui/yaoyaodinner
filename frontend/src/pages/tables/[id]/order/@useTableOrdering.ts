@@ -121,6 +121,7 @@ export function useTableOrdering(exclude: {
 		categories,
 		categoriesState,
 		foods,
+		total,
 		isLoading,
 		isRefreshing: isPlaceholderData,
 		isError,

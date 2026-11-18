@@ -11,6 +11,7 @@ import {
 	ShoppingCart,
 	Sparkles,
 	Star,
+	TriangleAlert,
 	Zap,
 } from 'lucide-react'
 import type { PersonDto, TableWishDto, WishKind } from '@/api/model'
@@ -25,16 +26,25 @@ import {
 import { cn } from '@/utils/shadcn'
 import { ApplyPlanDialog } from './ApplyPlanDialog'
 
+const PREVIEW_LIMIT = 4
+
 const KIND_ORDER: Record<WishKind, number> = {
 	must: 0,
 	want: 1,
 	avoid: 2,
 }
 
+export interface WishlistAllergy {
+	key: string
+	label: string
+	people: string[]
+}
+
 interface WishlistStripProps {
 	tableId: string
 	wishes: TableWishDto[]
 	people: PersonDto[]
+	allergies?: WishlistAllergy[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	onAdd: (wish: TableWishDto) => void
 	onSelectFood?: (foodId: string) => void
@@ -46,6 +56,7 @@ export function WishlistStrip({
 	tableId,
 	wishes,
 	people,
+	allergies,
 	statusOf,
 	onAdd,
 	onSelectFood,
@@ -64,11 +75,15 @@ export function WishlistStrip({
 	const pending = openPlanWishes(wishes, statusOf)
 	const [previewing, setPreviewing] = useState(false)
 	const [collapsed, setCollapsed] = useState(compact ?? false)
+	const [showAll, setShowAll] = useState(false)
 	const [legendOpen, setLegendOpen] = useState(false)
 
 	useEffect(() => {
 		setCollapsed(Boolean(compact))
 	}, [compact])
+
+	const visible = showAll ? sorted : sorted.slice(0, PREVIEW_LIMIT)
+	const hiddenCount = sorted.length - visible.length
 
 	const applyPlan = (chosen: TableWishDto[]) => {
 		chosen.forEach(onAdd)
@@ -78,7 +93,7 @@ export function WishlistStrip({
 	return (
 		<section className='flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3'>
 			<header className='flex flex-wrap items-center gap-x-2 gap-y-1.5'>
-				<div className='flex min-w-0 flex-1 items-center gap-1.5'>
+				<div className='flex min-w-0 flex-1 flex-wrap items-center gap-1.5'>
 					{wishes.length > 0 ? (
 						<button
 							type='button'
@@ -147,6 +162,31 @@ export function WishlistStrip({
 							</span>
 						</TooltipContent>
 					</Tooltip>
+					{allergies && allergies.length > 0 && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<span className='inline-flex max-w-full shrink-0 cursor-help items-center gap-1 rounded-lg border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive'>
+									<TriangleAlert className='size-3 shrink-0' />
+									<span className='truncate'>
+										{t('plan_board.allergies')}:{' '}
+										{allergies.map(a => a.label).join(', ')}
+									</span>
+								</span>
+							</TooltipTrigger>
+							<TooltipContent
+								side='bottom'
+								className='flex flex-col gap-1 p-2.5 text-xs'
+							>
+								{allergies.map(a => (
+									<span key={a.key}>
+										<span className='font-semibold'>{a.label}</span>
+										{' — '}
+										{a.people.join(', ')}
+									</span>
+								))}
+							</TooltipContent>
+						</Tooltip>
+					)}
 				</div>
 
 				<div className='flex shrink-0 items-center gap-1.5'>
@@ -154,7 +194,7 @@ export function WishlistStrip({
 						<Button
 							size='sm'
 							onClick={() => setPreviewing(true)}
-							className='h-7 shrink-0 gap-1 rounded-full px-2.5 text-xs'
+							className='h-7 shrink-0 gap-1 rounded-xl px-2.5 text-xs'
 						>
 							<Zap className='size-3.5' />
 							{t('plan_board.apply_plan', { count: pending.length })}
@@ -162,7 +202,7 @@ export function WishlistStrip({
 					)}
 					<Link
 						to={`/tables/${tableId}?tab=plan`}
-						className='flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'
+						className='flex shrink-0 items-center gap-1 rounded-xl px-2.5 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/10'
 					>
 						{t('plan_board.open_plan')}
 						<ArrowRight className='size-3.5' />
@@ -173,7 +213,7 @@ export function WishlistStrip({
 							onClick={() => setCollapsed(v => !v)}
 							aria-expanded={!collapsed}
 							aria-label={t('plan_board.strip_title')}
-							className='inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground'
+							className='inline-flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground'
 						>
 							<ChevronDown
 								className={cn(
@@ -187,7 +227,7 @@ export function WishlistStrip({
 			</header>
 			{wishes.length > 0 && !collapsed && (
 				<ul className='flex flex-wrap gap-1.5'>
-					{sorted.map(wish => {
+					{visible.map(wish => {
 						const status = statusOf(wish)
 						const isAvoid = wish.kind === 'avoid'
 						const kindLabel = t(`plan_board.${wish.kind}`)
@@ -203,7 +243,7 @@ export function WishlistStrip({
 							: kindLabel
 
 						const chipClass = cn(
-							'flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors',
+							'flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-xs transition-colors',
 							isAvoid &&
 								'border-destructive/40 bg-destructive/10 text-destructive',
 							!isAvoid &&
@@ -284,6 +324,17 @@ export function WishlistStrip({
 							</li>
 						)
 					})}
+					{sorted.length > PREVIEW_LIMIT && (
+						<li>
+							<button
+								type='button'
+								onClick={() => setShowAll(v => !v)}
+								className='flex cursor-pointer items-center rounded-lg border border-dashed border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/20'
+							>
+								{showAll ? '−' : `+${hiddenCount}`}
+							</button>
+						</li>
+					)}
 				</ul>
 			)}
 			<ApplyPlanDialog

@@ -62,7 +62,7 @@ export function AllergySection({
 									type='button'
 									onClick={() => onEditPerson(person)}
 									className={cn(
-										'flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors hover:border-primary/40 hover:bg-primary/10',
+										'flex cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs transition-colors hover:border-primary/40 hover:bg-primary/10',
 										count > 0
 											? 'border-destructive/40 bg-destructive/10 text-foreground'
 											: 'border-border bg-card text-muted-foreground'

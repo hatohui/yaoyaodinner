@@ -9,6 +9,7 @@ import type { CartLine } from '@/hooks/useOrderCart'
 
 export interface PersonalDish {
 	key: string
+	foodId: string
 	name: string
 	quantity: number
 	people: string[]
@@ -41,6 +42,7 @@ export function personalDishes(
 		const ids = line.mode === 'me' ? [myPersonId] : [...line.chosen]
 		dishes.set(`cart:${line.foodId}`, {
 			key: `cart:${line.foodId}`,
+			foodId: line.foodId,
 			name: line.name,
 			quantity: line.quantity,
 			people: [],
@@ -56,6 +58,7 @@ export function personalDishes(
 			: order.foodName
 		const dish = dishes.get(key) ?? {
 			key,
+			foodId: order.foodId,
 			name,
 			quantity: 0,
 			people: [],

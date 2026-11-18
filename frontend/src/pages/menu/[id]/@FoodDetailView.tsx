@@ -1,13 +1,20 @@
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import {
 	ArrowLeft,
+	Ban,
 	Link as LinkIcon,
 	ShoppingCart,
+	Sparkles,
+	Star,
 	Users,
 	UtensilsCrossed,
 } from 'lucide-react'
-import type { FoodDetailWithStatsDto, FoodVariantDto } from '@/api/model'
+import type {
+	FoodDetailWithStatsDto,
+	FoodItemDto,
+	FoodVariantDto,
+} from '@/api/model'
 import { Button } from '@/components/ui/button'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { useToast } from '@/hooks/useToast'
@@ -17,9 +24,12 @@ import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useStageTitle } from '@/hooks/useStageTitle'
 import { useEditMode } from '@/hooks/useEditMode'
+import { useHeldTableCode, useTableAccess } from '@/hooks/useTableCode'
+import { useFoodWishes } from '@/hooks/useTableWishes'
 import { ViewableImage } from '@/components/common/ViewableImage'
 import { ImageUploadSlot } from '@/components/common/ImageUploadSlot'
 import { cn } from '@/utils/shadcn'
+import { useMenuOrderingStore } from '../@useMenuOrdering'
 
 interface FoodDetailViewProps {
 	food: FoodDetailWithStatsDto
@@ -60,6 +70,28 @@ export function FoodDetailView({
 	const hasAccess = Boolean(pin) || isAdmin
 	const canOrder = hasAccess && canAdd
 	const modal = variant === 'modal'
+
+	const location = useLocation()
+	const { id: routeParamId = '' } = useParams()
+	const isTableRoute = location.pathname.startsWith('/tables/')
+	const claimedTableId = useGuest(s => s.me?.tableId ?? null)
+	const heldTableId = useHeldTableCode(s => s.held?.tableId ?? null)
+	const pickedTableId = useMenuOrderingStore(s => s.pickedTableId)
+	const planTableId = !editing
+		? ((isTableRoute && routeParamId ? routeParamId : null) ??
+			claimedTableId ??
+			heldTableId ??
+			pickedTableId ??
+			'')
+		: ''
+	const { canEdit: canEditTable } = useTableAccess(planTableId)
+	const plan = useFoodWishes(planTableId)
+	const currentWish = planTableId ? plan.wishOf(food.id) : undefined
+	const canEditPlan =
+		Boolean(planTableId) &&
+		canEditTable &&
+		!editing &&
+		availableVariants.length > 0
 
 	const shareLink = () => {
 		const url = new URL(`${window.location.origin}/menu/${food.id}`)
@@ -137,6 +169,7 @@ export function FoodDetailView({
 						isPopular={food.isPopular}
 						isRecommended={food.isRecommended}
 						isAiTranslated={food.isAiTranslated}
+						wishKind={!canEditPlan ? currentWish?.kind : undefined}
 					/>
 					{food.orderedBy > 0 && (
 						<span className='flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary'>
@@ -145,6 +178,71 @@ export function FoodDetailView({
 						</span>
 					)}
 				</div>
+				{canEditPlan && (
+					<div className='flex flex-wrap items-center gap-1.5'>
+						{(
+							[
+								{ kind: 'must', icon: Star },
+								{ kind: 'want', icon: Sparkles },
+								{ kind: 'avoid', icon: Ban },
+							] as const
+						).map(({ kind, icon: KindIcon }) => {
+							const active = currentWish?.kind === kind
+							const avoid = kind === 'avoid'
+							return (
+								<button
+									key={kind}
+									type='button'
+									aria-pressed={active}
+									onClick={() => {
+										if (active) {
+											plan.removeFood(food.id)
+											return
+										}
+										const selectedVariant =
+											availableVariants.find(v => v.id === selectedVariantId) ??
+											availableVariants[0]
+										if (!selectedVariant) return
+										const item: FoodItemDto = {
+											id: food.id,
+											name: food.name,
+											imageUrl: food.imageUrl,
+											description: food.description,
+											categoryId: food.categoryId,
+											isAvailable: food.isAvailable,
+											isPopular: food.isPopular,
+											isRecommended: food.isRecommended,
+											shouldCalculate: food.shouldCalculate,
+											defaultVariantId: selectedVariant.id,
+											variantCount: availableVariants.length,
+											price: selectedVariant.price,
+											currency: selectedVariant.currency,
+										}
+										plan.pick(item, kind)
+									}}
+									className={cn(
+										'inline-flex h-7 cursor-pointer items-center gap-1 rounded-lg border px-2.5 text-xs font-semibold transition-colors',
+										active
+											? avoid
+												? 'border-destructive bg-destructive text-primary-foreground shadow-xs'
+												: 'border-primary bg-primary text-primary-foreground shadow-xs'
+											: avoid
+												? 'border-border bg-control text-muted-foreground hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive'
+												: 'border-border bg-control text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary'
+									)}
+								>
+									<KindIcon
+										className={cn(
+											'size-3.5 shrink-0',
+											active && kind === 'must' && 'fill-current'
+										)}
+									/>
+									{t(`plan_board.${kind}`)}
+								</button>
+							)
+						})}
+					</div>
+				)}
 				<h1
 					className={cn(
 						'font-bold leading-tight text-foreground',

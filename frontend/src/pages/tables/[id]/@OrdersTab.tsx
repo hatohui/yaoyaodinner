@@ -37,6 +37,7 @@ import { downloadReceiptImage } from '@/utils/receiptImage'
 import { cn } from '@/utils/shadcn'
 import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
+import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
 import { SplitsTab } from './@SplitsTab'
 
 export type OrdersSubView = 'dishes' | 'people' | 'receipt'
@@ -95,6 +96,7 @@ export function OrdersTab({
 	const [editing, setEditing] = useState<OrderedLine | null>(null)
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)
 	const [pricing, setPricing] = useState<OrderedLine | null>(null)
+	const [quickViewId, setQuickViewId] = useState<string | null>(null)
 	const [subView, setSubView] = useState<OrdersSubView>(
 		initialSubView ?? 'dishes'
 	)
@@ -146,6 +148,7 @@ export function OrdersTab({
 					people={people}
 					currency={currency}
 					compact={compact}
+					onSelectFood={setQuickViewId}
 				>
 					{dish.map(renderLine)}
 				</OrderDishGroup>
@@ -237,22 +240,11 @@ export function OrdersTab({
 				(activeSubView === 'dishes' &&
 					(orders.length > 0 || Boolean(preset?.items.length))) ||
 				(canOrder && orders.length > 0)) && (
-				<div className='flex flex-wrap items-center justify-between gap-2'>
-					{canOrder && (
-						<Button
-							asChild
-							className='hidden h-9 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100 sm:inline-flex'
-						>
-							<Link to={`/tables/${table.id}/order`}>
-								<Plus className='size-4' />
-								{t('orders.add_order')}
-							</Link>
-						</Button>
-					)}
+				<div className='flex flex-wrap items-center gap-2'>
 					{showSubSwitcher && (
 						<div
 							role='group'
-							className='inline-flex w-fit items-center gap-0.5 rounded-full border border-border bg-control p-0.5 shadow-2xs'
+							className='inline-flex h-8 w-fit items-center gap-0.5 rounded-xl border border-border bg-control p-0.5 shadow-2xs'
 						>
 							{subOptions.map(({ value, icon: Icon, label }) => (
 								<button
@@ -261,7 +253,7 @@ export function OrdersTab({
 									aria-pressed={activeSubView === value}
 									onClick={() => setSubView(value)}
 									className={cn(
-										'flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition-colors',
+										'flex h-full items-center justify-center gap-1 rounded-lg px-2.5 text-xs font-semibold transition-colors',
 										activeSubView === value
 											? 'bg-primary text-primary-foreground'
 											: 'text-muted-foreground hover:text-foreground'
@@ -273,24 +265,43 @@ export function OrdersTab({
 							))}
 						</div>
 					)}
-					{activeSubView === 'dishes' &&
-						(orders.length > 0 || Boolean(preset?.items.length)) && (
-							<div className='ml-auto flex shrink-0 items-center gap-1.5'>
-								{(orders.length > 0 || Boolean(preset && preset.price > 0)) && (
-									<Button
-										variant='outline'
-										size='icon-sm'
-										className='rounded-full'
-										aria-label={t('common.download_image')}
-										title={t('common.download_image')}
-										onClick={downloadOrders}
-									>
-										<Download className='size-3.5' />
-									</Button>
+					{((canOrder && orders.length > 0) ||
+						(activeSubView === 'dishes' &&
+							(orders.length > 0 || Boolean(preset?.items.length)))) && (
+						<div className='ml-auto flex shrink-0 items-center gap-1.5'>
+							{canOrder && orders.length > 0 && (
+								<Button
+									asChild
+									size='sm'
+									className='hidden h-8 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100 sm:inline-flex'
+								>
+									<Link to={`/tables/${table.id}/order`}>
+										<Plus className='size-4' />
+										{t('orders.add_order')}
+									</Link>
+								</Button>
+							)}
+							{activeSubView === 'dishes' &&
+								(orders.length > 0 || Boolean(preset?.items.length)) && (
+									<>
+										{(orders.length > 0 ||
+											Boolean(preset && preset.price > 0)) && (
+											<Button
+												variant='outline'
+												size='icon-sm'
+												className='size-8 rounded-xl'
+												aria-label={t('common.download_image')}
+												title={t('common.download_image')}
+												onClick={downloadOrders}
+											>
+												<Download className='size-3.5' />
+											</Button>
+										)}
+										<ViewToggle view={view} onChange={setView} />
+									</>
 								)}
-								<ViewToggle view={view} onChange={setView} />
-							</div>
-						)}
+						</div>
+					)}
 				</div>
 			)}
 
@@ -318,7 +329,11 @@ export function OrdersTab({
 							}
 						>
 							{preset.note && <IncludedNoteStrip note={preset.note} />}
-							<PresetMenuSection preset={preset} compact={compact} />
+							<PresetMenuSection
+								preset={preset}
+								compact={compact}
+								onSelectFood={setQuickViewId}
+							/>
 						</aside>
 					)}
 
@@ -451,6 +466,11 @@ export function OrdersTab({
 					if (removing) removeLine(removing.ids)
 					setRemoving(null)
 				}}
+			/>
+
+			<FoodDetailModal
+				id={quickViewId}
+				onOpenChange={open => !open && setQuickViewId(null)}
 			/>
 		</div>
 	)

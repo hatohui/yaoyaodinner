@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { Check, UtensilsCrossed } from 'lucide-react'
@@ -16,6 +16,7 @@ interface FoodRowProps {
 	quantity?: number
 	orderedQuantity?: number
 	wishKind?: WishKind
+	wishMenu?: ReactNode
 	onAdd?: () => void
 	onQuantityChange?: (quantity: number) => void
 	onQuickView?: (id: string) => void
@@ -28,6 +29,7 @@ export function FoodRow({
 	quantity = 0,
 	orderedQuantity = 0,
 	wishKind,
+	wishMenu,
 	onAdd,
 	onQuantityChange,
 	onQuickView,
@@ -39,7 +41,6 @@ export function FoodRow({
 	const handleClick = (e: MouseEvent) => {
 		if (!onQuickView) return
 		if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
-		if (!window.matchMedia('(min-width: 640px)').matches) return
 		e.preventDefault()
 		onQuickView(food.id)
 	}
@@ -103,6 +104,18 @@ export function FoodRow({
 					)}
 				</span>
 			</span>
+
+			{wishMenu && (
+				<span
+					onClick={e => {
+						e.preventDefault()
+						e.stopPropagation()
+					}}
+					className='shrink-0'
+				>
+					{wishMenu}
+				</span>
+			)}
 
 			{canAdd && (
 				<AddControl

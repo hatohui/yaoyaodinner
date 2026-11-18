@@ -38,7 +38,7 @@ export function PaginationBar({
 		totalPages,
 	} = pagination
 
-	if (totalPages <= 1 && !showPageSize) return null
+	if (totalPages < 1 && !showPageSize) return null
 
 	const pageSelect = (
 		trigger: ReactNode,
@@ -64,7 +64,7 @@ export function PaginationBar({
 
 	return (
 		<div className='flex flex-wrap items-center justify-center gap-4'>
-			{totalPages > 1 && (
+			{totalPages >= 1 && (
 				<Pagination>
 					<PaginationContent className='flex-wrap gap-1'>
 						<PaginationItem>

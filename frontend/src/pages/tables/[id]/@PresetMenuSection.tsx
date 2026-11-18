@@ -10,11 +10,13 @@ import { cn } from '@/utils/shadcn'
 interface PresetMenuSectionProps {
 	preset: PresetMenuDto
 	compact?: boolean
+	onSelectFood?: (foodId: string) => void
 }
 
 export function PresetMenuSection({
 	preset,
 	compact = false,
+	onSelectFood,
 }: PresetMenuSectionProps) {
 	const { t } = useTranslation()
 	const [collapsed, setCollapsed] = useState(compact)
@@ -79,45 +81,65 @@ export function PresetMenuSection({
 
 			{hasItems && !collapsed && (
 				<ul className='flex flex-col divide-y divide-border/60'>
-					{preset.items.map(item => (
-						<li
-							key={item.variantId}
-							className={cn(
-								'flex items-center',
-								compact
-									? 'gap-2.5 px-3 py-1.5 sm:px-3.5'
-									: 'gap-3 px-3 py-2 sm:px-4'
-							)}
-						>
-							<OrderThumb
-								imageKey={item.imageUrl}
-								alt={item.foodName}
-								className={compact ? 'size-7 rounded-md' : 'size-10 rounded-lg'}
-							/>
-							<span
-								className={cn(
-									'min-w-0 flex-1 truncate text-foreground',
-									compact ? 'text-xs font-medium' : 'text-sm'
+					{preset.items.map(item => {
+						const rowClass = cn(
+							'flex items-center text-left',
+							compact
+								? 'gap-2.5 px-3 py-1.5 sm:px-3.5'
+								: 'gap-3 px-3 py-2 sm:px-4',
+							onSelectFood &&
+								'w-full cursor-pointer transition-colors hover:bg-primary/5'
+						)
+						const content = (
+							<>
+								<OrderThumb
+									imageKey={item.imageUrl}
+									alt={item.foodName}
+									className={
+										compact ? 'size-7 rounded-md' : 'size-10 rounded-lg'
+									}
+								/>
+								<span
+									className={cn(
+										'min-w-0 flex-1 truncate text-foreground',
+										compact ? 'text-xs font-medium' : 'text-sm'
+									)}
+								>
+									{item.foodName}
+									{item.variantLabel && (
+										<span className='font-normal text-muted-foreground'>
+											{' - '}
+											{item.variantLabel}
+										</span>
+									)}
+								</span>
+								<span
+									className={cn(
+										'shrink-0 font-semibold tabular-nums text-muted-foreground',
+										compact ? 'text-xs' : 'text-sm'
+									)}
+								>
+									×{item.quantity}
+								</span>
+							</>
+						)
+
+						return (
+							<li key={item.variantId}>
+								{onSelectFood ? (
+									<button
+										type='button'
+										onClick={() => onSelectFood(item.foodId)}
+										className={rowClass}
+									>
+										{content}
+									</button>
+								) : (
+									<div className={rowClass}>{content}</div>
 								)}
-							>
-								{item.foodName}
-								{item.variantLabel && (
-									<span className='font-normal text-muted-foreground'>
-										{' - '}
-										{item.variantLabel}
-									</span>
-								)}
-							</span>
-							<span
-								className={cn(
-									'shrink-0 font-semibold tabular-nums text-muted-foreground',
-									compact ? 'text-xs' : 'text-sm'
-								)}
-							>
-								×{item.quantity}
-							</span>
-						</li>
-					))}
+							</li>
+						)
+					})}
 				</ul>
 			)}
 		</section>

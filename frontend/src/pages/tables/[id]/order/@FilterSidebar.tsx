@@ -36,11 +36,11 @@ interface FilterSidebarProps {
 }
 
 const itemClass =
-	'flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium transition-colors'
+	'flex w-full min-w-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium transition-colors'
 const activeClass = 'bg-primary text-primary-foreground shadow-sm'
 const idleClass = 'text-foreground/85 hover:bg-primary/10 hover:text-primary'
 
-/** Desktop filters for ordering: search, sort and a vertical category list. */
+/** Desktop filters for ordering: search, sort and a compact category grid. */
 export function FilterSidebar({
 	search,
 	onSearchChange,
@@ -64,7 +64,7 @@ export function FilterSidebar({
 	) => onFilterChange({ category, ...flags })
 
 	return (
-		<div className='flex h-full max-h-full flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm'>
+		<div className='flex flex-col gap-3 rounded-2xl border border-border bg-card p-3 shadow-sm'>
 			<div className='shrink-0'>
 				<SearchSuggest
 					value={search}
@@ -74,7 +74,7 @@ export function FilterSidebar({
 			</div>
 
 			<Select value={sort} onValueChange={val => onSortChange(val as MenuSort)}>
-				<SelectTrigger className='w-full shrink-0 gap-1.5 rounded-full border-border bg-card font-semibold *:data-[slot=select-value]:flex-1 data-[size=default]:h-10 dark:bg-white/10 dark:hover:bg-white/15'>
+				<SelectTrigger className='w-full shrink-0 gap-1.5 rounded-xl border-border bg-card font-semibold *:data-[slot=select-value]:flex-1 data-[size=default]:h-9 dark:bg-white/10 dark:hover:bg-white/15'>
 					<ArrowUpDown className='size-3.5 shrink-0 text-foreground/75' />
 					<SelectValue />
 				</SelectTrigger>
@@ -91,16 +91,13 @@ export function FilterSidebar({
 
 			{exclude}
 
-			<nav
-				aria-label={t('menu.categories')}
-				className='scrollbar-thin flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain'
-			>
-				<p className='m-0 px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+			<nav aria-label={t('menu.categories')} className='grid grid-cols-2 gap-1'>
+				<p className='col-span-2 m-0 px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
 					{t('menu.categories')}
 				</p>
 				{categoriesState === 'loading' ? (
 					Array.from({ length: 8 }, (_, i) => (
-						<Skeleton key={i} className='mx-1 my-1 h-7 rounded-xl' />
+						<Skeleton key={i} className='h-7 rounded-lg' />
 					))
 				) : (
 					<>
@@ -114,8 +111,8 @@ export function FilterSidebar({
 									}
 									className={cn(itemClass, popular ? activeClass : idleClass)}
 								>
-									<Flame className='size-4 shrink-0' />
-									{t('menu.popular')}
+									<Flame className='size-3.5 shrink-0' />
+									<span className='truncate'>{t('menu.popular')}</span>
 								</button>
 								{recommendedEnabled && (
 									<button
@@ -129,11 +126,11 @@ export function FilterSidebar({
 											recommended ? activeClass : idleClass
 										)}
 									>
-										<Sparkles className='size-4 shrink-0' />
-										{t('menu.recommended')}
+										<Sparkles className='size-3.5 shrink-0' />
+										<span className='truncate'>{t('menu.recommended')}</span>
 									</button>
 								)}
-								<div className='my-1 border-t border-border/60' />
+								<div className='col-span-2 my-1 border-t border-border/60' />
 							</>
 						)}
 						<button
@@ -145,7 +142,7 @@ export function FilterSidebar({
 								plain && activeCategory === 'all' ? activeClass : idleClass
 							)}
 						>
-							{t('menu.all_categories')}
+							<span className='truncate'>{t('menu.all_categories')}</span>
 						</button>
 						{categories.map(cat => {
 							const active = plain && activeCategory === cat.id

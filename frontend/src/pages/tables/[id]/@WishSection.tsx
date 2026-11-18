@@ -24,6 +24,7 @@ interface WishSectionProps {
 	canAddToCart: boolean
 	onAdd: (wish: NewWish) => void
 	onAddToCart: (wish: TableWishDto) => void
+	onSelectFood?: (foodId: string) => void
 	onSetKind: (id: string, kind: WishKind) => void
 	onSetVariant: (id: string, variant: FoodVariantDto) => void
 	onSetPeople: (id: string, personIds: string[]) => void
@@ -42,6 +43,7 @@ export function WishSection({
 	canAddToCart,
 	onAdd,
 	onAddToCart,
+	onSelectFood,
 	onSetKind,
 	onSetVariant,
 	onSetPeople,
@@ -77,7 +79,7 @@ export function WishSection({
 				</span>
 				<h2 className='text-sm font-semibold text-foreground'>{title}</h2>
 				{wishes.length > 0 && !avoid && (
-					<span className='ml-auto rounded-full bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
+					<span className='ml-auto rounded-md bg-primary/15 px-2.5 py-0.5 text-[11px] font-semibold tabular-nums text-primary'>
 						{t('plan_board.progress', { done, total: wishes.length })}
 					</span>
 				)}
@@ -99,6 +101,7 @@ export function WishSection({
 							canEdit={canEdit}
 							canAddToCart={canAddToCart}
 							onAddToCart={() => onAddToCart(wish)}
+							onSelectFood={onSelectFood}
 							onMove={kind => onSetKind(wish.id, kind)}
 							onVariantChange={variant => onSetVariant(wish.id, variant)}
 							onPeopleChange={ids => onSetPeople(wish.id, ids)}
