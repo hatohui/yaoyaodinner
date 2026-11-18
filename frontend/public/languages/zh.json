@@ -29,6 +29,7 @@
 	"common": {
 		"back": "返回",
 		"back_to_top": "回到顶部",
+		"download_image": "保存图片",
 		"confirm": "确认",
 		"cancel": "取消",
 		"save": "保存",
@@ -1249,6 +1250,7 @@
 		"ai_closed": "AI 规划仅在开放点餐时可用。",
 		"move_to": "移到{{list}}",
 		"other_table": "仅可查看。你坐在另一桌。",
+		"other_table_ai": "你坐在另一桌，仅本桌客人可使用 AI 点菜规划。",
 		"add_to_plan": "加入本桌计划",
 		"remove_from_plan": "从计划中移除",
 		"add_individual": "添加个人点单",

@@ -29,6 +29,7 @@
 	"common": {
 		"back": "Back",
 		"back_to_top": "Back to top",
+		"download_image": "Save image",
 		"confirm": "Confirm",
 		"cancel": "Cancel",
 		"save": "Save",
@@ -1251,6 +1252,7 @@
 		"ai_closed": "The AI planner is available while ordering is open.",
 		"move_to": "Move to {{list}}",
 		"other_table": "View only. You're seated at another table.",
+		"other_table_ai": "You're seated at another table. Only guests at this table can use the AI planner.",
 		"add_to_plan": "Add to the table's plan",
 		"remove_from_plan": "Remove from plan",
 		"add_individual": "Add individual order",

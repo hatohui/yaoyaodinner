@@ -44,13 +44,15 @@ export function usePlanBoard(
 	const cart = useOrderCart(tableId)
 	const { canAdd, stage } = useOrderingStage()
 	const { tablePlan, tableCodes } = useConfig()
-	const { personId } = useWhoAmI(tableId)
+	const { personId, hasIdentity } = useWhoAmI(tableId)
 	const access: PlanAccess = !canEdit
 		? tableCodes
 			? 'locked'
 			: 'other_table'
 		: tablePlan && !personId
-			? 'pick_identity'
+			? hasIdentity
+				? 'other_table_ai'
+				: 'pick_identity'
 			: tablePlan && stage !== 'open'
 				? 'ai_closed'
 				: 'ready'

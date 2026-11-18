@@ -56,7 +56,7 @@ export function WishSection({
 		<section
 			ref={drop.ref}
 			className={cn(
-				'flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm transition-colors sm:p-4',
+				'flex h-full flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm transition-colors sm:p-4',
 				drop.isDragging && 'border-dashed border-primary/40',
 				drop.isOver &&
 					(avoid
@@ -106,10 +106,12 @@ export function WishSection({
 			)}
 
 			{canEdit && (
-				<WishAddForm
-					placeholder={t('plan_board.add_placeholder')}
-					onAdd={wish => onAdd({ kind, ...wish } as NewWish)}
-				/>
+				<div className='mt-auto pt-1'>
+					<WishAddForm
+						placeholder={t('plan_board.add_placeholder')}
+						onAdd={wish => onAdd({ kind, ...wish } as NewWish)}
+					/>
+				</div>
 			)}
 		</section>
 	)

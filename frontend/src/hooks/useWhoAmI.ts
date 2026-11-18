@@ -4,5 +4,5 @@ import { useGuest } from '@/hooks/useGuest'
 export function useWhoAmI(tableId: string) {
 	const me = useGuest(s => s.me)
 	const personId = me && me.tableId === tableId ? me.id : null
-	return { personId }
+	return { personId, hasIdentity: Boolean(me) }
 }

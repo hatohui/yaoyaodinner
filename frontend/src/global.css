@@ -348,7 +348,7 @@
 
 	/* Enhanced contrast subtitles and captions */
 	--muted: oklch(0.32 0.045 264.7);
-	--muted-foreground: oklch(0.76 0.025 264.7);
+	--muted-foreground: oklch(0.8 0.025 264.7);
 
 	--control: oklch(0.27 0.055 264.7);
 	--skeleton: var(--accent);
@@ -379,8 +379,8 @@
 	--success-foreground: oklch(0.14 0.05 264.7);
 
 	/* Well-defined structural card and input borders */
-	--border: oklch(0.38 0.045 264.7);
-	--input: oklch(0.38 0.045 264.7);
+	--border: oklch(0.45 0.05 264.7);
+	--input: oklch(0.45 0.05 264.7);
 
 	--ring: oklch(0.81 0.115 82);
 

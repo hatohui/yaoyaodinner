@@ -29,6 +29,7 @@
 	"common": {
 		"back": "Quay lại",
 		"back_to_top": "Về đầu trang",
+		"download_image": "Lưu ảnh",
 		"confirm": "Xác nhận",
 		"cancel": "Hủy",
 		"save": "Lưu",
@@ -1249,6 +1250,7 @@
 		"ai_closed": "AI lên kế hoạch chỉ dùng được khi đang mở gọi món.",
 		"move_to": "Chuyển sang {{list}}",
 		"other_table": "Chỉ xem. Bạn đang ngồi ở bàn khác.",
+		"other_table_ai": "Bạn đang ngồi ở bàn khác. Chỉ khách tại bàn này mới dùng được AI gợi ý món.",
 		"add_to_plan": "Thêm vào kế hoạch của bàn",
 		"remove_from_plan": "Xóa khỏi kế hoạch",
 		"add_individual": "Thêm món riêng",

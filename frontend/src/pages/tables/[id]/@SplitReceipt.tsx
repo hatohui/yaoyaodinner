@@ -1,8 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { Download } from 'lucide-react'
 import type { OrderResponseDto } from '@/api/model'
 import { groupOrders } from '@/components/ordering/groupOrders'
 import { TotalAmount } from '@/components/ordering/TotalAmount'
+import { Button } from '@/components/ui/button'
 import { awaitingPrice } from '@/utils/money'
+import { downloadReceiptImage } from '@/utils/receiptImage'
 import { cn } from '@/utils/shadcn'
 
 interface SplitReceiptProps {
@@ -30,8 +33,47 @@ export function SplitReceipt({
 	const { t } = useTranslation()
 	const lines = groupOrders(orders)
 
+	const download = () => {
+		const slug =
+			tableName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') ||
+			'table'
+		downloadReceiptImage({
+			filename: `${slug}-receipt.png`,
+			title: t('split.bill_title', { table: tableName }),
+			sections: [
+				{
+					rows: [
+						...(flatPrice > 0
+							? [{ left: t('split.set_menu'), right: flatPrice.toFixed(2) }]
+							: []),
+						...lines.map(line => ({
+							left: `${line.quantity} × ${line.foodName}${line.variantLabel ? ` · ${line.variantLabel}` : ''}`,
+							right: !line.shouldCalculate
+								? t('split.free_badge')
+								: awaitingPrice(line)
+									? t('menu.seasonal_price')
+									: (line.price * line.quantity).toFixed(2),
+							muted: !line.shouldCalculate,
+						})),
+					],
+				},
+				{
+					rows: people.map(p => ({
+						left: `${p.name}${p.id === myPersonId ? ` (${t('split.you')})` : ''}`,
+						right: `${p.partial ? `${t('menu.price_from')} ` : ''}${p.amount.toFixed(2)}`,
+						highlight: p.id === myPersonId,
+					})),
+				},
+			],
+			totalLabel: t('split.total'),
+			totalValue: `${partial ? `${t('menu.price_from')} ` : ''}${total.toFixed(2)} ${currency}`.trim(),
+			footer: t('orders.estimate_note'),
+		})
+	}
+
 	return (
-		<div className='flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 text-sm shadow-sm sm:p-5'>
+		<div className='mx-auto flex w-full max-w-md flex-col gap-2.5'>
+			<div className='flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 text-sm shadow-sm sm:p-5'>
 			<p className='m-0 text-center text-xs font-bold uppercase tracking-widest text-muted-foreground'>
 				{t('split.bill_title', { table: tableName })}
 			</p>
@@ -94,6 +136,16 @@ export function SplitReceipt({
 					</li>
 				))}
 			</ul>
+			</div>
+			<Button
+				variant='outline'
+				size='sm'
+				onClick={download}
+				className='w-full gap-1.5 rounded-full'
+			>
+				<Download className='size-4' />
+				{t('common.download_image')}
+			</Button>
 		</div>
 	)
 }

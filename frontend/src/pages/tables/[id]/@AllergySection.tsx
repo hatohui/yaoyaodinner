@@ -22,7 +22,7 @@ export function AllergySection({
 	const { t } = useTranslation()
 
 	return (
-		<section className='flex flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4'>
+		<section className='flex h-full flex-col gap-2.5 rounded-2xl border border-border bg-card p-3 shadow-sm sm:p-4'>
 			<header className='flex items-center gap-2'>
 				<ShieldAlert className='size-4 shrink-0 text-destructive' />
 				<h2 className='text-sm font-semibold text-foreground'>

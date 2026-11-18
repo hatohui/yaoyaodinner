@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 export type PlanAccess =
 	| 'locked'
 	| 'other_table'
+	| 'other_table_ai'
 	| 'pick_identity'
 	| 'ai_closed'
 	| 'ready'
@@ -32,6 +33,11 @@ export function PlanAccessHint({
 		other_table: {
 			icon: Lock,
 			text: t('plan_board.other_table'),
+			action: null,
+		},
+		other_table_ai: {
+			icon: UserCheck,
+			text: t('plan_board.other_table_ai'),
 			action: null,
 		},
 		pick_identity: {

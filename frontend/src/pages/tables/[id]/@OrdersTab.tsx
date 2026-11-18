@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Plus, Wand2 } from 'lucide-react'
+import { Download, Plus, Wand2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { PersonDto, TableDto } from '@/api/model'
@@ -30,6 +30,7 @@ import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { billingCurrency, hasUnpriced } from '@/utils/money'
+import { downloadReceiptImage } from '@/utils/receiptImage'
 import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 
@@ -207,7 +208,84 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 							<span />
 						)}
 
-						<ViewToggle view={view} onChange={setView} />
+						<div className='ml-auto flex shrink-0 items-center gap-1.5'>
+							<Button
+								variant='outline'
+								size='icon-sm'
+								className='rounded-full'
+								aria-label={t('common.download_image')}
+								title={t('common.download_image')}
+								onClick={() => {
+									const splitText = (line: OrderedLine) => {
+										if (line.splitAll) return t('orders.shared')
+										return (
+											line.splits
+												.map(
+													s =>
+														people.find(p => p.id === s.personId)?.name ??
+														t('orders.unknown_person')
+												)
+												.join(', ') || t('orders.personal')
+										)
+									}
+									const slug =
+										(table.name || `table-${table.no}`)
+											.toLowerCase()
+											.replace(/[^a-z0-9]+/g, '-')
+											.replace(/^-|-$/g, '') || 'orders'
+									downloadReceiptImage({
+										filename: `${slug}-orders.png`,
+										title: `${table.no}. ${table.name || t('roster.table_no', { no: table.no })} · ${t('tabs.orders')}`,
+										sections: [
+											{
+												rows: [
+													...(preset && preset.price > 0
+														? [
+																{
+																	left: t('orders.set_menu'),
+																	sub: t('orders.set_menu_shared'),
+																	right: `${preset.price.toFixed(2)} ${billingCurrency(preset.items)}`.trim(),
+																},
+															]
+														: []),
+													...groupByDish(lines).map(dish => {
+														const head = dish[0]
+														const qty = dish.reduce((s, l) => s + l.quantity, 0)
+														const amt = dish.reduce(
+															(s, l) =>
+																l.shouldCalculate ? s + l.price * l.quantity : s,
+															0
+														)
+														return {
+															left: `${qty} × ${head.foodName}${head.variantLabel ? ` · ${head.variantLabel}` : ''}`,
+															sub: dish
+																.map(l =>
+																	dish.length > 1
+																		? `${splitText(l)} ×${l.quantity}`
+																		: splitText(l)
+																)
+																.join(', '),
+															right: !head.shouldCalculate
+																? t('orders.free')
+																: amt > 0
+																	? `${amt.toFixed(2)} ${currency}`
+																	: t('menu.seasonal_price'),
+															muted: !head.shouldCalculate,
+														}
+													}),
+												],
+											},
+										],
+										totalLabel: t('orders.total'),
+										totalValue: `${hasUnpriced(orders) ? `${t('menu.price_from')} ` : ''}${total.toFixed(2)} ${currency}`.trim(),
+										footer: t('orders.estimate_note'),
+									})
+								}}
+							>
+								<Download className='size-3.5' />
+							</Button>
+							<ViewToggle view={view} onChange={setView} />
+						</div>
 					</div>
 				)}
 
