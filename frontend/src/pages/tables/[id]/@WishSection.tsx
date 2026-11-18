@@ -21,9 +21,7 @@ interface WishSectionProps {
 	people: PersonDto[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	canEdit: boolean
-	canAddToCart: boolean
 	onAdd: (wish: NewWish) => void
-	onAddToCart: (wish: TableWishDto) => void
 	onSelectFood?: (foodId: string) => void
 	onSetKind: (id: string, kind: WishKind) => void
 	onSetVariant: (id: string, variant: FoodVariantDto) => void
@@ -41,9 +39,7 @@ export function WishSection({
 	people,
 	statusOf,
 	canEdit,
-	canAddToCart,
 	onAdd,
-	onAddToCart,
 	onSelectFood,
 	onSetKind,
 	onSetVariant,
@@ -101,8 +97,6 @@ export function WishSection({
 							status={statusOf(wish)}
 							avoid={avoid}
 							canEdit={canEdit}
-							canAddToCart={canAddToCart}
-							onAddToCart={() => onAddToCart(wish)}
 							onSelectFood={onSelectFood}
 							onMove={kind => onSetKind(wish.id, kind)}
 							onVariantChange={variant => onSetVariant(wish.id, variant)}

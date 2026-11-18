@@ -18,6 +18,7 @@ import type {
 } from '@/api/model'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
 import type { WishStatus } from '@/hooks/useTableWishes'
+import { awaitingPrice } from '@/utils/money'
 import { cn } from '@/utils/shadcn'
 import { WishDragHandle, useWishDrag } from './@WishDnd'
 import { WishEditDialog } from './@WishEditDialog'
@@ -27,17 +28,12 @@ import { WishVariantPicker } from './@WishVariantPicker'
 const iconButton =
 	'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
 
-const cartButton =
-	'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-primary/15 text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
-
 interface WishRowProps {
 	wish: TableWishDto
 	people: PersonDto[]
 	status: WishStatus
 	avoid: boolean
 	canEdit: boolean
-	canAddToCart: boolean
-	onAddToCart: () => void
 	onSelectFood?: (foodId: string) => void
 	onMove: (kind: WishKind) => void
 	onVariantChange: (variant: FoodVariantDto) => void
@@ -52,8 +48,6 @@ export function WishRow({
 	status,
 	avoid,
 	canEdit,
-	canAddToCart,
-	onAddToCart,
 	onSelectFood,
 	onMove,
 	onVariantChange,
@@ -135,16 +129,22 @@ export function WishRow({
 					<span>{t('plan_board.status_in_cart')}</span>
 				</span>
 			)}
-			{!avoid && status === 'open' && canAddToCart && wish.foodId && (
-				<button
-					type='button'
-					aria-label={t('plan_board.add_to_cart')}
-					title={t('plan_board.add_to_cart')}
-					onClick={onAddToCart}
-					className={cartButton}
-				>
-					<ShoppingCart className='size-3.5' />
-				</button>
+			{!avoid && wish.foodId && (
+				<span className='shrink-0 text-right'>
+					{!wish.shouldCalculate ? (
+						<span className='text-xs text-muted-foreground'>
+							{t('orders.free')}
+						</span>
+					) : awaitingPrice(wish) ? (
+						<span className='text-xs text-muted-foreground'>
+							{t('menu.seasonal_price')}
+						</span>
+					) : (
+						<span className='text-xs font-semibold tabular-nums text-foreground'>
+							{((wish.price ?? 0) * qty).toFixed(2)} {wish.currency}
+						</span>
+					)}
+				</span>
 			)}
 		</>
 	)

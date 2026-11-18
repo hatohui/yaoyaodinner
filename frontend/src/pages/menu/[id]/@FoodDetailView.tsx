@@ -46,6 +46,10 @@ interface FoodDetailViewProps {
 	) => void
 	/** Modal: side-by-side on desktop, no back link, actions pinned to the bottom. */
 	variant?: 'page' | 'modal'
+	/** Opened from the table plan: reflect chosen plan option, hide cart action, offer View in menu. */
+	planOnly?: boolean
+	hasPickedVariant?: boolean
+	onClose?: () => void
 }
 
 export function FoodDetailView({
@@ -57,6 +61,9 @@ export function FoodDetailView({
 	onUpdateFood,
 	onUpdateVariant,
 	variant = 'page',
+	planOnly = false,
+	hasPickedVariant = false,
+	onClose,
 }: FoodDetailViewProps) {
 	const { t, i18n } = useTranslation()
 	const toast = useToast()
@@ -90,6 +97,25 @@ export function FoodDetailView({
 		canEditTable &&
 		!editing &&
 		availableVariants.length > 0
+	const activeVariantId =
+		!hasPickedVariant &&
+		currentWish?.variantId &&
+		availableVariants.some(v => v.id === currentWish.variantId)
+			? currentWish.variantId
+			: selectedVariantId
+
+	const handleSelectVariant = (variantId: string) => {
+		onSelectVariant(variantId)
+		if (
+			planOnly &&
+			canEditPlan &&
+			currentWish &&
+			currentWish.variantId !== variantId
+		) {
+			const nextVariant = availableVariants.find(v => v.id === variantId)
+			if (nextVariant) plan.setVariant(currentWish.id, nextVariant)
+		}
+	}
 
 	const shareLink = () => {
 		const url = new URL(`${window.location.origin}/menu/${food.id}`)
@@ -239,15 +265,15 @@ export function FoodDetailView({
 									/>
 									<span className='text-primary'>{v.currency}</span>
 								</span>
-							) : canOrder ? (
+							) : canOrder || (planOnly && canEditPlan) ? (
 								<button
 									key={v.id}
 									type='button'
-									aria-pressed={v.id === selectedVariantId}
-									onClick={() => onSelectVariant(v.id)}
+									aria-pressed={v.id === activeVariantId}
+									onClick={() => handleSelectVariant(v.id)}
 									className={cn(
 										'flex cursor-pointer items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium transition-colors',
-										v.id === selectedVariantId
+										v.id === activeVariantId
 											? 'border-primary bg-primary text-primary-foreground'
 											: 'border-border bg-control text-foreground hover:border-primary/40 hover:bg-primary/10'
 									)}
@@ -260,9 +286,7 @@ export function FoodDetailView({
 									)}
 									{isSeasonal ? (
 										<span
-											className={cn(
-												v.id !== selectedVariantId && 'text-primary'
-											)}
+											className={cn(v.id !== activeVariantId && 'text-primary')}
 										>
 											{t('menu.seasonal_price')}
 										</span>
@@ -271,7 +295,7 @@ export function FoodDetailView({
 											{v.price}
 											<span
 												className={cn(
-													v.id !== selectedVariantId && 'text-primary'
+													v.id !== activeVariantId && 'text-primary'
 												)}
 											>
 												{v.currency}
@@ -282,22 +306,39 @@ export function FoodDetailView({
 							) : (
 								<span
 									key={v.id}
-									className='flex items-center gap-1 rounded-full border border-border bg-control px-4 py-2 text-sm font-medium text-foreground'
+									className={cn(
+										'flex items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium',
+										planOnly && v.id === activeVariantId
+											? 'border-primary bg-primary text-primary-foreground'
+											: 'border-border bg-control text-foreground'
+									)}
 								>
 									{v.label && (
 										<>
 											{v.label}
-											<span className='text-muted-foreground'>-</span>
+											<span className='opacity-60'>-</span>
 										</>
 									)}
 									{isSeasonal ? (
-										<span className='text-primary'>
+										<span
+											className={cn(
+												!(planOnly && v.id === activeVariantId) &&
+													'text-primary'
+											)}
+										>
 											{t('menu.seasonal_price')}
 										</span>
 									) : (
 										<>
 											{v.price}
-											<span className='text-primary'>{v.currency}</span>
+											<span
+												className={cn(
+													!(planOnly && v.id === activeVariantId) &&
+														'text-primary'
+												)}
+											>
+												{v.currency}
+											</span>
 										</>
 									)}
 								</span>
@@ -316,7 +357,7 @@ export function FoodDetailView({
 			size='lg'
 			onPick={kind => {
 				const selectedVariant =
-					availableVariants.find(v => v.id === selectedVariantId) ??
+					availableVariants.find(v => v.id === activeVariantId) ??
 					availableVariants[0]
 				if (!selectedVariant) return
 				const item: FoodItemDto = {
@@ -340,30 +381,44 @@ export function FoodDetailView({
 		/>
 	) : null
 
-	const actions =
-		hasAccess || wishControl ? (
-			<div className='flex flex-col gap-2'>
-				<div className='flex items-center gap-2'>
-					{hasAccess && (
-						<Button
-							size='lg'
-							className='h-11 flex-1 gap-2 rounded-full'
-							disabled={availableVariants.length === 0 || !canOrder}
-							onClick={onAddToCart}
-						>
-							<ShoppingCart className='size-4' />
-							{t('food_detail.add_to_cart')}
-						</Button>
-					)}
-					{wishControl}
-				</div>
-				{hasAccess && !canOrder && (
-					<p className='text-center text-xs text-muted-foreground'>
-						{stageTitle}
-					</p>
+	const actions = planOnly ? (
+		<div className='flex items-center gap-2'>
+			<Button
+				variant='outline'
+				size='lg'
+				className='h-11 flex-1 gap-2 rounded-full'
+				asChild
+			>
+				<Link to={`/menu/${food.id}`} onClick={onClose}>
+					<UtensilsCrossed className='size-4' />
+					{t('food_detail.view_in_menu')}
+				</Link>
+			</Button>
+			{wishControl}
+		</div>
+	) : hasAccess || wishControl ? (
+		<div className='flex flex-col gap-2'>
+			<div className='flex items-center gap-2'>
+				{hasAccess && (
+					<Button
+						size='lg'
+						className='h-11 flex-1 gap-2 rounded-full'
+						disabled={availableVariants.length === 0 || !canOrder}
+						onClick={onAddToCart}
+					>
+						<ShoppingCart className='size-4' />
+						{t('food_detail.add_to_cart')}
+					</Button>
 				)}
+				{wishControl}
 			</div>
-		) : null
+			{hasAccess && !canOrder && (
+				<p className='text-center text-xs text-muted-foreground'>
+					{stageTitle}
+				</p>
+			)}
+		</div>
+	) : null
 
 	if (modal) {
 		return (

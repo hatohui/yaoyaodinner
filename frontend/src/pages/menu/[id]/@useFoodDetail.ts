@@ -68,6 +68,7 @@ export function useFoodDetail(idOverride?: string) {
 		isError,
 		availableVariants,
 		selectedVariantId,
+		hasPickedVariant: Boolean(pickedVariantId),
 		selectVariant: (variantId: string) =>
 			setPicked(prev => ({ ...prev, [id]: variantId })),
 		addToCart: () => {

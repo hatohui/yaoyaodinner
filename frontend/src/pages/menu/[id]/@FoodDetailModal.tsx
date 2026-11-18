@@ -8,9 +8,14 @@ import { useFoodDetail } from './@useFoodDetail'
 interface FoodDetailModalProps {
 	id: string | null
 	onOpenChange: (open: boolean) => void
+	planOnly?: boolean
 }
 
-export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
+export function FoodDetailModal({
+	id,
+	onOpenChange,
+	planOnly = false,
+}: FoodDetailModalProps) {
 	const { t } = useTranslation()
 	const location = useLocation()
 	const navigate = useNavigate()
@@ -20,6 +25,7 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 		isError,
 		availableVariants,
 		selectedVariantId,
+		hasPickedVariant,
 		selectVariant,
 		addToCart,
 		updateFood,
@@ -45,6 +51,7 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 						food={food}
 						availableVariants={availableVariants}
 						selectedVariantId={selectedVariantId}
+						hasPickedVariant={hasPickedVariant}
 						onSelectVariant={selectVariant}
 						onAddToCart={() => {
 							addToCart()
@@ -54,6 +61,8 @@ export function FoodDetailModal({ id, onOpenChange }: FoodDetailModalProps) {
 						onUpdateFood={updateFood}
 						onUpdateVariant={updateVariant}
 						variant='modal'
+						planOnly={planOnly}
+						onClose={() => onOpenChange(false)}
 					/>
 				)}
 			</DialogContent>

@@ -2,12 +2,13 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import {
 	useGetOrders,
+	useCreateOrder,
 	useUpdateOrder,
 	useDeleteOrder,
 	getGetOrdersQueryKey,
 } from '@/api/orders/orders'
 import { useToast } from '@/hooks/useToast'
-import type { OrderResponseDto } from '@/api/model'
+import type { CreateOrderDto, OrderResponseDto } from '@/api/model'
 import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 export function useOrders(tableId: string) {
@@ -22,6 +23,19 @@ export function useOrders(tableId: string) {
 	)
 
 	const invalidate = () => qc.invalidateQueries({ queryKey: ordersKey })
+
+	const createMutation = useCreateOrder({
+		mutation: {
+			onSuccess: () => {
+				invalidate()
+				toast.success(t('orders.placed'))
+			},
+			onError: () => toast.error(t('orders.place_failed')),
+		},
+	})
+
+	const addOrder = (data: CreateOrderDto) =>
+		createMutation.mutateAsync({ data, params: { lang: i18n.language } })
 
 	const updateMutation = useUpdateOrder({
 		mutation: {
@@ -108,5 +122,13 @@ export function useOrders(tableId: string) {
 		0
 	)
 
-	return { orders, isLoading, total, updateLine, removeLine }
+	return {
+		orders,
+		isLoading,
+		total,
+		addOrder,
+		isAdding: createMutation.isPending,
+		updateLine,
+		removeLine,
+	}
 }

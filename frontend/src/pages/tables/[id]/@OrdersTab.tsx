@@ -29,6 +29,7 @@ import {
 	type OrderedLine,
 } from '@/components/ordering/groupOrders'
 import { OrderDishGroup } from './@OrderDishGroup'
+import { QuickOrderModal, type QuickOrderTarget } from './@QuickOrderModal'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
@@ -76,6 +77,8 @@ export function OrdersTab({
 		orders,
 		isLoading,
 		total: ordersTotal,
+		addOrder,
+		isAdding,
 		updateLine,
 		removeLine,
 	} = useOrders(table.id)
@@ -97,6 +100,7 @@ export function OrdersTab({
 	const [removing, setRemoving] = useState<OrderedLine | null>(null)
 	const [pricing, setPricing] = useState<OrderedLine | null>(null)
 	const [quickViewId, setQuickViewId] = useState<string | null>(null)
+	const [quickAdd, setQuickAdd] = useState<QuickOrderTarget | null>(null)
 	const [subView, setSubView] = useState<OrdersSubView>(
 		initialSubView ?? 'dishes'
 	)
@@ -149,6 +153,16 @@ export function OrdersTab({
 					currency={currency}
 					compact={compact}
 					onSelectFood={setQuickViewId}
+					onQuickAdd={
+						canOrder
+							? () =>
+									setQuickAdd({
+										foodId: dish[0].foodId,
+										variantId: dish[0].variantId,
+										foodName: dish[0].foodName,
+									})
+							: undefined
+					}
 				>
 					{dish.map(renderLine)}
 				</OrderDishGroup>
@@ -471,6 +485,24 @@ export function OrdersTab({
 			<FoodDetailModal
 				id={quickViewId}
 				onOpenChange={open => !open && setQuickViewId(null)}
+			/>
+
+			<QuickOrderModal
+				target={quickAdd}
+				onOpenChange={open => !open && setQuickAdd(null)}
+				people={people}
+				myPersonId={myPersonId}
+				isSubmitting={isAdding}
+				onConfirm={async ({ variantId, quantity, splitAll, personIds }) => {
+					await addOrder({
+						tableId: table.id,
+						variantId,
+						quantity,
+						splitAll,
+						personIds,
+					})
+					setQuickAdd(null)
+				}}
 			/>
 		</div>
 	)

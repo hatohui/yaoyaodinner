@@ -352,6 +352,7 @@ export function useFoodWishes(tableId: string) {
 	return {
 		wishes: board.wishes,
 		wishOf: (foodId: string) => byFood.get(foodId),
+		setVariant: board.setVariant,
 		pick: (food: FoodItemDto, kind: WishKind) => {
 			const wish = board.snapshot().find(w => w.foodId === food.id)
 			if (wish) board.setKind(wish.id, kind)

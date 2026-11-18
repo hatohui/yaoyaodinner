@@ -76,9 +76,7 @@ export function PlanTab({
 		people,
 		statusOf: board.statusOf,
 		canEdit,
-		canAddToCart: board.canAddToCart,
 		onAdd: board.add,
-		onAddToCart: board.addToCart,
 		onSelectFood: setQuickViewId,
 		onSetKind: board.setKind,
 		onSetVariant: board.setVariant,
@@ -278,6 +276,7 @@ export function PlanTab({
 			<FoodDetailModal
 				id={quickViewId}
 				onOpenChange={open => !open && setQuickViewId(null)}
+				planOnly
 			/>
 		</div>
 	)

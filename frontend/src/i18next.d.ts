@@ -402,6 +402,7 @@ declare module 'react-i18next' {
 				food_detail: {
 					title: string
 					back_to_menu: string
+					view_in_menu: string
 					variants: string
 					add_to_cart: string
 					ordered_by: string
@@ -432,6 +433,7 @@ declare module 'react-i18next' {
 					unit_price: string
 					price_edited: string
 					add_order: string
+					add_another: string
 					cart: string
 					cart_empty: string
 					cart_local_note: string

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Plus } from 'lucide-react'
 import type { PersonDto } from '@/api/model'
 import type { OrderedLine } from '@/components/ordering/groupOrders'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
@@ -12,6 +12,7 @@ interface OrderDishGroupProps {
 	currency: string
 	compact?: boolean
 	onSelectFood?: (foodId: string) => void
+	onQuickAdd?: () => void
 	children: ReactNode
 }
 
@@ -22,6 +23,7 @@ export function OrderDishGroup({
 	currency,
 	compact = false,
 	onSelectFood,
+	onQuickAdd,
 	children,
 }: OrderDishGroupProps) {
 	const { t } = useTranslation()
@@ -96,46 +98,73 @@ export function OrderDishGroup({
 		)
 	}
 
+	const quickAddFooter = onQuickAdd ? (
+		<button
+			type='button'
+			onClick={onQuickAdd}
+			className='flex w-full cursor-pointer items-center justify-center gap-1.5 border-t border-border/60 bg-muted/20 px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+		>
+			<Plus className='size-3.5' />
+			{t('orders.add_another')}
+		</button>
+	) : null
+
 	if (compact) {
 		return (
 			<li>
-				<button
-					type='button'
-					aria-expanded={open}
-					onClick={() => setOpen(o => !o)}
-					className='group flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-brand-muted/35 focus-visible:bg-brand-muted/35 focus-visible:outline-none sm:px-4'
-				>
-					{thumb('size-8 rounded-lg')}
-					<span className='flex min-w-0 flex-1 flex-col'>
-						<span
-							title={name}
-							className='truncate text-sm font-medium text-foreground'
+				<div className='flex items-center transition-colors hover:bg-brand-muted/35'>
+					<button
+						type='button'
+						aria-expanded={open}
+						onClick={() => setOpen(o => !o)}
+						className='group flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 px-3 py-2 text-left focus-visible:bg-brand-muted/35 focus-visible:outline-none sm:px-4'
+					>
+						{thumb('size-8 rounded-lg')}
+						<span className='flex min-w-0 flex-1 flex-col'>
+							<span
+								title={name}
+								className='truncate text-sm font-medium text-foreground'
+							>
+								{name}
+							</span>
+							<span className='truncate text-xs text-muted-foreground'>
+								{summarySplits}
+							</span>
+						</span>
+						<span className='flex shrink-0 items-baseline gap-2 tabular-nums'>
+							<span className='text-xs font-semibold text-muted-foreground'>
+								×{quantity}
+							</span>
+							<span className='w-16 text-right text-sm font-semibold text-foreground'>
+								{priceText}
+							</span>
+						</span>
+						<ChevronDown
+							className={cn(
+								'size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:text-primary',
+								open && 'rotate-180'
+							)}
+						/>
+					</button>
+					{onQuickAdd && (
+						<button
+							type='button'
+							onClick={onQuickAdd}
+							aria-label={t('orders.add_another')}
+							title={t('orders.add_another')}
+							className='mr-2.5 flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full border border-border bg-muted/60 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:mr-3'
 						>
-							{name}
-						</span>
-						<span className='truncate text-xs text-muted-foreground'>
-							{summarySplits}
-						</span>
-					</span>
-					<span className='flex shrink-0 items-baseline gap-2 tabular-nums'>
-						<span className='text-xs font-semibold text-muted-foreground'>
-							×{quantity}
-						</span>
-						<span className='w-16 text-right text-sm font-semibold text-foreground'>
-							{priceText}
-						</span>
-					</span>
-					<ChevronDown
-						className={cn(
-							'size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:text-primary',
-							open && 'rotate-180'
-						)}
-					/>
-				</button>
+							<Plus className='size-3.5' />
+						</button>
+					)}
+				</div>
 				{open && (
-					<ul className='m-0 flex list-none flex-col divide-y divide-border/60 border-t border-border/60 bg-muted/20 p-0'>
-						{children}
-					</ul>
+					<>
+						<ul className='m-0 flex list-none flex-col divide-y divide-border/60 border-t border-border/60 bg-muted/20 p-0'>
+							{children}
+						</ul>
+						{quickAddFooter}
+					</>
 				)}
 			</li>
 		)
@@ -191,9 +220,12 @@ export function OrderDishGroup({
 				/>
 			</button>
 			{open && (
-				<ul className='m-0 flex list-none flex-col divide-y divide-border/60 border-t border-border/60 p-0'>
-					{children}
-				</ul>
+				<>
+					<ul className='m-0 flex list-none flex-col divide-y divide-border/60 border-t border-border/60 p-0'>
+						{children}
+					</ul>
+					{quickAddFooter}
+				</>
 			)}
 		</li>
 	)

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { isAxiosError } from 'axios'
 import {
 	ArchiveRestore,
 	ArrowLeftRight,
@@ -118,7 +119,9 @@ export function TableAuditDialog({
 		{ count: AUDIT_COUNT },
 		{ query: { enabled: open && Boolean(tableId), refetchOnMount: 'always' } }
 	)
-	const { data, isLoading, isError } = tableId ? tableAudit : globalAudit
+	const { data, isLoading, isError, error } = tableId ? tableAudit : globalAudit
+	const showError =
+		isError && !(isAxiosError(error) && error.response?.status === 404)
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -161,7 +164,7 @@ export function TableAuditDialog({
 					<div className='flex justify-center py-6'>
 						<Spinner />
 					</div>
-				) : isError ? (
+				) : showError ? (
 					<p className='py-6 text-center text-sm text-muted-foreground'>
 						{t('table_audit.load_error')}
 					</p>
