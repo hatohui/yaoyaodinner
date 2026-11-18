@@ -81,7 +81,7 @@ export function PlanTab({
 				<p className='text-xs text-muted-foreground'>
 					{canEdit ? t('plan_board.intro_drag') : t('plan_board.intro')}
 				</p>
-				<div className='ml-auto flex flex-wrap items-center justify-end gap-2'>
+				<div className='flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto sm:justify-end'>
 					{board.canUseAi && orders.length > 0 && !plan && !isPlanning && (
 						<Button
 							variant='outline'

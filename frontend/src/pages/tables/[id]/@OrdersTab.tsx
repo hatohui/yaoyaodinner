@@ -113,7 +113,13 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 	)
 
 	const renderLines = (group: OrderedLine[]) => (
-		<ul className='flex flex-col gap-2'>
+		<ul
+			className={
+				compact
+					? 'flex flex-col divide-y divide-border/60 overflow-hidden rounded-2xl border border-border bg-card shadow-sm'
+					: 'flex flex-col gap-2'
+			}
+		>
 			{groupByDish(group).map(dish => (
 				<OrderDishGroup
 					key={dishKey(dish[0])}
@@ -153,9 +159,9 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 					canEdit={canOrder}
 				/>
 			) : (
-				<div className='flex items-center justify-between gap-2'>
+				<div className='flex flex-wrap items-center justify-between gap-2'>
 					{canOrder ? (
-						<div className='flex min-w-0 items-center gap-2'>
+						<div className='flex min-w-0 flex-wrap items-center gap-2'>
 							<Button
 								asChild
 								className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
