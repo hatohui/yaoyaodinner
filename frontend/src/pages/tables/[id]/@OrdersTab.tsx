@@ -134,111 +134,162 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		</ul>
 	)
 
-	return (
-		<div className='flex flex-col gap-3'>
-			{canUseAi && (
-				<TablePlanCard
-					tableId={table.id}
-					seatedCount={people.length}
-					orders={orders}
-					modifying={modifying}
-					onModifyingChange={setModifying}
-				/>
-			)}
-			{preset?.note && <IncludedNoteStrip note={preset.note} />}
-			{preset && <PresetMenuSection preset={preset} />}
+	const hasSidebar = Boolean(
+		preset || (canUseAi && (orders.length === 0 || plan || isPlanning))
+	)
 
-			{people.length === 0 ? (
-				<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
-					{t('orders.needs_people_body')}
-				</p>
-			) : orders.length === 0 ? (
-				<TabEmptyState
-					message={t('orders.empty')}
-					tableId={table.id}
-					canEdit={canOrder}
-				/>
-			) : (
-				<div className='flex flex-wrap items-center justify-between gap-2'>
-					{canOrder ? (
-						<div className='flex min-w-0 flex-wrap items-center gap-2'>
+	return (
+		<div
+			className={
+				hasSidebar
+					? 'flex flex-col gap-3 lg:grid lg:grid-cols-[1fr_340px] lg:items-start lg:gap-5'
+					: 'flex flex-col gap-3'
+			}
+		>
+			{(canUseAi || preset) && (
+				<aside
+					className={
+						hasSidebar
+							? 'flex flex-col gap-3 lg:order-2 lg:sticky lg:top-20'
+							: 'contents'
+					}
+				>
+					{canUseAi && (
+						<TablePlanCard
+							tableId={table.id}
+							seatedCount={people.length}
+							orders={orders}
+							modifying={modifying}
+							onModifyingChange={setModifying}
+						/>
+					)}
+					{preset?.note && <IncludedNoteStrip note={preset.note} />}
+					{preset && <PresetMenuSection preset={preset} />}
+				</aside>
+			)}
+
+			<div className='flex min-w-0 flex-col gap-3 lg:order-1'>
+				{people.length === 0 ? (
+					<p className='rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground'>
+						{t('orders.needs_people_body')}
+					</p>
+				) : orders.length === 0 ? (
+					<TabEmptyState
+						message={t('orders.empty')}
+						tableId={table.id}
+						canEdit={canOrder}
+					/>
+				) : (
+					<div className='flex flex-wrap items-center justify-between gap-2'>
+						{canOrder ? (
+							<div className='flex min-w-0 flex-wrap items-center gap-2'>
+								<Button
+									asChild
+									className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+								>
+									<Link to={`/tables/${table.id}/order`}>
+										<Plus className='size-4' />
+										{t('orders.add_order')}
+									</Link>
+								</Button>
+								{canUseAi && !plan && !isPlanning && (
+									<Button
+										variant='outline'
+										className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai motion-safe:before:animate-ai-sheen'
+										onClick={() => setModifying(true)}
+									>
+										<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
+										{t('table_plan.modify_cta')}
+									</Button>
+								)}
+							</div>
+						) : (
+							<span />
+						)}
+
+						<ViewToggle view={view} onChange={setView} />
+					</div>
+				)}
+
+				{orders.length > 0 &&
+					(showRounds ? (
+						<>
+							{preLines.length > 0 && (
+								<OrderRoundSection
+									title={t('orders.round_pre')}
+									locked={stage !== 'open'}
+									subtotal={linesTotal(preLines)}
+									currency={currency}
+									partial={hasUnpriced(preLines)}
+								>
+									{renderLines(preLines)}
+								</OrderRoundSection>
+							)}
+							<OrderRoundSection
+								title={t('orders.round_dinner')}
+								locked={stage === 'finalized'}
+								subtotal={linesTotal(dinnerLines)}
+								currency={currency}
+								partial={hasUnpriced(dinnerLines)}
+							>
+								{dinnerLines.length > 0 ? (
+									renderLines(dinnerLines)
+								) : (
+									<p className='rounded-2xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground'>
+										{t('orders.round_dinner_empty')}
+									</p>
+								)}
+							</OrderRoundSection>
+						</>
+					) : (
+						renderLines(lines)
+					))}
+
+				{orders.length > 0 && (
+					<>
+						<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
+							<span>{t('orders.total')}</span>
+							<span>
+								<TotalAmount
+									amount={total}
+									currency={currency}
+									partial={hasUnpriced(orders)}
+								/>
+							</span>
+						</div>
+						<PriceEstimateNote />
+					</>
+				)}
+
+				{orders.length > 0 && (
+					<div className='sticky bottom-2 z-20 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-3.5 py-2.5 shadow-lg backdrop-blur-md sm:hidden'>
+						<div className='flex min-w-0 flex-col'>
+							<span className='text-[11px] text-muted-foreground'>
+								{t('orders.total')}
+							</span>
+							<span className='text-sm font-semibold tabular-nums text-foreground'>
+								<TotalAmount
+									amount={total}
+									currency={currency}
+									partial={hasUnpriced(orders)}
+								/>
+							</span>
+						</div>
+						{canOrder && (
 							<Button
 								asChild
-								className='h-9 gap-1.5 self-start rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100'
+								size='sm'
+								className='h-9 shrink-0 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground'
 							>
 								<Link to={`/tables/${table.id}/order`}>
 									<Plus className='size-4' />
 									{t('orders.add_order')}
 								</Link>
 							</Button>
-							{canUseAi && !plan && !isPlanning && (
-								<Button
-									variant='outline'
-									className='relative h-9 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai motion-safe:before:animate-ai-sheen'
-									onClick={() => setModifying(true)}
-								>
-									<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
-									{t('table_plan.modify_cta')}
-								</Button>
-							)}
-						</div>
-					) : (
-						<span />
-					)}
-
-					<ViewToggle view={view} onChange={setView} />
-				</div>
-			)}
-
-			{orders.length > 0 &&
-				(showRounds ? (
-					<>
-						{preLines.length > 0 && (
-							<OrderRoundSection
-								title={t('orders.round_pre')}
-								locked={stage !== 'open'}
-								subtotal={linesTotal(preLines)}
-								currency={currency}
-								partial={hasUnpriced(preLines)}
-							>
-								{renderLines(preLines)}
-							</OrderRoundSection>
 						)}
-						<OrderRoundSection
-							title={t('orders.round_dinner')}
-							locked={stage === 'finalized'}
-							subtotal={linesTotal(dinnerLines)}
-							currency={currency}
-							partial={hasUnpriced(dinnerLines)}
-						>
-							{dinnerLines.length > 0 ? (
-								renderLines(dinnerLines)
-							) : (
-								<p className='rounded-2xl border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground'>
-									{t('orders.round_dinner_empty')}
-								</p>
-							)}
-						</OrderRoundSection>
-					</>
-				) : (
-					renderLines(lines)
-				))}
-
-			{orders.length > 0 && (
-				<>
-					<div className='flex items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground'>
-						<span>{t('orders.total')}</span>
-						<span>
-							<TotalAmount
-								amount={total}
-								currency={currency}
-								partial={hasUnpriced(orders)}
-							/>
-						</span>
 					</div>
-					<PriceEstimateNote />
-				</>
-			)}
+				)}
+			</div>
 
 			<SplitPickerModal
 				open={editing !== null}

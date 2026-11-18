@@ -197,40 +197,48 @@ export function SplitsTab({ table, people, canEdit }: SplitsTabProps) {
 					myPersonId={myPersonId}
 				/>
 			) : (
-				<div className='flex flex-col gap-3'>
-					{mine && (
-						<section className='flex flex-col gap-2 rounded-2xl border-2 border-primary bg-card p-4 shadow-sm'>
-							<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-								{t('split.your_share')}
-								{mine.partial && ` · ${t('menu.price_from')}`}
-							</span>
-							<span className='text-3xl font-extrabold tracking-tight tabular-nums text-foreground'>
-								{mine.total.toFixed(2)}{' '}
-								<span className='text-base font-semibold text-muted-foreground'>
-									{currency}
+				<div
+					className={
+						mine && others.length > 0
+							? 'flex flex-col gap-3 lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-5'
+							: 'flex flex-col gap-3'
+					}
+				>
+					<div className='flex flex-col gap-3 lg:sticky lg:top-20'>
+						{mine && (
+							<section className='flex flex-col gap-2 rounded-2xl border-2 border-primary bg-card p-4 shadow-sm'>
+								<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									{t('split.your_share')}
+									{mine.partial && ` · ${t('menu.price_from')}`}
 								</span>
-							</span>
-							<div className='border-t border-dashed border-border pt-2'>
-								<SplitBreakdown
-									rounds={mine.rounds}
-									flatShare={flatShare}
-									currency={currency}
-									lineShare={lineShare}
-									onSelect={setSelectedOrder}
-								/>
-							</div>
-						</section>
-					)}
+								<span className='text-3xl font-extrabold tracking-tight tabular-nums text-foreground'>
+									{mine.total.toFixed(2)}{' '}
+									<span className='text-base font-semibold text-muted-foreground'>
+										{currency}
+									</span>
+								</span>
+								<div className='border-t border-dashed border-border pt-2'>
+									<SplitBreakdown
+										rounds={mine.rounds}
+										flatShare={flatShare}
+										currency={currency}
+										lineShare={lineShare}
+										onSelect={setSelectedOrder}
+									/>
+								</div>
+							</section>
+						)}
 
-					<div className='flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-xs'>
-						<span>{t('split.table_total')}</span>
-						<span className='tabular-nums'>
-							<TotalAmount
-								amount={tableTotal}
-								currency={currency}
-								partial={tablePartial}
-							/>
-						</span>
+						<div className='flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-xs'>
+							<span>{t('split.table_total')}</span>
+							<span className='tabular-nums'>
+								<TotalAmount
+									amount={tableTotal}
+									currency={currency}
+									partial={tablePartial}
+								/>
+							</span>
+						</div>
 					</div>
 
 					{others.length > 0 && (

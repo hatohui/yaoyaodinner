@@ -147,7 +147,7 @@ export function Roster({
 			) : (
 				<ul
 					className={cn(
-						'flex flex-col',
+						'grid grid-cols-1 md:grid-cols-2 md:items-start',
 						compact ? 'gap-1.5' : 'gap-2 sm:gap-3'
 					)}
 				>

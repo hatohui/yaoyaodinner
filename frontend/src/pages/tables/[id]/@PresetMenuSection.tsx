@@ -13,7 +13,11 @@ interface PresetMenuSectionProps {
 
 export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
 	const { t } = useTranslation()
-	const [collapsed, setCollapsed] = useState(false)
+	const [collapsed, setCollapsed] = useState(
+		() =>
+			typeof window !== 'undefined' &&
+			window.matchMedia('(max-width: 639px)').matches
+	)
 	const hasItems = preset.items.length > 0
 
 	return (

@@ -8,9 +8,14 @@ export type ListView = 'card' | 'compact'
 
 /** Card/compact preference, remembered per list under its own storage key. */
 export function useListView(storageKey: string) {
-	const [view, setViewState] = useState<ListView>(() =>
-		localStorage.load(storageKey) === 'compact' ? 'compact' : 'card'
-	)
+	const [view, setViewState] = useState<ListView>(() => {
+		const saved = localStorage.load(storageKey)
+		if (saved === 'card' || saved === 'compact') return saved
+		return typeof window !== 'undefined' &&
+			window.matchMedia('(max-width: 639px)').matches
+			? 'compact'
+			: 'card'
+	})
 	const setView = (next: ListView) => {
 		localStorage.save(storageKey, next)
 		setViewState(next)

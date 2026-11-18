@@ -127,7 +127,7 @@ export default function TableDetailPage() {
 
 	if (isLoading || isConfigLoading) {
 		return (
-			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10'>
+			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-5xl'>
 				<Skeleton className='h-4 w-24 rounded-full' />
 				<Skeleton className='h-40 w-full rounded-2xl sm:h-52' />
 				<div className='flex items-center justify-between gap-2'>
@@ -155,7 +155,7 @@ export default function TableDetailPage() {
 	}
 
 	return (
-		<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10'>
+		<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-5xl'>
 			<Link
 				to={backTo ?? '/tables'}
 				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
@@ -280,7 +280,7 @@ export default function TableDetailPage() {
 
 			{showOrdering ? (
 				<Tabs value={activeTab} onValueChange={setTab}>
-					<TabsList className='h-10 w-full rounded-full border border-border bg-control p-1'>
+					<TabsList className='sticky top-16 z-20 h-10 w-full rounded-full border border-border bg-control/95 p-1 shadow-sm backdrop-blur-md sm:static sm:bg-control sm:shadow-none sm:backdrop-blur-none'>
 						<TabsTrigger
 							value='people'
 							data-tour='people-tab'

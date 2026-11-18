@@ -117,43 +117,47 @@ export function PlanTab({
 			</div>
 
 			<WishDnd wishes={board.wishes} onMove={board.moveWish}>
-				<WishSection
-					kind='must'
-					icon={Star}
-					title={t('plan_board.must')}
-					empty={t('plan_board.must_empty')}
-					wishes={board.must}
-					{...wishProps}
-				/>
-				<WishSection
-					kind='want'
-					icon={Sparkles}
-					title={t('plan_board.want')}
-					empty={t('plan_board.want_empty')}
-					wishes={board.want}
-					{...wishProps}
-				/>
-				<WishSection
-					kind='avoid'
-					icon={Ban}
-					title={t('plan_board.avoid')}
-					empty={t('plan_board.avoid_empty')}
-					wishes={board.avoid}
-					{...wishProps}
-				/>
+				<div className='grid grid-cols-1 gap-3 lg:grid-cols-3 lg:items-start'>
+					<WishSection
+						kind='must'
+						icon={Star}
+						title={t('plan_board.must')}
+						empty={t('plan_board.must_empty')}
+						wishes={board.must}
+						{...wishProps}
+					/>
+					<WishSection
+						kind='want'
+						icon={Sparkles}
+						title={t('plan_board.want')}
+						empty={t('plan_board.want_empty')}
+						wishes={board.want}
+						{...wishProps}
+					/>
+					<WishSection
+						kind='avoid'
+						icon={Ban}
+						title={t('plan_board.avoid')}
+						empty={t('plan_board.avoid_empty')}
+						wishes={board.avoid}
+						{...wishProps}
+					/>
+				</div>
 			</WishDnd>
-			<PersonalOrdersSection
-				tableId={table.id}
-				dishes={board.dishes}
-				canAdd={board.canAddToCart}
-			/>
-			<AllergySection
-				groups={board.allergies}
-				people={people}
-				canEdit={canEdit}
-				labelOf={board.labelOf}
-				onEditPerson={board.setEditing}
-			/>
+			<div className='grid grid-cols-1 gap-3 md:grid-cols-2 md:items-start'>
+				<PersonalOrdersSection
+					tableId={table.id}
+					dishes={board.dishes}
+					canAdd={board.canAddToCart}
+				/>
+				<AllergySection
+					groups={board.allergies}
+					people={people}
+					canEdit={canEdit}
+					labelOf={board.labelOf}
+					onEditPerson={board.setEditing}
+				/>
+			</div>
 
 			<ApplyPlanDialog
 				open={previewing}

@@ -34,6 +34,7 @@ export function BackToTop({ threshold = 300, className }: BackToTopProps) {
 	}
 
 	const isMenuPage = pathname.startsWith('/menu')
+	const isTablePage = pathname.startsWith('/tables/')
 
 	return (
 		<button
@@ -49,7 +50,9 @@ export function BackToTop({ threshold = 300, className }: BackToTopProps) {
 				'sm:size-11',
 				isMenuPage
 					? 'bottom-20 right-4 sm:bottom-22 sm:right-6'
-					: 'bottom-5 right-4 sm:bottom-6 sm:right-6',
+					: isTablePage
+						? 'bottom-20 right-4 sm:bottom-6 sm:right-6'
+						: 'bottom-5 right-4 sm:bottom-6 sm:right-6',
 				visible
 					? 'translate-y-0 opacity-100 pointer-events-auto'
 					: 'translate-y-4 opacity-0 pointer-events-none',
