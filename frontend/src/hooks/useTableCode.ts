@@ -70,13 +70,14 @@ export function useTableAccess(tableId: string) {
 		if (data && !data.valid) release()
 	}, [data, release])
 
-	const open = !tableCodes && (!claimedTableId || claimedTableId === tableId)
-	const canEdit = isAdmin || (tableCodes ? Boolean(code) : open)
+	const isSeatedHere = claimedTableId === tableId
+	const hasCode = !tableCodes || Boolean(code)
+	const canEdit = isAdmin || (isSeatedHere && hasCode)
 
 	return {
 		isAdmin,
 		canEdit,
-		canJoin: canEdit || (!tableCodes && !claimedTableId),
+		canJoin: canEdit || (!claimedTableId && hasCode),
 	}
 }
 

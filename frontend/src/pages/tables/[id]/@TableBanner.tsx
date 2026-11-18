@@ -39,35 +39,44 @@ export function TableBanner({ table, canEdit, onChange }: TableBannerProps) {
 		)
 	}
 
+	if (!table.bannerUrl) {
+		return (
+			<div className='relative'>
+				<div className='aspect-[21/9] sm:aspect-video sm:max-h-56'>
+					{fallback}
+				</div>
+				<span className='pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/15' />
+			</div>
+		)
+	}
+
 	return (
-		<div className='relative'>
-			<StoredImage
+		<>
+			<button
+				type='button'
+				onClick={() => setViewing(true)}
+				aria-label={t('common.view_image')}
+				className='group relative block w-full cursor-pointer rounded-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+			>
+				<StoredImage
+					imageKey={table.bannerUrl}
+					className='aspect-[21/9] w-full rounded-2xl object-cover sm:aspect-video sm:max-h-56'
+					fallback={
+						<div className='aspect-[21/9] sm:aspect-video sm:max-h-56'>
+							{fallback}
+						</div>
+					}
+				/>
+				<span className='pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/15' />
+				<span className='pointer-events-none absolute bottom-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white transition-colors group-hover:bg-black/70'>
+					<Expand className='size-3.5' />
+				</span>
+			</button>
+			<ImageViewer
 				imageKey={table.bannerUrl}
-				className='aspect-[21/9] w-full rounded-2xl object-cover sm:aspect-video sm:max-h-56'
-				fallback={
-					<div className='aspect-[21/9] sm:aspect-video sm:max-h-56'>
-						{fallback}
-					</div>
-				}
+				open={viewing}
+				onOpenChange={setViewing}
 			/>
-			<span className='pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/15' />
-			{table.bannerUrl && (
-				<>
-					<button
-						type='button'
-						onClick={() => setViewing(true)}
-						aria-label={t('common.view_image')}
-						className='absolute bottom-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70'
-					>
-						<Expand className='size-3.5' />
-					</button>
-					<ImageViewer
-						imageKey={table.bannerUrl}
-						open={viewing}
-						onOpenChange={setViewing}
-					/>
-				</>
-			)}
-		</div>
+		</>
 	)
 }

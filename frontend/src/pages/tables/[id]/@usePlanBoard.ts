@@ -48,7 +48,9 @@ export function usePlanBoard(
 	const access: PlanAccess = !canEdit
 		? tableCodes
 			? 'locked'
-			: 'other_table'
+			: hasIdentity
+				? 'other_table'
+				: 'pick_identity'
 		: tablePlan && !personId
 			? hasIdentity
 				? 'other_table_ai'
