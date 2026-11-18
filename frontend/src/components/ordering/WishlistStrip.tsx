@@ -96,8 +96,8 @@ export function WishlistStrip({
 
 	return (
 		<section className='flex flex-col gap-2 rounded-2xl border border-primary/30 bg-primary/5 p-3'>
-			<header className='flex flex-wrap items-center gap-x-2 gap-y-1.5'>
-				<div className='flex min-w-0 flex-1 flex-wrap items-center gap-1.5'>
+			<header className='flex flex-wrap items-center justify-between gap-2'>
+				<div className='flex min-w-0 items-center gap-1.5'>
 					{wishes.length > 0 ? (
 						<button
 							type='button'
@@ -166,34 +166,9 @@ export function WishlistStrip({
 							</span>
 						</TooltipContent>
 					</Tooltip>
-					{allergies && allergies.length > 0 && (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<span className='inline-flex max-w-full shrink-0 cursor-help items-center gap-1 rounded-lg border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-semibold text-destructive'>
-									<TriangleAlert className='size-3 shrink-0' />
-									<span className='truncate'>
-										{t('plan_board.allergies')}:{' '}
-										{allergies.map(a => a.label).join(', ')}
-									</span>
-								</span>
-							</TooltipTrigger>
-							<TooltipContent
-								side='bottom'
-								className='flex flex-col gap-1 p-2.5 text-xs'
-							>
-								{allergies.map(a => (
-									<span key={a.key}>
-										<span className='font-semibold'>{a.label}</span>
-										{' — '}
-										{a.people.join(', ')}
-									</span>
-								))}
-							</TooltipContent>
-						</Tooltip>
-					)}
 				</div>
 
-				<div className='flex shrink-0 items-center gap-1.5'>
+				<div className='ml-auto flex shrink-0 items-center gap-1.5'>
 					{canApply && pending.length > 0 && (
 						<Button
 							size='sm'
@@ -229,6 +204,31 @@ export function WishlistStrip({
 					)}
 				</div>
 			</header>
+			{allergies && allergies.length > 0 && (
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<span className='inline-flex w-fit max-w-full cursor-help items-center gap-1.5 rounded-lg border border-destructive/40 bg-destructive/10 px-2.5 py-1 text-xs font-semibold text-destructive'>
+							<TriangleAlert className='size-3.5 shrink-0' />
+							<span className='truncate'>
+								{t('plan_board.allergies')}:{' '}
+								{allergies.map(a => a.label).join(', ')}
+							</span>
+						</span>
+					</TooltipTrigger>
+					<TooltipContent
+						side='bottom'
+						className='flex flex-col gap-1 p-2.5 text-xs'
+					>
+						{allergies.map(a => (
+							<span key={a.key}>
+								<span className='font-semibold'>{a.label}</span>
+								{' — '}
+								{a.people.join(', ')}
+							</span>
+						))}
+					</TooltipContent>
+				</Tooltip>
+			)}
 			{wishes.length > 0 && !collapsed && (
 				<ul className='flex flex-wrap gap-1.5'>
 					{visible.map(wish => {

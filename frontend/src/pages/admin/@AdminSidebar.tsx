@@ -15,9 +15,11 @@ import {
 	SlidersHorizontal,
 	ListChecks,
 	BookA,
+	History,
 } from 'lucide-react'
 import { useAdmin } from '@/hooks/useAdmin'
 import { cn } from '@/utils/shadcn'
+import { TableAuditDialog } from './tables/@TableAuditDialog'
 
 interface AdminSidebarProps {
 	onNavigate?: () => void
@@ -90,6 +92,23 @@ export function AdminSidebar({
 					</Link>
 				)
 			})}
+
+			<TableAuditDialog
+				trigger={
+					<button
+						type='button'
+						title={collapsed ? t('table_audit.open') : undefined}
+						aria-label={collapsed ? t('table_audit.open') : undefined}
+						className={cn(
+							rowClass,
+							'w-full cursor-pointer text-foreground/75 hover:bg-primary/10 hover:text-primary dark:hover:bg-accent/50'
+						)}
+					>
+						<History className='size-4 shrink-0' />
+						{!collapsed && t('table_audit.open')}
+					</button>
+				}
+			/>
 
 			<div className='my-2 border-t border-border/60' />
 

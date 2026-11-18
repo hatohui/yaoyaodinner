@@ -7,7 +7,6 @@ import {
 	Plus,
 	ShoppingCart,
 	TriangleAlert,
-	User,
 	Users,
 	X,
 } from 'lucide-react'
@@ -245,6 +244,23 @@ export function WishRow({
 								<span className='truncate'>{peopleLabel}</span>
 							</span>
 						)}
+						{wish.addedByName && (
+							<>
+								{(!wish.foodId ||
+									(!avoid && (wish.variantLabel || qty > 1 || showPeople))) && (
+									<span className='shrink-0 text-muted-foreground/50'>·</span>
+								)}
+								<span
+									title={t('plan_board.added_by', { name: wish.addedByName })}
+									className='inline-flex min-w-0 items-center gap-0.5 truncate text-muted-foreground'
+								>
+									<User className='size-2.5 shrink-0' />
+									<span className='truncate'>
+										{t('plan_board.added_by', { name: wish.addedByName })}
+									</span>
+								</span>
+							</>
+						)}
 					</div>
 				)}
 
@@ -290,6 +306,17 @@ export function WishRow({
 								)
 							))}
 						{peopleControl}
+						{wish.addedByName && (
+							<span
+								title={t('plan_board.added_by', { name: wish.addedByName })}
+								className='inline-flex h-5 shrink-0 items-center gap-1 rounded-md border border-border/60 bg-muted/40 px-1.5 text-[11px] text-muted-foreground'
+							>
+								<User className='size-2.5 shrink-0' />
+								<span className='max-w-36 truncate'>
+									{t('plan_board.added_by', { name: wish.addedByName })}
+								</span>
+							</span>
+						)}
 					</div>
 				)}
 			</div>
@@ -333,4 +360,10 @@ export function WishRow({
 					onMove={onMove}
 					onVariantChange={onVariantChange}
 					onPeopleChange={onPeopleChange}
-					onQuantityChange={onQuant
+					onQuantityChange={onQuantityChange}
+					onRemove={onRemove}
+				/>
+			)}
+		</li>
+	)
+}

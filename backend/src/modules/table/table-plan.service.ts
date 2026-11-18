@@ -266,6 +266,7 @@ export class TablePlanService {
           select: {
             kind: true,
             label: true,
+            quantity: true,
             people: { select: { person: { select: { name: true } } } },
             variant: {
               select: {
@@ -326,8 +327,9 @@ export class TablePlanService {
         .map((w) => {
           const name = w.variant ? nameIn(w.variant.food.translations, lang) : w.label;
           if (!name) return null;
+          const qty = w.quantity > 1 ? ` ×${w.quantity}` : '';
           const who = w.people.map((p) => p.person.name).filter(Boolean);
-          return who.length > 0 ? `${name} (${who.join(', ')})` : name;
+          return who.length > 0 ? `${name}${qty} (${who.join(', ')})` : `${name}${qty}`;
         })
         .filter((name): name is string => Boolean(name));
     const wishNote =

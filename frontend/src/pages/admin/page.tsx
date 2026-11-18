@@ -10,6 +10,7 @@ import { PublishEventDialog } from './@PublishEventDialog'
 import { PastEventsList } from './@PastEventsList'
 import { EventSettingsCard } from './@EventSettingsCard'
 import { ExportOrdersDialog } from './@ExportOrdersDialog'
+import { TableAuditDialog } from './tables/@TableAuditDialog'
 import { useAdminDashboard } from './@useAdminDashboard'
 
 export default function AdminDashboardPage() {
@@ -43,6 +44,7 @@ export default function AdminDashboardPage() {
 					{t('admin.dashboard.title')}
 				</h1>
 				<div className='flex flex-wrap items-center gap-2'>
+					<TableAuditDialog />
 					{selectedEvent && (
 						<ExportOrdersDialog
 							eventName={

@@ -22,10 +22,7 @@ import {
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
-import {
-	useGetTableAudit,
-	useGetTableAuditByTable,
-} from '@/api/tables/tables'
+import { useGetTableAudit, useGetTableAuditByTable } from '@/api/tables/tables'
 import type { TableAuditDto, TableAuditDtoAction } from '@/api/model'
 import { Button } from '@/components/ui/button'
 import {
@@ -96,10 +93,12 @@ export function TableAuditDialog({
 	className,
 	tableId,
 	compact,
+	trigger,
 }: {
 	className?: string
 	tableId?: string
 	compact?: boolean
+	trigger?: React.ReactNode
 }) {
 	const { t, i18n } = useTranslation()
 	const [open, setOpen] = useState(false)
@@ -124,29 +123,30 @@ export function TableAuditDialog({
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				{compact ? (
-					<button
-						type='button'
-						aria-label={t('table_audit.open')}
-						title={t('table_audit.open')}
-						className={cn(
-							'inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3',
-							className
-						)}
-					>
-						<History className='size-4' />
-						<span className='hidden sm:inline'>{t('table_audit.open')}</span>
-					</button>
-				) : (
-					<Button
-						size='sm'
-						variant='outline'
-						className={cn('gap-1.5 rounded-full', className)}
-					>
-						<History className='size-4' />
-						{t('table_audit.open')}
-					</Button>
-				)}
+				{trigger ??
+					(compact ? (
+						<button
+							type='button'
+							aria-label={t('table_audit.open')}
+							title={t('table_audit.open')}
+							className={cn(
+								'inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3',
+								className
+							)}
+						>
+							<History className='size-4' />
+							<span className='hidden sm:inline'>{t('table_audit.open')}</span>
+						</button>
+					) : (
+						<Button
+							size='sm'
+							variant='outline'
+							className={cn('gap-1.5 rounded-full', className)}
+						>
+							<History className='size-4' />
+							{t('table_audit.open')}
+						</Button>
+					))}
 			</DialogTrigger>
 			<DialogContent className='flex max-h-[85vh] flex-col rounded-3xl sm:max-w-lg'>
 				<DialogHeader>
