@@ -142,7 +142,7 @@ export function OrdersTab({ table, people, canEdit }: OrdersTabProps) {
 		<div
 			className={
 				hasSidebar
-					? 'flex flex-col gap-3 lg:grid lg:grid-cols-[1fr_340px] lg:items-start lg:gap-5'
+					? 'flex flex-col gap-3 lg:grid lg:grid-cols-[1fr_380px] lg:items-start lg:gap-5'
 					: 'flex flex-col gap-3'
 			}
 		>

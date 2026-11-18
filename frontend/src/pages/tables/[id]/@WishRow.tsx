@@ -91,13 +91,13 @@ export function WishRow({
 		<li
 			ref={drag.ref}
 			className={cn(
-				'flex flex-col gap-1.5 py-2 transition-colors sm:flex-row sm:items-center sm:gap-2',
+				'flex flex-col gap-1.5 py-2 transition-colors',
 				drag.isDragging && 'opacity-40',
 				drag.isOver &&
 					'rounded-lg bg-primary/10 ring-1 ring-inset ring-primary/50'
 			)}
 		>
-			<div className='flex min-w-0 flex-1 items-center gap-2'>
+			<div className='flex min-w-0 items-center gap-2'>
 				{canEdit && (
 					<WishDragHandle label={t('plan_board.drag')} handle={drag.handle} />
 				)}
@@ -110,25 +110,22 @@ export function WishRow({
 					className='size-9 rounded-lg'
 				/>
 				<div className='flex min-w-0 flex-1 flex-col'>
-					<div className='flex min-w-0 items-center gap-1.5'>
-						<span
-							className={cn(
-								'truncate text-sm font-medium text-foreground sm:font-normal',
-								status === 'ordered' &&
-									!avoid &&
-									'text-muted-foreground line-through'
-							)}
-						>
-							{wish.name}
-						</span>
-						<span className='hidden sm:inline-flex'>{variantControl}</span>
-					</div>
+					<span
+						title={wish.name}
+						className={cn(
+							'truncate text-sm font-medium text-foreground',
+							status === 'ordered' &&
+								!avoid &&
+								'text-muted-foreground line-through'
+						)}
+					>
+						{wish.name}
+					</span>
 					{!wish.foodId && (
 						<span className='text-[11px] text-muted-foreground'>
 							{t('plan_board.off_menu')}
 						</span>
 					)}
-					<div className='hidden sm:block'>{peopleControl}</div>
 				</div>
 				{canEdit && (
 					<button
@@ -138,7 +135,7 @@ export function WishRow({
 						onClick={onRemove}
 						className={cn(
 							iconButton,
-							'hover:bg-destructive/10 hover:text-destructive sm:hidden'
+							'hover:bg-destructive/10 hover:text-destructive'
 						)}
 					>
 						<X className='size-4' />
@@ -146,37 +143,31 @@ export function WishRow({
 				)}
 			</div>
 
-			<div className='flex items-center justify-between gap-2 pl-12 sm:contents'>
-				<div className='flex min-w-0 flex-wrap items-center gap-1.5 sm:hidden'>
+			<div className='flex items-center justify-between gap-2 pl-12'>
+				<div className='flex min-w-0 flex-wrap items-center gap-1.5'>
 					{variantControl}
 					{peopleControl}
 				</div>
-				<div className='ml-auto flex shrink-0 items-center gap-0.5 sm:ml-0'>
+				<div className='ml-auto flex shrink-0 items-center gap-0.5'>
 					{avoid && status === 'ordered' && (
 						<span
 							title={t('plan_board.ordered_anyway')}
-							className='flex shrink-0 items-center gap-1 rounded-full border border-destructive/50 px-1.5 py-0.5 text-[11px] font-semibold text-destructive sm:px-2'
+							className='flex shrink-0 items-center gap-1 rounded-full border border-destructive/50 px-2 py-0.5 text-[11px] font-semibold text-destructive'
 						>
 							<TriangleAlert className='size-3' />
-							<span className='sr-only sm:not-sr-only'>
-								{t('plan_board.ordered_anyway')}
-							</span>
+							<span>{t('plan_board.ordered_anyway')}</span>
 						</span>
 					)}
 					{!avoid && status === 'ordered' && (
-						<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[11px] font-semibold text-primary-foreground sm:px-2'>
+						<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground'>
 							<Check className='size-3' />
-							<span className='sr-only sm:not-sr-only'>
-								{t('plan_board.status_ordered')}
-							</span>
+							<span>{t('plan_board.status_ordered')}</span>
 						</span>
 					)}
 					{!avoid && status === 'in_cart' && (
-						<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-1.5 py-0.5 text-[11px] font-semibold text-primary sm:px-2'>
+						<span className='flex shrink-0 items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary'>
 							<ShoppingCart className='size-3' />
-							<span className='sr-only sm:not-sr-only'>
-								{t('plan_board.status_in_cart')}
-							</span>
+							<span>{t('plan_board.status_in_cart')}</span>
 						</span>
 					)}
 					{!avoid && status === 'open' && canAddToCart && wish.foodId && (
@@ -209,20 +200,6 @@ export function WishRow({
 								</button>
 							)
 						})}
-					{canEdit && (
-						<button
-							type='button'
-							aria-label={t('plan_board.remove')}
-							title={t('plan_board.remove')}
-							onClick={onRemove}
-							className={cn(
-								iconButton,
-								'hidden hover:bg-destructive/10 hover:text-destructive sm:flex'
-							)}
-						>
-							<X className='size-4' />
-						</button>
-					)}
 				</div>
 			</div>
 		</li>

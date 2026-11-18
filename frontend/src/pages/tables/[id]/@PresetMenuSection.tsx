@@ -32,14 +32,16 @@ export function PresetMenuSection({ preset }: PresetMenuSectionProps) {
 					hasItems && !collapsed && 'border-b border-border/60'
 				)}
 			>
-				<div className='flex min-w-0 items-center gap-2'>
+				<div className='flex min-w-0 items-center gap-2.5'>
 					<UtensilsCrossed className='size-4 shrink-0 text-primary' />
-					<span className='text-sm font-semibold text-foreground'>
-						{t('orders.set_menu')}
-					</span>
-					<span className='truncate text-xs text-muted-foreground'>
-						{t('orders.set_menu_shared')}
-					</span>
+					<div className='flex min-w-0 flex-col'>
+						<span className='whitespace-nowrap text-sm font-semibold text-foreground'>
+							{t('orders.set_menu')}
+						</span>
+						<span className='truncate text-xs text-muted-foreground'>
+							{t('orders.set_menu_shared')}
+						</span>
+					</div>
 				</div>
 				<div className='flex shrink-0 items-center gap-2'>
 					{preset.price > 0 ? (

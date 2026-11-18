@@ -127,7 +127,7 @@ export default function TableDetailPage() {
 
 	if (isLoading || isConfigLoading) {
 		return (
-			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-5xl'>
+			<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-6xl'>
 				<Skeleton className='h-4 w-24 rounded-full' />
 				<Skeleton className='h-40 w-full rounded-2xl sm:h-52' />
 				<div className='flex items-center justify-between gap-2'>
@@ -155,7 +155,7 @@ export default function TableDetailPage() {
 	}
 
 	return (
-		<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-5xl'>
+		<div className='mx-auto flex max-w-3xl flex-col gap-4 px-4 py-6 sm:gap-6 sm:px-6 sm:py-10 lg:max-w-6xl'>
 			<Link
 				to={backTo ?? '/tables'}
 				className='inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground'
