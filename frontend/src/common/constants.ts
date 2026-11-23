@@ -14,6 +14,7 @@ export const WISH_PREVIEW_COUNT = 5
 export const ROSTER_VIEW_STORAGE_KEY = 'roster_view'
 export const ORDER_CART_STORAGE_KEY = 'order_cart_by_table'
 export const ORDER_LIST_VIEW_STORAGE_KEY = 'order_list_view'
+export const ORDER_HIDE_FREE_STORAGE_KEY = 'order_hide_free'
 export const TABLE_LIST_VIEW_STORAGE_KEY = 'table_list_view'
 export const MENU_VIEW_STORAGE_KEY = 'menu_view'
 export const SPLIT_VIEW_STORAGE_KEY = 'split_view'

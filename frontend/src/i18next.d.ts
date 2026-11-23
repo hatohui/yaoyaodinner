@@ -452,6 +452,8 @@ declare module 'react-i18next' {
 					split_as: string
 					free: string
 					free_limited: string
+					hide_free: string
+					show_free: string
 					included: string
 					set_menu: string
 					set_menu_included: string

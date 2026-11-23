@@ -534,6 +534,8 @@
 		"split_as": "Chia:",
 		"free": "Miễn phí",
 		"free_limited": "Miễn phí · có hạn",
+		"hide_free": "Ẩn món miễn phí",
+		"show_free": "Hiện món miễn phí",
 		"included": "Đã bao gồm {{item}}",
 		"set_menu": "Thực đơn set",
 		"set_menu_included": "Đã bao gồm",

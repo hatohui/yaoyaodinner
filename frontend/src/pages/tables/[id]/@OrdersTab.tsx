@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import {
 	Download,
+	Eye,
+	EyeOff,
 	Plus,
 	ReceiptText,
 	Users,
@@ -31,6 +33,7 @@ import {
 import { OrderDishGroup } from './@OrderDishGroup'
 import { QuickOrderModal, type QuickOrderTarget } from './@QuickOrderModal'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
+import { useHideFree } from '@/hooks/useHideFree'
 import { useListView, ViewToggle } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { billingCurrency, hasUnpriced } from '@/utils/money'
@@ -89,7 +92,10 @@ export function OrdersTab({
 	const total = ordersTotal + (preset?.price ?? 0)
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
 	const compact = view === 'compact'
-	const lines = useMemo(() => groupOrders(orders), [orders])
+	const { hideFree, toggleHideFree } = useHideFree()
+	const allLines = useMemo(() => groupOrders(orders), [orders])
+	const hasFree = allLines.some(l => !l.shouldCalculate)
+	const lines = hideFree ? allLines.filter(l => l.shouldCalculate) : allLines
 	const preLines = lines.filter(l => l.round === 'pre')
 	const dinnerLines = lines.filter(l => l.round === 'dinner')
 	const showRounds =
@@ -298,6 +304,31 @@ export function OrdersTab({
 							{activeSubView === 'dishes' &&
 								(orders.length > 0 || Boolean(preset?.items.length)) && (
 									<>
+										{hasFree && (
+											<Button
+												variant='outline'
+												size='icon-sm'
+												className={cn(
+													'size-8 rounded-xl',
+													hideFree &&
+														'border-primary/40 bg-primary/10 text-primary'
+												)}
+												aria-pressed={hideFree}
+												aria-label={t(
+													hideFree ? 'orders.show_free' : 'orders.hide_free'
+												)}
+												title={t(
+													hideFree ? 'orders.show_free' : 'orders.hide_free'
+												)}
+												onClick={toggleHideFree}
+											>
+												{hideFree ? (
+													<EyeOff className='size-3.5' />
+												) : (
+													<Eye className='size-3.5' />
+												)}
+											</Button>
+										)}
 										{(orders.length > 0 ||
 											Boolean(preset && preset.price > 0)) && (
 											<Button

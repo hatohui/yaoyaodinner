@@ -534,6 +534,8 @@
 		"split_as": "แบ่ง:",
 		"free": "ฟรี",
 		"free_limited": "ฟรี · จำนวนจำกัด",
+		"hide_free": "ซ่อนเมนูฟรี",
+		"show_free": "แสดงเมนูฟรี",
 		"included": "รวม {{item}} แล้ว",
 		"set_menu": "เซ็ตเมนู",
 		"set_menu_included": "รวมแล้ว",

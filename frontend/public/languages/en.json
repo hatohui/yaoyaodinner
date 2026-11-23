@@ -536,6 +536,8 @@
 		"split_as": "Split:",
 		"free": "Free",
 		"free_limited": "Free · limited",
+		"hide_free": "Hide free dishes",
+		"show_free": "Show free dishes",
 		"included": "{{item}} included",
 		"set_menu": "Set menu",
 		"set_menu_included": "Included",

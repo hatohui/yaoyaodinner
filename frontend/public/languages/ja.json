@@ -536,6 +536,8 @@
 		"split_as": "割り勘:",
 		"free": "無料",
 		"free_limited": "無料 · 数量限定",
+		"hide_free": "無料の料理を隠す",
+		"show_free": "無料の料理を表示",
 		"included": "{{item}}（付属）",
 		"set_menu": "セットメニュー",
 		"set_menu_included": "付属",

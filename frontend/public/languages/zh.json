@@ -534,6 +534,8 @@
 		"split_as": "分摊：",
 		"free": "免费",
 		"free_limited": "免费 · 限量",
+		"hide_free": "隐藏免费菜品",
+		"show_free": "显示免费菜品",
 		"included": "含 {{item}}",
 		"set_menu": "套餐",
 		"set_menu_included": "已包含",
