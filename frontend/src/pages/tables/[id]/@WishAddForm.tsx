@@ -78,7 +78,7 @@ export function WishAddForm({
 	}
 
 	return (
-		<div className='flex flex-col gap-1.5'>
+		<div className='relative'>
 			<div className='relative'>
 				<Search className='pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground sm:left-3 sm:size-4' />
 				<Input
@@ -117,7 +117,7 @@ export function WishAddForm({
 				<ul
 					role='listbox'
 					onMouseDown={e => e.preventDefault()}
-					className='flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm'
+					className='scrollbar-thin absolute inset-x-0 top-full z-40 mt-1.5 flex max-h-[min(22rem,60vh)] flex-col overflow-y-auto rounded-xl border border-border bg-popover shadow-lg'
 				>
 					{browsing && (
 						<li className='flex items-center gap-1.5 px-3 pt-2 pb-1 text-[11px] font-semibold text-muted-foreground'>
