@@ -87,7 +87,19 @@ export function MenuOrderingOverlays({
 							/>
 						}
 						ordered={
-							<OrderedList lines={ordering.orderedLines} people={cart.people} />
+							<OrderedList
+								lines={ordering.orderedLines}
+								people={cart.people}
+								editor={
+									ordering.canEdit
+										? {
+												updateLine: ordering.updateLine,
+												removeLine: ordering.removeLine,
+												myPersonId: cart.myPersonId,
+											}
+										: undefined
+								}
+							/>
 						}
 					/>
 				</DialogContent>

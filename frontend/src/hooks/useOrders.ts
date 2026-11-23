@@ -19,7 +19,12 @@ export function useOrders(tableId: string) {
 
 	const { data, isLoading } = useGetOrders<OrderResponseDto[]>(
 		{ tableId, lang: i18n.language },
-		{ query: { refetchInterval: TABLE_LIVE_REFETCH_MS } }
+		{
+			query: {
+				enabled: Boolean(tableId),
+				refetchInterval: TABLE_LIVE_REFETCH_MS,
+			},
+		}
 	)
 
 	const invalidate = () => qc.invalidateQueries({ queryKey: ordersKey })

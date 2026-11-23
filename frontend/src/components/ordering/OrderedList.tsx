@@ -1,12 +1,27 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PersonDto } from '@/api/model'
 import { OrderThumb } from './OrderThumb'
+import { OrderListItem } from './OrderListItem'
+import { SplitPickerModal } from './SplitPickerModal'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { dishKey, type OrderedLine } from '@/components/ordering/groupOrders'
+import { useOrderingStage } from '@/hooks/useOrderingStage'
+import type { useOrders } from '@/hooks/useOrders'
 import { billingCurrency } from '@/utils/money'
+
+type OrdersApi = ReturnType<typeof useOrders>
+
+export interface OrderedListEditor {
+	updateLine: OrdersApi['updateLine']
+	removeLine: OrdersApi['removeLine']
+	myPersonId?: string | null
+}
 
 interface OrderedListProps {
 	lines: OrderedLine[]
 	people: PersonDto[]
+	editor?: OrderedListEditor
 }
 
 interface DishGroup {
@@ -40,8 +55,11 @@ const groupByDish = (lines: OrderedLine[]): DishGroup[] => {
 	return [...groups.values()]
 }
 
-export function OrderedList({ lines, people }: OrderedListProps) {
+export function OrderedList({ lines, people, editor }: OrderedListProps) {
 	const { t } = useTranslation()
+	const { canSplit, canChangeItems } = useOrderingStage()
+	const [splitting, setSplitting] = useState<OrderedLine | null>(null)
+	const [removing, setRemoving] = useState<OrderedLine | null>(null)
 
 	if (lines.length === 0) {
 		return (
@@ -81,9 +99,9 @@ export function OrderedList({ lines, people }: OrderedListProps) {
 					return (
 						<li
 							key={key}
-							className='flex flex-col gap-2 rounded-2xl border border-border bg-card p-2.5'
+							className='flex flex-col overflow-hidden rounded-2xl border border-border bg-card'
 						>
-							<div className='flex items-center gap-3'>
+							<div className='flex items-center gap-3 p-2.5'>
 								<OrderThumb imageKey={head.foodImageUrl} alt={head.foodName} />
 								<div className='flex min-w-0 flex-1 flex-col gap-0.5'>
 									<span
@@ -97,7 +115,7 @@ export function OrderedList({ lines, people }: OrderedListProps) {
 											{head.variantLabel}
 										</span>
 									)}
-									{single && (
+									{single && !editor && (
 										<span className='truncate text-xs text-primary'>
 											{splitLabel(head)}
 										</span>
@@ -113,25 +131,44 @@ export function OrderedList({ lines, people }: OrderedListProps) {
 								</div>
 							</div>
 
-							{!single && (
-								<ul className='m-0 flex list-none flex-col gap-1 border-t border-border/60 p-0 pt-2'>
+							{editor ? (
+								<ul className='m-0 flex list-none flex-col divide-y divide-border/60 border-t border-border/60 bg-muted/20 p-0'>
 									{parts.map(part => (
-										<li
+										<OrderListItem
 											key={part.key}
-											className='flex items-center justify-between gap-2 px-1 text-xs'
-										>
-											<span className='min-w-0 truncate text-primary'>
-												{splitLabel(part)}
-											</span>
-											<span className='flex shrink-0 items-center gap-2 tabular-nums text-muted-foreground'>
-												<span className='font-semibold text-foreground'>
-													×{part.quantity}
-												</span>
-												{amount(part.price * part.quantity, free)}
-											</span>
-										</li>
+											order={part}
+											people={people}
+											onEditSplit={() => setSplitting(part)}
+											onRemove={() => setRemoving(part)}
+											onQuantityChange={q =>
+												editor.updateLine(part.ids, { quantity: q })
+											}
+											lockItems={!canChangeItems(part)}
+											lockSplit={!canSplit}
+										/>
 									))}
 								</ul>
+							) : (
+								!single && (
+									<ul className='mx-2.5 mb-2.5 flex list-none flex-col gap-1 border-t border-border/60 p-0 pt-2'>
+										{parts.map(part => (
+											<li
+												key={part.key}
+												className='flex items-center justify-between gap-2 px-1 text-xs'
+											>
+												<span className='min-w-0 truncate text-primary'>
+													{splitLabel(part)}
+												</span>
+												<span className='flex shrink-0 items-center gap-2 tabular-nums text-muted-foreground'>
+													<span className='font-semibold text-foreground'>
+														×{part.quantity}
+													</span>
+													{amount(part.price * part.quantity, free)}
+												</span>
+											</li>
+										))}
+									</ul>
+								)
 							)}
 						</li>
 					)
@@ -143,6 +180,35 @@ export function OrderedList({ lines, people }: OrderedListProps) {
 					{total.toFixed(2)} {currency}
 				</span>
 			</div>
+
+			{editor && (
+				<>
+					<SplitPickerModal
+						open={splitting !== null}
+						onOpenChange={open => !open && setSplitting(null)}
+						people={people}
+						initialPersonIds={splitting?.splits.map(s => s.personId) ?? []}
+						initialSplitAll={splitting?.splitAll ?? true}
+						myPersonId={editor.myPersonId}
+						onConfirm={(splitAll, personIds) => {
+							if (splitting)
+								editor.updateLine(splitting.ids, { splitAll, personIds })
+							setSplitting(null)
+						}}
+					/>
+					<ConfirmDialog
+						open={removing !== null}
+						onOpenChange={open => !open && setRemoving(null)}
+						title={t('orders.remove_title', { name: removing?.foodName })}
+						description={t('orders.remove_desc')}
+						confirmLabel={t('orders.remove')}
+						onConfirm={() => {
+							if (removing) editor.removeLine(removing.ids)
+							setRemoving(null)
+						}}
+					/>
+				</>
+			)}
 		</div>
 	)
 }

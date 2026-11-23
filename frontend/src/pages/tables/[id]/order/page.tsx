@@ -14,12 +14,8 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from '@/components/ui/sheet'
-import { useGetOrders } from '@/api/orders/orders'
-import type {
-	FoodItemDto,
-	FoodSuggestionDto,
-	OrderResponseDto,
-} from '@/api/model'
+import { useOrders } from '@/hooks/useOrders'
+import type { FoodItemDto, FoodSuggestionDto } from '@/api/model'
 import { ProductCard } from './@ProductCard'
 import { CartPanel } from '@/components/ordering/CartPanel'
 import { OrderedList } from '@/components/ordering/OrderedList'
@@ -45,7 +41,6 @@ import { useOrderingStage } from '@/hooks/useOrderingStage'
 import { useTableAccess } from '@/hooks/useTableCode'
 import { useToast } from '@/hooks/useToast'
 import { cn } from '@/utils/shadcn'
-import { TABLE_LIVE_REFETCH_MS } from '@/common/constants'
 
 export default function TableOrderPage() {
 	const { t } = useTranslation()
@@ -81,10 +76,7 @@ export default function TableOrderPage() {
 	}, [tableId])
 	const tableIsEmpty = (table?.seated ?? 0) === 0
 
-	const { data: orders = [] } = useGetOrders<OrderResponseDto[]>(
-		{ tableId },
-		{ query: { enabled: !!tableId, refetchInterval: TABLE_LIVE_REFETCH_MS } }
-	)
+	const { orders, updateLine, removeLine } = useOrders(tableId)
 
 	const orderedLines = useMemo(() => groupOrders(orders), [orders])
 
@@ -154,7 +146,13 @@ export default function TableOrderPage() {
 					onCheckout={checkout}
 				/>
 			}
-			ordered={<OrderedList lines={orderedLines} people={cart.people} />}
+			ordered={
+				<OrderedList
+					lines={orderedLines}
+					people={cart.people}
+					editor={{ updateLine, removeLine, myPersonId: cart.myPersonId }}
+				/>
+			}
 		/>
 	)
 

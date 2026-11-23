@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { create } from 'zustand'
-import { useGetOrders } from '@/api/orders/orders'
 import { useGetTableById } from '@/api/tables/tables'
-import type { FoodItemDto, OrderResponseDto, TableDto } from '@/api/model'
+import type { FoodItemDto, TableDto } from '@/api/model'
 import { groupOrders } from '@/components/ordering/groupOrders'
 import type { SidePanelTab } from '@/components/ordering/OrderSidePanel'
 import { useGuest } from '@/hooks/useGuest'
 import { useOrderCart } from '@/hooks/useOrderCart'
+import { useOrders } from '@/hooks/useOrders'
 import { useHeldTableCode, useTableAccess } from '@/hooks/useTableCode'
 
 interface MenuOrderingState {
@@ -45,10 +45,7 @@ export function useMenuOrdering() {
 	const { data: table } = useGetTableById<TableDto>(tableId, {
 		query: { enabled: Boolean(tableId) },
 	})
-	const { data: orders = [] } = useGetOrders<OrderResponseDto[]>(
-		{ tableId },
-		{ query: { enabled: Boolean(tableId) } }
-	)
+	const { orders, updateLine, removeLine } = useOrders(tableId)
 	const orderedLines = useMemo(() => groupOrders(orders), [orders])
 	const orderedByFood = useMemo(() => {
 		const counts = new Map<string, number>()
@@ -102,6 +99,8 @@ export function useMenuOrdering() {
 		table,
 		cart,
 		orderedLines,
+		updateLine,
+		removeLine,
 		orderedQuantityOf: (foodId: string) => orderedByFood.get(foodId) ?? 0,
 		request,
 		locked: Boolean(pending && tableId && !canEdit),
