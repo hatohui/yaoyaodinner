@@ -206,7 +206,9 @@
 		"actions": {
 			"created": "创建了 {{no}} 号桌 · {{name}}",
 			"bulk_created": "创建了 {{count}} 张桌子",
-			"renamed": "将 {{no}} 号桌从“{{from}}”改名为“{{to}}”",
+			"renamed": "{{who}}将 {{no}} 号桌从“{{from}}”改名为“{{to}}”",
+			"renamed_unnamed": "{{who}}将 {{no}} 号桌命名为“{{to}}”",
+			"name_cleared": "{{who}}移除了 {{no}} 号桌的名称“{{from}}”",
 			"capacity_changed": "{{no}} 号桌 · {{name}}：最多人数 {{from}} → {{to}}",
 			"banner_changed": "更换了 {{no}} 号桌 · {{name}} 的图片",
 			"banner_removed": "移除了 {{no}} 号桌 · {{name}} 的图片",
@@ -225,7 +227,7 @@
 			"order_updated": "更新了 {{target}} 的点单（{{count}}×）",
 			"order_removed": "从点单中移除了 {{target}}",
 			"person_added": "将 {{target}} 加入本桌",
-			"person_renamed": "将 {{from}} 改名为 {{to}}",
+			"person_renamed": "{{who}}将 {{from}} 改名为 {{to}}",
 			"person_pfp_changed": "更新了 {{target}} 的头像",
 			"person_pfp_removed": "移除了 {{target}} 的头像",
 			"person_allergies_changed": "更新了 {{target}} 的过敏信息",
@@ -239,6 +241,8 @@
 		},
 		"by_name": "由 {{name}}",
 		"by_admin": "由管理员",
+		"who_admin": "管理员",
+		"who_guest": "一位客人",
 		"table_description": "此桌的最近动态，按时间倒序排列。"
 	},
 	"tables": {

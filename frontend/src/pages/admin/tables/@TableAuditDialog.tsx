@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import {
@@ -94,12 +95,21 @@ export const AI_AUDIT_ACTIONS = new Set<TableAuditDtoAction>([
 	'ai_plan',
 ])
 
+/** These read as a sentence that already names who did it, so the "by" chip is skipped. */
+export const WHO_IN_MESSAGE_ACTIONS = new Set<TableAuditDtoAction>([
+	'renamed',
+	'person_renamed',
+])
+
 const AUDIT_COUNT = 200
 const PAGE_SIZE = 30
 const KINDS: GetTableAuditByTableKind[] = ['activity', 'ai']
 
 export function auditMessageKey(entry: TableAuditDto) {
 	const cleared = entry.details?.to == null
+	if (entry.action === 'renamed' && !entry.details?.from)
+		return 'renamed_unnamed'
+	if (entry.action === 'renamed' && !entry.details?.to) return 'name_cleared'
 	if (entry.action === 'banner_changed' && cleared) return 'banner_removed'
 	if (entry.action === 'host_changed' && cleared) return 'host_removed'
 	if (entry.action === 'person_pfp_changed' && cleared)
@@ -107,8 +117,22 @@ export function auditMessageKey(entry: TableAuditDto) {
 	return entry.action
 }
 
-export function auditEntryParams(entry: TableAuditDto) {
+export function auditWho(entry: TableAuditDto, t: TFunction) {
+	if (entry.actor === 'admin') return t('table_audit.who_admin')
+	return entry.details?.personName ?? t('table_audit.who_guest')
+}
+
+export function auditByLabel(entry: TableAuditDto, t: TFunction) {
+	if (WHO_IN_MESSAGE_ACTIONS.has(entry.action)) return null
+	if (entry.actor === 'admin') return t('table_audit.by_admin')
+	if (entry.details?.personName)
+		return t('table_audit.by_name', { name: entry.details.personName })
+	return t('table_audit.by_guest')
+}
+
+export function auditEntryParams(entry: TableAuditDto, t: TFunction) {
 	return {
+		who: auditWho(entry, t),
 		no: entry.tableNo,
 		name: entry.tableName,
 		from: entry.details?.from,
@@ -143,13 +167,6 @@ export function TableAuditDialog({
 	const open = controlled ? openProp : innerOpen
 	const setOpen = onOpenChange ?? setInnerOpen
 	const [kind, setKind] = useState<GetTableAuditByTableKind>('activity')
-	const byLabel = (entry: TableAuditDto) => {
-		if (entry.details?.personName)
-			return t('table_audit.by_name', { name: entry.details.personName })
-		if (entry.actor === 'guest') return t('table_audit.by_guest')
-		if (entry.actor === 'admin') return t('table_audit.by_admin')
-		return null
-	}
 	const globalAudit = useGetTableAudit<TableAuditDto[]>(
 		{ count: AUDIT_COUNT },
 		{ query: { enabled: open && !tableId, refetchOnMount: 'always' } }
@@ -257,6 +274,7 @@ export function TableAuditDialog({
 					<ul className='scrollbar-thin -mx-1 flex flex-col overflow-y-auto'>
 						{data.map(entry => {
 							const Icon = AUDIT_ICONS[entry.action]
+							const by = auditByLabel(entry, t)
 							return (
 								<li
 									key={entry.id}
@@ -275,7 +293,7 @@ export function TableAuditDialog({
 										<p className='text-sm text-foreground'>
 											{t(
 												`table_audit.actions.${auditMessageKey(entry)}`,
-												auditEntryParams(entry)
+												auditEntryParams(entry, t)
 											)}
 										</p>
 										<p className='flex items-center gap-1.5 text-xs text-muted-foreground'>
@@ -287,9 +305,9 @@ export function TableAuditDialog({
 											>
 												{relativeTime(entry.createdAt, i18n.language)}
 											</time>
-											{byLabel(entry) && (
+											{by && (
 												<span className='rounded-full bg-muted px-1.5 py-px font-medium'>
-													{byLabel(entry)}
+													{by}
 												</span>
 											)}
 										</p>

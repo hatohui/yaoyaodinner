@@ -206,7 +206,9 @@
 		"actions": {
 			"created": "สร้างโต๊ะ {{no}} · {{name}}",
 			"bulk_created": "สร้างโต๊ะ {{count}} โต๊ะ",
-			"renamed": "เปลี่ยนชื่อโต๊ะ {{no}} จาก “{{from}}” เป็น “{{to}}”",
+			"renamed": "{{who}} เปลี่ยนชื่อโต๊ะ {{no}} จาก “{{from}}” เป็น “{{to}}”",
+			"renamed_unnamed": "{{who}} ตั้งชื่อโต๊ะ {{no}} ว่า “{{to}}”",
+			"name_cleared": "{{who}} ลบชื่อ “{{from}}” ของโต๊ะ {{no}}",
 			"capacity_changed": "โต๊ะ {{no}} · {{name}}: จำนวนแขกสูงสุด {{from}} → {{to}}",
 			"banner_changed": "เปลี่ยนรูปของโต๊ะ {{no}} · {{name}}",
 			"banner_removed": "ลบรูปของโต๊ะ {{no}} · {{name}}",
@@ -225,7 +227,7 @@
 			"order_updated": "อัปเดตรายการ {{target}} ({{count}}×)",
 			"order_removed": "ลบ {{target}} ออกจากคำสั่งซื้อ",
 			"person_added": "เพิ่ม {{target}} เข้าโต๊ะ",
-			"person_renamed": "เปลี่ยนชื่อ {{from}} เป็น {{to}}",
+			"person_renamed": "{{who}} เปลี่ยนชื่อ {{from}} เป็น {{to}}",
 			"person_pfp_changed": "อัปเดตรูปโปรไฟล์ของ {{target}}",
 			"person_pfp_removed": "ลบรูปโปรไฟล์ของ {{target}}",
 			"person_allergies_changed": "อัปเดตข้อมูลการแพ้อาหารของ {{target}}",
@@ -239,6 +241,8 @@
 		},
 		"by_name": "โดย {{name}}",
 		"by_admin": "โดยแอดมิน",
+		"who_admin": "แอดมิน",
+		"who_guest": "แขกท่านหนึ่ง",
 		"table_description": "กิจกรรมล่าสุดของโต๊ะนี้ เรียงจากใหม่สุด"
 	},
 	"tables": {

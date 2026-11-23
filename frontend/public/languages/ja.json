@@ -206,7 +206,9 @@
 		"actions": {
 			"created": "テーブル {{no}}「{{name}}」を作成",
 			"bulk_created": "{{count}}件のテーブルを一括作成",
-			"renamed": "テーブル {{no}}の名前を「{{from}}」から「{{to}}」に変更",
+			"renamed": "{{who}}がテーブル {{no}} の名前を「{{from}}」から「{{to}}」に変更しました",
+			"renamed_unnamed": "{{who}}がテーブル {{no}} を「{{to}}」と名付けました",
+			"name_cleared": "{{who}}がテーブル {{no}} の名前「{{from}}」を削除しました",
 			"capacity_changed": "テーブル {{no}}「{{name}}」: 定員を変更 {{from}} → {{to}}名",
 			"banner_changed": "テーブル {{no}}「{{name}}」の画像を変更",
 			"banner_removed": "テーブル {{no}}「{{name}}」の画像を削除",
@@ -225,7 +227,7 @@
 			"order_updated": "{{target}} の注文を更新（{{count}} 点）",
 			"order_removed": "注文から {{target}} を削除",
 			"person_added": "テーブルに {{target}} を追加",
-			"person_renamed": "{{from}} の名前を {{to}} に変更",
+			"person_renamed": "{{who}}が {{from}} の名前を {{to}} に変更しました",
 			"person_pfp_changed": "{{target}} のアイコンを更新",
 			"person_pfp_removed": "{{target}} のアイコンを削除",
 			"person_allergies_changed": "{{target}} のアレルギーを更新",
@@ -239,6 +241,8 @@
 		},
 		"by_name": "{{name}} による操作",
 		"by_admin": "管理者による操作",
+		"who_admin": "管理者",
+		"who_guest": "ゲスト",
 		"table_description": "このテーブルの最近の変更（新しい順）。"
 	},
 	"tables": {

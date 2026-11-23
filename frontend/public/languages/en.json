@@ -207,7 +207,9 @@
 		"actions": {
 			"created": "Created table {{no}} · {{name}}",
 			"bulk_created": "Created {{count}} tables",
-			"renamed": "Renamed table {{no}} from “{{from}}” to “{{to}}”",
+			"renamed": "{{who}} renamed table {{no}} from “{{from}}” to “{{to}}”",
+			"renamed_unnamed": "{{who}} named table {{no}} “{{to}}”",
+			"name_cleared": "{{who}} removed the name “{{from}}” from table {{no}}",
 			"capacity_changed": "Table {{no}} · {{name}}: max guests {{from}} → {{to}}",
 			"banner_changed": "Changed the image of table {{no}} · {{name}}",
 			"banner_removed": "Removed the image of table {{no}} · {{name}}",
@@ -226,7 +228,7 @@
 			"order_updated": "Updated order for {{target}} ({{count}}×)",
 			"order_removed": "Removed {{target}} from orders",
 			"person_added": "Added {{target}} to the table",
-			"person_renamed": "Renamed {{from}} to {{to}}",
+			"person_renamed": "{{who}} renamed {{from}} to {{to}}",
 			"person_pfp_changed": "Updated avatar for {{target}}",
 			"person_pfp_removed": "Removed avatar for {{target}}",
 			"person_allergies_changed": "Updated allergies for {{target}}",
@@ -239,7 +241,9 @@
 			"feedback_removed": "Removed feedback"
 		},
 		"by_name": "by {{name}}",
-		"by_admin": "by an admin"
+		"by_admin": "by an admin",
+		"who_admin": "An admin",
+		"who_guest": "A guest"
 	},
 	"tables": {
 		"delete_title": "Delete table {{no}} · {{name}}?",

@@ -407,7 +407,12 @@ export class TableController {
     if (dto.tableLeaderId !== undefined && caller.actor !== 'admin') {
       throw new ForbiddenException('Only admins can change the host');
     }
-    return this.table.updateDetails(id, dto, caller.actor, caller.person);
+    return this.table.updateDetails(
+      id,
+      dto,
+      caller.actor,
+      caller.actor === 'guest' ? caller.person : null,
+    );
   }
 
   @Patch(':id/position')

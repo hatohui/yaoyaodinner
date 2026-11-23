@@ -52,12 +52,12 @@ export class TableAuditService {
     action: TableAuditAction,
     details?: TableAuditDetailsDto,
   ) {
+    // an admin who also claimed a seat is still acting as the admin
+    const person = caller.actor === 'guest' ? caller.person : null;
     const mergedDetails: TableAuditDetailsDto | undefined =
-      caller.person || details
+      person || details
         ? {
-            ...(caller.person
-              ? { personId: caller.person.id, personName: caller.person.name }
-              : {}),
+            ...(person ? { personId: person.id, personName: person.name } : {}),
             ...details,
           }
         : undefined;

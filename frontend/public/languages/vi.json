@@ -206,7 +206,9 @@
 		"actions": {
 			"created": "Đã tạo bàn {{no}} · {{name}}",
 			"bulk_created": "Đã tạo {{count}} bàn",
-			"renamed": "Đổi tên bàn {{no}} từ “{{from}}” thành “{{to}}”",
+			"renamed": "{{who}} đã đổi tên bàn {{no}} từ “{{from}}” thành “{{to}}”",
+			"renamed_unnamed": "{{who}} đã đặt tên bàn {{no}} là “{{to}}”",
+			"name_cleared": "{{who}} đã xoá tên “{{from}}” của bàn {{no}}",
 			"capacity_changed": "Bàn {{no}} · {{name}}: số khách tối đa {{from}} → {{to}}",
 			"banner_changed": "Đã đổi ảnh bàn {{no}} · {{name}}",
 			"banner_removed": "Đã xoá ảnh bàn {{no}} · {{name}}",
@@ -225,7 +227,7 @@
 			"order_updated": "Đã cập nhật món {{target}} ({{count}}×)",
 			"order_removed": "Đã xóa {{target}} khỏi đơn",
 			"person_added": "Đã thêm {{target}} vào bàn",
-			"person_renamed": "Đã đổi tên {{from}} thành {{to}}",
+			"person_renamed": "{{who}} đã đổi tên {{from}} thành {{to}}",
 			"person_pfp_changed": "Đã cập nhật ảnh đại diện của {{target}}",
 			"person_pfp_removed": "Đã xóa ảnh đại diện của {{target}}",
 			"person_allergies_changed": "Đã cập nhật dị ứng của {{target}}",
@@ -239,6 +241,8 @@
 		},
 		"by_name": "bởi {{name}}",
 		"by_admin": "bởi quản trị viên",
+		"who_admin": "Quản trị viên",
+		"who_guest": "Một khách",
 		"table_description": "Hoạt động gần đây tại bàn này, mới nhất trước."
 	},
 	"tables": {

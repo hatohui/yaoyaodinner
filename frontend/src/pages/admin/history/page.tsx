@@ -28,6 +28,7 @@ import {
 	AI_AUDIT_ACTIONS,
 	AUDIT_ICONS,
 	DESTRUCTIVE_AUDIT_ACTIONS,
+	auditByLabel,
 	auditEntryParams,
 	auditMessageKey,
 } from '../tables/@TableAuditDialog'
@@ -55,7 +56,10 @@ const CATEGORIES: Category[] = [
 	'feedback',
 ]
 
-const CATEGORY_ACTIONS: Record<Exclude<Category, 'all'>, Set<TableAuditDtoAction>> = {
+const CATEGORY_ACTIONS: Record<
+	Exclude<Category, 'all'>,
+	Set<TableAuditDtoAction>
+> = {
 	plan: new Set(['wish_added', 'wish_updated', 'wish_removed']),
 	orders: new Set(['order_added', 'order_updated', 'order_removed']),
 	people: new Set([
@@ -100,10 +104,17 @@ export default function AdminHistoryPage() {
 	const entries = data ?? []
 
 	const tableOptions = useMemo(() => {
-		const map = new Map<string, { id: string; no: number | null; name: string | null }>()
+		const map = new Map<
+			string,
+			{ id: string; no: number | null; name: string | null }
+		>()
 		for (const e of entries) {
 			if (!e.tableId || map.has(e.tableId)) continue
-			map.set(e.tableId, { id: e.tableId, no: e.tableNo ?? null, name: e.tableName ?? null })
+			map.set(e.tableId, {
+				id: e.tableId,
+				no: e.tableNo ?? null,
+				name: e.tableName ?? null,
+			})
 		}
 		return [...map.values()].sort((a, b) => (a.no ?? 9999) - (b.no ?? 9999))
 	}, [entries])
@@ -136,7 +147,7 @@ export default function AdminHistoryPage() {
 			if (!q) return true
 			const msg = t(
 				`table_audit.actions.${auditMessageKey(entry)}`,
-				auditEntryParams(entry)
+				auditEntryParams(entry, t)
 			).toLowerCase()
 			const person = entry.details?.personName?.toLowerCase() ?? ''
 			const target = entry.details?.targetName?.toLowerCase() ?? ''
@@ -149,14 +160,6 @@ export default function AdminHistoryPage() {
 			)
 		})
 	}, [entries, category, actor, tableFilter, search, t])
-
-	const byLabel = (entry: TableAuditDto) => {
-		if (entry.details?.personName)
-			return t('table_audit.by_name', { name: entry.details.personName })
-		if (entry.actor === 'guest') return t('table_audit.by_guest')
-		if (entry.actor === 'admin') return t('table_audit.by_admin')
-		return null
-	}
 
 	return (
 		<div className='flex flex-col gap-6'>
@@ -331,7 +334,7 @@ export default function AdminHistoryPage() {
 					<ul className='divide-y divide-border/50'>
 						{filtered.map(entry => {
 							const Icon = AUDIT_ICONS[entry.action]
-							const label = byLabel(entry)
+							const label = auditByLabel(entry, t)
 							return (
 								<li
 									key={entry.id}
@@ -351,7 +354,7 @@ export default function AdminHistoryPage() {
 											<p className='text-sm text-foreground'>
 												{t(
 													`table_audit.actions.${auditMessageKey(entry)}`,
-													auditEntryParams(entry)
+													auditEntryParams(entry, t)
 												)}
 											</p>
 											<time

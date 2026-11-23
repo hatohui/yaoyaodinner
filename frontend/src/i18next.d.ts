@@ -205,10 +205,14 @@ declare module 'react-i18next' {
 					by_guest: string
 					by_name: string
 					by_admin: string
+					who_admin: string
+					who_guest: string
 					actions: Record<
 						| 'created'
 						| 'bulk_created'
 						| 'renamed'
+						| 'renamed_unnamed'
+						| 'name_cleared'
 						| 'capacity_changed'
 						| 'banner_changed'
 						| 'banner_removed'

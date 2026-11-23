@@ -464,13 +464,14 @@ export class TableService {
       });
     }
 
+    const newName = dto.name?.trim() ?? "";
     await this.audit.log(
-      ...(dto.name !== undefined && dto.name !== table.name
+      ...(dto.name !== undefined && newName !== table.name
         ? [
             {
               ...base,
               action: "renamed" as const,
-              details: { from: table.name, to: dto.name },
+              details: { from: table.name, to: newName },
             },
           ]
         : []),
@@ -542,13 +543,14 @@ export class TableService {
     const who = person
       ? { personId: person.id, personName: person.name }
       : {};
+    const newName = dto.name?.trim() ?? "";
     await this.audit.log(
-      ...(dto.name !== undefined && dto.name !== table.name
+      ...(dto.name !== undefined && newName !== table.name
         ? [
             {
               ...base,
               action: "renamed" as const,
-              details: { ...who, from: table.name, to: dto.name },
+              details: { ...who, from: table.name, to: newName },
             },
           ]
         : []),
