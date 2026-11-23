@@ -6,11 +6,15 @@ import type {
 	TableWishDto,
 	WishKind,
 } from '@/api/model'
-import type { NewWish, WishStatus } from '@/hooks/useTableWishes'
+import type { WishStatus } from '@/hooks/useTableWishes'
 import { cn } from '@/utils/shadcn'
-import { WishAddForm } from './@WishAddForm'
 import { useWishDrop } from './@WishDnd'
 import { WishRow } from './@WishRow'
+
+export type WishHandlers = Omit<
+	WishSectionProps,
+	'kind' | 'icon' | 'title' | 'empty' | 'wishes'
+>
 
 interface WishSectionProps {
 	kind: WishKind
@@ -21,7 +25,6 @@ interface WishSectionProps {
 	people: PersonDto[]
 	statusOf: (wish: TableWishDto) => WishStatus
 	canEdit: boolean
-	onAdd: (wish: NewWish) => void
 	onSelectFood?: (foodId: string) => void
 	onSetKind: (id: string, kind: WishKind) => void
 	onSetVariant: (id: string, variant: FoodVariantDto) => void
@@ -39,7 +42,6 @@ export function WishSection({
 	people,
 	statusOf,
 	canEdit,
-	onAdd,
 	onSelectFood,
 	onSetKind,
 	onSetVariant,
@@ -106,15 +108,6 @@ export function WishSection({
 						/>
 					))}
 				</ul>
-			)}
-
-			{canEdit && (
-				<div className='mt-auto sm:pt-1'>
-					<WishAddForm
-						placeholder={t('plan_board.add_placeholder')}
-						onAdd={wish => onAdd({ kind, ...wish } as NewWish)}
-					/>
-				</div>
 			)}
 		</section>
 	)

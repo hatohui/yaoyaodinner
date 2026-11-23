@@ -59,7 +59,8 @@
 		"invalid_file_type": "โปรดเลือกรูปภาพ JPEG, PNG, WebP หรือ GIF",
 		"file_too_large": "รูปภาพต้องมีขนาดไม่เกิน 25 MB",
 		"view_image": "ดูรูปภาพ",
-		"close": "ปิด"
+		"close": "ปิด",
+		"more_actions": "การทำงานเพิ่มเติม"
 	},
 	"banner": {
 		"dismiss": "ปิด",
@@ -1242,7 +1243,6 @@
 		"want_empty": "เพิ่มเมนูที่ทั้งโต๊ะอยากลอง",
 		"individual_empty": "ยังไม่มีใครสั่งส่วนตัว",
 		"allergies_empty": "ไม่มีข้อมูลการแพ้",
-		"add_placeholder": "ค้นหาในเมนูหรือพิมพ์ชื่อเมนู",
 		"add_custom": "เพิ่ม \"{{name}}\" (ไม่มีในเมนู)",
 		"add_failed": "เพิ่มไม่สำเร็จ ลองอีกครั้ง",
 		"duplicate": "มีในรายการแล้ว",
@@ -1325,7 +1325,20 @@
 		"add_to_target": "เพิ่มไปยัง",
 		"add_to_plan_btn": "เพิ่มลงแผน",
 		"priority": "ความสำคัญ",
-		"added_by": "โดย {{name}}"
+		"added_by": "โดย {{name}}",
+		"add_to": "เพิ่มใน{{list}}…",
+		"add_to_label": "เพิ่มในรายการ",
+		"mine": "ส่วนตัว",
+		"keep_off": "ห้ามขึ้นโต๊ะ",
+		"keep_off_empty": "ยังไม่มีอาหารที่แพ้หรือต้องหลีกเลี่ยง",
+		"keep_off_body": "เมนูที่ต้องหลีกเลี่ยงและอาหารที่แพ้ของโต๊ะนี้",
+		"ready_title": "พร้อมสั่ง",
+		"ready_cart": "อยู่ในตะกร้าแล้ว",
+		"ready_total": "ยอดรวมโดยประมาณ",
+		"in_plan": "อยู่ในแผนแล้ว",
+		"quick_picks": "ยอดนิยม · แตะเพื่อเพิ่มใน{{list}}",
+		"per_person": "≈ {{amount}} / คน",
+		"per_person_label": "ต่อคน ({{count}} คน)"
 	},
 	"exclude": {
 		"button": "ไม่รวม",

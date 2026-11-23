@@ -19,6 +19,7 @@ import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
 import { useToast } from '@/hooks/useToast'
 import type { ApplyPlanSelection } from '@/components/ordering/ApplyPlanDialog'
+import { billingCurrency, hasUnpriced } from '@/utils/money'
 import { downloadReceiptImage, type ReceiptSection } from '@/utils/receiptImage'
 import {
 	openPlanWishes,
@@ -87,11 +88,32 @@ export function usePlanBoard(
 			: t(`plan_board.allergen.${group.allergen}`)
 
 	const openWishes = openPlanWishes(board.wishes, statusOf)
-	const extraCartCount = cart.lines
-		.filter(l => !openWishes.some(w => w.foodId === l.foodId))
-		.reduce((sum, l) => sum + l.quantity, 0)
-	const pendingCount =
-		openWishes.reduce((sum, w) => sum + (w.quantity ?? 1), 0) + extraCartCount
+	const extraLines = cart.lines.filter(
+		l => !openWishes.some(w => w.foodId === l.foodId)
+	)
+	const countOf = (kind: TableWishDto['kind']) =>
+		openWishes
+			.filter(w => w.kind === kind)
+			.reduce((sum, w) => sum + (w.quantity ?? 1), 0)
+	const extraCartCount = extraLines.reduce((sum, l) => sum + l.quantity, 0)
+	const pendingCount = countOf('must') + countOf('want') + extraCartCount
+	const pending = {
+		must: countOf('must'),
+		want: countOf('want'),
+		cart: extraCartCount,
+		total:
+			openWishes.reduce(
+				(sum, w) =>
+					w.shouldCalculate ? sum + (w.price ?? 0) * (w.quantity ?? 1) : sum,
+				0
+			) +
+			extraLines.reduce(
+				(sum, l) => (l.shouldCalculate ? sum + l.price * l.quantity : sum),
+				0
+			),
+		partial: hasUnpriced([...openWishes, ...extraLines]),
+		currency: billingCurrency([...openWishes, ...extraLines]),
+	}
 	const viewCart = {
 		label: t('plan_board.view_cart'),
 		onClick: () => navigate(`/tables/${tableId}/order`),
@@ -245,6 +267,7 @@ export function usePlanBoard(
 		canUseAi: Boolean(tablePlan && canEdit && personId && stage === 'open'),
 		addToCart,
 		pendingCount,
+		pending,
 		applyPlan,
 		copy,
 		download,

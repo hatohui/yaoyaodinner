@@ -7,8 +7,6 @@ import { useToast } from '@/hooks/useToast'
 
 export function LeaveTableButton() {
 	const { t } = useTranslation()
-	const toast = useToast()
-	const release = useHeldTableCode(s => s.release)
 	const [confirming, setConfirming] = useState(false)
 
 	return (
@@ -22,20 +20,37 @@ export function LeaveTableButton() {
 			>
 				<DoorOpen className='size-4' />
 			</button>
-
-			<ConfirmDialog
-				open={confirming}
-				onOpenChange={setConfirming}
-				title={t('table_code.leave_confirm_title')}
-				description={t('table_code.leave_confirm_body')}
-				confirmLabel={t('table_code.leave')}
-				destructive
-				onConfirm={() => {
-					release()
-					setConfirming(false)
-					toast.success(t('table_code.left'))
-				}}
-			/>
+			<LeaveTableConfirm open={confirming} onOpenChange={setConfirming} />
 		</>
+	)
+}
+
+interface LeaveTableConfirmProps {
+	open: boolean
+	onOpenChange: (open: boolean) => void
+}
+
+export function LeaveTableConfirm({
+	open,
+	onOpenChange,
+}: LeaveTableConfirmProps) {
+	const { t } = useTranslation()
+	const toast = useToast()
+	const release = useHeldTableCode(s => s.release)
+
+	return (
+		<ConfirmDialog
+			open={open}
+			onOpenChange={onOpenChange}
+			title={t('table_code.leave_confirm_title')}
+			description={t('table_code.leave_confirm_body')}
+			confirmLabel={t('table_code.leave')}
+			destructive
+			onConfirm={() => {
+				release()
+				onOpenChange(false)
+				toast.success(t('table_code.left'))
+			}}
+		/>
 	)
 }

@@ -126,14 +126,22 @@ export function TableAuditDialog({
 	tableId,
 	compact,
 	trigger,
+	open: openProp,
+	onOpenChange,
 }: {
 	className?: string
 	tableId?: string
 	compact?: boolean
 	trigger?: React.ReactNode
+	/** Pass to open it from elsewhere, such as a menu item; no trigger is rendered then. */
+	open?: boolean
+	onOpenChange?: (open: boolean) => void
 }) {
 	const { t, i18n } = useTranslation()
-	const [open, setOpen] = useState(false)
+	const [innerOpen, setInnerOpen] = useState(false)
+	const controlled = openProp !== undefined
+	const open = controlled ? openProp : innerOpen
+	const setOpen = onOpenChange ?? setInnerOpen
 	const [kind, setKind] = useState<GetTableAuditByTableKind>('activity')
 	const byLabel = (entry: TableAuditDto) => {
 		if (entry.details?.personName)
@@ -172,32 +180,36 @@ export function TableAuditDialog({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				{trigger ??
-					(compact ? (
-						<button
-							type='button'
-							aria-label={t('table_audit.open')}
-							title={t('table_audit.open')}
-							className={cn(
-								'inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3',
-								className
-							)}
-						>
-							<History className='size-4' />
-							<span className='hidden sm:inline'>{t('table_audit.open')}</span>
-						</button>
-					) : (
-						<Button
-							size='sm'
-							variant='outline'
-							className={cn('gap-1.5 rounded-full', className)}
-						>
-							<History className='size-4' />
-							{t('table_audit.open')}
-						</Button>
-					))}
-			</DialogTrigger>
+			{!controlled && (
+				<DialogTrigger asChild>
+					{trigger ??
+						(compact ? (
+							<button
+								type='button'
+								aria-label={t('table_audit.open')}
+								title={t('table_audit.open')}
+								className={cn(
+									'inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3',
+									className
+								)}
+							>
+								<History className='size-4' />
+								<span className='hidden sm:inline'>
+									{t('table_audit.open')}
+								</span>
+							</button>
+						) : (
+							<Button
+								size='sm'
+								variant='outline'
+								className={cn('gap-1.5 rounded-full', className)}
+							>
+								<History className='size-4' />
+								{t('table_audit.open')}
+							</Button>
+						))}
+				</DialogTrigger>
+			)}
 			<DialogContent className='flex max-h-[85vh] flex-col rounded-3xl sm:max-w-lg'>
 				<DialogHeader>
 					<DialogTitle>{t('table_audit.title')}</DialogTitle>

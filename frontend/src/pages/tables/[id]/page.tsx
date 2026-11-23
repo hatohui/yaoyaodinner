@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useSearchParams } from 'react-router'
-import { ArrowLeft, Flame, Link as LinkIcon, Map } from 'lucide-react'
+import { ArrowLeft, Flame } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import {
@@ -31,13 +31,12 @@ import { SeatCountChip } from './@SeatCountChip'
 import { TableCodeBar } from './@TableCodeBar'
 import { TableCodeDialog } from './@TableCodeDialog'
 import { groupOrders } from '@/components/ordering/groupOrders'
-import { LeaveTableButton } from './@LeaveTableButton'
+import { TableHeaderActions } from './@TableHeaderActions'
 import { useTableDetail } from './@useTableDetail'
 import { RosterSkeleton } from './@Skeletons'
 import { TableRoastCard } from './@TableRoastCard'
 import { useTableRoast } from './@useTableRoast'
 import { useMenuOrderingStore } from '@/pages/menu/@useMenuOrdering'
-import { TableAuditDialog } from '@/pages/admin/tables/@TableAuditDialog'
 
 const tabTrigger =
 	'rounded-xl text-foreground/70 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
@@ -201,9 +200,17 @@ export default function TableDetailPage() {
 					</h1>
 					<SeatCountChip table={table} />
 				</div>
-				<div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
-					{tableCodes && canEdit && !isAdmin && <LeaveTableButton />}
-					{tableRoast &&
+				<TableHeaderActions
+					tableId={id}
+					canLeave={Boolean(tableCodes && canEdit && !isAdmin)}
+					mapHref={
+						showFloorPlan && isOnMap(table)
+							? `/tables/map?highlight=${table.id}`
+							: undefined
+					}
+					onShareLink={shareLink}
+					roast={
+						tableRoast &&
 						canTriggerAi &&
 						!roasts.isLoading &&
 						!roasts.tableRoast && (
@@ -250,32 +257,9 @@ export default function TableDetailPage() {
 									{t('roast.tooltip')}
 								</TooltipContent>
 							</Tooltip>
-						)}
-					{showFloorPlan && isOnMap(table) && (
-						<Link
-							to={`/tables/map?highlight=${table.id}`}
-							aria-label={t('floor_plan.view_map')}
-							title={t('floor_plan.view_map')}
-							className='inline-flex size-8 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3'
-						>
-							<Map className='size-4' />
-							<span className='hidden sm:inline'>
-								{t('floor_plan.view_map')}
-							</span>
-						</Link>
-					)}
-					<TableAuditDialog tableId={id} compact />
-					<button
-						type='button'
-						onClick={shareLink}
-						aria-label={t('roster.copy_link')}
-						title={t('roster.copy_link')}
-						className='inline-flex size-8 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-border bg-card text-sm font-medium text-foreground shadow-xs transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:h-9 sm:w-auto sm:px-3'
-					>
-						<LinkIcon className='size-4' />
-						<span className='hidden sm:inline'>{t('roster.copy_link')}</span>
-					</button>
-				</div>
+						)
+					}
+				/>
 			</div>
 
 			{tableCodes && (

@@ -59,7 +59,8 @@
 		"invalid_file_type": "Vui lòng chọn ảnh JPEG, PNG, WebP hoặc GIF",
 		"file_too_large": "Ảnh phải nhỏ hơn 25 MB",
 		"view_image": "Xem ảnh",
-		"close": "Đóng"
+		"close": "Đóng",
+		"more_actions": "Thêm thao tác"
 	},
 	"banner": {
 		"dismiss": "Đóng",
@@ -1242,7 +1243,6 @@
 		"want_empty": "Thêm những món cả bàn tò mò.",
 		"individual_empty": "Chưa ai gọi món riêng.",
 		"allergies_empty": "Chưa ghi nhận dị ứng.",
-		"add_placeholder": "Tìm trong thực đơn hoặc gõ tên món",
 		"add_custom": "Thêm \"{{name}}\" (không có trong thực đơn)",
 		"add_failed": "Không thêm được, vui lòng thử lại",
 		"duplicate": "Đã có trong danh sách",
@@ -1325,7 +1325,20 @@
 		"add_to_target": "Thêm vào",
 		"add_to_plan_btn": "Thêm vào kế hoạch",
 		"priority": "Mức ưu tiên",
-		"added_by": "bởi {{name}}"
+		"added_by": "bởi {{name}}",
+		"add_to": "Thêm vào {{list}}…",
+		"add_to_label": "Thêm vào danh sách",
+		"mine": "Riêng",
+		"keep_off": "Không dọn lên bàn",
+		"keep_off_empty": "Chưa có dị ứng hay món cần tránh",
+		"keep_off_body": "Các món cần tránh và dị ứng của bàn này.",
+		"ready_title": "Sẵn sàng gọi món",
+		"ready_cart": "Đã có trong giỏ",
+		"ready_total": "Tạm tính",
+		"in_plan": "Đã có trong kế hoạch",
+		"quick_picks": "Phổ biến · chạm để thêm vào {{list}}",
+		"per_person": "≈ {{amount}} / người",
+		"per_person_label": "Mỗi người ({{count}} người)"
 	},
 	"exclude": {
 		"button": "Loại trừ",

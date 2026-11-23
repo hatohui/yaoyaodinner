@@ -59,7 +59,8 @@
 		"invalid_file_type": "Please choose a JPEG, PNG, WebP, or GIF image",
 		"file_too_large": "Image must be under 25 MB",
 		"view_image": "View image",
-		"close": "Close"
+		"close": "Close",
+		"more_actions": "More actions"
 	},
 	"banner": {
 		"dismiss": "Dismiss",
@@ -1244,7 +1245,6 @@
 		"want_empty": "Add dishes the table is curious about.",
 		"individual_empty": "Nobody has a personal order yet.",
 		"allergies_empty": "No allergies noted.",
-		"add_placeholder": "Search the menu or type a dish",
 		"add_custom": "Add \"{{name}}\" (not on the menu)",
 		"add_failed": "Couldn't add that, please try again",
 		"duplicate": "Already on the list",
@@ -1327,7 +1327,20 @@
 		"strip_empty": "Nothing planned yet",
 		"add_to_target": "Add to",
 		"add_to_plan_btn": "Add to plan",
-		"priority": "Priority"
+		"priority": "Priority",
+		"add_to": "Add to {{list}}…",
+		"add_to_label": "Add to list",
+		"mine": "Individual",
+		"keep_off": "Keep off the table",
+		"keep_off_empty": "No allergies or dishes to avoid yet",
+		"keep_off_body": "Dishes to skip and allergies at this table.",
+		"ready_title": "Ready to order",
+		"ready_cart": "Already in cart",
+		"ready_total": "Estimated total",
+		"in_plan": "Already in the plan",
+		"quick_picks": "Popular · tap to add to {{list}}",
+		"per_person": "≈ {{amount}} / person",
+		"per_person_label": "Per person ({{count}} seated)"
 	},
 	"exclude": {
 		"button": "Exclude",

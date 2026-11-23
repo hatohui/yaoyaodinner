@@ -63,6 +63,7 @@ export function WishRow({
 	const canEditDetails =
 		canEdit && status !== 'ordered' && !wish.id.startsWith('draft-')
 	const qty = wish.quantity ?? 1
+	const showMobileStepper = !avoid && Boolean(wish.foodId) && canEditDetails
 
 	const variantControl =
 		!avoid &&
@@ -103,9 +104,25 @@ export function WishRow({
 		Boolean(wish.addedByName) ||
 		(!avoid && Boolean(wish.foodId) && (canEditDetails || qty > 1))
 	const hasMobileMeta =
+		Boolean(wish.foodId && !avoid) ||
 		!wish.foodId ||
 		Boolean(wish.addedByName) ||
 		(!avoid && (Boolean(wish.variantLabel) || showPeople || qty > 1))
+
+	const priceLabel =
+		!avoid &&
+		wish.foodId &&
+		(!wish.shouldCalculate ? (
+			<span className='text-xs text-muted-foreground'>{t('orders.free')}</span>
+		) : awaitingPrice(wish) ? (
+			<span className='text-xs text-muted-foreground'>
+				{t('menu.seasonal_price')}
+			</span>
+		) : (
+			<span className='text-xs font-semibold tabular-nums text-foreground'>
+				{((wish.price ?? 0) * qty).toFixed(2)} {wish.currency}
+			</span>
+		))
 
 	const statusControl = (
 		<>
@@ -130,21 +147,9 @@ export function WishRow({
 					<span>{t('plan_board.status_in_cart')}</span>
 				</span>
 			)}
-			{!avoid && wish.foodId && (
-				<span className='shrink-0 text-right'>
-					{!wish.shouldCalculate ? (
-						<span className='text-xs text-muted-foreground'>
-							{t('orders.free')}
-						</span>
-					) : awaitingPrice(wish) ? (
-						<span className='text-xs text-muted-foreground'>
-							{t('menu.seasonal_price')}
-						</span>
-					) : (
-						<span className='text-xs font-semibold tabular-nums text-foreground'>
-							{((wish.price ?? 0) * qty).toFixed(2)} {wish.currency}
-						</span>
-					)}
+			{priceLabel && (
+				<span className='hidden shrink-0 text-right sm:inline'>
+					{priceLabel}
 				</span>
 			)}
 		</>
@@ -155,6 +160,8 @@ export function WishRow({
 			ref={drag.ref}
 			className={cn(
 				'flex items-center gap-2 py-1.5 transition-colors sm:gap-2.5 sm:py-2.5',
+				wish.id.startsWith('draft-') &&
+					'-mx-1.5 rounded-lg bg-primary/10 px-1.5 duration-300 animate-in fade-in slide-in-from-top-1',
 				drag.isDragging && 'opacity-40',
 				drag.isOver &&
 					'rounded-lg bg-primary/10 ring-1 ring-inset ring-primary/50'
@@ -213,6 +220,13 @@ export function WishRow({
 
 				{hasMobileMeta && (
 					<div className='flex min-w-0 items-center gap-1 text-[11px] leading-tight text-muted-foreground sm:hidden'>
+						{priceLabel && <span className='shrink-0'>{priceLabel}</span>}
+						{priceLabel &&
+							(wish.variantLabel ||
+								showPeople ||
+								(wish.addedByName && !showMobileStepper)) && (
+								<span className='shrink-0 text-muted-foreground/50'>·</span>
+							)}
 						{!wish.foodId && (
 							<span className='shrink-0'>{t('plan_board.off_menu')}</span>
 						)}
@@ -221,7 +235,7 @@ export function WishRow({
 								{wish.variantLabel}
 							</span>
 						)}
-						{!avoid && qty > 1 && (
+						{!avoid && qty > 1 && !showMobileStepper && (
 							<>
 								{wish.variantLabel && (
 									<span className='shrink-0 text-muted-foreground/50'>·</span>
@@ -231,9 +245,11 @@ export function WishRow({
 								</span>
 							</>
 						)}
-						{!avoid && (wish.variantLabel || qty > 1) && showPeople && (
-							<span className='shrink-0 text-muted-foreground/50'>·</span>
-						)}
+						{!avoid &&
+							(wish.variantLabel || (qty > 1 && !showMobileStepper)) &&
+							showPeople && (
+								<span className='shrink-0 text-muted-foreground/50'>·</span>
+							)}
 						{showPeople && (
 							<span
 								className={cn(
@@ -245,7 +261,7 @@ export function WishRow({
 								<span className='truncate'>{peopleLabel}</span>
 							</span>
 						)}
-						{wish.addedByName && (
+						{wish.addedByName && !showMobileStepper && (
 							<>
 								{(!wish.foodId ||
 									(!avoid && (wish.variantLabel || qty > 1 || showPeople))) && (
@@ -323,6 +339,36 @@ export function WishRow({
 			</div>
 
 			<div className='flex shrink-0 items-center gap-1'>
+				{showMobileStepper && (
+					<span className='flex h-7 items-center rounded-lg border border-border bg-muted/40 sm:hidden'>
+						<button
+							type='button'
+							onClick={() =>
+								qty <= 1 ? onRemove() : onQuantityChange(qty - 1)
+							}
+							aria-label={t(qty <= 1 ? 'plan_board.remove' : 'orders.decrease')}
+							className='flex size-7 cursor-pointer items-center justify-center rounded-l-lg text-muted-foreground transition-colors active:bg-primary/15 active:text-primary'
+						>
+							{qty <= 1 ? (
+								<X className='size-3.5' />
+							) : (
+								<Minus className='size-3.5' />
+							)}
+						</button>
+						<span className='min-w-5 text-center text-xs font-semibold tabular-nums text-foreground'>
+							{qty}
+						</span>
+						<button
+							type='button'
+							disabled={qty >= 99}
+							onClick={() => onQuantityChange(qty + 1)}
+							aria-label={t('orders.increase')}
+							className='flex size-7 cursor-pointer items-center justify-center rounded-r-lg text-muted-foreground transition-colors active:bg-primary/15 active:text-primary disabled:opacity-40'
+						>
+							<Plus className='size-3.5' />
+						</button>
+					</span>
+				)}
 				{statusControl}
 				{canEdit && (
 					<button

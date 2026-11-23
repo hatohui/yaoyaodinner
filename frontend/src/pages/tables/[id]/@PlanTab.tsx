@@ -1,34 +1,24 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-	Ban,
-	ClipboardCopy,
-	Download,
-	Sparkles,
-	Star,
-	Wand2,
-	Zap,
-} from 'lucide-react'
 import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-	useListView,
-	ViewToggle,
-	type ListView,
-} from '@/components/common/ViewToggle'
+import { useListView, type ListView } from '@/components/common/ViewToggle'
 import { PLAN_VIEW_STORAGE_KEY } from '@/common/constants'
 import { ApplyPlanDialog } from '@/components/ordering/ApplyPlanDialog'
+import { DESKTOP_QUERY, useMediaQuery } from '@/hooks/useMediaQuery'
 import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
+import { cn } from '@/utils/shadcn'
 import { AllergyDialog } from './@AllergyDialog'
-import { AllergySection } from './@AllergySection'
-import { PersonalOrdersSection } from './@PersonalOrdersSection'
 import { PlanAccessHint } from './@PlanAccessHint'
+import { PlanApplyBar } from './@PlanApplyBar'
+import { PlanDesktopBoard } from './@PlanDesktopBoard'
+import { PlanMobileBoard } from './@PlanMobileBoard'
+import { PlanReadyCard } from './@PlanReadyCard'
 import { PlanSummaryView } from './@PlanSummaryView'
+import { PlanToolbar } from './@PlanToolbar'
 import { TablePlanCard } from './@TablePlanCard'
 import { useTablePlan } from './@useTablePlan'
 import { WishDnd } from './@WishDnd'
-import { WishSection } from './@WishSection'
 import { usePlanBoard } from './@usePlanBoard'
 
 interface PlanTabProps {
@@ -50,6 +40,7 @@ export function PlanTab({
 }: PlanTabProps) {
 	const { t } = useTranslation()
 	const board = usePlanBoard(table.id, people, orders, canEdit)
+	const isDesktop = useMediaQuery(DESKTOP_QUERY)
 	const { plan, isPlanning } = useTablePlan(table.id)
 	const [modifying, setModifying] = useState(false)
 	const [previewing, setPreviewing] = useState(false)
@@ -70,11 +61,10 @@ export function PlanTab({
 		)
 	}
 
-	const wishProps = {
+	const handlers = {
 		people,
 		statusOf: board.statusOf,
 		canEdit,
-		onAdd: board.add,
 		onSelectFood: setQuickViewId,
 		onSetKind: board.setKind,
 		onSetVariant: board.setVariant,
@@ -82,9 +72,33 @@ export function PlanTab({
 		onSetQuantity: board.setQuantity,
 		onRemove: board.remove,
 	}
+	const boardProps = {
+		tableId: table.id,
+		people,
+		canEdit,
+		canAddToCart: board.canAddToCart,
+		must: board.must,
+		want: board.want,
+		avoid: board.avoid,
+		dishes: board.dishes,
+		allergies: board.allergies,
+		labelOf: board.labelOf,
+		onEditPerson: board.setEditing,
+		plannedFoodIds: new Set(
+			board.wishes.flatMap(w => (w.foodId ? [w.foodId] : []))
+		),
+		onAdd: board.add,
+		onSelectFood: setQuickViewId,
+		handlers,
+	}
+	const canApply = board.canAddToCart && board.pendingCount > 0
+	const apply = () => setPreviewing(true)
+	const showReadyCard = isDesktop && view === 'card'
 
 	return (
-		<div className='flex flex-col gap-3'>
+		<div
+			className={cn('flex flex-col gap-3', canApply && !isDesktop && 'pb-24')}
+		>
 			<PlanAccessHint
 				access={board.access}
 				onJoin={onJoin}
@@ -101,63 +115,22 @@ export function PlanTab({
 			)}
 
 			<div className='flex flex-col gap-2'>
-				<div className='flex flex-wrap items-center gap-1.5 sm:gap-2'>
-					{board.canAddToCart && board.pendingCount > 0 && (
-						<Button
-							size='sm'
-							onClick={() => setPreviewing(true)}
-							className='h-8 shrink-0 gap-1.5 rounded-xl px-2.5 text-xs sm:px-3 sm:text-sm'
-						>
-							<Zap className='size-4' />
-							{t('plan_board.apply_plan', { count: board.pendingCount })}
-						</Button>
-					)}
-					{board.canUseAi && orders.length > 0 && !plan && !isPlanning && (
-						<Button
-							variant='outline'
-							size='sm'
-							onClick={() => setModifying(true)}
-							aria-label={t('table_plan.modify_cta')}
-							title={t('table_plan.modify_cta')}
-							className='relative h-8 shrink-0 gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-ai/70 bg-ai-muted px-2.5 text-xs font-semibold text-ai shadow-sm before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-1/3 before:bg-gradient-to-r before:from-transparent before:via-ai/25 before:to-transparent hover:border-solid hover:border-ai hover:bg-ai-muted hover:text-ai dark:border-ai/70 dark:bg-ai-muted dark:hover:border-ai dark:hover:bg-ai-muted sm:px-3 sm:text-sm motion-safe:before:animate-ai-sheen'
-						>
-							<Wand2 className='size-4 motion-safe:animate-ai-twinkle' />
-							<span className='sm:hidden'>
-								{t('table_plan.modify_cta_short')}
-							</span>
-							<span className='hidden sm:inline'>
-								{t('table_plan.modify_cta')}
-							</span>
-						</Button>
-					)}
-					<div className='ml-auto flex shrink-0 items-center gap-1.5'>
-						<Button
-							variant='outline'
-							size='icon-sm'
-							disabled={board.isEmpty}
-							onClick={() => board.download(table)}
-							aria-label={t('common.download_image')}
-							title={t('common.download_image')}
-							className='size-8 rounded-xl'
-						>
-							<Download className='size-3.5' />
-						</Button>
-						<Button
-							variant='outline'
-							size='sm'
-							disabled={board.isEmpty}
-							onClick={board.copy}
-							aria-label={t('plan_board.copy')}
-							title={t('plan_board.copy')}
-							className='h-8 w-8 shrink-0 gap-1.5 rounded-xl p-0 has-[>svg]:px-0 sm:w-auto sm:px-3 sm:has-[>svg]:px-2.5'
-						>
-							<ClipboardCopy className='size-3.5 sm:size-4' />
-							<span className='hidden sm:inline'>{t('plan_board.copy')}</span>
-						</Button>
-						<ViewToggle view={view} onChange={setView} />
-					</div>
-				</div>
-				{canEdit && view === 'card' && (
+				<PlanToolbar
+					isDesktop={isDesktop}
+					applyCount={board.pendingCount}
+					onApply={canApply && isDesktop && !showReadyCard ? apply : undefined}
+					onModify={
+						board.canUseAi && orders.length > 0 && !plan && !isPlanning
+							? () => setModifying(true)
+							: undefined
+					}
+					isEmpty={board.isEmpty}
+					onDownload={() => board.download(table)}
+					onCopy={board.copy}
+					view={view}
+					onViewChange={setView}
+				/>
+				{canEdit && isDesktop && view === 'card' && (
 					<p className='text-xs text-muted-foreground'>
 						{t('plan_board.intro_drag')}
 					</p>
@@ -178,50 +151,33 @@ export function PlanTab({
 				/>
 			) : (
 				<WishDnd wishes={board.wishes} onMove={board.moveWish}>
-					<div className='grid grid-cols-1 gap-3 lg:grid-cols-[1fr_360px] lg:items-start lg:gap-5'>
-						<div className='flex min-w-0 flex-col gap-3'>
-							<WishSection
-								kind='must'
-								icon={Star}
-								title={t('plan_board.must')}
-								empty={t('plan_board.must_empty')}
-								wishes={board.must}
-								{...wishProps}
-							/>
-							<WishSection
-								kind='want'
-								icon={Sparkles}
-								title={t('plan_board.want')}
-								empty={t('plan_board.want_empty')}
-								wishes={board.want}
-								{...wishProps}
-							/>
-							<PersonalOrdersSection
-								tableId={table.id}
-								dishes={board.dishes}
-								canAdd={board.canAddToCart}
-								onSelectFood={setQuickViewId}
-							/>
-						</div>
-						<div className='flex min-w-0 flex-col gap-3'>
-							<WishSection
-								kind='avoid'
-								icon={Ban}
-								title={t('plan_board.avoid')}
-								empty={t('plan_board.avoid_empty')}
-								wishes={board.avoid}
-								{...wishProps}
-							/>
-							<AllergySection
-								groups={board.allergies}
-								people={people}
-								canEdit={canEdit}
-								labelOf={board.labelOf}
-								onEditPerson={board.setEditing}
-							/>
-						</div>
-					</div>
+					{isDesktop ? (
+						<PlanDesktopBoard
+							{...boardProps}
+							readyCard={
+								canApply && (
+									<PlanReadyCard
+										pending={board.pending}
+										count={board.pendingCount}
+										headcount={people.length}
+										onApply={apply}
+									/>
+								)
+							}
+						/>
+					) : (
+						<PlanMobileBoard {...boardProps} />
+					)}
 				</WishDnd>
+			)}
+
+			{canApply && !isDesktop && (
+				<PlanApplyBar
+					pending={board.pending}
+					count={board.pendingCount}
+					headcount={people.length}
+					onApply={apply}
+				/>
 			)}
 
 			<ApplyPlanDialog

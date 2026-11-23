@@ -24,6 +24,7 @@ declare module 'react-i18next' {
 				}
 				errors: Record<string, string>
 				common: {
+					more_actions: string
 					rename: string
 					edit: string
 					done: string
@@ -557,7 +558,6 @@ declare module 'react-i18next' {
 					want_empty: string
 					individual_empty: string
 					allergies_empty: string
-					add_placeholder: string
 					add_custom: string
 					add_failed: string
 					duplicate: string
@@ -621,6 +621,19 @@ declare module 'react-i18next' {
 					pick_identity: string
 					go_people: string
 					ai_closed: string
+					add_to: string
+					add_to_label: string
+					mine: string
+					keep_off: string
+					keep_off_empty: string
+					keep_off_body: string
+					ready_title: string
+					ready_cart: string
+					ready_total: string
+					in_plan: string
+					quick_picks: string
+					per_person: string
+					per_person_label: string
 					allergen: Record<
 						| 'shellfish'
 						| 'fish'
@@ -1032,6 +1045,10 @@ declare module 'react-i18next' {
 						numbers_swapped: string
 						swap_failed: string
 						more_actions: string
+					in_plan: string
+					quick_picks: string
+					per_person: string
+					per_person_label: string
 						swap_with: string
 						swap_title: string
 						swap_desc: string
