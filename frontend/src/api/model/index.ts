@@ -97,6 +97,7 @@ export * from './getPresetMenusParams';
 export * from './getPublicConfig200';
 export * from './getSeasonalPricesParams';
 export * from './getSignedUrlParams';
+export * from './getTableAuditByTableKind';
 export * from './getTableAuditByTableParams';
 export * from './getTableAuditParams';
 export * from './getTablePlanParams';

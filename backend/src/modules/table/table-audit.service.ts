@@ -128,10 +128,21 @@ export class TableAuditService {
     }));
   }
 
-  async listForTable(tableId: string, count: number): Promise<TableAuditDto[]> {
+  async listForTable(
+    tableId: string,
+    count: number,
+    skip = 0,
+    kind?: 'activity' | 'ai',
+  ): Promise<TableAuditDto[]> {
+    const ai = [...AI_AUDIT_ACTIONS];
     const rows = await prisma.tableAudit.findMany({
-      where: { tableId },
-      orderBy: { createdAt: 'desc' },
+      where: {
+        tableId,
+        ...(kind === 'ai' && { action: { in: ai } }),
+        ...(kind === 'activity' && { action: { notIn: ai } }),
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      skip,
       take: count,
     });
     return rows.map((r) => ({

@@ -198,6 +198,9 @@ declare module 'react-i18next' {
 					table_description: string
 					empty: string
 					load_error: string
+					tab_activity: string
+					tab_ai: string
+					load_more: string
 					by_guest: string
 					by_name: string
 					by_admin: string

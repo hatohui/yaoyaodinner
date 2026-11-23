@@ -103,14 +103,20 @@ export class TableController {
   @Get(':id/audit')
   @ApiOperation({ operationId: 'getTableAuditByTable' })
   @ApiQuery({ name: 'count', required: false, type: Number })
+  @ApiQuery({ name: 'skip', required: false, type: Number })
+  @ApiQuery({ name: 'kind', required: false, enum: ['activity', 'ai'] })
   @ApiResponse({ status: 200, type: [TableAuditDto] })
   getAuditForTable(
     @Param('id') id: string,
     @Query('count') count = '100',
+    @Query('skip') skip = '0',
+    @Query('kind') kind?: string,
   ) {
     return this.audit.listForTable(
       id,
       Math.min(500, Math.max(1, parseInt(count, 10) || 100)),
+      Math.max(0, parseInt(skip, 10) || 0),
+      kind === 'ai' || kind === 'activity' ? kind : undefined,
     );
   }
 

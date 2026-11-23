@@ -198,6 +198,9 @@
 		"description": "最近的餐桌改动，最新的在最上面。",
 		"empty": "还没有改动",
 		"load_error": "无法加载历史记录",
+		"tab_activity": "动态",
+		"tab_ai": "AI",
+		"load_more": "加载更多",
 		"by_guest": "由客人修改",
 		"actions": {
 			"created": "创建了 {{no}} 号桌 · {{name}}",

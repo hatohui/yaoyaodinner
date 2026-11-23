@@ -25,6 +25,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { relativeTime } from '@/utils/relativeTime'
 import { cn } from '@/utils/shadcn'
 import {
+	AI_AUDIT_ACTIONS,
 	AUDIT_ICONS,
 	DESTRUCTIVE_AUDIT_ACTIONS,
 	auditEntryParams,
@@ -79,7 +80,7 @@ const CATEGORY_ACTIONS: Record<Exclude<Category, 'all'>, Set<TableAuditDtoAction
 		'deleted',
 	]),
 	images: new Set(['image_uploaded', 'banner_changed', 'person_pfp_changed']),
-	ai: new Set(['ai_roast_table', 'ai_roast_guest', 'ai_plan']),
+	ai: AI_AUDIT_ACTIONS,
 	feedback: new Set(['feedback_added', 'feedback_removed']),
 }
 

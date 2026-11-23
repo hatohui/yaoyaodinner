@@ -199,6 +199,9 @@
 		"table_description": "Recent activity at this table, newest first.",
 		"empty": "No changes yet",
 		"load_error": "Couldn't load the history",
+		"tab_activity": "Activity",
+		"tab_ai": "AI",
+		"load_more": "Load more",
 		"by_guest": "by a guest",
 		"actions": {
 			"created": "Created table {{no}} · {{name}}",

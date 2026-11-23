@@ -5,7 +5,10 @@
  * Restaurant management API
  * OpenAPI spec version: 1.0
  */
+import type { GetTableAuditByTableKind } from './getTableAuditByTableKind';
 
 export type GetTableAuditByTableParams = {
 count?: number;
+skip?: number;
+kind?: GetTableAuditByTableKind;
 };

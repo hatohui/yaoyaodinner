@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import {
 	ArchiveRestore,
@@ -23,8 +24,16 @@ import {
 	Users,
 	type LucideIcon,
 } from 'lucide-react'
-import { useGetTableAudit, useGetTableAuditByTable } from '@/api/tables/tables'
-import type { TableAuditDto, TableAuditDtoAction } from '@/api/model'
+import {
+	getGetTableAuditByTableQueryKey,
+	getTableAuditByTable,
+	useGetTableAudit,
+} from '@/api/tables/tables'
+import type {
+	GetTableAuditByTableKind,
+	TableAuditDto,
+	TableAuditDtoAction,
+} from '@/api/model'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -79,7 +88,15 @@ export const DESTRUCTIVE_AUDIT_ACTIONS = new Set<TableAuditDtoAction>([
 	'feedback_removed',
 ])
 
+export const AI_AUDIT_ACTIONS = new Set<TableAuditDtoAction>([
+	'ai_roast_table',
+	'ai_roast_guest',
+	'ai_plan',
+])
+
 const AUDIT_COUNT = 200
+const PAGE_SIZE = 30
+const KINDS: GetTableAuditByTableKind[] = ['activity', 'ai']
 
 export function auditMessageKey(entry: TableAuditDto) {
 	const cleared = entry.details?.to == null
@@ -117,6 +134,7 @@ export function TableAuditDialog({
 }) {
 	const { t, i18n } = useTranslation()
 	const [open, setOpen] = useState(false)
+	const [kind, setKind] = useState<GetTableAuditByTableKind>('activity')
 	const byLabel = (entry: TableAuditDto) => {
 		if (entry.details?.personName)
 			return t('table_audit.by_name', { name: entry.details.personName })
@@ -128,12 +146,27 @@ export function TableAuditDialog({
 		{ count: AUDIT_COUNT },
 		{ query: { enabled: open && !tableId, refetchOnMount: 'always' } }
 	)
-	const tableAudit = useGetTableAuditByTable<TableAuditDto[]>(
-		tableId ?? '',
-		{ count: AUDIT_COUNT },
-		{ query: { enabled: open && Boolean(tableId), refetchOnMount: 'always' } }
-	)
-	const { data, isLoading, isError, error } = tableId ? tableAudit : globalAudit
+	const tableAudit = useInfiniteQuery({
+		queryKey: getGetTableAuditByTableQueryKey(tableId ?? '', { kind }),
+		queryFn: ({ pageParam, signal }) =>
+			getTableAuditByTable(
+				tableId ?? '',
+				{ kind, count: PAGE_SIZE, skip: pageParam },
+				signal
+			),
+		initialPageParam: 0,
+		getNextPageParam: (last, pages) =>
+			last.length < PAGE_SIZE ? undefined : pages.length * PAGE_SIZE,
+		enabled: open && Boolean(tableId),
+		refetchOnMount: 'always',
+	})
+	const isAiKind = kind === 'ai'
+	const data = tableId
+		? tableAudit.data?.pages.flat()
+		: globalAudit.data?.filter(
+				entry => AI_AUDIT_ACTIONS.has(entry.action) === isAiKind
+			)
+	const { isLoading, isError, error } = tableId ? tableAudit : globalAudit
 	const showError =
 		isError && !(isAxiosError(error) && error.response?.status === 404)
 
@@ -174,6 +207,28 @@ export function TableAuditDialog({
 							: t('table_audit.description')}
 					</DialogDescription>
 				</DialogHeader>
+				<div className='flex w-fit items-center gap-1 rounded-full border border-border/60 bg-background p-0.5'>
+					{KINDS.map(k => (
+						<button
+							key={k}
+							type='button'
+							onClick={() => setKind(k)}
+							className={cn(
+								'inline-flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors',
+								kind === k
+									? 'bg-primary text-primary-foreground'
+									: 'text-muted-foreground hover:text-foreground'
+							)}
+						>
+							{k === 'ai' ? (
+								<Sparkles className='size-3.5' />
+							) : (
+								<History className='size-3.5' />
+							)}
+							{t(`table_audit.tab_${k}`)}
+						</button>
+					))}
+				</div>
 				{isLoading ? (
 					<div className='flex justify-center py-6'>
 						<Spinner />
@@ -230,6 +285,20 @@ export function TableAuditDialog({
 								</li>
 							)
 						})}
+						{tableId && tableAudit.hasNextPage && (
+							<li className='flex justify-center pt-2 pb-1'>
+								<Button
+									size='sm'
+									variant='outline'
+									className='gap-1.5 rounded-full'
+									disabled={tableAudit.isFetchingNextPage}
+									onClick={() => void tableAudit.fetchNextPage()}
+								>
+									{tableAudit.isFetchingNextPage && <Spinner />}
+									{t('table_audit.load_more')}
+								</Button>
+							</li>
+						)}
 					</ul>
 				)}
 			</DialogContent>

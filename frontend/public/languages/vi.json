@@ -198,6 +198,9 @@
 		"description": "Các thay đổi gần đây, mới nhất ở trên.",
 		"empty": "Chưa có thay đổi nào",
 		"load_error": "Không tải được lịch sử",
+		"tab_activity": "Hoạt động",
+		"tab_ai": "AI",
+		"load_more": "Xem thêm",
 		"by_guest": "bởi khách",
 		"actions": {
 			"created": "Đã tạo bàn {{no}} · {{name}}",

@@ -198,6 +198,9 @@
 		"description": "テーブルへの最近の変更（新しい順）。",
 		"empty": "変更履歴はまだありません",
 		"load_error": "履歴を読み込めませんでした",
+		"tab_activity": "アクティビティ",
+		"tab_ai": "AI",
+		"load_more": "もっと見る",
 		"by_guest": "ゲストによる操作",
 		"actions": {
 			"created": "テーブル {{no}}「{{name}}」を作成",
