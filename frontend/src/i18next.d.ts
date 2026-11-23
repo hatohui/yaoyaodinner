@@ -289,6 +289,7 @@ declare module 'react-i18next' {
 					none_found: string
 				}
 				roster: {
+					view_share: string
 					people_here: string
 					empty: string
 					host: string
@@ -428,6 +429,7 @@ declare module 'react-i18next' {
 					finalized_body: string
 				}
 				orders: {
+					you_pay: string
 					estimate_note: string
 					from_amount: string
 					round_pre: string

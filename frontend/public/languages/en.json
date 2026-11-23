@@ -291,7 +291,8 @@
 		"note_label": "Note",
 		"host_label": "Table host",
 		"you": "You",
-		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name."
+		"pick_yourself": "Which one is you? Tap \"That's me\" next to your name.",
+		"view_share": "View split"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -558,7 +559,8 @@
 		"round_dinner_empty": "Nothing added at dinner yet",
 		"edit_price": "Edit price",
 		"unit_price": "Price per item ({{currency}})",
-		"price_edited": "Edited price"
+		"price_edited": "Edited price",
+		"you_pay": "Your share {{amount}}"
 	},
 	"split": {
 		"title": "Split this item",

@@ -291,7 +291,8 @@
 		"note_label": "备注",
 		"host_label": "桌主",
 		"you": "你",
-		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。"
+		"pick_yourself": "哪位是你？在你的名字旁点\"这是我\"。",
+		"view_share": "查看分摊"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -556,7 +557,8 @@
 		"round_dinner_empty": "暂无席间加点",
 		"edit_price": "修改价格",
 		"unit_price": "单价（{{currency}}）",
-		"price_edited": "已改价"
+		"price_edited": "已改价",
+		"you_pay": "你的份额 {{amount}}"
 	},
 	"split": {
 		"title": "分摊此项",

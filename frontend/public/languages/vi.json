@@ -291,7 +291,8 @@
 		"note_label": "Ghi chú",
 		"host_label": "Chủ bàn",
 		"you": "Bạn",
-		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn."
+		"pick_yourself": "Bạn là ai? Nhấn \"Là tôi\" cạnh tên của bạn.",
+		"view_share": "Xem chia tiền"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -556,7 +557,8 @@
 		"round_dinner_empty": "Chưa gọi thêm món nào",
 		"edit_price": "Sửa giá",
 		"unit_price": "Giá mỗi món ({{currency}})",
-		"price_edited": "Đã sửa giá"
+		"price_edited": "Đã sửa giá",
+		"you_pay": "Phần của bạn {{amount}}"
 	},
 	"split": {
 		"title": "Chia món này",

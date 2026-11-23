@@ -120,20 +120,23 @@ export function OrderDishGroup({
 								{name}
 							</span>
 							<span className='truncate text-xs text-muted-foreground'>
+								<span className='font-semibold text-foreground/80 tabular-nums sm:hidden'>
+									×{quantity} ·{' '}
+								</span>
 								{summarySplits}
 							</span>
 						</span>
 						<span className='flex shrink-0 items-baseline gap-2 tabular-nums'>
-							<span className='text-xs font-semibold text-muted-foreground'>
+							<span className='hidden text-xs font-semibold text-muted-foreground sm:inline'>
 								×{quantity}
 							</span>
-							<span className='w-16 text-right text-sm font-semibold text-foreground'>
+							<span className='text-right text-sm font-semibold text-foreground sm:w-16'>
 								{priceText}
 							</span>
 						</span>
 						<ChevronDown
 							className={cn(
-								'size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:text-primary',
+								'hidden size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:text-primary sm:block',
 								open && 'rotate-180'
 							)}
 						/>
@@ -144,7 +147,7 @@ export function OrderDishGroup({
 							onClick={onQuickAdd}
 							aria-label={t('orders.add_another')}
 							title={t('orders.add_another')}
-							className='mr-2.5 flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full border border-border bg-muted/60 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:mr-3'
+							className='mr-2.5 flex size-8 shrink-0 sm:size-6 cursor-pointer items-center justify-center rounded-full border border-border bg-muted/60 text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-primary sm:mr-3'
 						>
 							<Plus className='size-3.5' />
 						</button>

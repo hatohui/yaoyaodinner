@@ -308,6 +308,7 @@ export default function TableDetailPage() {
 							canJoin={canJoin}
 							canSetHost={isAdmin}
 							onSetHost={personId => updateTable({ tableLeaderId: personId })}
+							showShares
 							roast={rosterRoast}
 						/>
 					</TabsContent>

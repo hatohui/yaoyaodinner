@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Crown, NotebookText, Pencil, ShieldAlert, UserCheck } from 'lucide-react'
+import { Link } from 'react-router'
+import {
+	Crown,
+	NotebookText,
+	Pencil,
+	ShieldAlert,
+	UserCheck,
+} from 'lucide-react'
 import type { MemberRoastDto, PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { ImageViewer } from '@/components/common/ImageViewer'
@@ -14,6 +21,7 @@ import { useIdentityTour } from '@/hooks/useIdentityTour'
 import { ViewToggle, useListView } from '@/components/common/ViewToggle'
 import { ROSTER_VIEW_STORAGE_KEY } from '@/common/constants'
 import { useRoster } from './@useRoster'
+import { useSplitShares } from './@useSplitShares'
 import { formatPersonAllergies } from './@AllergyPicker'
 import { PersonDialog } from './@PersonDialog'
 import { MemberRoast } from './@MemberRoast'
@@ -27,6 +35,7 @@ interface RosterProps {
 	canJoin: boolean
 	canSetHost: boolean
 	onSetHost: (personId: string | null) => void
+	showShares?: boolean
 	roast?: {
 		members: Record<string, MemberRoastDto>
 		roastingPersonId: string | undefined
@@ -40,6 +49,7 @@ export function Roster({
 	canJoin,
 	canSetHost,
 	onSetHost,
+	showShares = false,
 	roast,
 }: RosterProps) {
 	const { t } = useTranslation()
@@ -56,6 +66,13 @@ export function Roster({
 	const [viewing, setViewing] = useState<PersonDto | null>(null)
 	const inputRef = useRef<HTMLInputElement>(null)
 	const { view, setView } = useListView(ROSTER_VIEW_STORAGE_KEY)
+	const shares = useSplitShares(table, people, showShares)
+	const shareOf = (personId: string) => {
+		const entry = shares.breakdown.find(b => b.person.id === personId)
+		return showShares && entry && entry.total > 0
+			? `${entry.total.toFixed(2)} ${shares.currency}`
+			: undefined
+	}
 	const compact = view === 'compact'
 	const needle = !tourOpen ? tourQuery.toLowerCase() : ''
 
@@ -126,7 +143,9 @@ export function Roster({
 						{roast && Object.values(roast.members).some(m => m.text) && (
 							<ShowAllRoastsToggle />
 						)}
-						<ViewToggle view={view} onChange={setView} />
+						<span className='hidden sm:flex'>
+							<ViewToggle view={view} onChange={setView} />
+						</span>
 					</div>
 				)}
 			</div>
@@ -164,6 +183,7 @@ export function Roster({
 								showClaim={canJoin && !me}
 								canEdit={canEdit}
 								compact={compact}
+								share={shareOf(person.id)}
 								onClaim={() => {
 									if (!tourOpen) setTourQuery('')
 									claim(person)
@@ -263,6 +283,7 @@ function RosterItem({
 	showClaim,
 	canEdit,
 	compact,
+	share,
 	onClaim,
 	onOpen,
 	onView,
@@ -275,6 +296,7 @@ function RosterItem({
 	showClaim: boolean
 	canEdit: boolean
 	compact: boolean
+	share?: string
 	onClaim: () => void
 	onOpen: () => void
 	onView: () => void
@@ -362,7 +384,9 @@ function RosterItem({
 			<div
 				className={cn(
 					'pointer-events-none relative flex min-w-0 flex-1',
-					compact ? 'items-center gap-2' : 'flex-col gap-0.5'
+					compact
+						? 'flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2'
+						: 'flex-col gap-0.5'
 				)}
 			>
 				<span
@@ -452,6 +476,15 @@ function RosterItem({
 					rowToggles={!editable}
 					onRoast={roast.onRoast}
 				/>
+			)}
+			{share && (
+				<Link
+					to='?tab=split'
+					title={t('roster.view_share')}
+					className='relative shrink-0 rounded-lg bg-primary/10 px-2 py-1 text-xs font-semibold tabular-nums text-primary transition-colors hover:bg-primary/20'
+				>
+					{share}
+				</Link>
 			)}
 			{editable && (
 				<Pencil className='pointer-events-none relative size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary' />

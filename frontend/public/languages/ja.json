@@ -59,7 +59,8 @@
 		"invalid_file_type": "JPEG、PNG、WebP、またはGIF画像を選択してください",
 		"file_too_large": "画像サイズは25MB未満にしてください",
 		"view_image": "画像を表示",
-		"close": "閉じる"
+		"close": "閉じる",
+		"more_actions": "その他の操作"
 	},
 	"banner": {
 		"dismiss": "閉じる",
@@ -290,7 +291,8 @@
 		"note_label": "ひとことメモ",
 		"host_label": "テーブルホスト",
 		"you": "あなた",
-		"pick_yourself": "あなたはどれですか？ お名前の横の「これは自分」をタップしてください。"
+		"pick_yourself": "あなたはどれですか？ お名前の横の「これは自分」をタップしてください。",
+		"view_share": "割り勘を見る"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -557,7 +559,8 @@
 		"round_dinner_empty": "ディナー時の追加注文はまだありません",
 		"edit_price": "価格を編集",
 		"unit_price": "単価 ({{currency}})",
-		"price_edited": "価格を変更しました"
+		"price_edited": "価格を変更しました",
+		"you_pay": "あなたの負担 {{amount}}"
 	},
 	"split": {
 		"title": "割り勘設定",
@@ -1244,7 +1247,6 @@
 		"want_empty": "気になっている料理を追加してみましょう。",
 		"individual_empty": "個人注文はまだありません。",
 		"allergies_empty": "アレルギーの登録はありません。",
-		"add_placeholder": "メニューを検索、または料理名を入力",
 		"add_custom": "「{{name}}」を追加（メニュー外）",
 		"add_failed": "追加できませんでした。もう一度お試しください",
 		"duplicate": "既にリストに入っています",
@@ -1327,7 +1329,20 @@
 		"add_to_target": "追加先",
 		"add_to_plan_btn": "プランに追加",
 		"priority": "優先度",
-		"added_by": "{{name}}が追加"
+		"added_by": "{{name}}が追加",
+		"add_to": "{{list}}に追加…",
+		"add_to_label": "追加先のリスト",
+		"mine": "個人",
+		"keep_off": "テーブルに出さない",
+		"keep_off_empty": "アレルギーや避けたい料理はまだありません",
+		"keep_off_body": "このテーブルで避ける料理とアレルギー。",
+		"ready_title": "注文の準備完了",
+		"ready_cart": "カートに追加済み",
+		"ready_total": "合計（概算）",
+		"in_plan": "すでにプランにあります",
+		"quick_picks": "人気 · タップで{{list}}に追加",
+		"per_person": "≈ 1人あたり {{amount}}",
+		"per_person_label": "1人あたり（{{count}}人）"
 	},
 	"exclude": {
 		"button": "除外設定",

@@ -291,7 +291,8 @@
 		"note_label": "โน้ต",
 		"host_label": "เจ้าภาพโต๊ะ",
 		"you": "คุณ",
-		"pick_yourself": "คุณคือใคร? แตะ \"นี่คือฉัน\" ข้างชื่อของคุณ"
+		"pick_yourself": "คุณคือใคร? แตะ \"นี่คือฉัน\" ข้างชื่อของคุณ",
+		"view_share": "ดูการแบ่งจ่าย"
 	},
 	"menu": {
 		"restaurant_name": "高人馆",
@@ -556,7 +557,8 @@
 		"round_dinner_empty": "ยังไม่มีรายการสั่งเพิ่ม",
 		"edit_price": "แก้ไขราคา",
 		"unit_price": "ราคาต่อชิ้น ({{currency}})",
-		"price_edited": "แก้ราคาแล้ว"
+		"price_edited": "แก้ราคาแล้ว",
+		"you_pay": "ส่วนของคุณ {{amount}}"
 	},
 	"split": {
 		"title": "แบ่งรายการนี้",

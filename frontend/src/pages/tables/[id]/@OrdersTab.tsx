@@ -1,16 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
-import {
-	Download,
-	Eye,
-	EyeOff,
-	Plus,
-	ReceiptText,
-	Users,
-	UtensilsCrossed,
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { PersonDto, TableDto } from '@/api/model'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -34,15 +23,18 @@ import { OrderDishGroup } from './@OrderDishGroup'
 import { QuickOrderModal, type QuickOrderTarget } from './@QuickOrderModal'
 import { useWhoAmI } from '@/hooks/useWhoAmI'
 import { useHideFree } from '@/hooks/useHideFree'
-import { useListView, ViewToggle } from '@/components/common/ViewToggle'
+import { useListView } from '@/components/common/ViewToggle'
 import { ORDER_LIST_VIEW_STORAGE_KEY } from '@/common/constants'
 import { billingCurrency, hasUnpriced } from '@/utils/money'
 import { downloadReceiptImage } from '@/utils/receiptImage'
 import { cn } from '@/utils/shadcn'
-import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 import { FoodDetailModal } from '@/pages/menu/[id]/@FoodDetailModal'
 import { SplitsTab } from './@SplitsTab'
+import { OrdersToolbar } from './@OrdersToolbar'
+import { OrdersSummaryBar, OrdersSummaryCard } from './@OrdersSummary'
+import { useSplitShares } from './@useSplitShares'
+import { DESKTOP_QUERY, useMediaQuery } from '@/hooks/useMediaQuery'
 
 export type OrdersSubView = 'dishes' | 'people' | 'receipt'
 
@@ -91,6 +83,8 @@ export function OrdersTab({
 	const { preset } = useActivePreset(table.eventId)
 	const total = ordersTotal + (preset?.price ?? 0)
 	const { view, setView } = useListView(ORDER_LIST_VIEW_STORAGE_KEY)
+	const isDesktop = useMediaQuery(DESKTOP_QUERY)
+	const shares = useSplitShares(table, people)
 	const compact = view === 'compact'
 	const { hideFree, toggleHideFree } = useHideFree()
 	const allLines = useMemo(() => groupOrders(orders), [orders])
@@ -176,15 +170,24 @@ export function OrdersTab({
 		</ul>
 	)
 
-	const hasSidebar = Boolean(preset)
+	const showSummary = orders.length > 0
+	const hasSidebar = Boolean(preset) || (isDesktop && showSummary)
+	const summary = {
+		total,
+		partial: hasUnpriced(orders),
+		currency,
+		myShare: shares.mine
+			? { amount: shares.mine.total, partial: shares.mine.partial }
+			: undefined,
+	}
+	const summaryProps = {
+		summary,
+		addOrderHref: canOrder ? `/tables/${table.id}/order` : undefined,
+		onShowSplits: () => setSubView('people'),
+	}
 	const showSubSwitcher =
 		orders.length > 0 || Boolean(preset && preset.price > 0)
 	const activeSubView = showSubSwitcher ? subView : 'dishes'
-	const subOptions = [
-		{ value: 'dishes', icon: UtensilsCrossed, label: t('tabs.orders') },
-		{ value: 'people', icon: Users, label: t('tabs.splits') },
-		{ value: 'receipt', icon: ReceiptText, label: t('split.view_receipt') },
-	] as const
 
 	const downloadOrders = () => {
 		const splitText = (line: OrderedLine) => {
@@ -255,100 +258,31 @@ export function OrdersTab({
 	}
 
 	return (
-		<div className='flex flex-col gap-3'>
-			{(showSubSwitcher ||
-				(activeSubView === 'dishes' &&
-					(orders.length > 0 || Boolean(preset?.items.length))) ||
-				(canOrder && orders.length > 0)) && (
-				<div className='flex flex-wrap items-center gap-2'>
-					{showSubSwitcher && (
-						<div
-							role='group'
-							className='inline-flex h-8 w-fit items-center gap-0.5 rounded-xl border border-border bg-control p-0.5 shadow-2xs'
-						>
-							{subOptions.map(({ value, icon: Icon, label }) => (
-								<button
-									key={value}
-									type='button'
-									aria-pressed={activeSubView === value}
-									onClick={() => setSubView(value)}
-									className={cn(
-										'flex h-full items-center justify-center gap-1 rounded-lg px-2.5 text-xs font-semibold transition-colors',
-										activeSubView === value
-											? 'bg-primary text-primary-foreground'
-											: 'text-muted-foreground hover:text-foreground'
-									)}
-								>
-									<Icon className='size-3' />
-									{label}
-								</button>
-							))}
-						</div>
-					)}
-					{((canOrder && orders.length > 0) ||
-						(activeSubView === 'dishes' &&
-							(orders.length > 0 || Boolean(preset?.items.length)))) && (
-						<div className='ml-auto flex shrink-0 items-center gap-1.5'>
-							{canOrder && orders.length > 0 && (
-								<Button
-									asChild
-									size='sm'
-									className='hidden h-8 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:brightness-100 sm:inline-flex'
-								>
-									<Link to={`/tables/${table.id}/order`}>
-										<Plus className='size-4' />
-										{t('orders.add_order')}
-									</Link>
-								</Button>
-							)}
-							{activeSubView === 'dishes' &&
-								(orders.length > 0 || Boolean(preset?.items.length)) && (
-									<>
-										{hasFree && (
-											<Button
-												variant='outline'
-												size='icon-sm'
-												className={cn(
-													'size-8 rounded-xl',
-													hideFree &&
-														'border-primary/40 bg-primary/10 text-primary'
-												)}
-												aria-pressed={hideFree}
-												aria-label={t(
-													hideFree ? 'orders.show_free' : 'orders.hide_free'
-												)}
-												title={t(
-													hideFree ? 'orders.show_free' : 'orders.hide_free'
-												)}
-												onClick={toggleHideFree}
-											>
-												{hideFree ? (
-													<EyeOff className='size-3.5' />
-												) : (
-													<Eye className='size-3.5' />
-												)}
-											</Button>
-										)}
-										{(orders.length > 0 ||
-											Boolean(preset && preset.price > 0)) && (
-											<Button
-												variant='outline'
-												size='icon-sm'
-												className='size-8 rounded-xl'
-												aria-label={t('common.download_image')}
-												title={t('common.download_image')}
-												onClick={downloadOrders}
-											>
-												<Download className='size-3.5' />
-											</Button>
-										)}
-										<ViewToggle view={view} onChange={setView} />
-									</>
-								)}
-						</div>
-					)}
-				</div>
+		<div
+			className={cn(
+				'flex flex-col gap-3',
+				showSummary && !isDesktop && activeSubView === 'dishes' && 'pb-24'
 			)}
+		>
+			<OrdersToolbar
+				isDesktop={isDesktop}
+				subView={activeSubView}
+				onSubViewChange={showSubSwitcher ? setSubView : undefined}
+				showListActions={
+					activeSubView === 'dishes' &&
+					(orders.length > 0 || Boolean(preset?.items.length))
+				}
+				hideFree={
+					hasFree ? { hidden: hideFree, onToggle: toggleHideFree } : undefined
+				}
+				onDownload={
+					orders.length > 0 || Boolean(preset && preset.price > 0)
+						? downloadOrders
+						: undefined
+				}
+				view={view}
+				onViewChange={setView}
+			/>
 
 			{activeSubView !== 'dishes' ? (
 				<SplitsTab
@@ -365,20 +299,19 @@ export function OrdersTab({
 							: 'flex flex-col gap-3'
 					}
 				>
-					{preset && (
-						<aside
-							className={
-								hasSidebar
-									? 'flex flex-col gap-3 lg:order-2 lg:sticky lg:top-20'
-									: 'contents'
-							}
-						>
-							{preset.note && <IncludedNoteStrip note={preset.note} />}
-							<PresetMenuSection
-								preset={preset}
-								compact={compact}
-								onSelectFood={setQuickViewId}
-							/>
+					{hasSidebar && (
+						<aside className='flex flex-col gap-3 lg:order-2 lg:sticky lg:top-20'>
+							{isDesktop && showSummary && (
+								<OrdersSummaryCard {...summaryProps} />
+							)}
+							{preset?.note && <IncludedNoteStrip note={preset.note} />}
+							{preset && (
+								<PresetMenuSection
+									preset={preset}
+									compact={compact}
+									onSelectFood={setQuickViewId}
+								/>
+							)}
 						</aside>
 					)}
 
@@ -431,52 +364,13 @@ export function OrdersTab({
 								renderLines(lines)
 							))}
 
-						{orders.length > 0 && (
-							<>
-								<div className='hidden items-center justify-between border-t border-border pt-3 text-sm font-semibold text-foreground sm:flex'>
-									<span>{t('orders.total')}</span>
-									<span>
-										<TotalAmount
-											amount={total}
-											currency={currency}
-											partial={hasUnpriced(orders)}
-										/>
-									</span>
-								</div>
-								<PriceEstimateNote />
-							</>
-						)}
-
-						{orders.length > 0 && (
-							<div className='sticky bottom-2 z-20 flex items-center justify-between gap-3 rounded-2xl border border-border bg-card/95 px-3.5 py-2.5 shadow-lg backdrop-blur-md sm:hidden'>
-								<div className='flex min-w-0 flex-col'>
-									<span className='text-[11px] text-muted-foreground'>
-										{t('orders.total')}
-									</span>
-									<span className='text-sm font-semibold tabular-nums text-foreground'>
-										<TotalAmount
-											amount={total}
-											currency={currency}
-											partial={hasUnpriced(orders)}
-										/>
-									</span>
-								</div>
-								{canOrder && (
-									<Button
-										asChild
-										size='sm'
-										className='h-9 shrink-0 gap-1.5 rounded-xl bg-action text-action-foreground shadow-md hover:bg-primary hover:text-primary-foreground'
-									>
-										<Link to={`/tables/${table.id}/order`}>
-											<Plus className='size-4' />
-											{t('orders.add_order')}
-										</Link>
-									</Button>
-								)}
-							</div>
-						)}
+						{orders.length > 0 && !isDesktop && <PriceEstimateNote />}
 					</div>
 				</div>
+			)}
+
+			{showSummary && !isDesktop && activeSubView === 'dishes' && (
+				<OrdersSummaryBar {...summaryProps} />
 			)}
 
 			<SplitPickerModal

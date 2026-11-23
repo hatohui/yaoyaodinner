@@ -1,15 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
-import { getGetOrdersQueryOptions } from '@/api/orders/orders'
-import { getGetPresetMenusQueryOptions } from '@/api/preset-menus/preset-menus'
-import type {
-	OrderResponseDto,
-	PersonDto,
-	PresetMenuDto,
-	TableDto,
-} from '@/api/model'
+import type { OrderResponseDto, PersonDto, TableDto } from '@/api/model'
 import { Badge } from '@/components/ui/badge'
 import {
 	Dialog,
@@ -19,20 +11,15 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog'
 import { OrderThumb } from '@/components/ordering/OrderThumb'
-import { useWhoAmI } from '@/hooks/useWhoAmI'
-import {
-	allocateCents,
-	awaitingPrice,
-	billingCurrency,
-	hasUnpriced,
-} from '@/utils/money'
+import { awaitingPrice } from '@/utils/money'
 import { TotalAmount } from '@/components/ordering/TotalAmount'
 import { PriceEstimateNote } from '@/components/ordering/PriceEstimateNote'
 import { cn } from '@/utils/shadcn'
 import { TabEmptyState } from './@TabEmptyState'
 import { SplitsSkeleton } from './@Skeletons'
-import { SplitBreakdown, type SplitRound } from './@SplitBreakdown'
+import { SplitBreakdown } from './@SplitBreakdown'
 import { SplitReceipt } from './@SplitReceipt'
+import { useSplitShares } from './@useSplitShares'
 
 export type SplitView = 'people' | 'receipt'
 
@@ -44,77 +31,26 @@ interface SplitsTabProps {
 }
 
 export function SplitsTab({ table, people, canEdit, view }: SplitsTabProps) {
-	const { t, i18n } = useTranslation()
-	const { personId: myPersonId } = useWhoAmI(table.id)
+	const { t } = useTranslation()
 	const [expanded, setExpanded] = useState<Set<string>>(new Set())
 	const [selectedOrder, setSelectedOrder] = useState<OrderResponseDto | null>(
 		null
 	)
 
-	const { data: orders = [], isLoading: ordersLoading } = useQuery(
-		getGetOrdersQueryOptions<OrderResponseDto[]>({
-			tableId: table.id,
-			lang: i18n.language,
-		})
-	)
-	const { data: presets = [], isLoading: presetsLoading } = useQuery(
-		getGetPresetMenusQueryOptions<PresetMenuDto[]>({
-			lang: i18n.language,
-			eventId: table.eventId ?? undefined,
-		})
-	)
-
-	const activePreset = presets.find(p => p.isActive)
-	const flatPrice = activePreset?.price ?? 0
-	const flatShare = flatPrice / Math.max(people.length, 1)
-	const currency = billingCurrency([...orders, ...(activePreset?.items ?? [])])
-
-	const lineShare = (order: OrderResponseDto) => {
-		const lineTotal = order.price * order.quantity
-		if (order.splitAll) return lineTotal / Math.max(people.length, 1)
-		return lineTotal / (order.splits.length || 1)
-	}
-
-	const shareOf = (items: OrderResponseDto[]) =>
-		items.reduce((sum, o) => (o.shouldCalculate ? sum + lineShare(o) : sum), 0)
-
-	const exact = people.map(person => {
-		const items = orders.filter(
-			o => o.splitAll || o.splits.some(s => s.personId === person.id)
-		)
-		const rounds: SplitRound[] = [
-			{
-				key: 'pre',
-				label: t('orders.round_pre'),
-				items: items.filter(o => o.round === 'pre'),
-			},
-			{
-				key: 'dinner',
-				label: t('orders.round_dinner'),
-				items: items.filter(o => o.round === 'dinner'),
-			},
-		]
-			.filter(r => r.items.length > 0)
-			.map(r => ({
-				...r,
-				subtotal: shareOf(r.items),
-				partial: hasUnpriced(r.items),
-			}))
-		return {
-			person,
-			rounds,
-			total: shareOf(items) + flatShare,
-			partial: hasUnpriced(items),
-		}
-	})
-	// rounded per person so the shares always add up to the table total
-	const rounded = allocateCents(exact.map(b => b.total))
-	const breakdown = exact.map((b, i) => ({ ...b, total: rounded[i] }))
-	const tableTotal = rounded.reduce((sum, v) => sum + v, 0)
-	const tablePartial = hasUnpriced(orders)
-
-	const mine = breakdown.find(b => b.person.id === myPersonId)
-	const others = breakdown.filter(b => b.person.id !== myPersonId)
+	const {
+		orders,
+		isLoading,
+		myPersonId,
+		flatPrice,
+		flatShare,
+		currency,
+		lineShare,
+		breakdown,
+		tableTotal,
+		tablePartial,
+		mine,
+		others,
+	} = useSplitShares(table, people)
 
 	const toggle = (personId: string) =>
 		setExpanded(prev => {
@@ -124,7 +60,7 @@ export function SplitsTab({ table, people, canEdit, view }: SplitsTabProps) {
 			return next
 		})
 
-	if (ordersLoading || presetsLoading) {
+	if (isLoading) {
 		return <SplitsSkeleton rows={Math.min(Math.max(people.length, 2), 6)} />
 	}
 
@@ -186,19 +122,31 @@ export function SplitsTab({ table, people, canEdit, view }: SplitsTabProps) {
 										onSelect={setSelectedOrder}
 									/>
 								</div>
+								<div className='flex items-center justify-between border-t border-border pt-2 text-xs text-muted-foreground'>
+									<span>{t('split.table_total')}</span>
+									<span className='tabular-nums'>
+										<TotalAmount
+											amount={tableTotal}
+											currency={currency}
+											partial={tablePartial}
+										/>
+									</span>
+								</div>
 							</section>
 						)}
 
-						<div className='flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-xs'>
-							<span>{t('split.table_total')}</span>
-							<span className='tabular-nums'>
-								<TotalAmount
-									amount={tableTotal}
-									currency={currency}
-									partial={tablePartial}
-								/>
-							</span>
-						</div>
+						{!mine && (
+							<div className='flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm font-semibold text-foreground shadow-xs'>
+								<span>{t('split.table_total')}</span>
+								<span className='tabular-nums'>
+									<TotalAmount
+										amount={tableTotal}
+										currency={currency}
+										partial={tablePartial}
+									/>
+								</span>
+							</div>
+						)}
 					</div>
 
 					{others.length > 0 && (
