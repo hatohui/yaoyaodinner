@@ -128,7 +128,7 @@ export function FloorPlanTable({
 				)}
 			>
 				<Users className='size-[max(1.6cqw,8px)]' />
-				{table.seated}/{table.capacity}
+				{table.seated}
 			</span>
 		</button>
 	)
