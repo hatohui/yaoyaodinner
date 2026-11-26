@@ -5,7 +5,7 @@ import {
 	useRef,
 	useState,
 } from 'react'
-import { MapPin } from 'lucide-react'
+import { MapPin, Users } from 'lucide-react'
 import type { TableDto } from '@/api/model'
 import { cn } from '@/utils/shadcn'
 import { tableDiameter } from './layout'
@@ -119,6 +119,17 @@ export function FloorPlanTable({
 					</span>
 				</>
 			)}
+			<span
+				className={cn(
+					'mt-[0.3cqw] flex items-center gap-[0.4cqw] text-[max(1.7cqw,8px)] font-semibold tabular-nums',
+					table.seated >= table.capacity
+						? 'text-primary'
+						: 'text-muted-foreground'
+				)}
+			>
+				<Users className='size-[max(1.6cqw,8px)]' />
+				{table.seated}/{table.capacity}
+			</span>
 		</button>
 	)
 }
